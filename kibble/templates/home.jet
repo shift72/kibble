@@ -1,0 +1,8 @@
+{{extends "application.jet"}}
+{{block body()}}
+  <main>
+    This content will be yielded in the layout above.
+    <div>Film: {{film.Title}}</div>
+    <div>Film ID: {{film.ID}}</div>
+  </main>
+{{end}}

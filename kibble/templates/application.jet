@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <div style="color:blue">
+    ---
+    {{yield body()}}
+    ---
+    </div>
+    <div style="color:red">
+    ---
+    {{yield body()}}
+    ---
+    </div>
+  </body>
+</html>

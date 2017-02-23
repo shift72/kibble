@@ -1,0 +1,4 @@
+{{extends "application.jet"}}
+{{block body()}}
+  <h2>Film - Index</h2>
+{{end}}
