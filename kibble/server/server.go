@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/CloudyKit/jet"
@@ -41,36 +40,41 @@ func StartNew(port int32) {
 
 func loadRoutes(r chi.Router) {
 
-	var View = jet.NewHTMLSet("./templates")
-	View.SetDevelopmentMode(true)
+	view.SetDevelopmentMode(true)
 
 	r.Get("/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("kibble online\r\n"))
 	})
 
 	for _, route := range *models.AllRoutes {
-		switch route.DataSource {
-		case "Film":
-			r.Get(route.URLPath, routeFilm(route.TemplatePath))
-		case "AllFilms":
-			r.Get(route.URLPath, routeAllFilms(route.TemplatePath))
-			//TODO: add support for tv / season / pages
-		default:
+
+		ds := datastore.FindDataSource(route.DataSource)
+		if ds == nil {
 			log.Printf("Unknown data source %s\n", route.DataSource)
 		}
+
+		if ds != nil {
+			r.Get(route.URLPath, routeToDataSoure(route.TemplatePath, ds))
+		}
+	}
+}
+
+func routeToDataSoure(templateName string, ds *datastore.DataSource) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		processRoute(w, r, templateName, ds)
 	}
 }
 
 func processRoute(
 	w http.ResponseWriter,
-	r *http.Request,
+	req *http.Request,
 	templatePath string,
-	dataRequest func(*http.Request) (jet.VarMap, error)) {
+	ds *datastore.DataSource) {
 
-	data, err := dataRequest(r)
+	data, err := ds.Query(req)
 	if err != nil || data == nil {
-		render.Status(r, http.StatusNotFound)
-		render.JSON(w, r, http.StatusText(http.StatusNotFound))
+		render.Status(req, http.StatusNotFound)
+		render.JSON(w, req, http.StatusText(http.StatusNotFound))
 		return
 	}
 
@@ -84,48 +88,5 @@ func processRoute(
 	if err = t.Execute(w, data, nil); err != nil {
 		w.Write([]byte("Execute error\n"))
 		w.Write([]byte(err.Error()))
-	}
-}
-
-func routeAllFilms(templateName string) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		processRoute(w, r, templateName,
-			func(r *http.Request) (jet.VarMap, error) {
-
-				f, err := datastore.GetAllFilms()
-				if err != nil || f == nil {
-					return nil, err
-				}
-
-				vars := make(jet.VarMap)
-				vars.Set("films", f)
-				return vars, nil
-			},
-		)
-	}
-}
-
-func routeFilm(templateName string) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		processRoute(w, r, "film/item.jet",
-			func(r *http.Request) (jet.VarMap, error) {
-
-				filmID, err := strconv.Atoi(chi.URLParam(r, "filmID"))
-				if err != nil {
-					return nil, err
-				}
-
-				f, err := datastore.FindByID(filmID)
-				if err != nil || f == nil {
-					return nil, err
-				}
-
-				vars := make(jet.VarMap)
-				vars.Set("film", f)
-				return vars, nil
-			},
-		)
 	}
 }

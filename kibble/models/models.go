@@ -20,7 +20,7 @@ var AllRoutes = &[]Route{
 	{
 		URLPath:      "/film",
 		TemplatePath: "film/index.jet",
-		DataSource:   "AllFilms",
+		DataSource:   "FilmCollection",
 	},
 	{
 		URLPath:      "/film/:filmID",
