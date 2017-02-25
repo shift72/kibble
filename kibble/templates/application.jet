@@ -3,12 +3,7 @@
   <head></head>
   <body>
     <div style="color:blue">
-    ---
-    {{yield body()}}
-    ---
-    </div>
-    <div style="color:red">
-    ---
+    --- {{ version }}
     {{yield body()}}
     ---
     </div>

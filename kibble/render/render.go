@@ -1,7 +1,6 @@
 package render
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 
@@ -16,9 +15,13 @@ var view *jet.Set
 func Render() {
 
 	//TODO: for the defined languages
-	fmt.Println("render called")
 
 	view = jet.NewHTMLSet("./templates")
+	view.AddGlobal("version", "v1.1.145")
+
+	renderer := ConsoleRenderer{
+		view: view,
+	}
 
 	for _, route := range *models.AllRoutes {
 
@@ -30,34 +33,9 @@ func Render() {
 		}
 
 		if ds != nil {
-			ds.Iterator(&route, renderToString)
+			ds.Iterator(&route, renderer)
 		}
 	}
 
 	//TODO: add a stop watch
-}
-
-//TODO: make this an interface so we can swap it out
-func renderToString(r *models.Route, path string, data jet.VarMap) {
-
-	w := bytes.NewBufferString("")
-	w.Write([]byte("--------------------\n"))
-
-	w.Write([]byte(path))
-
-	w.Write([]byte("--------------------\n"))
-
-	t, err := view.GetTemplate(r.TemplatePath)
-	if err != nil {
-		w.Write([]byte("Template error\n"))
-		w.Write([]byte(err.Error()))
-		return
-	}
-
-	if err = t.Execute(w, data, nil); err != nil {
-		w.Write([]byte("Execute error\n"))
-		w.Write([]byte(err.Error()))
-	}
-
-	fmt.Println(w)
 }

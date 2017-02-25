@@ -20,6 +20,7 @@ var view *jet.Set
 func StartNew(port int32) {
 
 	view = jet.NewHTMLSet("./templates")
+	view.AddGlobal("version", "v1.1.145")
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
@@ -59,7 +60,7 @@ func loadRoutes(r chi.Router) {
 	}
 }
 
-func routeToDataSoure(templateName string, ds *datastore.DataSource) func(w http.ResponseWriter, r *http.Request) {
+func routeToDataSoure(templateName string, ds datastore.DataSource) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		processRoute(w, r, templateName, ds)
 	}
@@ -69,7 +70,7 @@ func processRoute(
 	w http.ResponseWriter,
 	req *http.Request,
 	templatePath string,
-	ds *datastore.DataSource) {
+	ds datastore.DataSource) {
 
 	data, err := ds.Query(req)
 	if err != nil || data == nil {
