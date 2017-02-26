@@ -2,6 +2,7 @@ package datastore
 
 import (
 	"net/http"
+	"reflect"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
@@ -13,6 +14,11 @@ type FilmCollectionDataSource struct{}
 // GetName - returns the name of the datasource
 func (ds *FilmCollectionDataSource) GetName() string {
 	return "FilmCollection"
+}
+
+// GetEntityType - Get the entity type
+func (ds *FilmCollectionDataSource) GetEntityType() reflect.Type {
+	return reflect.TypeOf([]models.Film{})
 }
 
 // Query - return the list of all films
@@ -49,9 +55,19 @@ func (ds *FilmCollectionDataSource) Iterator(route *models.Route, renderer model
 
 }
 
-func init() {
-	AddDataSource(&FilmDataSource{})
-	AddDataSource(&FilmCollectionDataSource{})
+// GetRouteForEntity - get the route
+func (ds *FilmCollectionDataSource) GetRouteForEntity(route *models.Route, entity interface{}) string {
+	return route.URLPath
+}
+
+// GetRouteForSlug - get the route
+func (ds *FilmCollectionDataSource) GetRouteForSlug(route *models.Route, slug string) string {
+	return "!Error"
+}
+
+// IsSlugMatch - is the slug a match
+func (ds *FilmCollectionDataSource) IsSlugMatch(slug string) bool {
+	return false
 }
 
 func transformFilm(f models.Film) *models.Film {

@@ -15,25 +15,31 @@ var view *jet.Set
 func Render() {
 
 	//TODO: for the defined languages
+	datastore.Init()
+
+	routeRegistry := models.DefaultRouteRegistry()
 
 	view = jet.NewHTMLSet("./templates")
 	view.AddGlobal("version", "v1.1.145")
+	view.AddGlobal("routeToSlug", func(slug string) string {
+		return fmt.Sprintf("route:%s", slug)
+	})
 
 	renderer := ConsoleRenderer{
 		view: view,
 	}
 
-	for _, route := range *models.AllRoutes {
+	for _, route := range routeRegistry.GetAll() {
 
 		fmt.Printf("render route: %s\n", route.URLPath)
 
-		ds := datastore.FindDataSource(route.DataSource)
+		ds := models.FindDataSource(route.DataSource)
 		if ds == nil {
 			log.Printf("Unknown data source %s\n", route.DataSource)
 		}
 
 		if ds != nil {
-			ds.Iterator(&route, renderer)
+			ds.Iterator(route, renderer)
 		}
 	}
 

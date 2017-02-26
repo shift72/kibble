@@ -19,6 +19,10 @@ var view *jet.Set
 // StartNew - start a new server
 func StartNew(port int32) {
 
+	datastore.Init()
+
+	routeRegistry := models.DefaultRouteRegistry()
+
 	view = jet.NewHTMLSet("./templates")
 	view.AddGlobal("version", "v1.1.145")
 
@@ -33,13 +37,13 @@ func StartNew(port int32) {
 	// processing should be stopped.
 	r.Use(middleware.Timeout(10 * time.Second))
 
-	loadRoutes(r)
+	loadRoutes(r, &routeRegistry)
 
 	fmt.Printf("listening on %d\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
 }
 
-func loadRoutes(r chi.Router) {
+func loadRoutes(r chi.Router, routeRegistry *models.RouteRegistry) {
 
 	view.SetDevelopmentMode(true)
 
@@ -47,20 +51,16 @@ func loadRoutes(r chi.Router) {
 		w.Write([]byte("kibble online\r\n"))
 	})
 
-	for _, route := range *models.AllRoutes {
-
-		ds := datastore.FindDataSource(route.DataSource)
-		if ds == nil {
-			log.Printf("Unknown data source %s\n", route.DataSource)
-		}
-
-		if ds != nil {
-			r.Get(route.URLPath, routeToDataSoure(route.TemplatePath, ds))
+	for _, route := range routeRegistry.GetAll() {
+		if route.ResolvedDataSouce != nil {
+			r.Get(route.URLPath, routeToDataSoure(route.TemplatePath, route.ResolvedDataSouce))
+		} else {
+			log.Printf("Route skipped, unknown data source %s\n", route.DataSource)
 		}
 	}
 }
 
-func routeToDataSoure(templateName string, ds datastore.DataSource) func(w http.ResponseWriter, r *http.Request) {
+func routeToDataSoure(templateName string, ds models.DataSource) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		processRoute(w, r, templateName, ds)
 	}
@@ -70,7 +70,7 @@ func processRoute(
 	w http.ResponseWriter,
 	req *http.Request,
 	templatePath string,
-	ds datastore.DataSource) {
+	ds models.DataSource) {
 
 	data, err := ds.Query(req)
 	if err != nil || data == nil {

@@ -19,6 +19,14 @@ type InMemoryResult struct {
 	err      error
 }
 
+func (r *InMemoryResult) Output() string {
+	if r.err == nil {
+		return fmt.Sprintf("%s", r.buffer)
+	} else {
+		return fmt.Sprintf("error: %s\n", r.err)
+	}
+}
+
 func (c *InMemoryRenderer) ErrorCount() int {
 	i := 0
 	for _, r := range c.Results {
@@ -39,11 +47,9 @@ func (c *InMemoryRenderer) DumpErrors() {
 
 func (c *InMemoryRenderer) DumpResults() {
 	for _, r := range c.Results {
-		if r.err == nil {
-			fmt.Printf("---- %s ----\n%s\n---- -----\n", r.filePath, r.buffer)
-		} else {
-			fmt.Printf("---- %s ----\n error: %s\n---- -----\n", r.filePath, r.err)
-		}
+		fmt.Printf("---- %s start ----\n", r.filePath)
+		fmt.Printf(r.Output())
+		fmt.Printf("---- %s end ----\n", r.filePath)
 	}
 }
 

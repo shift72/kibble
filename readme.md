@@ -32,7 +32,7 @@ TODO:
     * default language
     * language routes /:lang/film/:id
  * helpers
-    * route renders
+    * route renders - done
  * upload
  * diff / merge ??
  * watch files / live reload

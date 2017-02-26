@@ -2,6 +2,7 @@ package datastore
 
 import (
 	"net/http"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -16,6 +17,11 @@ type FilmDataSource struct{}
 // GetName - name of the datasource
 func (ds *FilmDataSource) GetName() string {
 	return "Film"
+}
+
+// GetEntityType - Get the entity type
+func (ds *FilmDataSource) GetEntityType() reflect.Type {
+	return reflect.TypeOf(&models.Film{})
 }
 
 // Query - return a single film
@@ -45,11 +51,32 @@ func (ds *FilmDataSource) Iterator(route *models.Route, renderer models.Renderer
 
 	for _, f := range *films {
 
-		filePath := strings.Replace(route.URLPath, ":filmID", strconv.Itoa(f.ID), 1)
+		filePath := ds.GetRouteForEntity(route, f)
 
 		c := transformFilm(f)
 
 		data.Set("film", c)
 		renderer.Render(route, filePath, data)
 	}
+}
+
+// GetRouteForEntity - get the route
+func (ds *FilmDataSource) GetRouteForEntity(route *models.Route, entity interface{}) string {
+	o, ok := entity.(*models.Film)
+	if ok {
+		return strings.Replace(route.URLPath, ":filmID", strconv.Itoa(o.ID), 1)
+	}
+	return "!Error"
+}
+
+// GetRouteForSlug - get the route
+func (ds *FilmDataSource) GetRouteForSlug(route *models.Route, slug string) string {
+	//TODO: parse slug
+	p := strings.Split(slug, "/")
+	return strings.Replace(route.URLPath, ":filmID", p[2], 1)
+}
+
+// IsSlugMatch - checks if the slug is a match
+func (ds *FilmDataSource) IsSlugMatch(slug string) bool {
+	return strings.HasPrefix(slug, "/film/")
 }

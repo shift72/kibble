@@ -57,3 +57,104 @@ func TestFilmDataStore(t *testing.T) {
 		t.Error("Unexpected errors")
 	}
 }
+
+func TestRenderingGlobal(t *testing.T) {
+
+	view := jet.NewHTMLSet("../templates/")
+	view.AddGlobal("version", "v1.1.145")
+
+	tem, _ := view.LoadTemplate("", "{{ version }}")
+
+	renderer1 := &test.InMemoryTemplateRenderer{
+		View:     view,
+		Template: tem,
+	}
+
+	r := &models.Route{
+		URLPath:      "/film/:filmID",
+		TemplatePath: "film/item.jet",
+		DataSource:   "Film",
+	}
+	fds := &FilmDataSource{}
+	fds.Iterator(r, renderer1)
+
+	if renderer1.Result.Output() != "v1.1.145" {
+		t.Error("Unexpected output")
+	}
+}
+
+func TestRenderingSlug(t *testing.T) {
+
+	Init()
+
+	r := &models.Route{
+		Name:         "filmItem",
+		URLPath:      "/film-special/:filmID",
+		TemplatePath: "film/item.jet",
+		DataSource:   "Film",
+	}
+
+	routeRegistry := models.NewRouteRegistry()
+	routeRegistry.Add(r)
+
+	view := jet.NewHTMLSet("../templates/")
+	view.AddGlobal("version", "v1.1.145")
+	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
+		return routeRegistry.GetRouteForEntity(entity, routeName)
+	})
+	view.AddGlobal("routeToSlug", func(slug string, routeName string) string {
+		return routeRegistry.GetRouteForSlug(slug, routeName)
+	})
+
+	tem, _ := view.LoadTemplate("", "{{ routeToSlug(film.Slug, \"filmItem\") }}")
+
+	renderer := &test.InMemoryTemplateRenderer{
+		View:     view,
+		Template: tem,
+	}
+
+	fds := &FilmDataSource{}
+	fds.Iterator(r, renderer)
+
+	if renderer.Result.Output() != "/film-special/2" {
+		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
+	}
+}
+
+func TestRouteToFilm(t *testing.T) {
+
+	Init()
+
+	r := &models.Route{
+		Name:         "filmItem",
+		URLPath:      "/film-special/:filmID",
+		TemplatePath: "film/item.jet",
+		DataSource:   "Film",
+	}
+
+	routeRegistry := models.NewRouteRegistry()
+	routeRegistry.Add(r)
+
+	view := jet.NewHTMLSet("../templates/")
+	view.AddGlobal("version", "v1.1.145")
+	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
+		return routeRegistry.GetRouteForEntity(entity, routeName)
+	})
+	view.AddGlobal("routeToSlug", func(slug string, routeName string) string {
+		return routeRegistry.GetRouteForSlug(slug, routeName)
+	})
+
+	tem, _ := view.LoadTemplate("", "{{ routeTo(film, \"filmItem\") }}")
+
+	renderer := &test.InMemoryTemplateRenderer{
+		View:     view,
+		Template: tem,
+	}
+
+	fds := &FilmDataSource{}
+	fds.Iterator(r, renderer)
+
+	if renderer.Result.Output() != "/film-special/2" {
+		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
+	}
+}
