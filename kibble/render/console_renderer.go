@@ -8,10 +8,12 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
+// ConsoleRenderer - designed to render to the console for testing
 type ConsoleRenderer struct {
 	view *jet.Set
 }
 
+// Render - render to the console
 func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
 
 	w := bytes.NewBufferString("")
@@ -19,7 +21,7 @@ func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.V
 	w.Write([]byte(fmt.Sprintf("FilePath: %s\n", filePath)))
 	w.Write([]byte("--------------------\n"))
 
-	t, err := view.GetTemplate(route.TemplatePath)
+	t, err := c.view.GetTemplate(route.TemplatePath)
 	if err != nil {
 		w.Write([]byte("Template error\n"))
 		w.Write([]byte(err.Error()))

@@ -51,7 +51,7 @@ func (ds *FilmDataSource) Iterator(route *models.Route, renderer models.Renderer
 
 	for _, f := range *films {
 
-		filePath := ds.GetRouteForEntity(route, f)
+		filePath := ds.GetRouteForEntity(route, &f)
 
 		c := transformFilm(f)
 

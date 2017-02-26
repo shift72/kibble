@@ -23,8 +23,7 @@ func StartNew(port int32) {
 
 	routeRegistry := models.DefaultRouteRegistry()
 
-	view = jet.NewHTMLSet("./templates")
-	view.AddGlobal("version", "v1.1.145")
+	view = models.CreateTemplateView(&routeRegistry)
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)

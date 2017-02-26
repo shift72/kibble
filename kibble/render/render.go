@@ -3,13 +3,11 @@ package render
 import (
 	"fmt"
 	"log"
+	"time"
 
-	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
-
-var view *jet.Set
 
 // Render - render the files
 func Render() {
@@ -19,19 +17,12 @@ func Render() {
 
 	routeRegistry := models.DefaultRouteRegistry()
 
-	view = jet.NewHTMLSet("./templates")
-	view.AddGlobal("version", "v1.1.145")
-	view.AddGlobal("routeToSlug", func(slug string) string {
-		return fmt.Sprintf("route:%s", slug)
-	})
-
 	renderer := ConsoleRenderer{
-		view: view,
+		view: models.CreateTemplateView(&routeRegistry),
 	}
 
+	start := time.Now()
 	for _, route := range routeRegistry.GetAll() {
-
-		fmt.Printf("render route: %s\n", route.URLPath)
 
 		ds := models.FindDataSource(route.DataSource)
 		if ds == nil {
@@ -42,6 +33,6 @@ func Render() {
 			ds.Iterator(route, renderer)
 		}
 	}
-
-	//TODO: add a stop watch
+	stop := time.Now()
+	fmt.Printf("Render completed: %s", stop.Sub(start))
 }
