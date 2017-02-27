@@ -2,10 +2,14 @@
 <html>
   <head></head>
   <body>
+    <h2>{{ i18n("settings_title") }}</h2>
+    <p>{{ i18n("settings_description") }}</p>
+
     <div style="color:blue">
     --- {{ version }}
     {{yield body()}}
     ---
     </div>
+    
   </body>
 </html>

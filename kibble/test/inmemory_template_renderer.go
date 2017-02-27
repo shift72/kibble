@@ -7,6 +7,7 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
+// InMemoryTemplateRenderer - render template in memory
 type InMemoryTemplateRenderer struct {
 	View     *jet.Set
 	Template *jet.Template

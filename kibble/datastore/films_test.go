@@ -7,6 +7,7 @@ import (
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/test"
+	"github.com/nicksnyder/go-i18n/i18n"
 )
 
 func TestApplyContentTransforms(t *testing.T) {
@@ -48,10 +49,15 @@ func TestFilmDataStore(t *testing.T) {
 		TemplatePath: "film/item.jet",
 		DataSource:   "Film",
 	}
+
+	ctx := models.RenderContext{
+		Route: r,
+	}
+
 	fds := &FilmDataSource{
 	//TODO: add source data
 	}
-	fds.Iterator(r, renderer1)
+	fds.Iterator(ctx, renderer1)
 
 	if renderer1.ErrorCount() != 0 {
 		t.Error("Unexpected errors")
@@ -75,8 +81,13 @@ func TestRenderingGlobal(t *testing.T) {
 		TemplatePath: "film/item.jet",
 		DataSource:   "Film",
 	}
+
+	ctx := models.RenderContext{
+		Route: r,
+	}
+
 	fds := &FilmDataSource{}
-	fds.Iterator(r, renderer1)
+	fds.Iterator(ctx, renderer1)
 
 	if renderer1.Result.Output() != "v1.1.145" {
 		t.Error("Unexpected output")
@@ -94,17 +105,15 @@ func TestRenderingSlug(t *testing.T) {
 		DataSource:   "Film",
 	}
 
+	ctx := models.RenderContext{
+		Route:       r,
+		RoutePrefix: "/fr",
+	}
+
 	routeRegistry := models.NewRouteRegistry()
 	routeRegistry.Add(r)
 
-	view := jet.NewHTMLSet("../templates/")
-	view.AddGlobal("version", "v1.1.145")
-	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
-		return routeRegistry.GetRouteForEntity(entity, routeName)
-	})
-	view.AddGlobal("routeToSlug", func(slug string, routeName string) string {
-		return routeRegistry.GetRouteForSlug(slug, routeName)
-	})
+	view := models.CreateTemplateView(&routeRegistry, i18n.IdentityTfunc(), ctx)
 
 	tem, _ := view.LoadTemplate("", "{{ routeToSlug(film.Slug, \"filmItem\") }}")
 
@@ -114,9 +123,9 @@ func TestRenderingSlug(t *testing.T) {
 	}
 
 	fds := &FilmDataSource{}
-	fds.Iterator(r, renderer)
+	fds.Iterator(ctx, renderer)
 
-	if renderer.Result.Output() != "/film-special/2" {
+	if renderer.Result.Output() != "/fr/film-special/2" {
 		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
 	}
 }
@@ -131,18 +140,15 @@ func TestRouteToFilm(t *testing.T) {
 		TemplatePath: "film/item.jet",
 		DataSource:   "Film",
 	}
+	ctx := models.RenderContext{
+		Route:       r,
+		RoutePrefix: "/fr",
+	}
 
 	routeRegistry := models.NewRouteRegistry()
 	routeRegistry.Add(r)
 
-	view := jet.NewHTMLSet("../templates/")
-	view.AddGlobal("version", "v1.1.145")
-	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
-		return routeRegistry.GetRouteForEntity(entity, routeName)
-	})
-	view.AddGlobal("routeToSlug", func(slug string, routeName string) string {
-		return routeRegistry.GetRouteForSlug(slug, routeName)
-	})
+	view := models.CreateTemplateView(&routeRegistry, i18n.IdentityTfunc(), ctx)
 
 	tem, _ := view.LoadTemplate("", "{{ routeTo(film, \"filmItem\") }}")
 
@@ -152,9 +158,44 @@ func TestRouteToFilm(t *testing.T) {
 	}
 
 	fds := &FilmDataSource{}
-	fds.Iterator(r, renderer)
+	fds.Iterator(ctx, renderer)
 
-	if renderer.Result.Output() != "/film-special/2" {
+	if renderer.Result.Output() != "/fr/film-special/2" {
+		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
+	}
+}
+
+func TestTransLanguage(t *testing.T) {
+
+	Init()
+
+	r := &models.Route{
+		Name:         "filmItem",
+		URLPath:      "/film-special/:filmID",
+		TemplatePath: "film/item.jet",
+		DataSource:   "Film",
+	}
+
+	ctx := models.RenderContext{
+		Route: r,
+	}
+
+	routeRegistry := models.NewRouteRegistry()
+	routeRegistry.Add(r)
+
+	view := models.CreateTemplateView(&routeRegistry, i18n.IdentityTfunc(), ctx)
+
+	tem, _ := view.LoadTemplate("", "MSG {{ i18n(\"settings_title\") }}")
+
+	renderer := &test.InMemoryTemplateRenderer{
+		View:     view,
+		Template: tem,
+	}
+
+	fds := &FilmDataSource{}
+	fds.Iterator(ctx, renderer)
+
+	if renderer.Result.Output() != "MSG settings_title" {
 		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
 	}
 }

@@ -6,24 +6,26 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
 	"github.com/pressly/chi/render"
 )
-
-var view *jet.Set
 
 // StartNew - start a new server
 func StartNew(port int32) {
 
 	datastore.Init()
 
-	routeRegistry := models.DefaultRouteRegistry()
+	cfg := models.LoadConfig()
+	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
-	view = models.CreateTemplateView(&routeRegistry)
+	i18n.MustLoadTranslationFile(fmt.Sprintf("%s.all.json", cfg.Languages[cfg.DefaultLanguage]))
+	for _, locale := range cfg.Languages {
+		i18n.LoadTranslationFile(fmt.Sprintf("%s.all.json", locale))
+	}
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
@@ -36,15 +38,13 @@ func StartNew(port int32) {
 	// processing should be stopped.
 	r.Use(middleware.Timeout(10 * time.Second))
 
-	loadRoutes(r, &routeRegistry)
+	loadRoutes(r, &routeRegistry, cfg)
 
 	fmt.Printf("listening on %d\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
 }
 
-func loadRoutes(r chi.Router, routeRegistry *models.RouteRegistry) {
-
-	view.SetDevelopmentMode(true)
+func loadRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models.Config) {
 
 	r.Get("/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("kibble online\r\n"))
@@ -52,41 +52,53 @@ func loadRoutes(r chi.Router, routeRegistry *models.RouteRegistry) {
 
 	for _, route := range routeRegistry.GetAll() {
 		if route.ResolvedDataSouce != nil {
-			r.Get(route.URLPath, routeToDataSoure(route.TemplatePath, route.ResolvedDataSouce))
+			r.Get(route.URLPath, routeToDataSoure(route, routeRegistry, cfg))
+			r.Get("/:lang"+route.URLPath, routeToDataSoure(route, routeRegistry, cfg))
 		} else {
 			log.Printf("Route skipped, unknown data source %s\n", route.DataSource)
 		}
 	}
 }
 
-func routeToDataSoure(templateName string, ds models.DataSource) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		processRoute(w, r, templateName, ds)
-	}
-}
+func routeToDataSoure(route *models.Route, routeRegistry *models.RouteRegistry, cfg *models.Config) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
 
-func processRoute(
-	w http.ResponseWriter,
-	req *http.Request,
-	templatePath string,
-	ds models.DataSource) {
+		lang := chi.URLParam(req, "lang")
 
-	data, err := ds.Query(req)
-	if err != nil || data == nil {
-		render.Status(req, http.StatusNotFound)
-		render.JSON(w, req, http.StatusText(http.StatusNotFound))
-		return
-	}
+		// fmt.Printf("lang:%s\n", lang)
+		// fmt.Printf("locale:%s\n", cfg.Languages[lang])
+		// fmt.Printf("locale default:%s\n", cfg.Languages[cfg.DefaultLanguage])
 
-	t, err := view.GetTemplate(templatePath)
-	if err != nil {
-		w.Write([]byte("Template error\n"))
-		w.Write([]byte(err.Error()))
-		return
-	}
+		T, err := i18n.Tfunc(cfg.Languages[lang], cfg.Languages[cfg.DefaultLanguage])
+		if err != nil {
+			fmt.Println(err)
+		}
 
-	if err = t.Execute(w, data, nil); err != nil {
-		w.Write([]byte("Execute error\n"))
-		w.Write([]byte(err.Error()))
+		ctx := models.RenderContext{
+			Route:       route,
+			RoutePrefix: fmt.Sprintf("/%s", lang),
+		}
+
+		view := models.CreateTemplateView(routeRegistry, T, ctx)
+		view.SetDevelopmentMode(true)
+
+		data, err := route.ResolvedDataSouce.Query(req)
+		if err != nil || data == nil {
+			render.Status(req, http.StatusNotFound)
+			render.JSON(w, req, http.StatusText(http.StatusNotFound))
+			return
+		}
+
+		t, err := view.GetTemplate(route.TemplatePath)
+		if err != nil {
+			w.Write([]byte("Template error\n"))
+			w.Write([]byte(err.Error()))
+			return
+		}
+
+		if err = t.Execute(w, data, nil); err != nil {
+			w.Write([]byte("Execute error\n"))
+			w.Write([]byte(err.Error()))
+		}
 	}
 }

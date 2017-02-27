@@ -40,7 +40,7 @@ func (ds *FilmCollectionDataSource) Query(req *http.Request) (jet.VarMap, error)
 }
 
 // Iterator - return a list of all films, iteration of 1
-func (ds *FilmCollectionDataSource) Iterator(route *models.Route, renderer models.Renderer) {
+func (ds *FilmCollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
 	films, _ := GetAllFilms()
 
@@ -51,17 +51,17 @@ func (ds *FilmCollectionDataSource) Iterator(route *models.Route, renderer model
 
 	vars := make(jet.VarMap)
 	vars.Set("films", clonedFilms)
-	renderer.Render(route, route.URLPath, vars)
+	renderer.Render(ctx.Route, ctx.Route.URLPath, vars)
 
 }
 
 // GetRouteForEntity - get the route
-func (ds *FilmCollectionDataSource) GetRouteForEntity(route *models.Route, entity interface{}) string {
-	return route.URLPath
+func (ds *FilmCollectionDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+	return ctx.Route.URLPath
 }
 
 // GetRouteForSlug - get the route
-func (ds *FilmCollectionDataSource) GetRouteForSlug(route *models.Route, slug string) string {
+func (ds *FilmCollectionDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	return "!Error"
 }
 

@@ -21,6 +21,10 @@ TODO:
     * tv
     * pages
     * collections
+    * taxonomies
+      * cast
+      * genre
+      * year
     * json? - what would choice tv tvguide do?
     * config / toggles
  * populate model from api
@@ -28,9 +32,10 @@ TODO:
  * support markdown - done
  * shortcodes - these need to happen as part of the markdown process
  * live reload
+ * admin - unpublished
  * internationalization
-    * default language
-    * language routes /:lang/film/:id
+    * default language - done
+    * language routes /:lang/film/:id - done
  * helpers
     * route renders - done
  * upload

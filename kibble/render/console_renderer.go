@@ -25,6 +25,7 @@ func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.V
 	if err != nil {
 		w.Write([]byte("Template error\n"))
 		w.Write([]byte(err.Error()))
+		fmt.Println(w)
 		return
 	}
 

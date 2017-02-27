@@ -12,11 +12,17 @@ type DataSource interface {
 	GetName() string
 	GetEntityType() reflect.Type
 	Query(*http.Request) (jet.VarMap, error)
-	Iterator(route *Route, renderer Renderer)
+	Iterator(ctx RenderContext, renderer Renderer)
 	IsSlugMatch(slug string) bool
-	GetRouteForEntity(route *Route, entity interface{}) string
-	GetRouteForSlug(route *Route, slug string) string
+	GetRouteForEntity(ctx RenderContext, entity interface{}) string
+	GetRouteForSlug(ctx RenderContext, slug string) string
 	//TODO: ValidateRoute - check that the route contains valid tokens
+}
+
+// RenderContext - Context passed during rendering / serving
+type RenderContext struct {
+	Route       *Route
+	RoutePrefix string
 }
 
 var store map[string]DataSource

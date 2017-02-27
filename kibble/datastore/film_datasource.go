@@ -44,36 +44,37 @@ func (ds *FilmDataSource) Query(req *http.Request) (jet.VarMap, error) {
 }
 
 // Iterator - loop over each film
-func (ds *FilmDataSource) Iterator(route *models.Route, renderer models.Renderer) {
+func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
 	films, _ := GetAllFilms()
 	data := make(jet.VarMap)
 
 	for _, f := range *films {
 
-		filePath := ds.GetRouteForEntity(route, &f)
+		filePath := ds.GetRouteForEntity(ctx, &f)
 
 		c := transformFilm(f)
 
 		data.Set("film", c)
-		renderer.Render(route, filePath, data)
+		renderer.Render(ctx.Route, filePath, data)
 	}
 }
 
 // GetRouteForEntity - get the route
-func (ds *FilmDataSource) GetRouteForEntity(route *models.Route, entity interface{}) string {
+func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+
 	o, ok := entity.(*models.Film)
 	if ok {
-		return strings.Replace(route.URLPath, ":filmID", strconv.Itoa(o.ID), 1)
+		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", strconv.Itoa(o.ID), 1)
 	}
 	return "!Error"
 }
 
 // GetRouteForSlug - get the route
-func (ds *FilmDataSource) GetRouteForSlug(route *models.Route, slug string) string {
+func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	//TODO: parse slug
 	p := strings.Split(slug, "/")
-	return strings.Replace(route.URLPath, ":filmID", p[2], 1)
+	return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", p[2], 1)
 }
 
 // IsSlugMatch - checks if the slug is a match

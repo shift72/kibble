@@ -81,54 +81,64 @@ func (r *RouteRegistry) GetAll() []*Route {
 }
 
 // GetRouteForEntity - finds the route by the name and type and creates a route from it
-func (r *RouteRegistry) GetRouteForEntity(entity interface{}, routeName string) string {
+func (r *RouteRegistry) GetRouteForEntity(ctx RenderContext, entity interface{}, routeName string) string {
 
-	foundRoute := r.FindByTypeAndRouteName(reflect.TypeOf(entity), routeName)
+	ctx.Route = r.FindByTypeAndRouteName(reflect.TypeOf(entity), routeName)
 
-	if foundRoute != nil {
+	if ctx.Route != nil {
 		// fmt.Printf("Found route, name:%s, path: %s\n", foundRoute.Name, foundRoute.URLPath)
-		return foundRoute.ResolvedDataSouce.GetRouteForEntity(foundRoute, entity)
+		return ctx.Route.ResolvedDataSouce.GetRouteForEntity(ctx, entity)
 	}
 
 	return fmt.Sprintf("!Error. Route not found for entity:%s and route name %v", reflect.TypeOf(entity).Name(), routeName)
 }
 
 // GetRouteForSlug - finds the route by the name and type and creates a route from it
-func (r *RouteRegistry) GetRouteForSlug(slug string, routeName string) string {
+func (r *RouteRegistry) GetRouteForSlug(ctx RenderContext, slug string, routeName string) string {
 
-	foundRoute := r.FindBySlugAndRouteName(slug, routeName)
+	ctx.Route = r.FindBySlugAndRouteName(slug, routeName)
 
-	if foundRoute != nil {
+	if ctx.Route != nil {
 		// fmt.Printf("Found route, name:%s, path: %s\n", foundRoute.Name, foundRoute.URLPath)
-		return foundRoute.ResolvedDataSouce.GetRouteForSlug(foundRoute, slug)
+		return ctx.Route.ResolvedDataSouce.GetRouteForSlug(ctx, slug)
 	}
 
 	return fmt.Sprintf("!Error. Route not found for slug:%s and route name %v", slug, routeName)
 }
 
-// DefaultRouteRegistry - to be replaced with one that loads routes from a file
-func DefaultRouteRegistry() RouteRegistry {
-
+// NewRouteRegistryFromConfig - create a new route registry from the config
+func NewRouteRegistryFromConfig(config *Config) RouteRegistry {
 	routeRegistry := NewRouteRegistry()
-	routeRegistry.Add(&Route{
-		Name:         "filmIndex",
-		URLPath:      "/film",
-		TemplatePath: "film/index.jet",
-		DataSource:   "FilmCollection",
-	})
 
-	routeRegistry.Add(&Route{
-		Name:         "filmItem",
-		URLPath:      "/film/:filmID",
-		TemplatePath: "film/item.jet",
-		DataSource:   "Film",
-	})
-
-	routeRegistry.Add(&Route{
-		Name:         "filmItemPartial",
-		URLPath:      "/film/:filmID/partial.html",
-		TemplatePath: "film/partial.jet",
-		DataSource:   "Film",
-	})
+	for _, r := range config.Routes {
+		routeRegistry.Add(&r)
+	}
 	return routeRegistry
 }
+
+// DefaultRouteRegistry - to be replaced with one that loads routes from a file
+// func DefaultRouteRegistry() RouteRegistry {
+//
+// 	routeRegistry := NewRouteRegistry()
+// 	routeRegistry.Add(&Route{
+// 		Name:         "filmIndex",
+// 		URLPath:      "/film",
+// 		TemplatePath: "film/index.jet",
+// 		DataSource:   "FilmCollection",
+// 	})
+//
+// 	routeRegistry.Add(&Route{
+// 		Name:         "filmItem",
+// 		URLPath:      "/film/:filmID",
+// 		TemplatePath: "film/item.jet",
+// 		DataSource:   "Film",
+// 	})
+//
+// 	routeRegistry.Add(&Route{
+// 		Name:         "filmItemPartial",
+// 		URLPath:      "/film/:filmID/partial.html",
+// 		TemplatePath: "film/partial.jet",
+// 		DataSource:   "Film",
+// 	})
+// 	return routeRegistry
+// }

@@ -8,25 +8,28 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
+// InMemoryRenderer - render to memory for testing
 type InMemoryRenderer struct {
 	View    *jet.Set
 	Results []InMemoryResult
 }
 
+// InMemoryResult - in memory result
 type InMemoryResult struct {
 	buffer   *bytes.Buffer
 	filePath string
 	err      error
 }
 
+// Output - return the result
 func (r *InMemoryResult) Output() string {
 	if r.err == nil {
 		return fmt.Sprintf("%s", r.buffer)
-	} else {
-		return fmt.Sprintf("error: %s\n", r.err)
 	}
+	return fmt.Sprintf("error: %s\n", r.err)
 }
 
+// ErrorCount - return the number of errors
 func (c *InMemoryRenderer) ErrorCount() int {
 	i := 0
 	for _, r := range c.Results {
@@ -37,6 +40,7 @@ func (c *InMemoryRenderer) ErrorCount() int {
 	return i
 }
 
+// DumpErrors - print the errors
 func (c *InMemoryRenderer) DumpErrors() {
 	for _, r := range c.Results {
 		if r.err != nil {
@@ -45,6 +49,7 @@ func (c *InMemoryRenderer) DumpErrors() {
 	}
 }
 
+// DumpResults - print the results
 func (c *InMemoryRenderer) DumpResults() {
 	for _, r := range c.Results {
 		fmt.Printf("---- %s start ----\n", r.filePath)

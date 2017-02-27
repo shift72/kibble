@@ -1,0 +1,8 @@
+<div>
+  <h2>Partial: {{film.Title}}</h2>
+  This content will be yielded in the layout above......
+  <div>Film: {{film.Title}}</div>
+  <div>Film ID: {{film.ID}}</div>
+  <div>Path: {{ routeToSlug(film.Slug) }}</div>
+  <div>Synopsis: {{ film.Synopsis | raw}}</div>
+</div>
