@@ -33,7 +33,7 @@ TODO:
  * shortcodes - these need to happen as part of the markdown process
  * live reload
  * admin - unpublished
- * internationalization
+ * internationalization - done
     * default language - done
     * language routes /:lang/film/:id - done
  * helpers
