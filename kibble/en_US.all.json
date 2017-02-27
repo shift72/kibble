@@ -1,6 +1,12 @@
-[
-  {
-    "id": "settings_title",
-    "translation": "Settings"
-  }
+[{
+        "id": "settings_title",
+        "translation": "Settings"
+    },
+    {
+        "id": "your_unread_email_count",
+        "translation": {
+            "one": "You have {{.Count}} unread email.",
+            "other": "You have {{.Count}} unread emails."
+        }
+    }
 ]
