@@ -1,0 +1,18 @@
+{
+    "defaultLanguage": "en",
+    "languages": {
+        "en": "en_US",
+        "fr": "fr_FR"
+    },
+    "routes": [{
+        "name": "filmIndex",
+        "urlPath": "/film",
+        "templatePath": "film/index.jet",
+        "datasource": "FilmCollection"
+    }, {
+        "name": "filmItem",
+        "urlPath": "/film/:filmID",
+        "templatePath": "film/item.jet",
+        "datasource": "Film"
+    }]
+}

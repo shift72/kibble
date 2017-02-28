@@ -7,12 +7,12 @@ import (
 
 // Route - represents a route for rendering and
 type Route struct {
-	Name               string
-	URLPath            string
-	TemplatePath       string
-	DataSource         string
-	ResolvedDataSouce  DataSource
-	ResolvedEntityType reflect.Type
+	Name               string       `json:"name"`
+	URLPath            string       `json:"urlPath"`
+	TemplatePath       string       `json:"templatePath"`
+	DataSource         string       `json:"datasource"`
+	ResolvedDataSouce  DataSource   `json:"-"`
+	ResolvedEntityType reflect.Type `json:"-"`
 }
 
 // RouteRegistry - stores a list of routes

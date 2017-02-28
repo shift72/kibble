@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/nicksnyder/go-i18n/i18n"
@@ -19,7 +20,7 @@ func StartNew(port int32) {
 
 	datastore.Init()
 
-	cfg := models.LoadConfig()
+	cfg := config.LoadConfig()
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
 	i18n.MustLoadTranslationFile(fmt.Sprintf("%s.all.json", cfg.Languages[cfg.DefaultLanguage]))
