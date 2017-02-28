@@ -4,6 +4,7 @@
         "en": "en_US",
         "fr": "fr_FR"
     },
+    "siteUrl": "https://staging-store.shift72.com",
     "routes": [{
         "name": "filmIndex",
         "urlPath": "/film",

@@ -4,11 +4,13 @@ To chop or grind coarsely
 ==dependencies==
 go get -v github.com/spf13/cobra/cobra
 go get -u golang.org/x/sys/...
-go get github.com/fsnotify/fsnotify
+go get -u github.com/fsnotify/fsnotify
 go get -u github.com/CloudyKit/jet
 go get -u github.com/russross/blackfriday
 go get -u github.com/microcosm-cc/bluemonday
 go get -u github.com/nicksnyder/go-i18n/goi18n
+go get -u github.com/peterbourgon/diskv
+go get -u github.com/gregjones/httpcache
 
 Commands
  - config - set the API_KEY??
@@ -26,18 +28,20 @@ TODO:
       * genre
       * year
     * json? - what would choice tv tvguide do?
-    * config / toggles
+    * config / toggles - done
  * populate model from api
- * cache
- * support markdown - done
  * shortcodes - these need to happen as part of the markdown process
  * live reload
+ * init
+    * create a base implementation
+ * upload
+ * diff / merge ??
+ * watch files / live reload
  * admin - unpublished
+ * cache - done
+ * support markdown - done
  * internationalization - done
     * default language - done
     * language routes /:lang/film/:id - done
  * helpers
     * route renders - done
- * upload
- * diff / merge ??
- * watch files / live reload

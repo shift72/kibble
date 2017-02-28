@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/nicksnyder/go-i18n/i18n"
 )
 
 // LoadConfig - loaded the config
@@ -25,7 +26,19 @@ func LoadConfig() *models.Config {
 		os.Exit(1)
 	}
 
-	fmt.Println("config loaded")
+	fmt.Printf("config loaded - %s\n", cfg.SiteURL)
+
+	loadLanguages(&cfg)
+
+	fmt.Printf("languages loaded : %d\n", len(cfg.Languages))
 
 	return &cfg
+}
+
+func loadLanguages(cfg *models.Config) {
+	i18n.MustLoadTranslationFile(fmt.Sprintf("%s.all.json", cfg.Languages[cfg.DefaultLanguage]))
+
+	for _, locale := range cfg.Languages {
+		i18n.LoadTranslationFile(fmt.Sprintf("%s.all.json", locale))
+	}
 }

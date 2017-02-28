@@ -5,21 +5,6 @@ import (
 	"reflect"
 )
 
-// Route - represents a route for rendering and
-type Route struct {
-	Name               string       `json:"name"`
-	URLPath            string       `json:"urlPath"`
-	TemplatePath       string       `json:"templatePath"`
-	DataSource         string       `json:"datasource"`
-	ResolvedDataSouce  DataSource   `json:"-"`
-	ResolvedEntityType reflect.Type `json:"-"`
-}
-
-// RouteRegistry - stores a list of routes
-type RouteRegistry struct {
-	routes []*Route
-}
-
 // NewRouteRegistry - create a new route registry
 func NewRouteRegistry() RouteRegistry {
 	return RouteRegistry{
@@ -115,30 +100,3 @@ func NewRouteRegistryFromConfig(config *Config) RouteRegistry {
 	}
 	return routeRegistry
 }
-
-// DefaultRouteRegistry - to be replaced with one that loads routes from a file
-// func DefaultRouteRegistry() RouteRegistry {
-//
-// 	routeRegistry := NewRouteRegistry()
-// 	routeRegistry.Add(&Route{
-// 		Name:         "filmIndex",
-// 		URLPath:      "/film",
-// 		TemplatePath: "film/index.jet",
-// 		DataSource:   "FilmCollection",
-// 	})
-//
-// 	routeRegistry.Add(&Route{
-// 		Name:         "filmItem",
-// 		URLPath:      "/film/:filmID",
-// 		TemplatePath: "film/item.jet",
-// 		DataSource:   "Film",
-// 	})
-//
-// 	routeRegistry.Add(&Route{
-// 		Name:         "filmItemPartial",
-// 		URLPath:      "/film/:filmID/partial.html",
-// 		TemplatePath: "film/partial.jet",
-// 		DataSource:   "Film",
-// 	})
-// 	return routeRegistry
-// }

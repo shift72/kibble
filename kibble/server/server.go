@@ -23,11 +23,6 @@ func StartNew(port int32) {
 	cfg := config.LoadConfig()
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
-	i18n.MustLoadTranslationFile(fmt.Sprintf("%s.all.json", cfg.Languages[cfg.DefaultLanguage]))
-	for _, locale := range cfg.Languages {
-		i18n.LoadTranslationFile(fmt.Sprintf("%s.all.json", locale))
-	}
-
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)

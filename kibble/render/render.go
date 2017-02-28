@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/indiereign/shift72-kibble/kibble/api"
 	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
@@ -17,13 +18,16 @@ func Render() {
 
 	cfg := config.LoadConfig()
 
-	i18n.MustLoadTranslationFile(fmt.Sprintf("%s.all.json", cfg.Languages[cfg.DefaultLanguage]))
+	site, err := api.LoadSite(cfg)
+	if err != nil {
+		fmt.Printf("Site load failed: %s", err)
+		return
+	}
 
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
 	start := time.Now()
 	for lang, locale := range cfg.Languages {
-		i18n.LoadTranslationFile(fmt.Sprintf("%s.all.json", locale))
 
 		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
 		if err != nil {
@@ -32,6 +36,7 @@ func Render() {
 
 		ctx := models.RenderContext{
 			RoutePrefix: "",
+			Site:        site,
 		}
 
 		renderer := ConsoleRenderer{
