@@ -1,4 +1,11 @@
 {{extends "application.jet"}}
 {{block body()}}
   <h2>Page - Index</h2>
+
+  {{range pages}}
+    <p>
+      {{ .Title }} - {{ .Slug }}
+    </p>
+  {{end}}
+
 {{end}}

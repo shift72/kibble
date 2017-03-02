@@ -27,12 +27,9 @@ func (ds *PageDataSource) GetEntityType() reflect.Type {
 // Query - return a single Page
 func (ds *PageDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
 
-	pageID, err := strconv.Atoi(chi.URLParam(req, "pageID"))
-	if err != nil {
-		return nil, err
-	}
+	pageSlug := chi.URLParam(req, "slug")
 
-	p, err := ctx.Site.Pages.FindPageByID(pageID)
+	p, err := ctx.Site.Pages.FindPageBySlug(pageSlug)
 	if err != nil || p == nil {
 		return nil, err
 	}
@@ -65,7 +62,7 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.Page)
 	if ok {
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":pageID", o.Slug, 1)
+		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.Slug, 1)
 	}
 	return models.DataSourceError
 }
@@ -77,7 +74,7 @@ func (ds *PageDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 	p := strings.Split(slug, "/")
 	pageID, _ := strconv.Atoi(p[2])
 	page, _ := ctx.Site.Pages.FindPageByID(pageID)
-	return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":pageID", page.Slug, 1)
+	return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", page.Slug, 1)
 }
 
 // IsSlugMatch - checks if the slug is a match

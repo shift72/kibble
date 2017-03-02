@@ -1,7 +1,34 @@
 {{extends "application.jet"}}
 {{block body()}}
   <div>
-    <h2>{{page.Title}}</h2>
-  
+    <h2>{{ page.Title }}</h2>
+
+    <ul>
+      <li>ID: {{ page.ID }}</li>
+      <li>Slug: {{ page.Slug }}</li>
+      <li>Tagline: {{ page.Tagline }}</li>
+      <li>URL: {{ page.URL }}</li>
+      <li>SeoTitle: {{ page.SeoTitle }}</li>
+      <li>SeoKeywords: {{ page.SeoKeywords }}</li>
+      <li>SeoDescription: {{ page.SeoDescription }}</li>
+      <li>CarouselImage: {{ page.CarouselImage }}</li>
+      <li>HeaderImage: {{ page.HeaderImage }}</li>
+      <li>LandscapeImage: {{ page.LandscapeImage }}</li>
+      <li>PortraitImage: {{ page.PortraitImage }}</li>
+      <li>PageType: {{ page.PageType }}</li>
+      <li></li>
+    </ul>
+
+    <h3>Page Features</h3>
+    <ul>
+      {{ range page.PageFeatures }}
+        <li>PF: {{ . | json | raw }}</li>
+      {{ end }}
+    </ul>
+
+    <div>
+      {{ page.Content }}
+    </div>
+
   </div>
 {{end}}

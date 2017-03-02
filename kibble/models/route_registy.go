@@ -6,26 +6,10 @@ import (
 )
 
 // NewRouteRegistry - create a new route registry
-func NewRouteRegistry() RouteRegistry {
-	return RouteRegistry{
-		routes: make([]*Route, 0, 10),
+func NewRouteRegistry() *RouteRegistry {
+	return &RouteRegistry{
+		routes: make([]*Route, 0),
 	}
-}
-
-// Add - add a route to route registry
-func (r *RouteRegistry) Add(route *Route) {
-
-	// find data source
-	route.ResolvedDataSouce = FindDataSource(route.DataSource)
-
-	if route.ResolvedDataSouce == nil {
-		fmt.Printf("Unable to find the datasource %s\n", route.DataSource)
-		return
-	}
-
-	route.ResolvedEntityType = route.ResolvedDataSouce.GetEntityType()
-
-	r.routes = append(r.routes, route)
 }
 
 // FindByName - find the route by the name
@@ -92,11 +76,22 @@ func (r *RouteRegistry) GetRouteForSlug(ctx RenderContext, slug string, routeNam
 }
 
 // NewRouteRegistryFromConfig - create a new route registry from the config
-func NewRouteRegistryFromConfig(config *Config) RouteRegistry {
+func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 	routeRegistry := NewRouteRegistry()
 
-	for _, r := range config.Routes {
-		routeRegistry.Add(&r)
+	routeRegistry.routes = make([]*Route, len(config.Routes))
+
+	for i := 0; i < len(config.Routes); i++ {
+		route := config.Routes[i]
+
+		route.ResolvedDataSouce = FindDataSource(route.DataSource)
+		if route.ResolvedDataSouce != nil {
+			route.ResolvedEntityType = route.ResolvedDataSouce.GetEntityType()
+		} else {
+			fmt.Printf("Unable to find the datasource %s\n", route.DataSource)
+		}
+		routeRegistry.routes[i] = &route
 	}
+
 	return routeRegistry
 }

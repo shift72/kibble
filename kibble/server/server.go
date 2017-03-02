@@ -45,7 +45,7 @@ func StartNew(port int32) {
 	// processing should be stopped.
 	r.Use(middleware.Timeout(10 * time.Second))
 
-	loadRoutes(r, &routeRegistry, cfg)
+	loadRoutes(r, routeRegistry, cfg)
 
 	fmt.Printf("listening on %d\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
@@ -57,6 +57,7 @@ func loadRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models.C
 		w.Write([]byte("kibble online\r\n"))
 	})
 
+	//TODO: sort the routes, put the collections at the end
 	for _, route := range routeRegistry.GetAll() {
 		if route.ResolvedDataSouce != nil {
 			r.Get(route.URLPath, routeToDataSoure(route, routeRegistry, cfg))
@@ -70,6 +71,12 @@ func loadRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models.C
 func routeToDataSoure(route *models.Route, routeRegistry *models.RouteRegistry, cfg *models.Config) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 
+		ctx := models.RenderContext{
+			Route:       route,
+			RoutePrefix: "",
+			Site:        site,
+		}
+
 		lang := chi.URLParam(req, "lang")
 
 		// fmt.Printf("lang:%s\n", lang)
@@ -81,10 +88,8 @@ func routeToDataSoure(route *models.Route, routeRegistry *models.RouteRegistry, 
 			fmt.Println(err)
 		}
 
-		ctx := models.RenderContext{
-			Route:       route,
-			RoutePrefix: fmt.Sprintf("/%s", lang),
-			Site:        site,
+		if lang != "" && lang != cfg.DefaultLanguage {
+			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
 		}
 
 		view := models.CreateTemplateView(routeRegistry, T, ctx)
