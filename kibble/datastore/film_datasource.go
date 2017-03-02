@@ -56,6 +56,7 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 		c := transformFilm(f)
 
 		data.Set("film", c)
+		data.Set("site", ctx.Site)
 		renderer.Render(ctx.Route, filePath, data)
 	}
 }

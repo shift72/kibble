@@ -51,6 +51,7 @@ func (ds *FilmCollectionDataSource) Iterator(ctx models.RenderContext, renderer 
 
 	vars := make(jet.VarMap)
 	vars.Set("films", clonedFilms)
+	vars.Set("site", ctx.Site)
 	renderer.Render(ctx.Route, ctx.Route.URLPath, vars)
 
 }

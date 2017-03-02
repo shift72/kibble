@@ -1,3 +1,4 @@
+{{import "nav.jet"}}
 <!DOCTYPE html>
 <html>
   <head></head>
@@ -5,11 +6,21 @@
     <h2>{{ i18n("settings_title") }}</h2>
     <p>{{ i18n("settings_description") }}</p>
 
+    <script>
+      // list the sites config and toggles
+      var cfg = {{ site.Config | json | raw }};
+      var toggles = {{ site.Toggles | json | raw }};
+    </script>
+
     <div style="color:blue">
     --- {{ version }}
     {{yield body()}}
     ---
     </div>
-    
+
+    <p>
+       {{yield nav() site.Navigation }}
+    </p>
+
   </body>
 </html>

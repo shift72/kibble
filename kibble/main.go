@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	api.ConfigureDiskCache(".tmp")
+	api.ConfigureDiskCache(".kibble/cache")
 
 	if err := cmd.RootCmd.Execute(); err != nil {
 		fmt.Println(err)

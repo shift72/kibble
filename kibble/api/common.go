@@ -33,12 +33,21 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 
 	fmt.Printf("loaded toggles: %d\n", len(toggles))
 
+	bios, err := LoadBios(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("loaded pages: %d\n", len(bios.Pages))
+
 	stop := time.Now()
 	fmt.Printf("--------------------\nLoad completed: %s\n", stop.Sub(start))
 
 	return &models.Site{
-		Config:  config,
-		Toggles: toggles,
+		Config:     config,
+		Toggles:    toggles,
+		Navigation: bios.Navigation,
+		Pages:      bios.Pages,
 	}, nil
 }
 
@@ -56,12 +65,9 @@ func Get(url string) ([]byte, error) {
 		return nil, err
 	}
 
-	cache := diskcache.New(".tmp")
-	tp := httpcache.NewTransport(cache)
-
 	client := &http.Client{
 		Timeout:   10 * time.Second,
-		Transport: tp,
+		Transport: httpcache.NewTransport(cache),
 	}
 	resp, err := client.Do(req)
 	if err != nil {

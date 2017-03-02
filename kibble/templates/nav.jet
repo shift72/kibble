@@ -1,0 +1,12 @@
+{{block nav()}}
+<ul>
+<!-- navigation structure : not fully recursive yet -->
+{{range .Header}}
+  <li><a href="{{ routeToSlug(.Link.Slug)}}" {{ .Label }} - {{ .Link.PageID}} - {{ .Link.Slug }}</a>
+  {{range .Items}}
+    <li><a href="{{ routeToSlug(.Link.Slug)}}" {{ .Label }} - {{ .Link.PageID}} - {{ .Link.Slug }}</a></li>
+  {{end}}
+  </li>
+{{end}}
+</ul>
+{{end}}

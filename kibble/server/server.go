@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/indiereign/shift72-kibble/kibble/api"
 	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
@@ -15,12 +16,22 @@ import (
 	"github.com/pressly/chi/render"
 )
 
+var site *models.Site
+
 // StartNew - start a new server
 func StartNew(port int32) {
 
 	datastore.Init()
 
 	cfg := config.LoadConfig()
+
+	var err error
+	site, err = api.LoadSite(cfg)
+	if err != nil {
+		fmt.Printf("Site load failed: %s", err)
+		return
+	}
+
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
 	r := chi.NewRouter()
@@ -91,6 +102,8 @@ func routeToDataSoure(route *models.Route, routeRegistry *models.RouteRegistry, 
 			w.Write([]byte(err.Error()))
 			return
 		}
+
+		data.Set("site", site)
 
 		if err = t.Execute(w, data, nil); err != nil {
 			w.Write([]byte("Execute error\n"))

@@ -29,6 +29,7 @@ TODO:
       * year
     * json? - what would choice tv tvguide do?
     * config / toggles - done
+    * navigation - done
  * populate model from api
  * shortcodes - these need to happen as part of the markdown process
  * live reload
@@ -37,7 +38,7 @@ TODO:
  * upload
  * diff / merge ??
  * watch files / live reload
- * admin - unpublished
+ * admin - unpublished / published
  * cache - done
  * support markdown - done
  * internationalization - done
