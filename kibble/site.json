@@ -5,15 +5,30 @@
         "fr": "fr_FR"
     },
     "siteUrl": "https://staging-store.shift72.com",
-    "routes": [{
-        "name": "filmIndex",
-        "urlPath": "/film",
-        "templatePath": "film/index.jet",
-        "datasource": "FilmCollection"
-    }, {
-        "name": "filmItem",
-        "urlPath": "/film/:filmID",
-        "templatePath": "film/item.jet",
-        "datasource": "Film"
-    }]
+    "routes": [
+        {
+            "name": "filmIndex",
+            "urlPath": "/film",
+            "templatePath": "film/index.jet",
+            "datasource": "FilmCollection"
+        },
+        {
+            "name": "filmItem",
+            "urlPath": "/film/:filmID",
+            "templatePath": "film/item.jet",
+            "datasource": "Film"
+        },
+        {
+            "name": "pageIndex",
+            "urlPath": "/page",
+            "templatePath": "page/index.jet",
+            "datasource": "PageCollection"
+        },
+        {
+            "name": "pageItem",
+            "urlPath": "/page/:pageID",
+            "templatePath": "page/item.jet",
+            "datasource": "Page"
+        }
+    ]
 }

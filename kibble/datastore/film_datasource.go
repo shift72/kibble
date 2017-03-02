@@ -32,7 +32,7 @@ func (ds *FilmDataSource) Query(ctx models.RenderContext, req *http.Request) (je
 		return nil, err
 	}
 
-	f, err := FindByID(filmID)
+	f, err := FindFilmByID(filmID)
 	if err != nil || f == nil {
 		return nil, err
 	}
@@ -64,12 +64,11 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 
 // GetRouteForEntity - get the route
 func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-
 	o, ok := entity.(*models.Film)
 	if ok {
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", strconv.Itoa(o.ID), 1)
 	}
-	return "!Error"
+	return models.DataSourceError
 }
 
 // GetRouteForSlug - get the route

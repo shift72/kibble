@@ -1,5 +1,10 @@
 package models
 
+const (
+	// DataSourceError - Error to be written to the template
+	DataSourceError = "!Error"
+)
+
 var store map[string]DataSource
 
 // AddDataSource - register a datasource

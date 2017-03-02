@@ -25,6 +25,9 @@ func Init() {
 	//TODO: needs to be fixed
 	models.AddDataSource(&FilmDataSource{})
 	models.AddDataSource(&FilmCollectionDataSource{})
+
+	models.AddDataSource(&PageDataSource{})
+	models.AddDataSource(&PageCollectionDataSource{})
 }
 
 // dummy data

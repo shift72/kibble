@@ -64,7 +64,7 @@ func (ds *FilmCollectionDataSource) GetRouteForEntity(ctx models.RenderContext, 
 
 // GetRouteForSlug - get the route
 func (ds *FilmCollectionDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	return "!Error"
+	return models.DataSourceError
 }
 
 // IsSlugMatch - is the slug a match
@@ -82,8 +82,8 @@ func GetAllFilms() (*[]models.Film, error) {
 	return &allFilms, nil
 }
 
-// FindByID - find a film by its id
-func FindByID(filmID int) (*models.Film, error) {
+// FindFilmByID - find a film by its id
+func FindFilmByID(filmID int) (*models.Film, error) {
 	for _, f := range allFilms {
 		if f.ID == filmID {
 			return &f, nil

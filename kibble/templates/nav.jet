@@ -1,10 +1,11 @@
 {{block nav()}}
 <ul>
 <!-- navigation structure : not fully recursive yet -->
+<!-- isset(.["non_existant_key"]) ? "key does exist" : "key does not exist" -->
 {{range .Header}}
-  <li><a href="{{ routeToSlug(.Link.Slug)}}" {{ .Label }} - {{ .Link.PageID}} - {{ .Link.Slug }}</a>
+  <li><a href="{{ len(.Link.ExternalURL) > 0 ? .Link.ExternalURL : routeToSlug(.Link.Slug) }}">{{ .Label }}</a>
   {{range .Items}}
-    <li><a href="{{ routeToSlug(.Link.Slug)}}" {{ .Label }} - {{ .Link.PageID}} - {{ .Link.Slug }}</a></li>
+    <li><a href="{{ len(.Link.ExternalURL) > 0 ? .Link.ExternalURL : routeToSlug(.Link.Slug) }}">{{ .Label }}</a></li>
   {{end}}
   </li>
 {{end}}

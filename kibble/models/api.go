@@ -11,7 +11,7 @@ type Site struct {
 	Config     ServiceConfig
 	Toggles    FeatureToggles
 	Navigation Navigation
-	Pages      []Page
+	Pages      PageCollection
 }
 
 // "page_features": [{
@@ -55,12 +55,16 @@ type Page struct {
 	URL            string        `json:"url"`
 }
 
+// PageCollection -
+type PageCollection []Page
+
 // NavigationItem - nestable structure
 type NavigationItem struct {
 	Label string `json:"label"`
 	Link  struct {
-		PageID int    `json:"page_id"`
-		Slug   string `json:"slug"`
+		PageID      int    `json:"page_id"`
+		Slug        string `json:"slug"`
+		ExternalURL string `json:"url"`
 	} `json:"link"`
 	Items []NavigationItem `json:"items"`
 }
@@ -73,6 +77,6 @@ type Navigation struct {
 
 // Bios - contains all pages and navigation items
 type Bios struct {
-	Navigation Navigation `json:"navigation"`
-	Pages      []Page     `json:"pages"`
+	Navigation Navigation     `json:"navigation"`
+	Pages      PageCollection `json:"pages"`
 }
