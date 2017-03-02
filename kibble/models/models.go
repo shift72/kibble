@@ -34,7 +34,7 @@ type RouteRegistry struct {
 type DataSource interface {
 	GetName() string
 	GetEntityType() reflect.Type
-	Query(*http.Request) (jet.VarMap, error)
+	Query(ctx RenderContext, req *http.Request) (jet.VarMap, error)
 	Iterator(ctx RenderContext, renderer Renderer)
 	IsSlugMatch(slug string) bool
 	GetRouteForEntity(ctx RenderContext, entity interface{}) string

@@ -84,12 +84,13 @@ func routeToDataSoure(route *models.Route, routeRegistry *models.RouteRegistry, 
 		ctx := models.RenderContext{
 			Route:       route,
 			RoutePrefix: fmt.Sprintf("/%s", lang),
+			Site:        site,
 		}
 
 		view := models.CreateTemplateView(routeRegistry, T, ctx)
 		view.SetDevelopmentMode(true)
 
-		data, err := route.ResolvedDataSouce.Query(req)
+		data, err := route.ResolvedDataSouce.Query(ctx, req)
 		if err != nil || data == nil {
 			render.Status(req, http.StatusNotFound)
 			render.JSON(w, req, http.StatusText(http.StatusNotFound))
@@ -102,8 +103,6 @@ func routeToDataSoure(route *models.Route, routeRegistry *models.RouteRegistry, 
 			w.Write([]byte(err.Error()))
 			return
 		}
-
-		data.Set("site", site)
 
 		if err = t.Execute(w, data, nil); err != nil {
 			w.Write([]byte("Execute error\n"))

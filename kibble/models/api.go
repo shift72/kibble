@@ -24,6 +24,7 @@ type Site struct {
 //     "items": ["/film/121"]
 // },
 
+// PageFeature - part of a page
 type PageFeature struct {
 	FeatureID   int      `json:"feature_id"`
 	Layout      string   `json:"layout"`
@@ -35,6 +36,7 @@ type PageFeature struct {
 	// ResolvedItems?       []interface `json:"-"`
 }
 
+// Page - page structure
 type Page struct {
 	CarouselImage  *string       `json:"carousel_image"`
 	Content        string        `json:"content"`
@@ -53,6 +55,7 @@ type Page struct {
 	URL            string        `json:"url"`
 }
 
+// NavigationItem - nestable structure
 type NavigationItem struct {
 	Label string `json:"label"`
 	Link  struct {
@@ -62,11 +65,13 @@ type NavigationItem struct {
 	Items []NavigationItem `json:"items"`
 }
 
+// Navigation - header and footer
 type Navigation struct {
 	Footer []NavigationItem `json:"footer"`
 	Header []NavigationItem `json:"header"`
 }
 
+// Bios - contains all pages and navigation items
 type Bios struct {
 	Navigation Navigation `json:"navigation"`
 	Pages      []Page     `json:"pages"`

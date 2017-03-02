@@ -22,7 +22,7 @@ func (ds *FilmCollectionDataSource) GetEntityType() reflect.Type {
 }
 
 // Query - return the list of all films
-func (ds *FilmCollectionDataSource) Query(req *http.Request) (jet.VarMap, error) {
+func (ds *FilmCollectionDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
 
 	films, err := GetAllFilms()
 	if err != nil || films == nil {
@@ -36,6 +36,7 @@ func (ds *FilmCollectionDataSource) Query(req *http.Request) (jet.VarMap, error)
 
 	vars := make(jet.VarMap)
 	vars.Set("films", clonedFilms)
+	vars.Set("site", ctx.Site)
 	return vars, nil
 }
 

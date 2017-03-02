@@ -25,7 +25,7 @@ func (ds *FilmDataSource) GetEntityType() reflect.Type {
 }
 
 // Query - return a single film
-func (ds *FilmDataSource) Query(req *http.Request) (jet.VarMap, error) {
+func (ds *FilmDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
 
 	filmID, err := strconv.Atoi(chi.URLParam(req, "filmID"))
 	if err != nil {
@@ -40,6 +40,7 @@ func (ds *FilmDataSource) Query(req *http.Request) (jet.VarMap, error) {
 
 	vars := make(jet.VarMap)
 	vars.Set("film", c)
+	vars.Set("site", ctx.Site)
 	return vars, nil
 }
 
