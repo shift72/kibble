@@ -8,7 +8,7 @@
     "routes": [
         {
             "name": "filmItem",
-            "urlPath": "/film/:filmID",
+            "urlPath": "/film/:slug",
             "templatePath": "film/item.jet",
             "datasource": "Film"
         },

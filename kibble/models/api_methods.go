@@ -19,3 +19,23 @@ func (pages PageCollection) FindPageBySlug(slug string) (*Page, error) {
 	}
 	return nil, nil
 }
+
+// FindFilmByID - find film by id
+func (films FilmCollection) FindFilmByID(filmID int) (*Film, error) {
+	for _, p := range films {
+		if p.ID == filmID {
+			return &p, nil
+		}
+	}
+	return nil, nil
+}
+
+// FindFilmBySlug - find the film by the slug
+func (films FilmCollection) FindFilmBySlug(slug string) (*Film, error) {
+	for _, p := range films {
+		if p.Slug == slug {
+			return &p, nil
+		}
+	}
+	return nil, nil
+}

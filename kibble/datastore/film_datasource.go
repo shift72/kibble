@@ -32,14 +32,13 @@ func (ds *FilmDataSource) Query(ctx models.RenderContext, req *http.Request) (je
 		return nil, err
 	}
 
-	f, err := FindFilmByID(filmID)
+	f, err := ctx.Site.Films.FindFilmByID(filmID)
 	if err != nil || f == nil {
 		return nil, err
 	}
-	c := transformFilm(*f)
 
 	vars := make(jet.VarMap)
-	vars.Set("film", c)
+	vars.Set("film", transformFilm(*f))
 	vars.Set("site", ctx.Site)
 	return vars, nil
 }
@@ -47,10 +46,9 @@ func (ds *FilmDataSource) Query(ctx models.RenderContext, req *http.Request) (je
 // Iterator - loop over each film
 func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
-	films, _ := GetAllFilms()
 	data := make(jet.VarMap)
 
-	for _, f := range *films {
+	for _, f := range ctx.Site.Films {
 
 		filePath := ds.GetRouteForEntity(ctx, &f)
 
@@ -66,7 +64,7 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.Film)
 	if ok {
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", strconv.Itoa(o.ID), 1)
+		return ds.GetRouteForSlug(ctx, o.Slug)
 	}
 	return models.DataSourceError
 }
@@ -75,7 +73,14 @@ func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	//TODO: parse slug
 	p := strings.Split(slug, "/")
-	return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", p[2], 1)
+	if strings.Contains(ctx.Route.URLPath, ":filmID") {
+		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", p[2], 1)
+	} else if strings.Contains(ctx.Route.URLPath, ":slug") {
+		filmID, _ := strconv.Atoi(p[2])
+		film, _ := ctx.Site.Films.FindFilmByID(filmID)
+		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", film.TitleSlug, 1)
+	}
+	return models.DataSourceError
 }
 
 // IsSlugMatch - checks if the slug is a match

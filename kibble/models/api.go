@@ -1,5 +1,10 @@
 package models
 
+import (
+	"encoding/json"
+	"time"
+)
+
 // ServiceConfig -
 type ServiceConfig map[string]string
 
@@ -12,6 +17,7 @@ type Site struct {
 	Toggles    FeatureToggles
 	Navigation Navigation
 	Pages      PageCollection
+	Films      FilmCollection
 }
 
 // "page_features": [{
@@ -79,4 +85,68 @@ type Navigation struct {
 type Bios struct {
 	Navigation Navigation     `json:"navigation"`
 	Pages      PageCollection `json:"pages"`
+}
+
+// FilmSummary - summary of the Film
+type FilmSummary struct {
+	BackgroundImage     interface{} `json:"background_image"`
+	CarouselImage       interface{} `json:"carousel_image"`
+	ClassificationImage interface{} `json:"classification_image"`
+	HeaderImage         interface{} `json:"header_image"`
+	ID                  int         `json:"id"`
+	ImdbID              interface{} `json:"imdb_id"`
+	LandscapeImage      interface{} `json:"landscape_image"`
+	PortraitImage       string      `json:"portrait_image"`
+	PublishedDate       string      `json:"published_date"`
+	Slug                string      `json:"slug"`
+	StatusID            int         `json:"status_id"`
+	Title               string      `json:"title"`
+}
+
+// FilmCollection - all films
+type FilmCollection []Film
+
+// Film - all of the film bits
+type Film struct {
+	Trailers []struct {
+		URL  string `json:"url"`
+		Type string `json:"type"`
+	} `json:"trailers"`
+	Bonuses []interface{} `json:"bonuses"`
+	Cast    []struct {
+		Name      string `json:"name"`
+		Character string `json:"character"`
+	} `json:"cast"`
+	Crew []struct {
+		Name string `json:"name"`
+		Job  string `json:"job"`
+	} `json:"crew"`
+	Studio []struct {
+		Name string `json:"name"`
+	} `json:"studio"`
+	Overview    string    `json:"overview"`
+	Tagline     string    `json:"tagline"`
+	ReleaseDate time.Time `json:"release_date"`
+	Runtime     int       `json:"runtime"`
+	Countries   []string  `json:"countries"`
+	Languages   []string  `json:"languages"`
+	Genres      []string  `json:"genres"`
+	Title       string    `json:"title"`
+	TitleSlug   string    `json:"-"`
+	Slug        string    `json:"slug"`
+	FilmID      int       `json:"film_id"`
+	ID          int       `json:"id"`
+	ImageUrls   struct {
+		Portrait       string `json:"portrait"`
+		Landscape      string `json:"landscape"`
+		Header         string `json:"header"`
+		Carousel       string `json:"carousel"`
+		Bg             string `json:"bg"`
+		Classification string `json:"classification"`
+	} `json:"image_urls"`
+	Recommendations []interface{} `json:"recommendations"`
+	SubtitleTracks  []interface{} `json:"subtitle_tracks"`
+	Subtitles       []string      `json:"-"`
+	// manage the inconsistent api
+	SubtitlesRaw json.RawMessage `json:"subtitles,omitempty"`
 }

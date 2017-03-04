@@ -24,30 +24,39 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
-	fmt.Printf("loaded service config: %d\n", len(config))
+	fmt.Printf("service config: %d\n", len(config))
 
 	toggles, err := LoadFeatureToggles(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Printf("loaded toggles: %d\n", len(toggles))
+	fmt.Printf("toggles: %d\n", len(toggles))
 
 	bios, err := LoadBios(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Printf("loaded pages: %d\n", len(bios.Pages))
+	fmt.Printf("pages: %d\n", len(bios.Pages))
+
+	//TODO: consider collecting all of the film slug
+	films, err := LoadAllFilms(cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("films: %d\n", len(films))
 
 	stop := time.Now()
-	fmt.Printf("--------------------\nLoad completed: %s\n", stop.Sub(start))
+	fmt.Printf("--------------------\nLoad completed: %s\n--------------------\n", stop.Sub(start))
 
 	return &models.Site{
 		Config:     config,
 		Toggles:    toggles,
 		Navigation: bios.Navigation,
 		Pages:      bios.Pages,
+		Films:      films,
 	}, nil
 }
 

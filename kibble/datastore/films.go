@@ -6,6 +6,8 @@ import (
 	"github.com/russross/blackfriday"
 )
 
+// https://www.ozflix.tv/services/meta/v1/bundles
+
 func applyContentTransforms(data string) string {
 
 	//TODO: apply shortcodes
@@ -28,24 +30,4 @@ func Init() {
 
 	models.AddDataSource(&PageDataSource{})
 	models.AddDataSource(&PageCollectionDataSource{})
-}
-
-// dummy data
-var allFilms = []models.Film{
-	{
-		ID:    1,
-		Slug:  "/film/1",
-		Title: "Forrest Gump",
-		Synopsis: ` syn
-# one
-# two
-`,
-	},
-	{
-		ID:    2,
-		Slug:  "/film/2",
-		Title: "Angel at my table",
-		Synopsis: `## header
-    `,
-	},
 }

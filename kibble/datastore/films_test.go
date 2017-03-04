@@ -23,17 +23,17 @@ func TestApplyContentTransforms(t *testing.T) {
 func TestTransformFilm(t *testing.T) {
 
 	f := &models.Film{
-		Synopsis: "# header",
+		Overview: "# header",
 	}
 
 	tf := transformFilm(*f)
 
-	if tf.Synopsis == f.Synopsis {
+	if tf.Overview == f.Overview {
 		t.Error("Expect not side effects")
 	}
 
-	if tf.Synopsis != "<h1>header</h1>\n" {
-		t.Errorf("Expect markdown to be applied. %s\n", tf.Synopsis)
+	if tf.Overview != "<h1>header</h1>\n" {
+		t.Errorf("Expect markdown to be applied. %s\n", tf.Overview)
 	}
 }
 
@@ -51,12 +51,20 @@ func TestFilmDataStore(t *testing.T) {
 	}
 
 	ctx := models.RenderContext{
-		Route: r,
+		Route:       r,
+		RoutePrefix: "",
+		Site: &models.Site{
+			Films: models.FilmCollection{
+				models.Film{
+					ID:        123,
+					Slug:      "/film/123",
+					TitleSlug: "the-big-lebowski",
+				},
+			},
+		},
 	}
 
-	fds := &FilmDataSource{
-	//TODO: add source data
-	}
+	fds := &FilmDataSource{}
 	fds.Iterator(ctx, renderer1)
 
 	if renderer1.ErrorCount() != 0 {
@@ -83,7 +91,17 @@ func TestRenderingGlobal(t *testing.T) {
 	}
 
 	ctx := models.RenderContext{
-		Route: r,
+		Route:       r,
+		RoutePrefix: "",
+		Site: &models.Site{
+			Films: models.FilmCollection{
+				models.Film{
+					ID:        123,
+					Slug:      "/film/123",
+					TitleSlug: "the-big-lebowski",
+				},
+			},
+		},
 	}
 
 	fds := &FilmDataSource{}
@@ -100,7 +118,7 @@ func TestRenderingSlug(t *testing.T) {
 
 	r := &models.Route{
 		Name:         "filmItem",
-		URLPath:      "/film-special/:filmID",
+		URLPath:      "/film-special/:slug",
 		TemplatePath: "film/item.jet",
 		DataSource:   "Film",
 	}
@@ -112,6 +130,15 @@ func TestRenderingSlug(t *testing.T) {
 	ctx := models.RenderContext{
 		Route:       r,
 		RoutePrefix: "/fr",
+		Site: &models.Site{
+			Films: models.FilmCollection{
+				models.Film{
+					ID:        123,
+					Slug:      "/film/123",
+					TitleSlug: "the-big-lebowski",
+				},
+			},
+		},
 	}
 
 	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
@@ -128,7 +155,7 @@ func TestRenderingSlug(t *testing.T) {
 	fds := &FilmDataSource{}
 	fds.Iterator(ctx, renderer)
 
-	if renderer.Result.Output() != "/fr/film-special/2" {
+	if renderer.Result.Output() != "/fr/film-special/the-big-lebowski" {
 		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
 	}
 }
@@ -146,6 +173,15 @@ func TestRouteToFilm(t *testing.T) {
 	ctx := models.RenderContext{
 		Route:       r,
 		RoutePrefix: "/fr",
+		Site: &models.Site{
+			Films: models.FilmCollection{
+				models.Film{
+					ID:        123,
+					Slug:      "/film/123",
+					TitleSlug: "the-big-lebowski",
+				},
+			},
+		},
 	}
 
 	cfg := models.Config{
@@ -165,7 +201,7 @@ func TestRouteToFilm(t *testing.T) {
 	fds := &FilmDataSource{}
 	fds.Iterator(ctx, renderer)
 
-	if renderer.Result.Output() != "/fr/film-special/2" {
+	if renderer.Result.Output() != "/fr/film-special/123" {
 		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
 	}
 }
@@ -183,6 +219,15 @@ func TestTransLanguage(t *testing.T) {
 
 	ctx := models.RenderContext{
 		Route: r,
+		Site: &models.Site{
+			Films: models.FilmCollection{
+				models.Film{
+					ID:        123,
+					Slug:      "/film/123",
+					TitleSlug: "the-big-lebowski",
+				},
+			},
+		},
 	}
 
 	cfg := models.Config{

@@ -40,7 +40,8 @@ func Render() {
 		}
 
 		renderer := ConsoleRenderer{
-			view: models.CreateTemplateView(routeRegistry, T, ctx),
+			view:        models.CreateTemplateView(routeRegistry, T, ctx),
+			showSummary: true,
 		}
 
 		if lang != cfg.DefaultLanguage {

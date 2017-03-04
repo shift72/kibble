@@ -26,11 +26,11 @@ func LoadConfig() *models.Config {
 		os.Exit(1)
 	}
 
-	fmt.Printf("config loaded - %s\n", cfg.SiteURL)
+	fmt.Printf("url: %s\n", cfg.SiteURL)
 
 	loadLanguages(&cfg)
 
-	fmt.Printf("languages loaded : %d\n", len(cfg.Languages))
+	fmt.Printf("languages: %d\n", len(cfg.Languages))
 
 	return &cfg
 }

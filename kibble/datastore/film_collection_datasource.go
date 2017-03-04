@@ -24,13 +24,8 @@ func (ds *FilmCollectionDataSource) GetEntityType() reflect.Type {
 // Query - return the list of all films
 func (ds *FilmCollectionDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
 
-	films, err := GetAllFilms()
-	if err != nil || films == nil {
-		return nil, err
-	}
-
-	clonedFilms := make([]*models.Film, len(*films))
-	for i, f := range *films {
+	clonedFilms := make([]*models.Film, len(ctx.Site.Films))
+	for i, f := range ctx.Site.Films {
 		clonedFilms[i] = transformFilm(f)
 	}
 
@@ -43,10 +38,8 @@ func (ds *FilmCollectionDataSource) Query(ctx models.RenderContext, req *http.Re
 // Iterator - return a list of all films, iteration of 1
 func (ds *FilmCollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
-	films, _ := GetAllFilms()
-
-	clonedFilms := make([]*models.Film, len(*films))
-	for i, f := range *films {
+	clonedFilms := make([]*models.Film, len(ctx.Site.Films))
+	for i, f := range ctx.Site.Films {
 		clonedFilms[i] = transformFilm(f)
 	}
 
@@ -73,21 +66,6 @@ func (ds *FilmCollectionDataSource) IsSlugMatch(slug string) bool {
 }
 
 func transformFilm(f models.Film) *models.Film {
-	f.Synopsis = applyContentTransforms(f.Synopsis)
+	f.Overview = applyContentTransforms(f.Overview)
 	return &f
-}
-
-// GetAllFilms - returns all films
-func GetAllFilms() (*[]models.Film, error) {
-	return &allFilms, nil
-}
-
-// FindFilmByID - find a film by its id
-func FindFilmByID(filmID int) (*models.Film, error) {
-	for _, f := range allFilms {
-		if f.ID == filmID {
-			return &f, nil
-		}
-	}
-	return nil, nil
 }

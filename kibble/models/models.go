@@ -7,14 +7,6 @@ import (
 	"github.com/CloudyKit/jet"
 )
 
-// Film - represents a film
-type Film struct {
-	ID       int
-	Slug     string
-	Title    string
-	Synopsis string
-}
-
 // Route - represents a route for rendering and
 type Route struct {
 	Name               string       `json:"name"`

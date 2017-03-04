@@ -11,6 +11,7 @@ go get -u github.com/microcosm-cc/bluemonday
 go get -u github.com/nicksnyder/go-i18n/goi18n
 go get -u github.com/peterbourgon/diskv
 go get -u github.com/gregjones/httpcache
+go get -u github.com/gosimple/slug
 
 Commands
  - config - set the API_KEY??

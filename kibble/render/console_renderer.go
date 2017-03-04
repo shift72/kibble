@@ -10,11 +10,17 @@ import (
 
 // ConsoleRenderer - designed to render to the console for testing
 type ConsoleRenderer struct {
-	view *jet.Set
+	view        *jet.Set
+	showOutput  bool
+	showSummary bool
 }
 
 // Render - render to the console
 func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
+
+	if c.showSummary {
+		fmt.Printf("FilePath: %s\n", filePath)
+	}
 
 	w := bytes.NewBufferString("")
 	w.Write([]byte("--------------------\n"))
@@ -25,14 +31,22 @@ func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.V
 	if err != nil {
 		w.Write([]byte("Template error\n"))
 		w.Write([]byte(err.Error()))
-		fmt.Println(w)
+		if c.showSummary {
+			fmt.Println(err)
+		}
 		return
 	}
 
 	if err = t.Execute(w, data, nil); err != nil {
 		w.Write([]byte("Execute error\n"))
 		w.Write([]byte(err.Error()))
+		if c.showSummary {
+			fmt.Println(err)
+		}
 	}
 
-	fmt.Println(w)
+	if c.showOutput {
+		fmt.Println(w)
+	}
+
 }
