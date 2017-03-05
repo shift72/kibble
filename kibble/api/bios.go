@@ -8,7 +8,7 @@ import (
 )
 
 // LoadBios - load the bios request
-func LoadBios(cfg *models.Config) (*models.Bios, error) {
+func LoadBios(cfg *models.Config, itemIndex models.ItemIndex) (*models.Bios, error) {
 
 	bios := &models.Bios{}
 
@@ -22,6 +22,11 @@ func LoadBios(cfg *models.Config) (*models.Bios, error) {
 	err = json.Unmarshal([]byte(data), &bios)
 	if err != nil {
 		return nil, err
+	}
+
+	// register with the item index
+	for _, p := range bios.Pages {
+		itemIndex.Add(fmt.Sprintf("/page/%d", p.ID), p.GetGenericItem())
 	}
 
 	return bios, nil

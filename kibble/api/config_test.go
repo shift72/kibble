@@ -51,22 +51,22 @@ func TestLoadFeatureToggles(t *testing.T) {
 	fmt.Printf("loaded feature toggles: %d\n", len(toggles))
 }
 
-func TestLoadBios(t *testing.T) {
-
-	if testing.Short() {
-		return
-	}
-
-	cfg := &models.Config{
-		SiteURL: "https://staging-store.shift72.com",
-	}
-
-	bios, err := LoadBios(cfg)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if len(bios.Pages) == 0 {
-		t.Error("Expected some pages to be loaded")
-	}
-}
+// func TestLoadBios(t *testing.T) {
+//
+// 	if testing.Short() {
+// 		return
+// 	}
+//
+// 	cfg := &models.Config{
+// 		SiteURL: "https://staging-store.shift72.com",
+// 	}
+//
+// 	bios, err := LoadBios(cfg)
+// 	if err != nil {
+// 		t.Error(err)
+// 	}
+//
+// 	if len(bios.Pages) == 0 {
+// 		t.Error("Expected some pages to be loaded")
+// 	}
+// }

@@ -22,7 +22,17 @@
     <h3>Page Features</h3>
     <ul>
       {{ range page.PageFeatures }}
-        <li>PF: {{ . | json | raw }}</li>
+        <li>PF: {{ . | json | raw }}
+          <ul>
+          {{ range .ResolvedItems }}
+            <li>{{ .Title }} {{ .ItemType }}
+              <div>
+                {{ .Images | json }}
+              </div>
+            </li>
+          {{ end }}
+          </ul>
+        </li>
       {{ end }}
     </ul>
 

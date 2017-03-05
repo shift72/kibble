@@ -8,5 +8,19 @@
     <div>Path: {{ routeToSlug(film.Slug) }}</div>
     <div>Synopsis: {{ film.Overview | raw}}</div>
 
+    <div>Recommendations: {{ len(film.Recommendations)}} </div>
+    {{ range film.Recommendations }}
+      <div>
+        {{ . | json | raw }}
+      </div>
+    {{ end }}
+
+    <div>Recommendations: {{ len(film.ResolvedRecommendations)}} </div>
+    {{ range film.ResolvedRecommendations }}
+      <div>
+        {{ .ItemType  }}  {{ .Title  }}
+      </div>
+    {{ end }}
+
   </div>
 {{end}}

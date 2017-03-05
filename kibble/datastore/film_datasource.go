@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"errors"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 )
 
 // FilmDataSource - single film datasource
+// Supports slugs in the /film/:filmID and /film/:title_slug
 type FilmDataSource struct{}
 
 // GetName - name of the datasource
@@ -27,14 +29,28 @@ func (ds *FilmDataSource) GetEntityType() reflect.Type {
 // Query - return a single film
 func (ds *FilmDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
 
-	filmID, err := strconv.Atoi(chi.URLParam(req, "filmID"))
-	if err != nil {
-		return nil, err
+	var f *models.Film
+
+	if strings.Contains(ctx.Route.URLPath, ":filmID") {
+
+		filmID, err := strconv.Atoi(chi.URLParam(req, "filmID"))
+		if err != nil {
+			return nil, err
+		}
+
+		f, err = ctx.Site.Films.FindFilmByID(filmID)
+		if err != nil || f == nil {
+			return nil, err
+		}
+
+	} else if strings.Contains(ctx.Route.URLPath, ":slug") {
+		slug := chi.URLParam(req, "slug")
+		f, _ = ctx.Site.Films.FindFilmBySlug(slug)
 	}
 
-	f, err := ctx.Site.Films.FindFilmByID(filmID)
-	if err != nil || f == nil {
-		return nil, err
+	if f == nil {
+		//TODO: indicate a 404 error
+		return nil, errors.New("Not found")
 	}
 
 	vars := make(jet.VarMap)

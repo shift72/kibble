@@ -20,14 +20,21 @@ Commands
 
 TODO:
  * model
-    * film
-    * tv
-    * pages
-    * collections
+    * film - done
+      * bonus -
+    * tv -
+    * pages - done
+    * page features - resolving a link to an actual item - done
+      * common ui model - with a link to the actual model (GenericItem) - done
+    * features -
+    * bundles -
     * taxonomies
-      * cast
-      * genre
-      * year
+      * cast -
+      * genre -
+      * year -
+    * custom pages -> page.html.jet -> page.html
+      * robots.txt
+      * humans.txt
     * json? - what would choice tv tvguide do?
     * config / toggles - done
     * navigation - done
@@ -39,7 +46,9 @@ TODO:
  * upload
  * diff / merge ??
  * watch files / live reload
- * admin - unpublished / published
+ * admin
+    * unpublished / published
+    * requesting using authtoken
  * cache - done
  * support markdown - done
  * internationalization - done

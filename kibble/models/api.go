@@ -11,6 +11,9 @@ type ServiceConfig map[string]string
 // FeatureToggles - store feature toggles
 type FeatureToggles map[string]bool
 
+// ItemIndex - an item index
+type ItemIndex map[string]map[string]GenericItem
+
 // Site -
 type Site struct {
 	Config     ServiceConfig
@@ -30,16 +33,35 @@ type Site struct {
 //     "items": ["/film/121"]
 // },
 
+// ImageSet - set of images
+type ImageSet struct {
+	BackgroundImage *string
+	CarouselImage   *string
+	LandscapeImage  *string
+	PortraitImage   *string
+}
+
+// GenericItem - used to store the common properties
+type GenericItem struct {
+	// link to the actual item
+	InnerItem interface{}
+	// film / show / season/ episode / bundle / page
+	ItemType string
+	Slug     string
+	Title    string
+	Images   ImageSet
+}
+
 // PageFeature - part of a page
 type PageFeature struct {
-	FeatureID   int      `json:"feature_id"`
-	Layout      string   `json:"layout"`
-	ItemsPerRow int      `json:"items_per_row"`
-	ItemLayout  string   `json:"item_layout"`
-	Slug        string   `json:"slug"`
-	DisplayName *string  `json:"display_name"`
-	Items       []string `json:"items"`
-	// ResolvedItems?       []interface `json:"-"`
+	FeatureID     int           `json:"feature_id"`
+	Layout        string        `json:"layout"`
+	ItemsPerRow   int           `json:"items_per_row"`
+	ItemLayout    string        `json:"item_layout"`
+	Slug          string        `json:"slug"`
+	DisplayName   *string       `json:"display_name"`
+	Items         []string      `json:"items"`
+	ResolvedItems []GenericItem `json:"-"`
 }
 
 // Page - page structure
@@ -49,7 +71,7 @@ type Page struct {
 	HeaderImage    *string       `json:"header_image"`
 	ID             int           `json:"id"`
 	LandscapeImage *string       `json:"landscape_image"`
-	PageFeatures   []interface{} `json:"page_features"`
+	PageFeatures   []PageFeature `json:"page_features"`
 	PageType       string        `json:"page_type"`
 	PortraitImage  *string       `json:"portrait_image"`
 	SeoDescription *string       `json:"seo_description"`
@@ -112,6 +134,7 @@ type Film struct {
 		URL  string `json:"url"`
 		Type string `json:"type"`
 	} `json:"trailers"`
+	//TODO: add a bonus struct
 	Bonuses []interface{} `json:"bonuses"`
 	Cast    []struct {
 		Name      string `json:"name"`
@@ -144,9 +167,11 @@ type Film struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	Recommendations []interface{} `json:"recommendations"`
-	SubtitleTracks  []interface{} `json:"subtitle_tracks"`
-	Subtitles       []string      `json:"-"`
+	Recommendations         []string      `json:"recommendations"`
+	ResolvedRecommendations []GenericItem `json:"-"`
+	//TODO: add a subtitle tracks struct
+	SubtitleTracks []interface{} `json:"subtitle_tracks"`
+	Subtitles      []string      `json:"-"`
 	// manage the inconsistent api
 	SubtitlesRaw json.RawMessage `json:"subtitles,omitempty"`
 }

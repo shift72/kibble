@@ -33,7 +33,7 @@ func LoadFilmSummary(cfg *models.Config) ([]models.FilmSummary, error) {
 }
 
 // LoadAllFilms -
-func LoadAllFilms(cfg *models.Config) ([]models.Film, error) {
+func LoadAllFilms(cfg *models.Config, itemIndex models.ItemIndex) ([]models.Film, error) {
 
 	summary, err := LoadFilmSummary(cfg)
 	if err != nil {
@@ -44,11 +44,11 @@ func LoadAllFilms(cfg *models.Config) ([]models.Film, error) {
 	for i := 0; i < len(summary); i++ {
 		ids[i] = summary[i].ID
 	}
-	return LoadFilmDetails(cfg, ids)
+	return LoadFilmDetails(cfg, ids, itemIndex)
 }
 
 // LoadFilmDetails - load all films
-func LoadFilmDetails(cfg *models.Config, filmIds []int) ([]models.Film, error) {
+func LoadFilmDetails(cfg *models.Config, filmIds []int, itemIndex models.ItemIndex) ([]models.Film, error) {
 
 	sort.Ints(filmIds)
 	ids := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(filmIds)), ","), "[]")
@@ -78,6 +78,8 @@ func LoadFilmDetails(cfg *models.Config, filmIds []int) ([]models.Film, error) {
 		}
 
 		details[i].TitleSlug = slug.Make(details[i].Title)
+
+		itemIndex.Add(details[i].Slug, details[i].GetGenericItem())
 	}
 
 	return details, nil
