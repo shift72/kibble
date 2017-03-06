@@ -39,6 +39,7 @@ type RenderContext struct {
 	Route       *Route
 	RoutePrefix string
 	Site        *Site
+	Language    string
 }
 
 // Renderer - rendering implementation

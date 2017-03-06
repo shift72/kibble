@@ -143,7 +143,7 @@ func TestRenderingSlug(t *testing.T) {
 
 	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
 
-	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), ctx)
+	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), ctx, "./templates")
 
 	tem, _ := view.LoadTemplate("", "{{ routeToSlug(film.Slug, \"filmItem\") }}")
 
@@ -189,7 +189,7 @@ func TestRouteToFilm(t *testing.T) {
 	}
 	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
 
-	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), ctx)
+	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), ctx, "./templates")
 
 	tem, _ := view.LoadTemplate("", "{{ routeTo(film, \"filmItem\") }}")
 
@@ -236,7 +236,7 @@ func TestTransLanguage(t *testing.T) {
 
 	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
 
-	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), ctx)
+	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), ctx, "./templates")
 
 	tem, _ := view.LoadTemplate("", "MSG {{ i18n(\"settings_title\") }}")
 

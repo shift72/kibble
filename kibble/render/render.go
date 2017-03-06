@@ -37,10 +37,11 @@ func Render() {
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
+			Language:    lang,
 		}
 
 		renderer := ConsoleRenderer{
-			view:        models.CreateTemplateView(routeRegistry, T, ctx),
+			view:        models.CreateTemplateView(routeRegistry, T, ctx, "./templates"),
 			showSummary: true,
 		}
 

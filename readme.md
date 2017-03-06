@@ -32,7 +32,7 @@ TODO:
       * cast -
       * genre -
       * year -
-    * custom pages -> page.html.jet -> page.html
+    * custom pages -> page.html.jet -> page.html - 1/2 done
       * robots.txt
       * humans.txt
     * json? - what would choice tv tvguide do?

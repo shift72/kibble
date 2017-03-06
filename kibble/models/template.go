@@ -9,8 +9,8 @@ import (
 )
 
 // CreateTemplateView - create a template view
-func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx RenderContext) *jet.Set {
-	view := jet.NewHTMLSet("./templates")
+func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx RenderContext, templatePath string) *jet.Set {
+	view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", "v1.1.145")
 	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
 		return routeRegistry.GetRouteForEntity(ctx, entity, "")
