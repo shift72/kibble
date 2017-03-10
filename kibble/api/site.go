@@ -56,7 +56,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	site.IndexItems(itemIndex)
 
 	// show the loaded items
-	// itemIndex.Print()
+	itemIndex.PrintStats()
 	//TODO: request missing items
 
 	site.LinkItems(itemIndex)

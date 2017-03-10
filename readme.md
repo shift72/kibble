@@ -32,12 +32,13 @@ TODO:
       * cast -
       * genre -
       * year -
-    * custom pages -> page.html.jet -> page.html - 1/2 done
-      * robots.txt
-      * humans.txt
+    * custom pages -> page.html.jet -> page.html - done
+      * robots.txt - done
+      * humans.txt - done
     * json? - what would choice tv tvguide do?
     * config / toggles - done
     * navigation - done
+    * canonical urls -
  * populate model from api
  * shortcodes - these need to happen as part of the markdown process
  * live reload

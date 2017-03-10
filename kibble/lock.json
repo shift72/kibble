@@ -1,0 +1,266 @@
+{
+    "memo": "4bf3f7c82bfe9a04d491db957823c9d1c7698c90e2e56b2029a4944d7793dc35",
+    "projects": [
+        {
+            "name": "github.com/CloudyKit/fastprinter",
+            "branch": "master",
+            "revision": "74b38d55f37af5d6c05ca11147d616b613a3420e",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/CloudyKit/jet",
+            "branch": "master",
+            "revision": "62d3289aafd039c4b6d00f82e935322a4480c8a6",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/fsnotify/fsnotify",
+            "branch": "master",
+            "revision": "fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/google/btree",
+            "branch": "master",
+            "revision": "316fb6d3f031ae8f4d457c6c5186b9e3ded70435",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/gosimple/slug",
+            "branch": "master",
+            "revision": "32efb997950eba210b1880d8cf52b601c1b5abe3",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/gregjones/httpcache",
+            "branch": "master",
+            "revision": "d02018f006d98f58512bf3adfc171d88d17626df",
+            "packages": [
+                ".",
+                "diskcache"
+            ]
+        },
+        {
+            "name": "github.com/hashicorp/hcl",
+            "branch": "master",
+            "revision": "3d702911d9708e8fea66cd77e04bd451ff25d3b1",
+            "packages": [
+                ".",
+                "hcl/ast",
+                "hcl/parser",
+                "hcl/scanner",
+                "hcl/strconv",
+                "hcl/token",
+                "json/parser",
+                "json/scanner",
+                "json/token"
+            ]
+        },
+        {
+            "name": "github.com/inconshreveable/mousetrap",
+            "branch": "master",
+            "revision": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/magiconair/properties",
+            "branch": "master",
+            "revision": "0723e352fa358f9322c938cc2dadda874e9151a9",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/microcosm-cc/bluemonday",
+            "branch": "master",
+            "revision": "e79763773ab6222ca1d5a7cbd9d62d83c1f77081",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/mitchellh/mapstructure",
+            "branch": "master",
+            "revision": "f3009df150dadf309fdee4a54ed65c124afad715",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/nicksnyder/go-i18n",
+            "branch": "master",
+            "revision": "5a40a66b242242b28cac9dd07177d50818512397",
+            "packages": [
+                "i18n",
+                "i18n/bundle",
+                "i18n/language",
+                "i18n/translation"
+            ]
+        },
+        {
+            "name": "github.com/pelletier/go-buffruneio",
+            "branch": "master",
+            "revision": "df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/pelletier/go-toml",
+            "branch": "master",
+            "revision": "45932ad32dfdd20826f5671da37a5f3ce9f26a8d",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/petar/GoLLRB",
+            "branch": "master",
+            "revision": "53be0d36a84c2a886ca057d34b6aa4468df9ccb4",
+            "packages": [
+                "llrb"
+            ]
+        },
+        {
+            "name": "github.com/peterbourgon/diskv",
+            "branch": "master",
+            "revision": "5dfcb07a075adbaaa4094cddfd160b1e1c77a043",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/pressly/chi",
+            "branch": "master",
+            "revision": "bb4b58688bb945cee02713c22c06c4ef27c5bf61",
+            "packages": [
+                ".",
+                "middleware",
+                "render"
+            ]
+        },
+        {
+            "name": "github.com/rainycape/unidecode",
+            "branch": "master",
+            "revision": "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/russross/blackfriday",
+            "branch": "master",
+            "revision": "5f33e7b7878355cd2b7e6b8eefc48a5472c69f70",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/shurcooL/sanitized_anchor_name",
+            "branch": "master",
+            "revision": "1dba4b3954bc059efc3991ec364f9f9a35f597d2",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/spf13/afero",
+            "branch": "master",
+            "revision": "06b7e5f50606ecd49148a01a6008942d9b669217",
+            "packages": [
+                ".",
+                "mem"
+            ]
+        },
+        {
+            "name": "github.com/spf13/cast",
+            "branch": "master",
+            "revision": "2580bc98dc0e62908119e4737030cc2fdfc45e4c",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/spf13/cobra",
+            "branch": "master",
+            "revision": "6e91dded25d73176bf7f60b40dd7aa1f0bf9be8d",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/spf13/jwalterweatherman",
+            "branch": "master",
+            "revision": "33c24e77fb80341fe7130ee7c594256ff08ccc46",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/spf13/pflag",
+            "branch": "master",
+            "revision": "5ccb023bc27df288a957c5e994cd44fd19619465",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/spf13/viper",
+            "branch": "master",
+            "revision": "651d9d916abc3c3d6a91a12549495caba5edffd2",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "golang.org/x/net",
+            "branch": "master",
+            "revision": "10c134ea0df15f7e34d789338c7a2d76cc7a3ab9",
+            "packages": [
+                "html",
+                "html/atom"
+            ]
+        },
+        {
+            "name": "golang.org/x/sys",
+            "branch": "master",
+            "revision": "b699b7032584f0953262cb2788a0ca19bb494703",
+            "packages": [
+                "unix"
+            ]
+        },
+        {
+            "name": "golang.org/x/text",
+            "branch": "master",
+            "revision": "a263ba8db058568bb9beba166777d9c9dbe75d68",
+            "packages": [
+                "internal/gen",
+                "internal/triegen",
+                "internal/ucd",
+                "transform",
+                "unicode/cldr",
+                "unicode/norm"
+            ]
+        },
+        {
+            "name": "gopkg.in/yaml.v2",
+            "branch": "v2",
+            "revision": "a3f3340b5840cee44f372bddb5880fcbc419b46a",
+            "packages": [
+                "."
+            ]
+        }
+    ]
+}

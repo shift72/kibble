@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/CloudyKit/jet"
@@ -48,13 +47,13 @@ func StartNew(port int32) {
 	// processing should be stopped.
 	r.Use(middleware.Timeout(10 * time.Second))
 
-	loadRoutes(r, routeRegistry, cfg)
+	createRoutes(r, routeRegistry, cfg)
 
 	fmt.Printf("listening on %d\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
 }
 
-func loadRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models.Config) {
+func createRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models.Config) {
 
 	r.Get("/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("kibble online\r\n"))
@@ -63,15 +62,15 @@ func loadRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models.C
 	//TODO: sort the routes, put the collections at the end
 	for _, route := range routeRegistry.GetAll() {
 		if route.ResolvedDataSouce != nil {
-			r.Get(route.URLPath, routeToDataSoure(route, routeRegistry, cfg))
-			r.Get("/:lang"+route.URLPath, routeToDataSoure(route, routeRegistry, cfg))
+			r.Get(route.URLPath, handleRequest(route, routeRegistry, cfg))
+			r.Get("/:lang"+route.URLPath, handleRequest(route, routeRegistry, cfg))
 		} else {
 			log.Printf("Route skipped, unknown data source %s\n", route.DataSource)
 		}
 	}
 }
 
-func routeToDataSoure(route *models.Route, routeRegistry *models.RouteRegistry, cfg *models.Config) func(w http.ResponseWriter, r *http.Request) {
+func handleRequest(route *models.Route, routeRegistry *models.RouteRegistry, cfg *models.Config) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 
 		ctx := models.RenderContext{
@@ -89,43 +88,6 @@ func routeToDataSoure(route *models.Route, routeRegistry *models.RouteRegistry, 
 		}
 
 		renderContext(cfg, routeRegistry, ctx, "./templates", data, w, req)
-	}
-}
-
-// FileMiddleware -
-func FileMiddleware(cfg *models.Config, site *models.Site, routeRegistry *models.RouteRegistry) func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
-
-			pwd, _ := os.Getwd()
-
-			//TODO: check the languages
-			path := fmt.Sprintf("%s%s.jet", pwd, r.RequestURI)
-			templatePath := fmt.Sprintf("%s.jet", r.RequestURI)
-
-			// check if the request + jet file exists
-			_, err := os.Stat(path)
-			if os.IsNotExist(err) {
-				fmt.Println("not exists", err)
-				next.ServeHTTP(w, r)
-				return
-			}
-
-			ctx := models.RenderContext{
-				Route: &models.Route{
-					TemplatePath: templatePath,
-				},
-				RoutePrefix: "",
-				Site:        site,
-				Language:    cfg.DefaultLanguage,
-			}
-
-			data := jet.VarMap{}
-			data.Set("site", site)
-
-			renderContext(cfg, routeRegistry, ctx, "./", data, w, r)
-		}
-		return http.HandlerFunc(fn)
 	}
 }
 

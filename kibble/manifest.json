@@ -1,0 +1,31 @@
+{
+    "dependencies": {
+        "github.com/CloudyKit/jet": {
+            "branch": "master"
+        },
+        "github.com/gosimple/slug": {
+            "branch": "master"
+        },
+        "github.com/gregjones/httpcache": {
+            "branch": "master"
+        },
+        "github.com/microcosm-cc/bluemonday": {
+            "branch": "master"
+        },
+        "github.com/nicksnyder/go-i18n": {
+            "branch": "master"
+        },
+        "github.com/pressly/chi": {
+            "branch": "master"
+        },
+        "github.com/russross/blackfriday": {
+            "branch": "master"
+        },
+        "github.com/spf13/cobra": {
+            "branch": "master"
+        },
+        "github.com/spf13/viper": {
+            "branch": "master"
+        }
+    }
+}

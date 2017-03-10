@@ -92,3 +92,26 @@ func (itemIndex ItemIndex) Print() {
 		}
 	}
 }
+
+// PrintStats - print the stats about the index
+func (itemIndex ItemIndex) PrintStats() {
+	fmt.Println("--- item index stats ---")
+
+	var loadedCount = 0
+	var totalCount = 0
+	for t, val := range itemIndex {
+		var count = 0
+		var loaded = 0
+		for _, v := range val {
+			count++
+			totalCount++
+			if v != Empty {
+				loaded++
+				loadedCount++
+			}
+		}
+		fmt.Printf("type: %s\t%d/%d\n", t, loaded, count)
+	}
+
+	fmt.Printf("total: \t\t%d/%d\n", loadedCount, totalCount)
+}

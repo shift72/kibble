@@ -2,8 +2,11 @@ package render
 
 import (
 	"fmt"
+	"path/filepath"
+	"strings"
 	"time"
 
+	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/api"
 	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/datastore"
@@ -42,11 +45,32 @@ func Render() {
 
 		renderer := ConsoleRenderer{
 			view:        models.CreateTemplateView(routeRegistry, T, ctx, "./templates"),
+			showSummary: false,
+		}
+
+		rendererCustom := ConsoleRenderer{
+			view:        models.CreateTemplateView(routeRegistry, T, ctx, "./"),
 			showSummary: true,
 		}
 
 		if lang != cfg.DefaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
+		}
+
+		// render static files
+		files, _ := filepath.Glob("*.jet")
+		for _, f := range files {
+
+			filePath := fmt.Sprintf("%s/%s", ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
+
+			route := &models.Route{
+				TemplatePath: f,
+			}
+
+			data := jet.VarMap{}
+			data.Set("site", site)
+
+			rendererCustom.Render(route, filePath, data)
 		}
 
 		for _, route := range routeRegistry.GetAll() {

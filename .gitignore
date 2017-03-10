@@ -2,3 +2,4 @@ kibble/kibble
 kibble/api/.tmp
 kibble/.tmp
 kibble/.kibble
+kibble/vendor
