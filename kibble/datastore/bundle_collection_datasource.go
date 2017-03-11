@@ -66,6 +66,6 @@ func (ds *BundleCollectionDataSource) IsSlugMatch(slug string) bool {
 }
 
 func transformBundle(f models.Bundle) *models.Bundle {
-	f.Description = applyContentTransforms(f.Description)
+	f.Description = models.ApplyContentTransforms(f.Description)
 	return &f
 }

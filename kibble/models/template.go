@@ -5,7 +5,9 @@ import (
 	"reflect"
 
 	"github.com/CloudyKit/jet"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/nicksnyder/go-i18n/i18n"
+	"github.com/russross/blackfriday"
 )
 
 // CreateTemplateView - create a template view
@@ -58,4 +60,19 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 	})
 
 	return view
+}
+
+// ApplyContentTransforms - add the markdown / sanitization / shortcodes
+func ApplyContentTransforms(data string) string {
+
+	//TODO: apply shortcodes
+
+	// apply mark down
+	unsafe := blackfriday.MarkdownCommon([]byte(data))
+
+	// return string(unsafe)
+	// apply sanitization
+	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+
+	return string(html)
 }

@@ -27,7 +27,7 @@ TODO:
     * page features - done
     * features -
     * bundles - done
-    * taxonomies
+    * taxonomies - 
       * cast -
       * genre -
       * year -

@@ -66,6 +66,6 @@ func (ds *FilmCollectionDataSource) IsSlugMatch(slug string) bool {
 }
 
 func transformFilm(f models.Film) *models.Film {
-	f.Overview = applyContentTransforms(f.Overview)
+	f.Overview = models.ApplyContentTransforms(f.Overview)
 	return &f
 }

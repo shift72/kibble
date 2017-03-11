@@ -65,6 +65,6 @@ func (ds *PageCollectionDataSource) IsSlugMatch(slug string) bool {
 }
 
 func transformPage(f models.Page) *models.Page {
-	f.Content = applyContentTransforms(f.Content)
+	f.Content = models.ApplyContentTransforms(f.Content)
 	return &f
 }

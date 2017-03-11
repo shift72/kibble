@@ -13,7 +13,7 @@ import (
 func TestApplyContentTransforms(t *testing.T) {
 	var s = `# header`
 
-	html := applyContentTransforms(s)
+	html := models.ApplyContentTransforms(s)
 
 	if strings.TrimSpace(string(html)) != "<h1>header</h1>" {
 		t.Errorf("Expectation failed. %s", html)
