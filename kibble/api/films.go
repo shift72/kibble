@@ -22,8 +22,6 @@ func LoadFilmSummary(cfg *models.Config) ([]models.FilmSummary, error) {
 		return nil, err
 	}
 
-	// fmt.Println(string(data))
-
 	err = json.Unmarshal([]byte(data), &summary)
 	if err != nil {
 		return nil, err
@@ -32,42 +30,52 @@ func LoadFilmSummary(cfg *models.Config) ([]models.FilmSummary, error) {
 	return summary, nil
 }
 
-// LoadAllFilms -
-func LoadAllFilms(cfg *models.Config, itemIndex models.ItemIndex) ([]models.Film, error) {
+// AppendAllFilms -
+func AppendAllFilms(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
 
 	summary, err := LoadFilmSummary(cfg)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	ids := make([]int, len(summary))
 	for i := 0; i < len(summary); i++ {
-		ids[i] = summary[i].ID
+		itemIndex.Set(fmt.Sprintf("/film/%d", summary[i].ID), models.Unresolved)
 	}
-	return LoadFilmDetails(cfg, ids, itemIndex)
+
+	return nil
 }
 
-// LoadFilmDetails - load all films
-func LoadFilmDetails(cfg *models.Config, filmIds []int, itemIndex models.ItemIndex) ([]models.Film, error) {
+// AppendFilms - load a list of films
+func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex) error {
 
-	sort.Ints(filmIds)
-	ids := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(filmIds)), ","), "[]")
+	sort.Strings(slugs)
+
+	// convert /film/1,film/2 -> 1,2
+	ids := strings.Replace(
+		strings.Trim(strings.Join(strings.Fields(fmt.Sprint(slugs)), ","), "[]"),
+		"/film/", "", -1)
+
+	// set index to empty for the items requested
+	for _, s := range slugs {
+		itemIndex.Set(s, models.Empty)
+	}
 
 	path := fmt.Sprintf("%s/services/meta/v2/film/%s/show_multiple", cfg.SiteURL, ids)
-
 	data, err := Get(path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	details := []models.Film{}
-
 	err = json.Unmarshal([]byte(data), &details)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	for i := 0; i < len(details); i++ {
+
+		// fmt.Println("film loaded", details[i].ID)
+
 		// fix subtitles
 		if details[i].SubtitlesRaw == nil {
 			// do nothing
@@ -76,11 +84,18 @@ func LoadFilmDetails(cfg *models.Config, filmIds []int, itemIndex models.ItemInd
 		} else if strings.HasPrefix(string(details[i].SubtitlesRaw), "[") {
 			details[i].Subtitles = strings.Split(strings.Trim(string(details[i].SubtitlesRaw), "[]"), ",")
 		}
-
 		details[i].TitleSlug = slug.Make(details[i].Title)
 
-		itemIndex.Add(details[i].Slug, details[i].GetGenericItem())
+		// add film
+		site.Films = append(site.Films, details[i])
+		itemIndex.Set(details[i].Slug, details[i].GetGenericItem())
+
+		// add Recommendations
+		for _, slug := range details[i].Recommendations {
+			itemIndex.Set(slug, models.Unresolved)
+		}
+
 	}
 
-	return details, nil
+	return nil
 }

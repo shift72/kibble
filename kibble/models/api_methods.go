@@ -2,7 +2,9 @@ package models
 
 var (
 	// Empty - Generic Item
-	Empty = GenericItem{}
+	Empty = GenericItem{Slug: "empty"}
+	// Unresolved - a slug to an item that has not been requested
+	Unresolved = GenericItem{Slug: "unresolved"}
 )
 
 // FindPageByID - find the page by id
@@ -70,5 +72,19 @@ func (film Film) GetGenericItem() GenericItem {
 			BackgroundImage: &film.ImageUrls.Bg,
 		},
 		InnerItem: film,
+	}
+}
+
+// GetGenericItem - returns a generic item
+func (bundle Bundle) GetGenericItem() GenericItem {
+	return GenericItem{
+		Title: bundle.Title,
+		Images: ImageSet{
+			CarouselImage:   &bundle.CarouselImage,
+			PortraitImage:   &bundle.PortraitImage,
+			LandscapeImage:  &bundle.LandscapeImage,
+			BackgroundImage: &bundle.BgImage,
+		},
+		InnerItem: bundle,
 	}
 }

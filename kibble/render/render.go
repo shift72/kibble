@@ -50,7 +50,7 @@ func Render() {
 
 		rendererCustom := ConsoleRenderer{
 			view:        models.CreateTemplateView(routeRegistry, T, ctx, "./"),
-			showSummary: true,
+			showSummary: false,
 		}
 
 		if lang != cfg.DefaultLanguage {
@@ -84,5 +84,6 @@ func Render() {
 	}
 
 	stop := time.Now()
-	fmt.Printf("Render completed: %s", stop.Sub(start))
+
+	fmt.Printf("\nRendered: %s", stop.Sub(start))
 }

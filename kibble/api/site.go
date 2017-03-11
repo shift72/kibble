@@ -19,45 +19,55 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
-	fmt.Printf("service config: %d\n", len(config))
-
 	toggles, err := LoadFeatureToggles(cfg)
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Printf("toggles: %d\n", len(toggles))
 
 	bios, err := LoadBios(cfg, itemIndex)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Printf("pages: %d\n", len(bios.Pages))
-
-	films, err := LoadAllFilms(cfg, itemIndex)
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Printf("films: %d\n", len(films))
-
-	stop := time.Now()
-	fmt.Printf("--------------------\nLoad completed: %s\n--------------------\n", stop.Sub(start))
-
 	site := &models.Site{
 		Config:     config,
 		Toggles:    toggles,
 		Navigation: bios.Navigation,
 		Pages:      bios.Pages,
-		Films:      films,
+		Films:      make(models.FilmCollection, 0),
+		Bundles:    make(models.BundleCollection, 0),
 	}
 
-	site.IndexItems(itemIndex)
+	err = AppendAllFilms(cfg, site, itemIndex)
+	if err != nil {
+		return nil, err
+	}
 
-	// show the loaded items
+	err = LoadAllBundles(cfg, site, itemIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	// while there are unresolved film slugs
+	s := itemIndex.FindUnresolvedSlugs("film")
+	for len(s) > 0 {
+		AppendFilms(cfg, site, s, itemIndex)
+		s = itemIndex.FindUnresolvedSlugs("film")
+	}
+
+	//TODO: while there are unresolved tv seasons
+
+	fmt.Printf("service config:\t%d\n", len(config))
+	fmt.Printf("toggles:\t%d\n", len(toggles))
+	fmt.Printf("pages:\t\t%d\n", len(bios.Pages))
+	fmt.Printf("films:\t\t%d\n", len(site.Films))
+	fmt.Printf("bundles:\t%d\n", len(site.Bundles))
+
+	stop := time.Now()
+	fmt.Printf("-------------------------\nLoad completed: %s\n-------------------------\n", stop.Sub(start))
+
+	// itemIndex.Print()
 	itemIndex.PrintStats()
-	//TODO: request missing items
 
 	site.LinkItems(itemIndex)
 

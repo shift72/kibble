@@ -21,6 +21,7 @@ type Site struct {
 	Navigation Navigation
 	Pages      PageCollection
 	Films      FilmCollection
+	Bundles    BundleCollection
 }
 
 // "page_features": [{
@@ -174,4 +175,32 @@ type Film struct {
 	Subtitles      []string      `json:"-"`
 	// manage the inconsistent api
 	SubtitlesRaw json.RawMessage `json:"subtitles,omitempty"`
+}
+
+// BundleCollection - all bundles
+type BundleCollection []Bundle
+
+// Bundle - model
+type Bundle struct {
+	ID             int           `json:"id"`
+	Slug           string        `json:"-"`
+	Title          string        `json:"title"`
+	TitleSlug      string        `json:"-"`
+	Tagline        string        `json:"tagline"`
+	Description    string        `json:"description"`
+	Status         string        `json:"status"`
+	PublishedDate  time.Time     `json:"published_date"`
+	SeoTitle       string        `json:"seo_title"`
+	SeoKeywords    string        `json:"seo_keywords"`
+	SeoDescription string        `json:"seo_description"`
+	PortraitImage  string        `json:"portrait_image"`
+	LandscapeImage string        `json:"landscape_image"`
+	CarouselImage  string        `json:"carousel_image"`
+	CreatedAt      time.Time     `json:"created_at"`
+	UpdatedAt      time.Time     `json:"updated_at"`
+	BgImage        string        `json:"bg_image"`
+	PromoURL       string        `json:"promo_url"`
+	ExternalID     interface{}   `json:"external_id"`
+	Items          []string      `json:"items"`
+	ResolvedItems  []GenericItem `json:"-"`
 }

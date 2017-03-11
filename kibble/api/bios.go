@@ -26,7 +26,13 @@ func LoadBios(cfg *models.Config, itemIndex models.ItemIndex) (*models.Bios, err
 
 	// register with the item index
 	for _, p := range bios.Pages {
-		itemIndex.Add(fmt.Sprintf("/page/%d", p.ID), p.GetGenericItem())
+		itemIndex.Set(fmt.Sprintf("/page/%d", p.ID), p.GetGenericItem())
+
+		for _, pf := range p.PageFeatures {
+			for _, slug := range pf.Items {
+				itemIndex.Set(slug, models.Unresolved)
+			}
+		}
 	}
 
 	return bios, nil

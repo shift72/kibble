@@ -5,21 +5,34 @@ import (
 	"strings"
 )
 
-// Add - an item
-func (itemIndex ItemIndex) Add(slug string, item GenericItem) {
+//
+// ItemIndex contains
+//   GenericItems - has been found and indexed
+//   Empty - could not be loaded
+//   Unresolved - found but has not been requested
+//
+
+// Set - an item
+func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
+
+	// fmt.Println("adding", slug, item == Empty, item == Unresolved)
 
 	slugParts := strings.Split(slug, "/")
 	slugType := slugParts[1]
 
-	// item[slugType]
-	t, ok := itemIndex[slugType]
+	index, ok := itemIndex[slugType]
 	if !ok {
 		itemIndex[slugType] = make(map[string]GenericItem)
-		t = itemIndex[slugType]
+		index = itemIndex[slugType]
 	}
 
-	if _, ok := t[slug]; !ok {
-		t[slug] = item
+	// unresolved can be overwritten, empty and item can not
+	foundItem, ok := index[slug]
+	if (ok && (foundItem == Unresolved || foundItem == Empty)) || !ok {
+
+		// fmt.Println("setting", slug)
+
+		index[slug] = item
 	}
 }
 
@@ -37,31 +50,38 @@ func (itemIndex ItemIndex) Get(slug string) (item GenericItem) {
 	return Empty
 }
 
-// IndexItems - add an index
-func (site *Site) IndexItems(itemIndex ItemIndex) {
+// FindEmptySlugs - find the slugs that are missing
+func (itemIndex ItemIndex) FindEmptySlugs(slugType string) []string {
+	return itemIndex.findSlugsOfType(slugType, Empty)
+}
 
-	for _, f := range site.Films {
-		for _, slug := range f.Recommendations {
-			itemIndex.Add(slug, Empty)
-		}
-	}
+// FindUnresolvedSlugs - find unresolved slugs
+func (itemIndex ItemIndex) FindUnresolvedSlugs(slugType string) []string {
+	return itemIndex.findSlugsOfType(slugType, Unresolved)
+}
 
-	for _, p := range site.Pages {
-		for _, pf := range p.PageFeatures {
-			for _, slug := range pf.Items {
-				itemIndex.Add(slug, Empty)
+func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem) []string {
+	found := make([]string, 0)
+	t, ok := itemIndex[slugType]
+	if ok {
+		for k, v := range t {
+			if v == itemType {
+				found = append(found, k)
 			}
 		}
 	}
+	return found
 }
 
 // LinkItems - link the items to the specific parts
 func (site *Site) LinkItems(itemIndex ItemIndex) {
 
+	//TODO: still needed?
+
 	for i := range site.Films {
 		for _, slug := range site.Films[i].Recommendations {
 			t := itemIndex.Get(slug)
-			if t != Empty {
+			if t != Unresolved {
 				site.Films[i].ResolvedRecommendations = append(site.Films[i].ResolvedRecommendations, t)
 			}
 		}
@@ -71,12 +91,22 @@ func (site *Site) LinkItems(itemIndex ItemIndex) {
 		for j := range site.Pages[i].PageFeatures {
 			for _, slug := range site.Pages[i].PageFeatures[j].Items {
 				t := itemIndex.Get(slug)
-				if t != Empty {
+				if t != Unresolved {
 					site.Pages[i].PageFeatures[j].ResolvedItems = append(site.Pages[i].PageFeatures[j].ResolvedItems, t)
 				}
 			}
 		}
 	}
+
+	for i := range site.Bundles {
+		for _, slug := range site.Bundles[i].Items {
+			t := itemIndex.Get(slug)
+			if t != Unresolved {
+				site.Bundles[i].ResolvedItems = append(site.Bundles[i].ResolvedItems, t)
+			}
+		}
+	}
+
 }
 
 // Print - print the item index
@@ -85,7 +115,9 @@ func (itemIndex ItemIndex) Print() {
 		fmt.Printf("type: %s\n", t)
 		for k, v := range val {
 			if v == Empty {
-				fmt.Printf("%s - %s : nil\n", t, k)
+				fmt.Printf("%s - %s : empty\n", t, k)
+			} else if v == Unresolved {
+				fmt.Printf("%s - %s : unresolved\n", t, k)
 			} else {
 				fmt.Printf("%s - %s : set\n", t, k)
 			}
@@ -95,8 +127,7 @@ func (itemIndex ItemIndex) Print() {
 
 // PrintStats - print the stats about the index
 func (itemIndex ItemIndex) PrintStats() {
-	fmt.Println("--- item index stats ---")
-
+	fmt.Println("item index:")
 	var loadedCount = 0
 	var totalCount = 0
 	for t, val := range itemIndex {
@@ -105,7 +136,7 @@ func (itemIndex ItemIndex) PrintStats() {
 		for _, v := range val {
 			count++
 			totalCount++
-			if v != Empty {
+			if !(v == Empty || v == Unresolved) {
 				loaded++
 				loadedCount++
 			}

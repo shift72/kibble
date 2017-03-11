@@ -48,5 +48,4 @@ func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.V
 	if c.showOutput {
 		fmt.Println(w)
 	}
-
 }
