@@ -27,7 +27,7 @@ TODO:
     * page features - done
     * features -
     * bundles - done
-    * taxonomies - 
+    * taxonomies -
       * cast -
       * genre -
       * year -
@@ -37,8 +37,6 @@ TODO:
     * json? - what would choice tv tvguide do?
     * config / toggles - done
     * navigation - done
-    * canonical urls -
- * populate model from api
  * shortcodes - these need to happen as part of the markdown process
  * live reload
  * init
@@ -56,3 +54,4 @@ TODO:
     * language routes /:lang/film/:id - done
  * helpers
     * route renders - done
+    * canonical route - done

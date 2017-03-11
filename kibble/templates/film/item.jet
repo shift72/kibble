@@ -7,6 +7,7 @@
     <div>Film ID: {{film.ID}}</div>
     <div>Path: {{ routeToSlug(film.Slug) }}</div>
     <div>Synopsis: {{ film.Overview | raw}}</div>
+    <div>Canonical: {{ canonicalRouteToSlug(film.Slug) }}</div>
 
     <div>Recommendations: {{ len(film.Recommendations)}} </div>
     {{ range film.Recommendations }}
