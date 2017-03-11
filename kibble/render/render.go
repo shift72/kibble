@@ -45,12 +45,12 @@ func Render() {
 
 		renderer := ConsoleRenderer{
 			view:        models.CreateTemplateView(routeRegistry, T, ctx, "./templates"),
-			showSummary: false,
+			showSummary: true,
 		}
 
 		rendererCustom := ConsoleRenderer{
 			view:        models.CreateTemplateView(routeRegistry, T, ctx, "./"),
-			showSummary: false,
+			showSummary: true,
 		}
 
 		if lang != cfg.DefaultLanguage {

@@ -1,0 +1,25 @@
+{{extends "application.jet"}}
+{{block body()}}
+  <div>
+    <h2>{{bundle.Title}}</h2>
+
+    <p>Tagline: {{bundle.Tagline}}</p>
+    <p>Description: {{bundle.Description}}</p>
+    <p>Status: {{bundle.Status}}</p>
+    <p>PublishedDate: {{bundle.PublishedDate}}</p>
+    <p>SeoTitle: {{bundle.SeoTitle}}</p>
+    <p>SeoKeywords: {{bundle.SeoKeywords}}</p>
+    <p>SeoDescription: {{bundle.SeoDescription}}</p>
+    <p>PortraitImage: {{bundle.PortraitImage}}</p>
+    <p>LandscapeImage: {{bundle.LandscapeImage}}</p>
+    <p>BgImage: {{bundle.BgImage}}</p>
+
+    <div>Items: {{ len(bundle.ResolvedItems)}} </div>
+    {{ range bundle.ResolvedItems }}
+      <div>
+        {{ .ItemType  }}  {{ .Title }} {{ .Slug }} - {{ .InnerItem.Slug }}
+      </div>
+    {{ end }}
+
+  </div>
+{{end}}

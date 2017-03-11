@@ -1,12 +1,5 @@
 package models
 
-var (
-	// Empty - Generic Item
-	Empty = GenericItem{Slug: "empty"}
-	// Unresolved - a slug to an item that has not been requested
-	Unresolved = GenericItem{Slug: "unresolved"}
-)
-
 // FindPageByID - find the page by id
 func (pages PageCollection) FindPageByID(pageID int) (*Page, error) {
 	for _, p := range pages {
@@ -25,6 +18,20 @@ func (pages PageCollection) FindPageBySlug(slug string) (*Page, error) {
 		}
 	}
 	return nil, nil
+}
+
+// GetGenericItem - returns a generic item
+func (page Page) GetGenericItem() GenericItem {
+	return GenericItem{
+		Title: page.Title,
+		Images: ImageSet{
+			CarouselImage:   page.CarouselImage,
+			PortraitImage:   page.PortraitImage,
+			LandscapeImage:  page.LandscapeImage,
+			BackgroundImage: page.HeaderImage,
+		},
+		InnerItem: page,
+	}
 }
 
 // FindFilmByID - find film by id
@@ -48,20 +55,6 @@ func (films FilmCollection) FindFilmBySlug(slug string) (*Film, error) {
 }
 
 // GetGenericItem - returns a generic item
-func (page Page) GetGenericItem() GenericItem {
-	return GenericItem{
-		Title: page.Title,
-		Images: ImageSet{
-			CarouselImage:   page.CarouselImage,
-			PortraitImage:   page.PortraitImage,
-			LandscapeImage:  page.LandscapeImage,
-			BackgroundImage: page.HeaderImage,
-		},
-		InnerItem: page,
-	}
-}
-
-// GetGenericItem - returns a generic item
 func (film Film) GetGenericItem() GenericItem {
 	return GenericItem{
 		Title: film.Title,
@@ -73,6 +66,26 @@ func (film Film) GetGenericItem() GenericItem {
 		},
 		InnerItem: film,
 	}
+}
+
+// FindBundleByID - find the page by id
+func (bundles BundleCollection) FindBundleByID(bundleID int) (*Bundle, error) {
+	for _, b := range bundles {
+		if b.ID == bundleID {
+			return &b, nil
+		}
+	}
+	return nil, nil
+}
+
+// FindBundleBySlug - find the bundle by the slug
+func (bundles BundleCollection) FindBundleBySlug(slug string) (*Bundle, error) {
+	for _, p := range bundles {
+		if p.Slug == slug || p.TitleSlug == slug {
+			return &p, nil
+		}
+	}
+	return nil, nil
 }
 
 // GetGenericItem - returns a generic item

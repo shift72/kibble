@@ -1,0 +1,11 @@
+{{extends "application.jet"}}
+{{block body()}}
+  <h2>Bundle - Index</h2>
+
+  {{range bundles}}
+    <p>
+      {{ .Title }} - {{ .Slug }} - <a href="{{ routeToSlug(.Slug) }}">{{ .Title }}</a>
+    </p>
+  {{end}}
+
+{{end}}

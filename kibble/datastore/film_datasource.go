@@ -65,12 +65,8 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 	data := make(jet.VarMap)
 
 	for _, f := range ctx.Site.Films {
-
 		filePath := ds.GetRouteForEntity(ctx, &f)
-
-		c := transformFilm(f)
-
-		data.Set("film", c)
+		data.Set("film", transformFilm(f))
 		data.Set("site", ctx.Site)
 		renderer.Render(ctx.Route, filePath, data)
 	}
@@ -87,7 +83,6 @@ func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 
 // GetRouteForSlug - get the route
 func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	//TODO: parse slug
 	p := strings.Split(slug, "/")
 	if strings.Contains(ctx.Route.URLPath, ":filmID") {
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", p[2], 1)

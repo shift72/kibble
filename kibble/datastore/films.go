@@ -30,4 +30,7 @@ func Init() {
 
 	models.AddDataSource(&PageDataSource{})
 	models.AddDataSource(&PageCollectionDataSource{})
+
+	models.AddDataSource(&BundleDataSource{})
+	models.AddDataSource(&BundleCollectionDataSource{})
 }

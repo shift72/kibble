@@ -24,10 +24,9 @@ TODO:
       * bonus -
     * tv -
     * pages - done
-    * page features - resolving a link to an actual item - done
-      * common ui model - with a link to the actual model (GenericItem) - done
+    * page features - done
     * features -
-    * bundles -
+    * bundles - done
     * taxonomies
       * cast -
       * genre -

@@ -29,6 +29,18 @@
             "urlPath": "/page",
             "templatePath": "page/index.jet",
             "datasource": "PageCollection"
+        },
+        {
+            "name": "bundleItem",
+            "urlPath": "/bundle/:slug",
+            "templatePath": "bundle/item.jet",
+            "datasource": "Bundle"
+        },
+        {
+            "name": "bundleIndex",
+            "urlPath": "/bundle",
+            "templatePath": "bundle/index.jet",
+            "datasource": "BundleCollection"
         }
     ]
 }

@@ -5,6 +5,18 @@ import (
 	"strings"
 )
 
+var (
+	// Empty - Generic Item
+	Empty = GenericItem{Slug: "empty"}
+	// Unresolved - a slug to an item that has not been requested
+	Unresolved = GenericItem{Slug: "unresolved"}
+)
+
+// IsResolved -
+func (genericItem GenericItem) IsResolved() bool {
+	return !(genericItem == Empty || genericItem == Unresolved)
+}
+
 //
 // ItemIndex contains
 //   GenericItems - has been found and indexed
@@ -14,8 +26,6 @@ import (
 
 // Set - an item
 func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
-
-	// fmt.Println("adding", slug, item == Empty, item == Unresolved)
 
 	slugParts := strings.Split(slug, "/")
 	slugType := slugParts[1]
@@ -29,9 +39,6 @@ func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
 	// unresolved can be overwritten, empty and item can not
 	foundItem, ok := index[slug]
 	if (ok && (foundItem == Unresolved || foundItem == Empty)) || !ok {
-
-		// fmt.Println("setting", slug)
-
 		index[slug] = item
 	}
 }
@@ -76,12 +83,10 @@ func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem
 // LinkItems - link the items to the specific parts
 func (site *Site) LinkItems(itemIndex ItemIndex) {
 
-	//TODO: still needed?
-
 	for i := range site.Films {
 		for _, slug := range site.Films[i].Recommendations {
 			t := itemIndex.Get(slug)
-			if t != Unresolved {
+			if t.IsResolved() {
 				site.Films[i].ResolvedRecommendations = append(site.Films[i].ResolvedRecommendations, t)
 			}
 		}
@@ -91,7 +96,7 @@ func (site *Site) LinkItems(itemIndex ItemIndex) {
 		for j := range site.Pages[i].PageFeatures {
 			for _, slug := range site.Pages[i].PageFeatures[j].Items {
 				t := itemIndex.Get(slug)
-				if t != Unresolved {
+				if t.IsResolved() {
 					site.Pages[i].PageFeatures[j].ResolvedItems = append(site.Pages[i].PageFeatures[j].ResolvedItems, t)
 				}
 			}
@@ -101,7 +106,7 @@ func (site *Site) LinkItems(itemIndex ItemIndex) {
 	for i := range site.Bundles {
 		for _, slug := range site.Bundles[i].Items {
 			t := itemIndex.Get(slug)
-			if t != Unresolved {
+			if t.IsResolved() {
 				site.Bundles[i].ResolvedItems = append(site.Bundles[i].ResolvedItems, t)
 			}
 		}
