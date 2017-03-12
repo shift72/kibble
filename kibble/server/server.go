@@ -20,7 +20,7 @@ import (
 var site *models.Site
 
 // StartNew - start a new server
-func StartNew(port int32) {
+func StartNew(port int32, watch bool) {
 
 	datastore.Init()
 
@@ -47,6 +47,11 @@ func StartNew(port int32) {
 	// processing should be stopped.
 	r.Use(middleware.Timeout(10 * time.Second))
 
+	if watch {
+		r.Use(InjectLiveReloadScript)
+		startLiveReload()
+	}
+
 	createRoutes(r, routeRegistry, cfg)
 
 	fmt.Printf("listening on %d\n", port)
@@ -58,6 +63,8 @@ func createRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models
 	r.Get("/status", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("kibble online\r\n"))
 	})
+
+	r.Get("/kibble/live_reload", handleLiveReload)
 
 	//TODO: sort the routes, put the collections at the end
 	for _, route := range routeRegistry.GetAll() {

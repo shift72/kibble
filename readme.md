@@ -18,40 +18,46 @@ Commands
  - render - renders the entire site
  - serve - starts a web server for local development
 
+
+Supports
+* model
+   * film - done
+     * bonus - done
+   * pages - done
+   * page features - done
+   * bundles - done
+   * custom pages -> page.html.jet -> page.html - done
+     * robots.txt - done
+     * humans.txt - done
+   * config / toggles - done
+   * navigation - done
+* watch files / live reload - done
+* cache - done
+* support markdown - done
+* internationalization - done
+   * default language - done
+   * language routes /:lang/film/:id - done
+* helpers
+   * route renders - done
+   * canonical route - done
+
+
 TODO:
  * model
-    * film - done
-      * bonus -
     * tv -
-    * pages - done
-    * page features - done
-    * features -
-    * bundles - done
+    * subtitles -
+    * pagination - ??
+    * features - ?? collections ??
     * taxonomies -
       * cast -
       * genre -
       * year -
-    * custom pages -> page.html.jet -> page.html - done
-      * robots.txt - done
-      * humans.txt - done
     * json? - what would choice tv tvguide do?
-    * config / toggles - done
-    * navigation - done
  * shortcodes - these need to happen as part of the markdown process
- * live reload
  * init
     * create a base implementation
  * upload
  * diff / merge ??
- * watch files / live reload
  * admin
     * unpublished / published
     * requesting using authtoken
- * cache - done
- * support markdown - done
- * internationalization - done
-    * default language - done
-    * language routes /:lang/film/:id - done
- * helpers
-    * route renders - done
-    * canonical route - done

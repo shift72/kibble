@@ -1,13 +1,21 @@
 {{extends "application.jet"}}
 {{block body()}}
   <div>
-    <h2>{{film.Title}}</h2>
+    <h2>{{film.Title}} - </h2>
     This content will be yielded in the layout above......{{ i18n("your_unread_email_count", 2) }}
     <div>Film: {{film.Title}}</div>
     <div>Film ID: {{film.ID}}</div>
     <div>Path: {{ routeToSlug(film.Slug) }}</div>
     <div>Synopsis: {{ film.Overview | raw}}</div>
     <div>Canonical: {{ canonicalRouteToSlug(film.Slug) }}</div>
+
+    <div>Bonuses: {{ len(film.Bonuses)}} </div>
+    {{ range film.Bonuses }}
+      <div>
+        {{ .Number }}
+        {{ .Title  }}
+      </div>
+    {{ end }}
 
     <div>Recommendations: {{ len(film.Recommendations)}} </div>
     {{ range film.Recommendations }}
@@ -16,7 +24,7 @@
       </div>
     {{ end }}
 
-    <div>Recommendations: {{ len(film.ResolvedRecommendations)}} </div>
+    <div>Resolved Recommendations: {{ len(film.ResolvedRecommendations)}} </div>
     {{ range film.ResolvedRecommendations }}
       <div>
         {{ .ItemType  }}  {{ .Title  }}

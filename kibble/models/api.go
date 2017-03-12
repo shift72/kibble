@@ -126,6 +126,24 @@ type FilmSummary struct {
 	Title               string      `json:"title"`
 }
 
+// FilmBonusCollection - all films
+type FilmBonusCollection []FilmBonus
+
+// FilmBonus - film bonus model
+type FilmBonus struct {
+	Number    int    `json:"number"`
+	Title     string `json:"title"`
+	ImageUrls struct {
+		Portrait       string `json:"portrait"`
+		Landscape      string `json:"landscape"`
+		Header         string `json:"header"`
+		Carousel       string `json:"carousel"`
+		Bg             string `json:"bg"`
+		Classification string `json:"classification"`
+	} `json:"image_urls"`
+	SubtitleTracks []interface{} `json:"subtitle_tracks"`
+}
+
 // FilmCollection - all films
 type FilmCollection []Film
 
@@ -136,7 +154,7 @@ type Film struct {
 		Type string `json:"type"`
 	} `json:"trailers"`
 	//TODO: add a bonus struct
-	Bonuses []interface{} `json:"bonuses"`
+	Bonuses FilmBonusCollection `json:"bonuses"`
 	Cast    []struct {
 		Name      string `json:"name"`
 		Character string `json:"character"`

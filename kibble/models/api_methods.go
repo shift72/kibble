@@ -68,6 +68,20 @@ func (film Film) GetGenericItem() GenericItem {
 	}
 }
 
+// GetGenericItem - returns a generic item based on the film bonus
+func (bonus FilmBonus) GetGenericItem() GenericItem {
+	return GenericItem{
+		Title: bonus.Title,
+		Images: ImageSet{
+			CarouselImage:   &bonus.ImageUrls.Carousel,
+			PortraitImage:   &bonus.ImageUrls.Portrait,
+			LandscapeImage:  &bonus.ImageUrls.Landscape,
+			BackgroundImage: &bonus.ImageUrls.Bg,
+		},
+		InnerItem: bonus,
+	}
+}
+
 // FindBundleByID - find the page by id
 func (bundles BundleCollection) FindBundleByID(bundleID int) (*Bundle, error) {
 	for _, b := range bundles {

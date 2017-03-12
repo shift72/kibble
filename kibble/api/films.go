@@ -90,6 +90,11 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 		site.Films = append(site.Films, details[i])
 		itemIndex.Set(details[i].Slug, details[i].GetGenericItem())
 
+		// add bonuses - supports linking to bonus entries (supported??)
+		for bonusIndex := 0; bonusIndex < len(details[i].Bonuses); bonusIndex++ {
+			itemIndex.Set(fmt.Sprintf("%s/bonus/%d", details[i].Slug, details[i].Bonuses[bonusIndex].Number), details[i].Bonuses[bonusIndex].GetGenericItem())
+		}
+
 		// add Recommendations
 		for _, slug := range details[i].Recommendations {
 			itemIndex.Set(slug, models.Unresolved)

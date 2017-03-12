@@ -20,19 +20,15 @@ import (
 )
 
 var port int32
+var watch bool
 
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Serves the current site",
+	Long:  `Creates a local web server to test local template development.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		server.StartNew(port)
+		server.StartNew(port, watch)
 	},
 }
 
@@ -40,4 +36,5 @@ func init() {
 	RootCmd.AddCommand(serveCmd)
 	serveCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
 	serveCmd.Flags().BoolP("launch", "l", false, "Launch the brower on start")
+	serveCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
 }

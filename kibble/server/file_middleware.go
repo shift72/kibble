@@ -24,7 +24,6 @@ func FileMiddleware(cfg *models.Config, site *models.Site, routeRegistry *models
 			// check if the request + jet file exists
 			_, err := os.Stat(path)
 			if os.IsNotExist(err) {
-				fmt.Println("not exists", err)
 				next.ServeHTTP(w, r)
 				return
 			}
