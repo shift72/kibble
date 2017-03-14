@@ -6,6 +6,7 @@ import (
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/pressly/chi"
 )
 
 // PageCollectionDataSource - a list of all Pages
@@ -67,4 +68,10 @@ func (ds *PageCollectionDataSource) IsSlugMatch(slug string) bool {
 func transformPage(f models.Page) *models.Page {
 	f.Content = models.ApplyContentTransforms(f.Content)
 	return &f
+}
+
+// RegisterRoutes - add the routes to the chi router
+func (ds *PageCollectionDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
+	router.Get(route.URLPath, handler)
+	router.Get("/:lang"+route.URLPath, handler)
 }

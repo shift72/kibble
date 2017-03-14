@@ -6,6 +6,7 @@ import (
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/pressly/chi"
 )
 
 // FilmCollectionDataSource - a list of all films
@@ -68,4 +69,10 @@ func (ds *FilmCollectionDataSource) IsSlugMatch(slug string) bool {
 func transformFilm(f models.Film) *models.Film {
 	f.Overview = models.ApplyContentTransforms(f.Overview)
 	return &f
+}
+
+// RegisterRoutes - add the routes to the chi router
+func (ds *FilmCollectionDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
+	router.Get(route.URLPath, handler)
+	router.Get("/:lang"+route.URLPath, handler)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os/exec"
 	"time"
 
 	"github.com/CloudyKit/jet"
@@ -54,6 +55,16 @@ func StartNew(port int32, watch bool) {
 
 	createRoutes(r, routeRegistry, cfg)
 
+	// launch the browser
+	go func() {
+		time.Sleep(1000)
+		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/index.html", port))
+		err = cmd.Start()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
 	fmt.Printf("listening on %d\n", port)
 	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
 }
@@ -68,12 +79,7 @@ func createRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models
 
 	//TODO: sort the routes, put the collections at the end
 	for _, route := range routeRegistry.GetAll() {
-		if route.ResolvedDataSouce != nil {
-			r.Get(route.URLPath, handleRequest(route, routeRegistry, cfg))
-			r.Get("/:lang"+route.URLPath, handleRequest(route, routeRegistry, cfg))
-		} else {
-			log.Printf("Route skipped, unknown data source %s\n", route.DataSource)
-		}
+		route.AddToRouter(r, handleRequest(route, routeRegistry, cfg))
 	}
 }
 
@@ -94,7 +100,7 @@ func handleRequest(route *models.Route, routeRegistry *models.RouteRegistry, cfg
 			return
 		}
 
-		renderContext(cfg, routeRegistry, ctx, "./templates", data, w, req)
+		renderContext(cfg, routeRegistry, ctx, "./", data, w, req)
 	}
 }
 

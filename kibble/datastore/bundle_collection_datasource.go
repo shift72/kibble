@@ -6,6 +6,7 @@ import (
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/pressly/chi"
 )
 
 // BundleCollectionDataSource - a list of all bundles
@@ -68,4 +69,10 @@ func (ds *BundleCollectionDataSource) IsSlugMatch(slug string) bool {
 func transformBundle(f models.Bundle) *models.Bundle {
 	f.Description = models.ApplyContentTransforms(f.Description)
 	return &f
+}
+
+// RegisterRoutes - add the routes to the chi router
+func (ds *BundleCollectionDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
+	router.Get(route.URLPath, handler)
+	router.Get("/:lang"+route.URLPath, handler)
 }

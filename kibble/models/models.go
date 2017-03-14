@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/CloudyKit/jet"
+	"github.com/pressly/chi"
 )
 
 // Route - represents a route for rendering and
@@ -31,6 +32,7 @@ type DataSource interface {
 	IsSlugMatch(slug string) bool
 	GetRouteForEntity(ctx RenderContext, entity interface{}) string
 	GetRouteForSlug(ctx RenderContext, slug string) string
+	RegisterRoutes(router chi.Router, route *Route, handler func(w http.ResponseWriter, req *http.Request))
 	//TODO: ValidateRoute - check that the route contains valid tokens
 }
 

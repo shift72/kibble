@@ -98,3 +98,9 @@ func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 func (ds *FilmDataSource) IsSlugMatch(slug string) bool {
 	return strings.HasPrefix(slug, "/film/")
 }
+
+// RegisterRoutes - add the routes to the chi router
+func (ds *FilmDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
+	router.Get(route.URLPath, handler)
+	router.Get("/:lang"+route.URLPath, handler)
+}

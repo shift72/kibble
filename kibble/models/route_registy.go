@@ -2,7 +2,11 @@ package models
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 	"reflect"
+
+	"github.com/pressly/chi"
 )
 
 // NewRouteRegistry - create a new route registry
@@ -94,4 +98,13 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 	}
 
 	return routeRegistry
+}
+
+// AddToRouter - adds the route to the router
+func (route *Route) AddToRouter(r chi.Router, handler func(w http.ResponseWriter, req *http.Request)) {
+	if route.ResolvedDataSouce != nil {
+		route.ResolvedDataSouce.RegisterRoutes(r, route, handler)
+	} else {
+		log.Printf("Route skipped, unknown data source %s\n", route.DataSource)
+	}
 }

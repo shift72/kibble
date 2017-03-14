@@ -79,3 +79,9 @@ func (ds *BundleDataSource) GetRouteForSlug(ctx models.RenderContext, slug strin
 func (ds *BundleDataSource) IsSlugMatch(slug string) bool {
 	return strings.HasPrefix(slug, "/bundle/")
 }
+
+// RegisterRoutes - add the routes to the chi router
+func (ds *BundleDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
+	router.Get(route.URLPath, handler)
+	router.Get("/:lang"+route.URLPath, handler)
+}
