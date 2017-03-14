@@ -1,25 +1,23 @@
-==kibble==
-To chop or grind coarsely
+# kibble
+*def: To chop or grind coarsely*
 
-==dependencies==
-go get -v github.com/spf13/cobra/cobra
-go get -u golang.org/x/sys/...
-go get -u github.com/fsnotify/fsnotify
-go get -u github.com/CloudyKit/jet
-go get -u github.com/russross/blackfriday
-go get -u github.com/microcosm-cc/bluemonday
-go get -u github.com/nicksnyder/go-i18n/goi18n
-go get -u github.com/peterbourgon/diskv
-go get -u github.com/gregjones/httpcache
-go get -u github.com/gosimple/slug
+## Usage
+```kibble config``` - configure kibble to use the api key when requesting req
 
-Commands
- - config - set the API_KEY??
- - render - renders the entire site
- - serve - starts a web server for local development
+```kibble server --watch``` - starts a server
+
+```kibble render``` - sample render, this is what will be deployed
+
+```kibble help``` - help is here
+
+## Installation
+* Install dep ```go get -u github.com/golang/dep/...```
+* Install dependencies ```dep ensure -update```
+* Build and install ```go install```
+* Check installed and running correctly ```kibble version```
 
 
-Supports
+## Supports
 * model
    * film - done
      * bonus - done
@@ -42,7 +40,7 @@ Supports
    * canonical route - done
 
 
-TODO:
+## TODO
  * model
     * tv -
     * subtitles -
