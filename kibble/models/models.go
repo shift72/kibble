@@ -44,6 +44,7 @@ type RenderContext struct {
 
 // Renderer - rendering implementation
 type Renderer interface {
+	Initialise()
 	Render(route *Route, filePath string, data jet.VarMap)
 }
 

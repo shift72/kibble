@@ -58,6 +58,11 @@ func (c *InMemoryRenderer) DumpResults() {
 	}
 }
 
+// Initialise -
+func (c *InMemoryRenderer) Initialise() {
+
+}
+
 // Render - render the pages to memory
 func (c *InMemoryRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
 

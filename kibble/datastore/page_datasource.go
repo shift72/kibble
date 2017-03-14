@@ -48,13 +48,13 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 
 	for _, p := range ctx.Site.Pages {
 
-		filePath := ds.GetRouteForEntity(ctx, &p)
+		if p.PageType == "external" {
+			continue // don't render external pages
+		}
 
-		c := transformPage(p)
-
-		data.Set("page", c)
+		data.Set("page", transformPage(p))
 		data.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, filePath, data)
+		renderer.Render(ctx.Route, ds.GetRouteForEntity(ctx, &p), data)
 	}
 }
 
@@ -62,6 +62,10 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.Page)
 	if ok {
+		// special case for the home page
+		if o.PageType == "homepage" {
+			return "/index.html"
+		}
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.Slug, 1)
 	}
 	return models.DataSourceError
@@ -74,7 +78,9 @@ func (ds *PageDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 	p := strings.Split(slug, "/")
 	pageID, _ := strconv.Atoi(p[2])
 	page, _ := ctx.Site.Pages.FindPageByID(pageID)
-	return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", page.Slug, 1)
+
+	//TODO: does not work page, _ := ctx.Site.Pages.FindPageBySlug(slug)
+	return ds.GetRouteForEntity(ctx, page)
 }
 
 // IsSlugMatch - checks if the slug is a match

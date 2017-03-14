@@ -14,6 +14,11 @@ type InMemoryTemplateRenderer struct {
 	Result   InMemoryResult
 }
 
+// Initialise -
+func (c *InMemoryTemplateRenderer) Initialise() {
+
+}
+
 // Render - render the pages to memory
 func (c *InMemoryTemplateRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
 

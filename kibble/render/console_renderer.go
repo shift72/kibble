@@ -15,6 +15,11 @@ type ConsoleRenderer struct {
 	showSummary bool
 }
 
+// Initialise - start the rendering process
+func (c ConsoleRenderer) Initialise() {
+
+}
+
 // Render - render to the console
 func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
 

@@ -29,6 +29,12 @@ func Render() {
 
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
+	renderer := FileRenderer{
+		rootPath:    "./.kibble/build",
+		showSummary: false,
+	}
+	renderer.Initialise()
+
 	start := time.Now()
 	for lang, locale := range cfg.Languages {
 
@@ -43,15 +49,8 @@ func Render() {
 			Language:    lang,
 		}
 
-		renderer := ConsoleRenderer{
-			view:        models.CreateTemplateView(routeRegistry, T, ctx, "./templates"),
-			showSummary: true,
-		}
-
-		rendererCustom := ConsoleRenderer{
-			view:        models.CreateTemplateView(routeRegistry, T, ctx, "./"),
-			showSummary: true,
-		}
+		// set the template view
+		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, "./")
 
 		if lang != cfg.DefaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
@@ -70,7 +69,7 @@ func Render() {
 			data := jet.VarMap{}
 			data.Set("site", site)
 
-			rendererCustom.Render(route, filePath, data)
+			renderer.Render(route, filePath, data)
 		}
 
 		for _, route := range routeRegistry.GetAll() {
