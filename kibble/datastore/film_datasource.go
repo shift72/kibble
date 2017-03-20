@@ -84,6 +84,8 @@ func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 // GetRouteForSlug - get the route
 func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	p := strings.Split(slug, "/")
+
+	// supports having /:filmID in a path and /:slug
 	if strings.Contains(ctx.Route.URLPath, ":filmID") {
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", p[2], 1)
 	} else if strings.Contains(ctx.Route.URLPath, ":slug") {

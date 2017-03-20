@@ -22,6 +22,7 @@ type Site struct {
 	Pages      PageCollection
 	Films      FilmCollection
 	Bundles    BundleCollection
+	Taxonomies Taxonomies
 }
 
 // "page_features": [{

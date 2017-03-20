@@ -36,6 +36,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		Pages:      bios.Pages,
 		Films:      make(models.FilmCollection, 0),
 		Bundles:    make(models.BundleCollection, 0),
+		Taxonomies: make(models.Taxonomies),
 	}
 
 	err = AppendAllFilms(cfg, site, itemIndex)
@@ -66,10 +67,10 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	stop := time.Now()
 	fmt.Printf("-------------------------\nLoad completed: %s\n-------------------------\n", stop.Sub(start))
 
-	// itemIndex.Print()
-	itemIndex.PrintStats()
-
 	site.LinkItems(itemIndex)
+
+	site.PopulateTaxonomyWithFilms("year", models.GetYear)
+	site.Taxonomies["year"].Alphabetical().Print()
 
 	return site, nil
 }

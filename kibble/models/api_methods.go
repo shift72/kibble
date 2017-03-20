@@ -58,12 +58,14 @@ func (films FilmCollection) FindFilmBySlug(slug string) (*Film, error) {
 func (film Film) GetGenericItem() GenericItem {
 	return GenericItem{
 		Title: film.Title,
+		Slug:  film.Slug,
 		Images: ImageSet{
 			CarouselImage:   &film.ImageUrls.Carousel,
 			PortraitImage:   &film.ImageUrls.Portrait,
 			LandscapeImage:  &film.ImageUrls.Landscape,
 			BackgroundImage: &film.ImageUrls.Bg,
 		},
+		ItemType:  "film",
 		InnerItem: film,
 	}
 }
@@ -72,12 +74,14 @@ func (film Film) GetGenericItem() GenericItem {
 func (bonus FilmBonus) GetGenericItem() GenericItem {
 	return GenericItem{
 		Title: bonus.Title,
+		// Slug:  fmt.Sprintf("/bonus/%d", bonus.Number),
 		Images: ImageSet{
 			CarouselImage:   &bonus.ImageUrls.Carousel,
 			PortraitImage:   &bonus.ImageUrls.Portrait,
 			LandscapeImage:  &bonus.ImageUrls.Landscape,
 			BackgroundImage: &bonus.ImageUrls.Bg,
 		},
+		ItemType:  "bonus",
 		InnerItem: bonus,
 	}
 }
