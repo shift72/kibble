@@ -19,6 +19,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var renderAdmin bool
+
 // renderCmd represents the render command
 var renderCmd = &cobra.Command{
 	Use:   "render",
@@ -27,10 +29,11 @@ var renderCmd = &cobra.Command{
 
 Kibble is used to build and develop custom sites to run on the SHIFT72 platform.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		render.Render()
+		render.Render(renderAdmin)
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(renderCmd)
+	renderCmd.Flags().BoolVar(&renderAdmin, "admin", false, "Render using admin credentials")
 }

@@ -15,11 +15,13 @@ import (
 )
 
 // Render - render the files
-func Render() {
+func Render(runAsAdmin bool) {
 
 	datastore.Init()
 
-	cfg := config.LoadConfig()
+	cfg := config.LoadConfig(runAsAdmin)
+
+	api.CheckAdminCredentials(cfg, runAsAdmin)
 
 	site, err := api.LoadSite(cfg)
 	if err != nil {

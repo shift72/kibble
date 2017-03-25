@@ -72,5 +72,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	site.PopulateTaxonomyWithFilms("year", models.GetYear)
 	site.Taxonomies["year"].Alphabetical().Print()
 
+	itemIndex.PrintStats()
+
 	return site, nil
 }

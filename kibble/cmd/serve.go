@@ -21,6 +21,7 @@ import (
 
 var port int32
 var watch bool
+var serveAdmin bool
 
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
@@ -28,7 +29,7 @@ var serveCmd = &cobra.Command{
 	Short: "Serves the current site",
 	Long:  `Creates a local web server to test local template development.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		server.StartNew(port, watch)
+		server.StartNew(port, watch, serveAdmin)
 	},
 }
 
@@ -37,4 +38,5 @@ func init() {
 	serveCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
 	serveCmd.Flags().BoolP("launch", "l", false, "Launch the brower on start")
 	serveCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
+	serveCmd.Flags().BoolVar(&serveAdmin, "admin", false, "Serve using admin credentials")
 }

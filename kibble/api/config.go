@@ -22,7 +22,7 @@ func LoadConfig(cfg *models.Config) (models.ServiceConfig, error) {
 
 	for _, p := range paths {
 
-		data, err := Get(p)
+		data, err := Get(cfg, p)
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +53,7 @@ func LoadFeatureToggles(cfg *models.Config) (models.FeatureToggles, error) {
 
 	for _, p := range paths {
 
-		data, err := Get(p)
+		data, err := Get(cfg, p)
 		if err != nil {
 			return nil, err
 		}

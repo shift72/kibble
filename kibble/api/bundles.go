@@ -12,7 +12,7 @@ import (
 func LoadAllBundles(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
 
 	path := fmt.Sprintf("%s/services/meta/v1/bundles", cfg.SiteURL)
-	data, err := Get(path)
+	data, err := Get(cfg, path)
 	if err != nil {
 		return err
 	}

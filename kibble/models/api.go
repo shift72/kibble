@@ -11,9 +11,6 @@ type ServiceConfig map[string]string
 // FeatureToggles - store feature toggles
 type FeatureToggles map[string]bool
 
-// ItemIndex - an item index
-type ItemIndex map[string]map[string]GenericItem
-
 // Site -
 type Site struct {
 	Config     ServiceConfig
@@ -153,7 +150,7 @@ type Film struct {
 	Trailers []struct {
 		URL  string `json:"url"`
 		Type string `json:"type"`
-	} `json:"trailers"`
+	} `json:"trailers,omitempty"`
 	//TODO: add a bonus struct
 	Bonuses FilmBonusCollection `json:"bonuses"`
 	Cast    []struct {
@@ -170,7 +167,7 @@ type Film struct {
 	Overview    string    `json:"overview"`
 	Tagline     string    `json:"tagline"`
 	ReleaseDate time.Time `json:"release_date"`
-	Runtime     int       `json:"runtime"`
+	Runtime     float32   `json:"runtime"`
 	Countries   []string  `json:"countries"`
 	Languages   []string  `json:"languages"`
 	Genres      []string  `json:"genres"`

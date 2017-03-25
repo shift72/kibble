@@ -17,7 +17,7 @@ func LoadFilmSummary(cfg *models.Config) ([]models.FilmSummary, error) {
 
 	path := fmt.Sprintf("%s/services/meta/v2/film/index", cfg.SiteURL)
 
-	data, err := Get(path)
+	data, err := Get(cfg, path)
 	if err != nil {
 		return nil, err
 	}
@@ -55,49 +55,61 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 		strings.Trim(strings.Join(strings.Fields(fmt.Sprint(slugs)), ","), "[]"),
 		"/film/", "", -1)
 
+	fmt.Println("loading film count:", len(slugs))
+
 	// set index to empty for the items requested
 	for _, s := range slugs {
 		itemIndex.Set(s, models.Empty)
 	}
 
 	path := fmt.Sprintf("%s/services/meta/v2/film/%s/show_multiple", cfg.SiteURL, ids)
-	data, err := Get(path)
+	data, err := Get(cfg, path)
 	if err != nil {
 		return err
 	}
 
-	details := []models.Film{}
+	var details []json.RawMessage
 	err = json.Unmarshal([]byte(data), &details)
 	if err != nil {
+		fmt.Println("film.error", err)
+		fmt.Println(string(data))
 		return err
 	}
 
 	for i := 0; i < len(details); i++ {
 
-		// fmt.Println("film loaded", details[i].ID)
+		var film models.Film
+		err = json.Unmarshal(details[i], &film)
 
-		// fix subtitles
-		if details[i].SubtitlesRaw == nil {
-			// do nothing
-		} else if strings.HasPrefix(string(details[i].SubtitlesRaw), "\"") {
-			details[i].Subtitles = []string{string(details[i].SubtitlesRaw)}
-		} else if strings.HasPrefix(string(details[i].SubtitlesRaw), "[") {
-			details[i].Subtitles = strings.Split(strings.Trim(string(details[i].SubtitlesRaw), "[]"), ",")
-		}
-		details[i].TitleSlug = slug.Make(details[i].Title)
+		if err == nil {
 
-		// add film
-		site.Films = append(site.Films, details[i])
-		itemIndex.Set(details[i].Slug, details[i].GetGenericItem())
+			// fix subtitles
+			if film.SubtitlesRaw == nil {
+				// do nothing
+			} else if strings.HasPrefix(string(film.SubtitlesRaw), "\"") {
+				film.Subtitles = []string{string(film.SubtitlesRaw)}
+			} else if strings.HasPrefix(string(film.SubtitlesRaw), "[") {
+				film.Subtitles = strings.Split(strings.Trim(string(film.SubtitlesRaw), "[]"), ",")
+			}
+			film.TitleSlug = slug.Make(film.Title)
 
-		// add bonuses - supports linking to bonus entries (supported??)
-		for bonusIndex := 0; bonusIndex < len(details[i].Bonuses); bonusIndex++ {
-			itemIndex.Set(fmt.Sprintf("%s/bonus/%d", details[i].Slug, details[i].Bonuses[bonusIndex].Number), details[i].Bonuses[bonusIndex].GetGenericItem())
-		}
+			// add film
+			site.Films = append(site.Films, film)
+			itemIndex.Set(film.Slug, film.GetGenericItem())
 
-		// add Recommendations
-		for _, slug := range details[i].Recommendations {
-			itemIndex.Set(slug, models.Unresolved)
+			// add bonuses - supports linking to bonus entries (supported??)
+			for bonusIndex := 0; bonusIndex < len(film.Bonuses); bonusIndex++ {
+				itemIndex.Set(fmt.Sprintf("%s/bonus/%d", film.Slug, film.Bonuses[bonusIndex].Number), film.Bonuses[bonusIndex].GetGenericItem())
+			}
+
+			// add Recommendations
+			for _, slug := range film.Recommendations {
+				itemIndex.Set(slug, models.Unresolved)
+			}
+
+		} else {
+			fmt.Println("err", err)
+			fmt.Println("invalid data", string(details[i]))
 		}
 
 	}

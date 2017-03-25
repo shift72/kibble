@@ -14,7 +14,7 @@ func LoadBios(cfg *models.Config, itemIndex models.ItemIndex) (*models.Bios, err
 
 	path := fmt.Sprintf("%s/services/meta/v1/bios", cfg.SiteURL)
 
-	data, err := Get(path)
+	data, err := Get(cfg, path)
 	if err != nil {
 		return nil, err
 	}

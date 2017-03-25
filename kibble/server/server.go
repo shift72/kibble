@@ -21,11 +21,13 @@ import (
 var site *models.Site
 
 // StartNew - start a new server
-func StartNew(port int32, watch bool) {
+func StartNew(port int32, watch bool, runAsAdmin bool) {
 
 	datastore.Init()
 
-	cfg := config.LoadConfig()
+	cfg := config.LoadConfig(runAsAdmin)
+
+	api.CheckAdminCredentials(cfg, runAsAdmin)
 
 	var err error
 	site, err = api.LoadSite(cfg)

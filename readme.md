@@ -21,6 +21,10 @@
 * model
    * film - done
      * bonus - done
+   * taxonomies - done
+     * cast - done
+     * genre - done
+     * year - done
    * pages - done
    * page features - done
    * bundles - done
@@ -38,6 +42,10 @@
 * helpers
    * route renders - done
    * canonical route - done
+* admin
+  * render as admin
+  * check admin token is valid
+  * request user to relogin - ??
 
 
 ## TODO
@@ -46,16 +54,9 @@
     * subtitles -
     * pagination - ??
     * features - ?? collections ??
-    * taxonomies -
-      * cast -
-      * genre -
-      * year -
     * json? - what would choice tv tvguide do?
  * shortcodes - these need to happen as part of the markdown process
  * init
     * create a base implementation
  * upload
  * diff / merge ??
- * admin
-    * unpublished / published
-    * requesting using authtoken

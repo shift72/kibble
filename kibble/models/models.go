@@ -56,4 +56,10 @@ type Config struct {
 	Languages       map[string]string `json:"languages"`
 	Routes          []Route           `json:"routes"`
 	SiteURL         string            `json:"siteUrl"`
+	Private         PrivateConfig     `json:"-"`
+}
+
+// PrivateConfig - config loaded from
+type PrivateConfig struct {
+	APIKey string `json:"apikey"`
 }

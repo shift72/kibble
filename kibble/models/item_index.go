@@ -12,6 +12,9 @@ var (
 	Unresolved = GenericItem{Slug: "unresolved"}
 )
 
+// ItemIndex - an item index
+type ItemIndex map[string]map[string]GenericItem
+
 // IsResolved -
 func (genericItem GenericItem) IsResolved() bool {
 	return !(genericItem == Empty || genericItem == Unresolved)
@@ -24,11 +27,23 @@ func (genericItem GenericItem) IsResolved() bool {
 //   Unresolved - found but has not been requested
 //
 
+func getSlugType(slug string) string {
+	slugParts := strings.Split(slug, "/")
+
+	// film bonus
+	if len(slugParts) == 5 {
+		return slugParts[1] + "-" + slugParts[3]
+	}
+	//TODO: tv season bonus
+
+	// film
+	return slugParts[1]
+}
+
 // Set - an item
 func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
 
-	slugParts := strings.Split(slug, "/")
-	slugType := slugParts[1]
+	slugType := getSlugType(slug)
 
 	index, ok := itemIndex[slugType]
 	if !ok {
@@ -46,8 +61,7 @@ func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
 // Get - get the slug
 func (itemIndex ItemIndex) Get(slug string) (item GenericItem) {
 
-	slugParts := strings.Split(slug, "/")
-	slugType := slugParts[1]
+	slugType := getSlugType(slug)
 
 	t, ok := itemIndex[slugType]
 	if ok {
@@ -146,8 +160,8 @@ func (itemIndex ItemIndex) PrintStats() {
 				loadedCount++
 			}
 		}
-		fmt.Printf("type: %s\t%d/%d\n", t, loaded, count)
+		fmt.Printf("type: %s\t\t%d/%d\n", t, loaded, count)
 	}
 
-	fmt.Printf("total: \t\t%d/%d\n", loadedCount, totalCount)
+	fmt.Printf("total: \t\t\t%d/%d\n", loadedCount, totalCount)
 }
