@@ -61,13 +61,8 @@ func credentials(cfg *models.Config) (string, string) {
 	username, _ := reader.ReadString('\n')
 
 	fmt.Print("Enter Password: ")
-	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
-	if err == nil {
-		fmt.Println("\nPassword typed: " + string(bytePassword))
-	}
-	password := string(bytePassword)
-
-	return strings.TrimSpace(username), strings.TrimSpace(password)
+	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
+	return strings.TrimSpace(username), strings.TrimSpace(string(bytePassword))
 }
 
 // IsAdmin - check auth token is valid

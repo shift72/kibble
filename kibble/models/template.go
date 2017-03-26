@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/CloudyKit/jet"
+	"github.com/indiereign/shift72-kibble/kibble/version"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/russross/blackfriday"
@@ -13,7 +14,7 @@ import (
 // CreateTemplateView - create a template view
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx RenderContext, templatePath string) *jet.Set {
 	view := jet.NewHTMLSet(templatePath)
-	view.AddGlobal("version", "v1.1.145")
+	view.AddGlobal("version", version.Version)
 	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
 		return routeRegistry.GetRouteForEntity(ctx, entity, "")
 	})

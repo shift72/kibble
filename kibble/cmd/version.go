@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/indiereign/shift72-kibble/kibble/version"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +27,7 @@ var versionCmd = &cobra.Command{
 	Short: "Version information",
 	Long:  `.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("SHIFT72 Kibble - v0.1")
+		fmt.Printf("SHIFT72 Kibble - %s\n", version.Version)
 	},
 }
 
