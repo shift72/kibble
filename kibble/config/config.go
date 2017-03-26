@@ -36,12 +36,13 @@ func LoadConfig(runAsAdmin bool) *models.Config {
 	fmt.Printf("languages:\t%d\n", len(cfg.Languages))
 
 	if runAsAdmin {
-		loadPrivateConfig(&cfg)
+		LoadPrivateConfig(&cfg)
 	}
 	return &cfg
 }
 
-func loadPrivateConfig(cfg *models.Config) {
+// LoadPrivateConfig - load any private configuratio
+func LoadPrivateConfig(cfg *models.Config) {
 
 	_, err := os.Stat(privatePath)
 	if os.IsNotExist(err) {
@@ -62,6 +63,22 @@ func loadPrivateConfig(cfg *models.Config) {
 	}
 
 	cfg.Private = private
+}
+
+// SavePrivateConfig - saves any private config
+func SavePrivateConfig(cfg *models.Config) {
+
+	data, err := json.Marshal(cfg.Private)
+	if err != nil {
+		fmt.Printf("File error: %v\n", err)
+		os.Exit(1)
+	}
+
+	err = ioutil.WriteFile(privatePath, data, 0777)
+	if err != nil {
+		fmt.Printf("File error: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 func loadLanguages(cfg *models.Config) {

@@ -1,5 +1,5 @@
 {
-    "memo": "906bcde9dbd77e1f44415e67fbad7e13b35abddcb3401484aabe4347b58c6bef",
+    "memo": "3e06a02f6184bf26acf62dc56822bb913a8f255e485b9365f89e84f73180e508",
     "projects": [
         {
             "name": "github.com/CloudyKit/fastprinter",
@@ -225,6 +225,14 @@
             ]
         },
         {
+            "name": "golang.org/x/crypto",
+            "branch": "master",
+            "revision": "459e26527287adbc2adcc5d0d49abff9a5f315a7",
+            "packages": [
+                "ssh/terminal"
+            ]
+        },
+        {
             "name": "golang.org/x/net",
             "branch": "master",
             "revision": "10c134ea0df15f7e34d789338c7a2d76cc7a3ab9",
@@ -252,6 +260,14 @@
                 "transform",
                 "unicode/cldr",
                 "unicode/norm"
+            ]
+        },
+        {
+            "name": "gopkg.in/fsnotify.v1",
+            "version": "v1.4.2",
+            "revision": "629574ca2a5df945712d3079857300b5e4da0236",
+            "packages": [
+                "."
             ]
         },
         {

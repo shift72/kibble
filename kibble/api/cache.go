@@ -1,15 +1,21 @@
 package api
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
+	"syscall"
 	"time"
 
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
+	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var cache = httpcache.Cache(httpcache.NewMemoryCache())
@@ -26,7 +32,13 @@ func CheckAdminCredentials(cfg *models.Config, runAsAdmin bool) {
 
 		if !isAdmin {
 			fmt.Println("Error: api key has expired")
-			os.Exit(-2)
+
+			err = login(cfg)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(-2)
+			}
+
 		}
 	}
 
@@ -40,6 +52,22 @@ func setCache(runAsAdmin bool) {
 	} else {
 		cache = diskcache.New(".kibble/cache")
 	}
+}
+
+func credentials(cfg *models.Config) (string, string) {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Printf("Enter Username for %s: ", cfg.SiteURL)
+	username, _ := reader.ReadString('\n')
+
+	fmt.Print("Enter Password: ")
+	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+	if err == nil {
+		fmt.Println("\nPassword typed: " + string(bytePassword))
+	}
+	password := string(bytePassword)
+
+	return strings.TrimSpace(username), strings.TrimSpace(password)
 }
 
 // IsAdmin - check auth token is valid
@@ -98,4 +126,48 @@ func Get(cfg *models.Config, url string) ([]byte, error) {
 	}
 
 	return ioutil.ReadAll(resp.Body)
+}
+
+func login(cfg *models.Config) error {
+
+	username, password := credentials(cfg)
+
+	body := fmt.Sprintf("{\"user\":{\"email\":\"%s\",\"password\":\"%s\"}}", username, password)
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/services/users/auth/sign_in", cfg.SiteURL), strings.NewReader(body))
+	if err != nil {
+		return err
+	}
+	req.Header.Add("Content-Type", "application/json")
+
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("login failed status: %d", resp.StatusCode)
+	}
+
+	b, _ := ioutil.ReadAll(resp.Body)
+
+	var result struct {
+		APIKey string `json:"auth_token"`
+	}
+
+	err = json.Unmarshal(b, &result)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("login successful")
+
+	cfg.Private.APIKey = result.APIKey
+	config.SavePrivateConfig(cfg)
+
+	return nil
 }
