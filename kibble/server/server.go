@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os/exec"
 	"time"
@@ -63,12 +62,15 @@ func StartNew(port int32, watch bool, runAsAdmin bool) {
 		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/index.html", port))
 		err = cmd.Start()
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
 		}
 	}()
 
 	fmt.Printf("listening on %d\n", port)
-	http.ListenAndServe(fmt.Sprintf(":%d", port), r)
+	err = http.ListenAndServe(fmt.Sprintf(":%d", port), r)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func createRoutes(r chi.Router, routeRegistry *models.RouteRegistry, cfg *models.Config) {

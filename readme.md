@@ -45,7 +45,7 @@
 * admin
   * render as admin
   * check admin token is valid
-  * request user to relogin - ??
+  * request user to (re)login
 
 
 ## TODO
