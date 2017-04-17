@@ -49,11 +49,14 @@ func (s Site) PopulateTaxonomyWithFilms(taxonomy string, finder func(*Film) []st
 
 	for _, f := range s.Films {
 		for _, key := range finder(&f) {
-			_, ok := t[key]
-			if !ok {
-				t[key] = make(GenericItems, 0)
+			// omit any empty keys
+			if key != "" {
+				_, ok := t[key]
+				if !ok {
+					t[key] = make(GenericItems, 0)
+				}
+				t[key] = append(t[key], f.GetGenericItem())
 			}
-			t[key] = append(t[key], f.GetGenericItem())
 		}
 	}
 }

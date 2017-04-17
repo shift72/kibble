@@ -70,7 +70,9 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	site.LinkItems(itemIndex)
 
 	site.PopulateTaxonomyWithFilms("year", models.GetYear)
-	site.Taxonomies["year"].Alphabetical().Print()
+	site.PopulateTaxonomyWithFilms("genre", models.GetGenres)
+	site.PopulateTaxonomyWithFilms("cast", models.GetCast)
+	site.PopulateTaxonomyWithFilms("country", models.GetCountries)
 
 	itemIndex.PrintStats()
 
