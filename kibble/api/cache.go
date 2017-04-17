@@ -15,6 +15,8 @@ import (
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/pkg/errors"
+
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -38,7 +40,6 @@ func CheckAdminCredentials(cfg *models.Config, runAsAdmin bool) {
 				fmt.Println(err)
 				os.Exit(-2)
 			}
-
 		}
 	}
 
@@ -46,7 +47,6 @@ func CheckAdminCredentials(cfg *models.Config, runAsAdmin bool) {
 }
 
 func setCache(runAsAdmin bool) {
-
 	if runAsAdmin {
 		cache = diskcache.New(".kibble/cache/admin")
 	} else {
@@ -131,7 +131,7 @@ func login(cfg *models.Config) error {
 
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/services/users/auth/sign_in", cfg.SiteURL), strings.NewReader(body))
 	if err != nil {
-		return err
+		return errors.Wrap(err, "login failed")
 	}
 	req.Header.Add("Content-Type", "application/json")
 
@@ -140,12 +140,12 @@ func login(cfg *models.Config) error {
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "login failed")
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("login failed status: %d", resp.StatusCode)
+		return errors.Errorf("\nlogin failed. status: %d", resp.StatusCode)
 	}
 
 	b, _ := ioutil.ReadAll(resp.Body)
@@ -156,7 +156,7 @@ func login(cfg *models.Config) error {
 
 	err = json.Unmarshal(b, &result)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "login failed")
 	}
 
 	fmt.Println("login successful")

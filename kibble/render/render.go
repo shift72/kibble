@@ -15,7 +15,7 @@ import (
 )
 
 // Render - render the files
-func Render(runAsAdmin bool) {
+func Render(runAsAdmin bool, verbose bool) {
 
 	datastore.Init()
 
@@ -33,7 +33,7 @@ func Render(runAsAdmin bool) {
 
 	renderer := FileRenderer{
 		rootPath:    "./.kibble/build",
-		showSummary: false,
+		showSummary: verbose,
 	}
 	renderer.Initialise()
 

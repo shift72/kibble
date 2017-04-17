@@ -8,19 +8,13 @@ import (
 	"github.com/pressly/chi"
 )
 
-// Route - represents a route for rendering and
-type Route struct {
-	Name               string       `json:"name"`
-	URLPath            string       `json:"urlPath"`
-	TemplatePath       string       `json:"templatePath"`
-	DataSource         string       `json:"datasource"`
-	ResolvedDataSouce  DataSource   `json:"-"`
-	ResolvedEntityType reflect.Type `json:"-"`
-}
-
-// RouteRegistry - stores a list of routes
-type RouteRegistry struct {
-	routes []*Route
+// Pagination -
+type Pagination struct {
+	Index       int
+	Size        int
+	Total       int
+	PreviousURL string
+	NextURL     string
 }
 
 // DataSource - provides a set of data for querying and iterating over

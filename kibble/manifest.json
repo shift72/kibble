@@ -18,6 +18,9 @@
         "github.com/nicksnyder/go-i18n": {
             "branch": "master"
         },
+        "github.com/pkg/errors": {
+            "version": ">=0.8.0, <1.0.0"
+        },
         "github.com/pressly/chi": {
             "branch": "master"
         },

@@ -1,0 +1,36 @@
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/CloudyKit/jet"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/gosimple/slug"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/gregjones/httpcache"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/microcosm-cc/bluemonday"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/nicksnyder/go-i18n"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/pressly/chi"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/russross/blackfriday"
+
+[[dependencies]]
+  branch = "master"
+  name = "github.com/spf13/cobra"
+
+[[dependencies]]
+  branch = "master"
+  name = "gopkg.in/fsnotify.v1"
