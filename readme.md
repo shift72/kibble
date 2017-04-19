@@ -33,6 +33,8 @@
      * humans.txt - done
    * config / toggles - done
    * navigation - done
+   * pagination
+      * pages - done
 * watch files / live reload - done
 * cache - done
 * support markdown - done
@@ -52,7 +54,8 @@
  * model
     * tv -
     * subtitles -
-    * pagination - ??
+    * pagination
+      * language routes
     * features - ?? collections ??
     * json? - what would choice tv tvguide do?
  * shortcodes - these need to happen as part of the markdown process

@@ -2,6 +2,8 @@ package render
 
 import (
 	"fmt"
+	"net/http"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -12,7 +14,48 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/nicksnyder/go-i18n/i18n"
+	"github.com/pressly/chi"
+	"github.com/pressly/chi/middleware"
 )
+
+// Watch -
+func Watch(runAsAdmin bool, verbose bool, port int32) {
+
+	liveReload := LiveReload{}
+
+	r := chi.NewRouter()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.CloseNotify)
+	r.Use(liveReload.GetMiddleware())
+	r.Use(StaticMiddleware())
+
+	r.Get("/kibble-version", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("test"))
+	})
+	r.Get("/kibble/live_reload", liveReload.Handler)
+
+	liveReload.StartLiveReload(func() {
+		Render(runAsAdmin, verbose)
+	})
+
+	// launch the browser
+	go func() {
+		time.Sleep(1000)
+		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/index.html", port))
+		err := cmd.Start()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	fmt.Printf("listening on %d\n", port)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), r)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
 
 // Render - render the files
 func Render(runAsAdmin bool, verbose bool) {
@@ -70,7 +113,6 @@ func Render(runAsAdmin bool, verbose bool) {
 
 			data := jet.VarMap{}
 			data.Set("site", site)
-
 			renderer.Render(route, filePath, data)
 		}
 

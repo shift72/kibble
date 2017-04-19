@@ -19,8 +19,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var port int32
-var watch bool
+// var port int32
+// var watch bool
 var serverRunAsAdmin bool
 
 // serveCmd represents the serve command
@@ -34,8 +34,8 @@ var serveCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(serveCmd)
-	serveCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
-	serveCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
-	serveCmd.Flags().BoolVar(&serverRunAsAdmin, "admin", false, "Serve using admin credentials")
+	// RootCmd.AddCommand(serveCmd)
+	// serveCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
+	// serveCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
+	// serveCmd.Flags().BoolVar(&serverRunAsAdmin, "admin", false, "Serve using admin credentials")
 }
