@@ -12,12 +12,13 @@ import (
 
 const (
 	privatePath = "./.kibble/private.json"
+	sitePath    = "./site.json"
 )
 
 // LoadConfig - loaded the config
 func LoadConfig(runAsAdmin bool) *models.Config {
 
-	file, err := ioutil.ReadFile("./site.json")
+	file, err := ioutil.ReadFile(sitePath)
 	if err != nil {
 		fmt.Printf("File error: %v\n", err)
 		os.Exit(1)
@@ -39,6 +40,21 @@ func LoadConfig(runAsAdmin bool) *models.Config {
 		LoadPrivateConfig(&cfg)
 	}
 	return &cfg
+}
+
+func SaveConfig(cfg *models.Config) {
+
+	data, err := json.Marshal(cfg)
+	if err != nil {
+		fmt.Printf("File error: %v\n", err)
+		os.Exit(1)
+	}
+
+	err = ioutil.WriteFile(sitePath, data, 0777)
+	if err != nil {
+		fmt.Printf("File error: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 // LoadPrivateConfig - load any private configuratio

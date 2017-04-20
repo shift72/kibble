@@ -13,9 +13,7 @@ func StaticMiddleware() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 
-			pwd, _ := os.Getwd()
-
-			path := path.Join(pwd, "./.kibble/build", r.RequestURI)
+			path := path.Join(rootPath, r.RequestURI)
 
 			// check if the request + jet file exists
 			_, err := os.Stat(path)

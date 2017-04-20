@@ -3,7 +3,9 @@ package render
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -17,6 +19,8 @@ import (
 	"github.com/pressly/chi"
 	"github.com/pressly/chi/middleware"
 )
+
+var rootPath = "./.kibble/build"
 
 // Watch -
 func Watch(runAsAdmin bool, verbose bool, port int32) {
@@ -42,7 +46,10 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 
 	// launch the browser
 	go func() {
-		time.Sleep(1000)
+		time.Sleep(500 * time.Millisecond)
+
+		waitForIndexFile()
+
 		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/index.html", port))
 		err := cmd.Start()
 		if err != nil {
@@ -54,6 +61,18 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), r)
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+func waitForIndexFile() {
+	path := path.Join(rootPath, "index.html")
+
+	for i := 0; i < 5; i++ {
+		time.Sleep(500 * time.Millisecond)
+		_, err := os.Stat(path)
+		if !os.IsNotExist(err) {
+			break
+		}
 	}
 }
 
@@ -75,7 +94,7 @@ func Render(runAsAdmin bool, verbose bool) {
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
 	renderer := FileRenderer{
-		rootPath:    "./.kibble/build",
+		rootPath:    rootPath,
 		showSummary: verbose,
 	}
 	renderer.Initialise()
@@ -128,5 +147,5 @@ func Render(runAsAdmin bool, verbose bool) {
 
 	stop := time.Now()
 
-	fmt.Printf("\nRendered: %s", stop.Sub(start))
+	fmt.Printf("\nRendered: %s\n", stop.Sub(start))
 }

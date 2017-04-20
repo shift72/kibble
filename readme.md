@@ -4,9 +4,7 @@
 ## Usage
 ```kibble config``` - configure kibble to use the api key when requesting req
 
-```kibble server --watch``` - starts a server
-
-```kibble render``` - sample render, this is what will be deployed
+```kibble render --watch``` - sample render, this is what will be deployed
 
 ```kibble help``` - help is here
 
@@ -15,7 +13,7 @@
 * Install dependencies ```dep ensure -update```
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
-
+  
 
 ## Supports
 * model
@@ -45,10 +43,13 @@
    * route renders - done
    * canonical route - done
 * admin
-  * render as admin
-  * check admin token is valid
-  * request user to (re)login
-
+  * render as admin - done
+  * check admin token is valid - done
+  * request user to (re)login - done
+* init
+  * create a base implementation - done
+  * find repo based on - done
+  * clone the repo - done
 
 ## TODO
  * model
@@ -59,7 +60,14 @@
     * features - ?? collections ??
     * json? - what would choice tv tvguide do?
  * shortcodes - these need to happen as part of the markdown process
- * init
-    * create a base implementation
+ * download
+    * build and release on github
+    *
+    *
+    
  * upload
+  * zip - https://godoc.org/github.com/pierrre/archivefile/zip
+  * build process ?? sass / less
+  * api to upload the file
+
  * diff / merge ??
