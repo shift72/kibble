@@ -30,7 +30,6 @@ func StaticMiddleware() func(next http.Handler) http.Handler {
 			}
 
 			w.Write(b)
-			w.WriteHeader(http.StatusOK)
 		}
 		return http.HandlerFunc(fn)
 	}
