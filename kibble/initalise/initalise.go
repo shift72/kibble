@@ -3,6 +3,7 @@ package initalise
 import (
 	"bufio"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strconv"
@@ -10,12 +11,23 @@ import (
 )
 
 // NewSite - create a new site
-func NewSite() {
+func NewSite(force bool) {
 
-	//TODO: add check for empty directory
+	if !force {
+		r, err := ioutil.ReadDir(".")
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		if len(r) > 0 {
+			fmt.Println("Aborted: the current directory is not empty. Use --force to skip this check")
+			os.Exit(1)
+		}
+	}
 
 	// find template to clone
-	fmt.Println("initalising new site...")
+	fmt.Println("Searching for templates to clone...")
 
 	results, err := GetTemplates()
 	if err != nil {
@@ -23,32 +35,29 @@ func NewSite() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("found %d results\n", results.TotalCount)
+	fmt.Printf("Choose a template:\n")
 	for i, r := range results.Items {
 		fmt.Printf("%d) %s - %s owner:%s stars:%d \n", i+1, r.Name, r.Description, r.Owner.Login, r.StargazersCount)
 	}
 
+	// select a template
 	reader := bufio.NewReader(os.Stdin)
 	selectedID := 0
-
 	for selectedID == 0 {
-		fmt.Printf("Choose a template, select a value in the range (1-%d): ", results.TotalCount)
+		fmt.Printf("Select a value in the range (1-%d): ", results.TotalCount)
 		rawID, _ := reader.ReadString('\n')
 		parsedID, err := strconv.Atoi(strings.Trim(rawID, "\n"))
-		if err != nil {
-			fmt.Println("invalid selection")
-		}
-
-		if parsedID >= 1 && parsedID <= results.TotalCount {
-			selectedID = parsedID
+		if err != nil || parsedID < 1 || parsedID > results.TotalCount {
+			fmt.Println("invalid, try again")
 		} else {
-			fmt.Println("invalid selection")
+			selectedID = parsedID
 		}
 	}
 
 	cloneURL := results.Items[selectedID-1].CloneURL
-	fmt.Printf("cloning from %s\n", cloneURL)
+	fmt.Printf("\nCloning from %s\n", cloneURL)
 
+	// clone does not include the git files (windows check?)
 	// git --git-dir=/dev/null clone --depth=1 /url/to/repo
 	cmd := exec.Command("git", "--git-dir=/dev/null", "clone", "--depth=1", cloneURL, ".")
 	err = cmd.Start()
@@ -64,5 +73,5 @@ func NewSite() {
 	fmt.Printf("    `git init`\n")
 	fmt.Printf("    `git remote add origin https://github.com/user/repo.git`\n")
 
-	fmt.Printf("\nYou can now run `kibble render --watch` to see your site\n")
+	fmt.Printf(" 3. you can now run `kibble render --watch` to see your site\n")
 }
