@@ -45,7 +45,7 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 	if ok {
 		// special case for the home page
 		if o.PageType == "homepage" {
-			return "/index.html"
+			return ctx.RoutePrefix + "/index.html"
 		}
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.Slug, 1)
 	}

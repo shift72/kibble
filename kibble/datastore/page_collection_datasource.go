@@ -77,7 +77,7 @@ func (ds *PageCollectionDataSource) Iterator(ctx models.RenderContext, renderer 
 			vars.Set("pages", clonedPages)
 			vars.Set("pagination", ctx.Route.Pagination)
 			vars.Set("site", ctx.Site)
-			renderer.Render(ctx.Route, path, vars)
+			renderer.Render(ctx.Route, ctx.RoutePrefix+path, vars)
 		}
 	} else {
 
@@ -96,13 +96,13 @@ func (ds *PageCollectionDataSource) Iterator(ctx models.RenderContext, renderer 
 		vars.Set("pages", clonedPages)
 		vars.Set("pagination", ctx.Route.Pagination)
 		vars.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, ctx.Route.URLPath, vars)
+		renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 	}
 }
 
 // GetRouteForEntity - get the route
 func (ds *PageCollectionDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	return ctx.Route.URLPath
+	return ctx.RoutePrefix + ctx.Route.URLPath
 }
 
 // GetRouteForSlug - get the route

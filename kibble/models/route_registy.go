@@ -85,7 +85,7 @@ func (r *RouteRegistry) GetRouteForSlug(ctx RenderContext, slug string, routeNam
 	ctx.Route = r.FindBySlugAndRouteName(slug, routeName)
 
 	if ctx.Route != nil {
-		// fmt.Printf("Found route, name:%s, path: %s\n", foundRoute.Name, foundRoute.URLPath)
+		//fmt.Printf("Found route name:%s prefix:%s path: %s\n", ctx.Route.Name, ctx.RoutePrefix, ctx.Route.URLPath)
 		return ctx.Route.ResolvedDataSouce.GetRouteForSlug(ctx, slug)
 	}
 

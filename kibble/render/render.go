@@ -112,12 +112,12 @@ func Render(runAsAdmin bool, verbose bool) {
 			Language:    lang,
 		}
 
-		// set the template view
-		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, "./")
-
 		if lang != cfg.DefaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
 		}
+
+		// set the template view
+		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, "./")
 
 		// render static files
 		files, _ := filepath.Glob("*.jet")
@@ -136,7 +136,6 @@ func Render(runAsAdmin bool, verbose bool) {
 		for _, route := range routeRegistry.GetAll() {
 
 			ctx.Route = route
-
 			if route.ResolvedDataSouce != nil {
 				route.ResolvedDataSouce.Iterator(ctx, renderer)
 			}

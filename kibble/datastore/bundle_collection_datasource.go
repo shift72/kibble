@@ -31,13 +31,12 @@ func (ds *BundleCollectionDataSource) Iterator(ctx models.RenderContext, rendere
 	vars := make(jet.VarMap)
 	vars.Set("bundles", clonedBundles)
 	vars.Set("site", ctx.Site)
-	renderer.Render(ctx.Route, ctx.Route.URLPath, vars)
-
+	renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 }
 
 // GetRouteForEntity - get the route
 func (ds *BundleCollectionDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	return ctx.Route.URLPath
+	return ctx.RoutePrefix + ctx.Route.URLPath
 }
 
 // GetRouteForSlug - get the route

@@ -26,8 +26,9 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 	})
 	view.AddGlobal("canonicalRouteToSlug", func(slug string) string {
 		// override the route prefix
-		ctx.RoutePrefix = ""
-		return routeRegistry.GetRouteForSlug(ctx, slug, "")
+		ctxClone := ctx
+		ctxClone.RoutePrefix = ""
+		return routeRegistry.GetRouteForSlug(ctxClone, slug, "")
 	})
 	view.AddGlobal("routeToSlugWithName", func(slug string, routeName string) string {
 		return routeRegistry.GetRouteForSlug(ctx, slug, routeName)
