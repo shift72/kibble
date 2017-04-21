@@ -1,4 +1,4 @@
-memo = "131f7f947abf920aa2f99355bc7de88d8031348ec87ab1e6b5584dece4cef864"
+memo = "6cd788a017beee5c7f678db94cc28ecce094885872d4eee9f71d88b72f7c6068"
 
 [[projects]]
   branch = "master"
@@ -69,7 +69,7 @@ memo = "131f7f947abf920aa2f99355bc7de88d8031348ec87ab1e6b5584dece4cef864"
 [[projects]]
   branch = "master"
   name = "github.com/pressly/chi"
-  packages = [".","middleware","render"]
+  packages = [".","middleware"]
   revision = "bb4b58688bb945cee02713c22c06c4ef27c5bf61"
 
 [[projects]]

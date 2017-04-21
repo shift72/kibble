@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
@@ -27,6 +28,10 @@ func (c FileRenderer) Initialise() {
 func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
 
 	fullPath := c.rootPath + filePath
+	if strings.HasSuffix(fullPath, "/") {
+		fullPath = fullPath + "index.html"
+	}
+
 	dirPath := filepath.Dir(fullPath)
 
 	if c.showSummary {

@@ -4,6 +4,10 @@
   name = "github.com/CloudyKit/jet"
 
 [[dependencies]]
+  name = "github.com/fsnotify/fsnotify"
+  version = "^1.4.2"
+
+[[dependencies]]
   branch = "master"
   name = "github.com/gosimple/slug"
 

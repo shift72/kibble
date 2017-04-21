@@ -2,14 +2,12 @@ package datastore
 
 import (
 	"fmt"
-	"net/http"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/pressly/chi"
 )
 
 // PageCollectionDataSource - a list of all Pages
@@ -23,20 +21,6 @@ func (ds *PageCollectionDataSource) GetName() string {
 // GetEntityType - Get the entity type
 func (ds *PageCollectionDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf([]models.Page{})
-}
-
-// Query - return the list of all Pages
-func (ds *PageCollectionDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
-
-	clonedPages := make([]*models.Page, len(ctx.Site.Pages))
-	for i, f := range ctx.Site.Pages {
-		clonedPages[i] = transformPage(f)
-	}
-
-	vars := make(jet.VarMap)
-	vars.Set("pages", clonedPages)
-	vars.Set("site", ctx.Site)
-	return vars, nil
 }
 
 // Iterator - return a list of all Pages, iteration of 1
@@ -134,10 +118,4 @@ func (ds *PageCollectionDataSource) IsSlugMatch(slug string) bool {
 func transformPage(f models.Page) *models.Page {
 	f.Content = models.ApplyContentTransforms(f.Content)
 	return &f
-}
-
-// RegisterRoutes - add the routes to the chi router
-func (ds *PageCollectionDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
-	router.Get(route.URLPath, handler)
-	router.Get("/:lang"+route.URLPath, handler)
 }

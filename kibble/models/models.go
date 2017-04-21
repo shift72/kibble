@@ -1,11 +1,9 @@
 package models
 
 import (
-	"net/http"
 	"reflect"
 
 	"github.com/CloudyKit/jet"
-	"github.com/pressly/chi"
 )
 
 // Pagination -
@@ -21,12 +19,10 @@ type Pagination struct {
 type DataSource interface {
 	GetName() string
 	GetEntityType() reflect.Type
-	Query(ctx RenderContext, req *http.Request) (jet.VarMap, error)
 	Iterator(ctx RenderContext, renderer Renderer)
 	IsSlugMatch(slug string) bool
 	GetRouteForEntity(ctx RenderContext, entity interface{}) string
 	GetRouteForSlug(ctx RenderContext, slug string) string
-	RegisterRoutes(router chi.Router, route *Route, handler func(w http.ResponseWriter, req *http.Request))
 	//TODO: ValidateRoute - check that the route contains valid tokens
 }
 

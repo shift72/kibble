@@ -1,11 +1,13 @@
 package render
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
 )
+
+var probePaths = []string{"", "index.html"}
 
 // StaticMiddleware -
 func StaticMiddleware() func(next http.Handler) http.Handler {
@@ -13,16 +15,29 @@ func StaticMiddleware() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
 
-			path := path.Join(rootPath, r.RequestURI)
+			foundPath := ""
 
 			// check if the request + jet file exists
-			_, err := os.Stat(path)
-			if os.IsNotExist(err) {
+			for _, probe := range probePaths {
+				path := fmt.Sprintf("%s%s%s", rootPath, r.RequestURI, probe)
+				stat, err := os.Stat(path)
+
+				if stat != nil && stat.IsDir() {
+					continue
+				}
+
+				if !os.IsNotExist(err) {
+					foundPath = path
+					break
+				}
+			}
+
+			if foundPath == "" {
 				next.ServeHTTP(w, r)
 				return
 			}
 
-			b, err := ioutil.ReadFile(path)
+			b, err := ioutil.ReadFile(foundPath)
 			if err != nil {
 				w.Write([]byte(err.Error()))
 				w.WriteHeader(http.StatusInternalServerError)

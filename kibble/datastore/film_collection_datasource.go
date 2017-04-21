@@ -1,12 +1,10 @@
 package datastore
 
 import (
-	"net/http"
 	"reflect"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/pressly/chi"
 )
 
 // FilmCollectionDataSource - a list of all films
@@ -20,20 +18,6 @@ func (ds *FilmCollectionDataSource) GetName() string {
 // GetEntityType - Get the entity type
 func (ds *FilmCollectionDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf([]models.Film{})
-}
-
-// Query - return the list of all films
-func (ds *FilmCollectionDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
-
-	clonedFilms := make([]*models.Film, len(ctx.Site.Films))
-	for i, f := range ctx.Site.Films {
-		clonedFilms[i] = transformFilm(f)
-	}
-
-	vars := make(jet.VarMap)
-	vars.Set("films", clonedFilms)
-	vars.Set("site", ctx.Site)
-	return vars, nil
 }
 
 // Iterator - return a list of all films, iteration of 1
@@ -69,10 +53,4 @@ func (ds *FilmCollectionDataSource) IsSlugMatch(slug string) bool {
 func transformFilm(f models.Film) *models.Film {
 	f.Overview = models.ApplyContentTransforms(f.Overview)
 	return &f
-}
-
-// RegisterRoutes - add the routes to the chi router
-func (ds *FilmCollectionDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
-	router.Get(route.URLPath, handler)
-	router.Get("/:lang"+route.URLPath, handler)
 }

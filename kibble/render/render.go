@@ -37,9 +37,6 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 	r.Use(liveReload.GetMiddleware())
 	r.Use(StaticMiddleware())
 
-	r.Get("/kibble-version", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("test"))
-	})
 	r.Get("/kibble/live_reload", liveReload.Handler)
 
 	liveReload.StartLiveReload(func() {
@@ -52,7 +49,7 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 
 		waitForIndexFile()
 
-		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/index.html", port))
+		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/", port))
 		err := cmd.Start()
 		if err != nil {
 			fmt.Println(err)
@@ -125,7 +122,6 @@ func Render(runAsAdmin bool, verbose bool) {
 		// render static files
 		files, _ := filepath.Glob("*.jet")
 		for _, f := range files {
-
 			filePath := fmt.Sprintf("%s/%s", ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
 
 			route := &models.Route{

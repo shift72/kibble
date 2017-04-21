@@ -1,12 +1,10 @@
 package datastore
 
 import (
-	"net/http"
 	"reflect"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/pressly/chi"
 )
 
 // BundleCollectionDataSource - a list of all bundles
@@ -20,20 +18,6 @@ func (ds *BundleCollectionDataSource) GetName() string {
 // GetEntityType - Get the entity type
 func (ds *BundleCollectionDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf([]models.Bundle{})
-}
-
-// Query - return the list of all bundles
-func (ds *BundleCollectionDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
-
-	clonedBundles := make([]*models.Bundle, len(ctx.Site.Bundles))
-	for i, f := range ctx.Site.Bundles {
-		clonedBundles[i] = transformBundle(f)
-	}
-
-	vars := make(jet.VarMap)
-	vars.Set("bundles", clonedBundles)
-	vars.Set("site", ctx.Site)
-	return vars, nil
 }
 
 // Iterator - return a list of all bundles, iteration of 1
@@ -69,10 +53,4 @@ func (ds *BundleCollectionDataSource) IsSlugMatch(slug string) bool {
 func transformBundle(f models.Bundle) *models.Bundle {
 	f.Description = models.ApplyContentTransforms(f.Description)
 	return &f
-}
-
-// RegisterRoutes - add the routes to the chi router
-func (ds *BundleCollectionDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
-	router.Get(route.URLPath, handler)
-	router.Get("/:lang"+route.URLPath, handler)
 }
