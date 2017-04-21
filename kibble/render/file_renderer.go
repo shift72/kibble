@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -22,6 +23,11 @@ type FileRenderer struct {
 // Initialise - start the rendering process
 func (c FileRenderer) Initialise() {
 	os.RemoveAll(c.rootPath)
+
+	err := CopyDir(path.Join(".", publicFolder), path.Join(c.rootPath, publicFolder))
+	if err != nil {
+		fmt.Printf("Warn: static folder copy failed %s\n", err)
+	}
 }
 
 // Render - render to the console

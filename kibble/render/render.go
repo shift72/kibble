@@ -21,6 +21,7 @@ import (
 )
 
 var rootPath = "./.kibble/build"
+var publicFolder = "public"
 
 // Watch -
 func Watch(runAsAdmin bool, verbose bool, port int32) {
@@ -66,7 +67,7 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 func waitForIndexFile() {
 	path := path.Join(rootPath, "index.html")
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 15; i++ {
 		time.Sleep(500 * time.Millisecond)
 		_, err := os.Stat(path)
 		if !os.IsNotExist(err) {

@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	fsnotify "gopkg.in/fsnotify.v1"
 )
@@ -14,14 +15,19 @@ import (
 var embed = `
 <script>
 (function(){
+	var etag = '';
   function checkForChanges() {
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
+			if (this.readyState == this.HEADERS_RECEIVED) {
+        etag = this.getResponseHeader("Etag");
+      }
       if (this.readyState == 4 && this.status == 200) {
         location.reload(true);
       }
     };
     xhttp.open("GET", "/kibble/live_reload", true);
+		xhttp.setRequestHeader("If-Modified-Since", etag);
     xhttp.send();
     setTimeout(checkForChanges, 3000);
   }
@@ -32,7 +38,7 @@ var embed = `
 
 // LiveReload -
 type LiveReload struct {
-	changed bool
+	lastModified time.Time
 }
 
 // WrapperResponseWriter - used to track the status of a response
@@ -86,14 +92,17 @@ func (live *LiveReload) GetMiddleware() func(next http.Handler) http.Handler {
 
 // Handler - handle the live reload
 func (live *LiveReload) Handler(w http.ResponseWriter, req *http.Request) {
+	matchEtag := req.Header.Get("If-Modified-Since")
+
 	w.Header().Set("Cache-Control", "no-cache")
-	if live.changed {
-		live.changed = false
-		w.WriteHeader(http.StatusOK)
-	} else {
+	w.Header().Set("Etag", live.lastModified.String())
+
+	if matchEtag == live.lastModified.String() || matchEtag == "" {
 		w.WriteHeader(http.StatusNotModified)
+	} else {
+		w.WriteHeader(http.StatusOK)
 	}
-	w.Write([]byte("kibble...\r\n"))
+	w.Write([]byte(fmt.Sprintf("last modified: %s", live.lastModified.String())))
 }
 
 // StartLiveReload - start the process to watch the files and wait for a reload
@@ -105,7 +114,7 @@ func (live *LiveReload) StartLiveReload(fn func()) {
 		fmt.Println("starting live reload")
 		for _ = range changesChannel {
 			fn()
-			live.changed = true
+			live.lastModified = time.Now()
 		}
 	}()
 

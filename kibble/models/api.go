@@ -14,6 +14,7 @@ type FeatureToggles map[string]bool
 // Site -
 type Site struct {
 	Config     ServiceConfig
+	SiteConfig *Config
 	Toggles    FeatureToggles
 	Navigation Navigation
 	Pages      PageCollection

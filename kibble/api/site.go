@@ -30,6 +30,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	}
 
 	site := &models.Site{
+		SiteConfig: cfg,
 		Config:     config,
 		Toggles:    toggles,
 		Navigation: bios.Navigation,
