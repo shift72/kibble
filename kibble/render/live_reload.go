@@ -1,11 +1,13 @@
 package render
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -36,58 +38,68 @@ var embed = `
 </script>
 `
 
+var ignorePaths = []string{".git", ".kibble"}
+
 // LiveReload -
 type LiveReload struct {
 	lastModified time.Time
 }
 
-// WrapperResponseWriter - used to track the status of a response
+// WrapperResponseWriter - wraps request
+// intercepts all write calls so as to append the live reload script
 type WrapperResponseWriter struct {
 	http.ResponseWriter
 	status      int
 	wroteHeader bool
+	buf         bytes.Buffer
 }
 
+// NewWrapperResponseWriter - create a new response writer
 func NewWrapperResponseWriter(w http.ResponseWriter) *WrapperResponseWriter {
 	return &WrapperResponseWriter{ResponseWriter: w}
 }
 
+// Status - get the status
 func (w *WrapperResponseWriter) Status() int {
 	return w.status
 }
 
+// Write - wrap the write
 func (w *WrapperResponseWriter) Write(p []byte) (n int, err error) {
-	if !w.wroteHeader {
-		w.WriteHeader(http.StatusOK)
-	}
-	return w.ResponseWriter.Write(p)
+	w.buf.Write(p)
+	return len(p), nil
 }
 
+// Done - called when are ready to return a result
+func (w *WrapperResponseWriter) Done() (n int, err error) {
+	w.Header().Set("Content-Length", strconv.Itoa(w.buf.Len()))
+	w.ResponseWriter.WriteHeader(w.status)
+	return w.ResponseWriter.Write(w.buf.Bytes())
+}
+
+// WriteHeader - wrap the write header
 func (w *WrapperResponseWriter) WriteHeader(code int) {
-	w.ResponseWriter.WriteHeader(code)
-	// Check after in case there's error handling in the wrapped ResponseWriter.
-	if w.wroteHeader {
-		return
-	}
 	w.status = code
-	w.wroteHeader = true
 }
-
-var ignorePaths = []string{".git", ".kibble"}
 
 // GetMiddleware - return a handler
-func (live *LiveReload) GetMiddleware() func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		fn := func(w http.ResponseWriter, r *http.Request) {
-			ww := NewWrapperResponseWriter(w)
-			next.ServeHTTP(ww, r)
+func (live *LiveReload) GetMiddleware(next http.Handler) http.Handler {
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		ww := NewWrapperResponseWriter(w)
+		next.ServeHTTP(ww, r)
+
+		if strings.HasSuffix(r.RequestURI, "/") ||
+			strings.HasSuffix(r.RequestURI, "/index.html") {
 
 			if ww.Status() == 200 {
 				ww.Write([]byte(embed))
 			}
 		}
-		return http.HandlerFunc(fn)
-	}
+
+		ww.Done()
+	})
 }
 
 // Handler - handle the live reload
@@ -137,6 +149,7 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 			select {
 			case event := <-watcher.Events:
 				if event.Op&fsnotify.Write == fsnotify.Write {
+					fmt.Println("change detected:", event.Name)
 					changesChannel <- true
 				}
 			case err = <-watcher.Errors:

@@ -1,4 +1,4 @@
-memo = "6cd788a017beee5c7f678db94cc28ecce094885872d4eee9f71d88b72f7c6068"
+memo = "d569bdfa4cea80c4b8055dc0432ec478cd0c9d150f1a2a833c60b312950260d2"
 
 [[projects]]
   branch = "master"
@@ -68,12 +68,6 @@ memo = "6cd788a017beee5c7f678db94cc28ecce094885872d4eee9f71d88b72f7c6068"
 
 [[projects]]
   branch = "master"
-  name = "github.com/pressly/chi"
-  packages = [".","middleware"]
-  revision = "bb4b58688bb945cee02713c22c06c4ef27c5bf61"
-
-[[projects]]
-  branch = "master"
   name = "github.com/rainycape/unidecode"
   packages = ["."]
   revision = "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c"
@@ -101,6 +95,18 @@ memo = "6cd788a017beee5c7f678db94cc28ecce094885872d4eee9f71d88b72f7c6068"
   name = "github.com/spf13/pflag"
   packages = ["."]
   revision = "5ccb023bc27df288a957c5e994cd44fd19619465"
+
+[[projects]]
+  name = "github.com/wellington/go-libsass"
+  packages = ["."]
+  revision = "4cdf225c9b570199942b38c82397670be237829f"
+  version = "v0.9.0"
+
+[[projects]]
+  name = "github.com/wellington/spritewell"
+  packages = ["."]
+  revision = "3a43f26d94a6da8e40884d1edca0ff372ab7487d"
+  version = "v0.4.0"
 
 [[projects]]
   branch = "master"

@@ -9,10 +9,14 @@
 ```kibble help``` - help is here
 
 ## Installation
+* Requires go 1.8.1 (cgo fix needed)
 * Install dep ```go get -u github.com/golang/dep/...```
 * Install dependencies ```dep ensure -update```
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
+
+# LibSass Build
+TODO:
   
 
 ## Supports

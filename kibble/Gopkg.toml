@@ -25,10 +25,6 @@
 
 [[dependencies]]
   branch = "master"
-  name = "github.com/pressly/chi"
-
-[[dependencies]]
-  branch = "master"
   name = "github.com/russross/blackfriday"
 
 [[dependencies]]

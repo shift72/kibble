@@ -16,8 +16,6 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/nicksnyder/go-i18n/i18n"
-	"github.com/pressly/chi"
-	"github.com/pressly/chi/middleware"
 )
 
 var rootPath = "./.kibble/build"
@@ -28,17 +26,9 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 
 	liveReload := LiveReload{}
 
-	r := chi.NewRouter()
-	r.Use(middleware.RequestID)
-	if verbose {
-		r.Use(middleware.Logger)
-	}
-	r.Use(middleware.Recoverer)
-	r.Use(middleware.CloseNotify)
-	r.Use(liveReload.GetMiddleware())
-	r.Use(StaticMiddleware())
-
-	r.Get("/kibble/live_reload", liveReload.Handler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/kibble/live_reload", liveReload.Handler)
+	mux.Handle("/", liveReload.GetMiddleware(http.FileServer(http.Dir(rootPath))))
 
 	liveReload.StartLiveReload(func() {
 		Render(runAsAdmin, verbose)
@@ -58,7 +48,7 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 	}()
 
 	fmt.Printf("listening on %d\n", port)
-	err := http.ListenAndServe(fmt.Sprintf(":%d", port), r)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -100,6 +90,17 @@ func Render(runAsAdmin bool, verbose bool) {
 	renderer.Initialise()
 
 	start := time.Now()
+
+	err = Sass(
+		path.Join("styles", "main.scss"),
+		path.Join(rootPath, "styles", "main.css"))
+	if err != nil {
+		fmt.Printf("Sass rendering failed: %s", err)
+		return
+	}
+
+	fmt.Printf("Sass render time: %s\n", time.Now().Sub(start))
+
 	for lang, locale := range cfg.Languages {
 
 		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
@@ -145,5 +146,5 @@ func Render(runAsAdmin bool, verbose bool) {
 
 	stop := time.Now()
 
-	fmt.Printf("\nRendered: %s\n", stop.Sub(start))
+	fmt.Printf("\nTotal render time: %s\n", stop.Sub(start))
 }
