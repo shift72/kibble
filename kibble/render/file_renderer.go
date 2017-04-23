@@ -54,9 +54,12 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 	}
 
 	if err = t.Execute(w, data, nil); err != nil {
-		if c.showSummary {
-			fmt.Println("Template execute error", err)
-		}
+		w.WriteString("<pre>")
+		w.WriteString(err.Error())
+		w.WriteString("</pre>")
+
+		//TODO: need to write with a warning... if this occurs server side
+		fmt.Println("Template execute error", err)
 	}
 
 	os.MkdirAll(dirPath, 0777)
