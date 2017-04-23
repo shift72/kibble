@@ -10,14 +10,37 @@
 
 ## Installation
 * Requires go 1.8.1 (cgo fix needed)
+
+* Install sass first ```go get github.com/wellington/go-libsass```
+
 * Install dep ```go get -u github.com/golang/dep/...```
 * Install dependencies ```dep ensure -update```
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 
-# LibSass Build
-TODO:
-  
+# LibSass testing
+On OSX requires go 1.8.1 which fixes a bug with cgo and xcode
+Only appears to build successfully in the default go path
+```cd $GOPATH/src/github.com/wellington/go-libsass``
+```go test```
+
+# Release management
+```go get github.com/mitchellh/gox```
+```go get https://github.com/tcnksm/ghr```
+gox -osarch="darwin/amd64" -cgo -verbose -rebuild -output="pkg/{{.Dir}}/{.OS}}_{{.Arch}}/kibble"
+gox -osarch="linux/amd64" -cgo -verbose -rebuild -output="pkg/{{.Dir}}/{.OS}}_{{.Arch}}/kibble"
+
+# cross compilation ???
+brew tap cosmo0920/mingw_w64
+brew mingw-w64
+
+/usr/local/bin/i686-w64-mingw32-gcc
+GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=/usr/local/bin/i686-w64-mingw32-gcc CXX=/usr/local/bin/i686-w64-mingw32-g++ CGO_LDFLAGS="-static" go build -i -v -x -ldflags "-extldflags '-static' -extld=$CC"
+
+GOOS=windows GOARCH=386 CGO_ENABLED=1 CC=i686-w64-ming32-gcc CXX=i686-w64-mingw32-g++ CGO_LDFLAGS="-static" go build -i -v -x -ldflags "-extldflags '-static' -extld=$CC"
+
+
+
 
 ## Supports
 * model
