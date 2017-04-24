@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -118,7 +119,9 @@ func (live *LiveReload) Handler(w http.ResponseWriter, req *http.Request) {
 }
 
 // StartLiveReload - start the process to watch the files and wait for a reload
-func (live *LiveReload) StartLiveReload(fn func()) {
+func (live *LiveReload) StartLiveReload(port int32, fn func()) {
+
+	rendered := make(chan bool)
 
 	// wait for changes
 	changesChannel := make(chan bool)
@@ -127,6 +130,20 @@ func (live *LiveReload) StartLiveReload(fn func()) {
 		for _ = range changesChannel {
 			fn()
 			live.lastModified = time.Now()
+			rendered <- true
+		}
+	}()
+
+	// launch the browser
+	go func() {
+
+		// wait for the channel to be rendered
+		<-rendered
+
+		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/", port))
+		err := cmd.Start()
+		if err != nil {
+			fmt.Println(err)
 		}
 	}()
 

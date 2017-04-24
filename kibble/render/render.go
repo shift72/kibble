@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -24,10 +23,13 @@ var publicFolder = "public"
 // Watch -
 func Watch(runAsAdmin bool, verbose bool, port int32) {
 
-	cfg := config.LoadConfig(runAsAdmin)
-
 	liveReload := LiveReload{}
+	liveReload.StartLiveReload(port, func() {
+		// re-render
+		Render(runAsAdmin, verbose)
+	})
 
+	cfg := config.LoadConfig(runAsAdmin)
 	proxy := NewProxy(cfg.SiteURL)
 
 	// server
@@ -39,38 +41,10 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 				http.FileServer(
 					http.Dir(rootPath)))))
 
-	liveReload.StartLiveReload(func() {
-		Render(runAsAdmin, verbose)
-	})
-
-	// launch the browser
-	go func() {
-		time.Sleep(500 * time.Millisecond)
-
-		waitForIndexFile()
-
-		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/", port))
-		err := cmd.Start()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}()
-
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
 	if err != nil {
 		fmt.Println(err)
-	}
-}
-
-func waitForIndexFile() {
-	path := path.Join(rootPath, "index.html")
-
-	for i := 0; i < 15; i++ {
-		time.Sleep(500 * time.Millisecond)
-		_, err := os.Stat(path)
-		if !os.IsNotExist(err) {
-			break
-		}
+		os.Exit(1)
 	}
 }
 
