@@ -35,10 +35,10 @@ type Site struct {
 
 // ImageSet - set of images
 type ImageSet struct {
-	BackgroundImage *string
-	CarouselImage   *string
-	LandscapeImage  *string
-	PortraitImage   *string
+	BackgroundImage string
+	CarouselImage   string
+	LandscapeImage  string
+	PortraitImage   string
 }
 
 // GenericItem - used to store the common properties
@@ -59,26 +59,26 @@ type PageFeature struct {
 	ItemsPerRow   int           `json:"items_per_row"`
 	ItemLayout    string        `json:"item_layout"`
 	Slug          string        `json:"slug"`
-	DisplayName   *string       `json:"display_name"`
+	DisplayName   string        `json:"display_name"`
 	Items         []string      `json:"items"`
 	ResolvedItems []GenericItem `json:"-"`
 }
 
 // Page - page structure
 type Page struct {
-	CarouselImage  *string       `json:"carousel_image"`
+	CarouselImage  string        `json:"carousel_image"`
 	Content        string        `json:"content"`
-	HeaderImage    *string       `json:"header_image"`
+	HeaderImage    string        `json:"header_image"`
 	ID             int           `json:"id"`
-	LandscapeImage *string       `json:"landscape_image"`
+	LandscapeImage string        `json:"landscape_image"`
 	PageFeatures   []PageFeature `json:"page_features"`
 	PageType       string        `json:"page_type"`
-	PortraitImage  *string       `json:"portrait_image"`
-	SeoDescription *string       `json:"seo_description"`
-	SeoKeywords    *string       `json:"seo_keywords"`
-	SeoTitle       *string       `json:"seo_title"`
+	PortraitImage  string        `json:"portrait_image"`
+	SeoDescription string        `json:"seo_description"`
+	SeoKeywords    string        `json:"seo_keywords"`
+	SeoTitle       string        `json:"seo_title"`
 	Slug           string        `json:"slug"`
-	Tagline        *string       `json:"tagline"`
+	Tagline        string        `json:"tagline"`
 	Title          string        `json:"title"`
 	URL            string        `json:"url"`
 }
