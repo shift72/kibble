@@ -24,11 +24,20 @@ var publicFolder = "public"
 // Watch -
 func Watch(runAsAdmin bool, verbose bool, port int32) {
 
+	cfg := config.LoadConfig(runAsAdmin)
+
 	liveReload := LiveReload{}
 
+	proxy := NewProxy(cfg.SiteURL)
+
+	// server
 	mux := http.NewServeMux()
 	mux.HandleFunc("/kibble/live_reload", liveReload.Handler)
-	mux.Handle("/", liveReload.GetMiddleware(http.FileServer(http.Dir(rootPath))))
+	mux.Handle("/",
+		proxy.GetMiddleware(
+			liveReload.GetMiddleware(
+				http.FileServer(
+					http.Dir(rootPath)))))
 
 	liveReload.StartLiveReload(func() {
 		Render(runAsAdmin, verbose)
@@ -47,7 +56,6 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 		}
 	}()
 
-	fmt.Printf("listening on %d\n", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
 	if err != nil {
 		fmt.Println(err)
