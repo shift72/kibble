@@ -17,7 +17,7 @@ import (
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
-var rootPath = "./.kibble/build"
+var rootPath = path.Join(".", ".kibble", "build")
 var publicFolder = "public"
 
 // Watch -
@@ -106,7 +106,7 @@ func Render(runAsAdmin bool, verbose bool) {
 		// render static files
 		files, _ := filepath.Glob("*.jet")
 		for _, f := range files {
-			filePath := fmt.Sprintf("%s/%s", ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
+			filePath := path.Join(ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
 
 			route := &models.Route{
 				TemplatePath: f,

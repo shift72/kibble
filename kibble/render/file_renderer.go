@@ -33,9 +33,9 @@ func (c FileRenderer) Initialise() {
 // Render - render to the console
 func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
 
-	fullPath := c.rootPath + filePath
-	if strings.HasSuffix(fullPath, "/") {
-		fullPath = fullPath + "index.html"
+	fullPath := path.Join(c.rootPath, filePath)
+	if strings.HasSuffix(filePath, "/") {
+		fullPath = path.Join(fullPath, "index.html")
 	}
 
 	dirPath := filepath.Dir(fullPath)
