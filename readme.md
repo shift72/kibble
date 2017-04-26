@@ -12,7 +12,7 @@
 
 ## Installation
 * Install dep ```go get -u github.com/golang/dep/...```
-* Install dependencies ```dep ensure -update```
+* Install dependencies ```dep ensure -update```. This might not work, so try ```dep ensure -v github.com/fsnotify/fsnotify@^1.4.2``` in case of errors.
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 
