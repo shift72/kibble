@@ -7,7 +7,7 @@ func (pages PageCollection) FindPageByID(pageID int) (*Page, error) {
 			return &p, nil
 		}
 	}
-	return nil, nil
+	return nil, DataSourceMissing
 }
 
 // FindPageBySlug - find the page by the slug
@@ -17,7 +17,7 @@ func (pages PageCollection) FindPageBySlug(slug string) (*Page, error) {
 			return &p, nil
 		}
 	}
-	return nil, nil
+	return nil, DataSourceMissing
 }
 
 // GetGenericItem - returns a generic item
@@ -41,7 +41,7 @@ func (films FilmCollection) FindFilmByID(filmID int) (*Film, error) {
 			return &p, nil
 		}
 	}
-	return nil, nil
+	return nil, DataSourceMissing
 }
 
 // FindFilmBySlug - find the film by the slug
@@ -51,7 +51,7 @@ func (films FilmCollection) FindFilmBySlug(slug string) (*Film, error) {
 			return &p, nil
 		}
 	}
-	return nil, nil
+	return nil, DataSourceMissing
 }
 
 // GetGenericItem - returns a generic item
@@ -93,7 +93,7 @@ func (bundles BundleCollection) FindBundleByID(bundleID int) (*Bundle, error) {
 			return &b, nil
 		}
 	}
-	return nil, nil
+	return nil, DataSourceMissing
 }
 
 // FindBundleBySlug - find the bundle by the slug
@@ -103,7 +103,7 @@ func (bundles BundleCollection) FindBundleBySlug(slug string) (*Bundle, error) {
 			return &p, nil
 		}
 	}
-	return nil, nil
+	return nil, DataSourceMissing
 }
 
 // GetGenericItem - returns a generic item

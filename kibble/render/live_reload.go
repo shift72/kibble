@@ -130,6 +130,8 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 		for _ = range changesChannel {
 			fn()
 			live.lastModified = time.Now()
+
+			// non blocking send
 			select {
 			case rendered <- true:
 			default:

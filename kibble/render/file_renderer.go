@@ -47,9 +47,7 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 	w := bytes.NewBufferString("")
 	t, err := c.view.GetTemplate(route.TemplatePath)
 	if err != nil {
-		if c.showSummary {
-			fmt.Println("Template load error", err)
-		}
+		fmt.Println("ERROR: Template load error", err)
 		return
 	}
 
@@ -59,7 +57,7 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 		w.WriteString("</pre>")
 
 		//TODO: need to write with a warning... if this occurs server side
-		fmt.Println("Template execute error", err)
+		fmt.Println("ERROR: Template execute error", err)
 	}
 
 	os.MkdirAll(dirPath, 0777)

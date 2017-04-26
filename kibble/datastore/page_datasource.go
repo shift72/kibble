@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -33,9 +34,12 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 			continue // don't render external pages
 		}
 
+		route := ctx.Route.Clone()
+		route.TemplatePath = strings.Replace(route.TemplatePath, ":type", p.PageType, 1)
+
 		data.Set("page", transformPage(p))
 		data.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, ds.GetRouteForEntity(ctx, &p), data)
+		renderer.Render(route, ds.GetRouteForEntity(ctx, &p), data)
 	}
 }
 
@@ -43,10 +47,12 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.Page)
 	if ok {
+
 		// special case for the home page
 		if o.PageType == "homepage" {
 			return ctx.RoutePrefix + "/"
 		}
+
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.Slug, 1)
 	}
 	return models.DataSourceError
@@ -54,13 +60,19 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 
 // GetRouteForSlug - get the route
 func (ds *PageDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	//TODO: parse slug
-	//TODO: fix errors
-	p := strings.Split(slug, "/")
-	pageID, _ := strconv.Atoi(p[2])
-	page, _ := ctx.Site.Pages.FindPageByID(pageID)
 
-	//TODO: does not work page, _ := ctx.Site.Pages.FindPageBySlug(slug)
+	p := strings.Split(slug, "/")
+	pageID, err := strconv.Atoi(p[2])
+	if err != nil {
+		return fmt.Sprintf("ERR(%s)", slug)
+	}
+
+	page, err := ctx.Site.Pages.FindPageByID(pageID)
+
+	if err != nil {
+		return fmt.Sprintf("ERR(%s)", slug)
+	}
+
 	return ds.GetRouteForEntity(ctx, page)
 }
 

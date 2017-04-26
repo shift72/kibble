@@ -28,6 +28,7 @@ TODO:
      * genre - done
      * year - done
    * pages - done
+     * type - templates - done
    * page features - done
    * bundles - done
    * custom pages -> page.html.jet -> page.html - done
@@ -37,6 +38,7 @@ TODO:
    * navigation - done
    * pagination
       * pages - done
+      * language routes - done
 * watch files / live reload - done
 * cache - done
 * support markdown - done
@@ -59,15 +61,18 @@ TODO:
  * model
     * tv -
     * subtitles -
-    * pagination
-      * language routes
+    
     * features - ?? collections ??
     * json? - what would choice tv tvguide do?
  * shortcodes - these need to happen as part of the markdown process
  * download
     * build and release on github
-    *
-    *
+
+ * track rendering errors
+   * used to display to the user on any page that is loaded (--watch)
+   * used to fail a render and tell the calling server (non --watch)
+
+    
     
  * upload
   * zip - https://godoc.org/github.com/pierrre/archivefile/zip

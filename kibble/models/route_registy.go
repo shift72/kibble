@@ -17,6 +17,20 @@ type Route struct {
 	Pagination         Pagination   `json:"-"`
 }
 
+// Clone - create a copy of the route
+func (r *Route) Clone() *Route {
+	return &Route{
+		Name:               r.Name,
+		URLPath:            r.URLPath,
+		TemplatePath:       r.TemplatePath,
+		DataSource:         r.DataSource,
+		ResolvedDataSouce:  r.ResolvedDataSouce,
+		ResolvedEntityType: r.ResolvedEntityType,
+		PageSize:           r.PageSize,
+		Pagination:         r.Pagination,
+	}
+}
+
 // RouteRegistry - stores a list of routes
 type RouteRegistry struct {
 	routes []*Route
