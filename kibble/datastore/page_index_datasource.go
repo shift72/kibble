@@ -33,7 +33,6 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 			panic(fmt.Errorf("Page route is missing an :index. Either add and index placeholder or remove the pageSize\n"))
 		}
 
-		fmt.Printf("Pages... page size:%d page total:%d\n", ctx.Route.PageSize, len(ctx.Site.Pages))
 		ctx.Route.Pagination = models.Pagination{
 			Index: 1,
 			Total: (len(ctx.Site.Pages) / ctx.Route.PageSize) + 1,

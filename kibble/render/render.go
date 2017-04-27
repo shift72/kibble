@@ -7,13 +7,12 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/api"
 	"github.com/indiereign/shift72-kibble/kibble/config"
-	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/perf"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
@@ -51,7 +50,7 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 // Render - render the files
 func Render(runAsAdmin bool, verbose bool) {
 
-	datastore.Init()
+	initSW := perf.NewStopwatch("load")
 
 	cfg := config.LoadConfig(runAsAdmin)
 
@@ -69,10 +68,12 @@ func Render(runAsAdmin bool, verbose bool) {
 		rootPath:    rootPath,
 		showSummary: verbose,
 	}
+
 	renderer.Initialise()
 
-	start := time.Now()
+	initSW.Completed()
 
+	sassSW := perf.NewStopwatch("sass")
 	err = Sass(
 		path.Join("styles", "main.scss"),
 		path.Join(rootPath, "styles", "main.css"))
@@ -80,11 +81,12 @@ func Render(runAsAdmin bool, verbose bool) {
 		fmt.Printf("Sass rendering failed: %s", err)
 		return
 	}
+	sassSW.Completed()
 
-	fmt.Printf("Sass render time: %s\n", time.Now().Sub(start))
-
+	renderSW := perf.NewStopwatch("render")
 	for lang, locale := range cfg.Languages {
 
+		renderLangSW := perf.NewStopwatchf("  render language: %s", lang)
 		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
 		if err != nil {
 			fmt.Println(err)
@@ -105,6 +107,8 @@ func Render(runAsAdmin bool, verbose bool) {
 
 		// render static files
 		files, _ := filepath.Glob("*.jet")
+
+		renderFilesSW := perf.NewStopwatch("  render files")
 		for _, f := range files {
 			filePath := path.Join(ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
 
@@ -116,17 +120,19 @@ func Render(runAsAdmin bool, verbose bool) {
 			data.Set("site", site)
 			renderer.Render(route, filePath, data)
 		}
+		renderFilesSW.Completed()
 
 		for _, route := range routeRegistry.GetAll() {
-
+			renderRouteSW := perf.NewStopwatchf("    render route %s", route.Name)
 			ctx.Route = route
 			if route.ResolvedDataSouce != nil {
 				route.ResolvedDataSouce.Iterator(ctx, renderer)
 			}
+			renderRouteSW.Completed()
 		}
+
+		renderLangSW.Completed()
 	}
 
-	stop := time.Now()
-
-	fmt.Printf("\nTotal render time: %s\n", stop.Sub(start))
+	renderSW.Completed()
 }
