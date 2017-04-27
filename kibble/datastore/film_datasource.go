@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -53,8 +54,16 @@ func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 	if strings.Contains(ctx.Route.URLPath, ":filmID") {
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", p[2], 1)
 	} else if strings.Contains(ctx.Route.URLPath, ":slug") {
-		filmID, _ := strconv.Atoi(p[2])
-		film, _ := ctx.Site.Films.FindFilmByID(filmID)
+		filmID, err := strconv.Atoi(p[2])
+		if err != nil {
+			return fmt.Sprintf("ERR(%s)", slug)
+		}
+
+		film, err := ctx.Site.Films.FindFilmByID(filmID)
+		if err != nil {
+			return fmt.Sprintf("ERR(%s)", slug)
+		}
+
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", film.TitleSlug, 1)
 	}
 	return models.DataSourceError

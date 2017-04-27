@@ -119,3 +119,23 @@ func (bundle Bundle) GetGenericItem() GenericItem {
 		InnerItem: bundle,
 	}
 }
+
+// FindCollectionByID - find the page by id
+func (collections CollectionCollection) FindCollectionByID(collectionID int) (*Collection, error) {
+	for _, b := range collections {
+		if b.ID == collectionID {
+			return &b, nil
+		}
+	}
+	return nil, DataSourceMissing
+}
+
+// FindCollectionBySlug - find the collection by the slug
+func (collections CollectionCollection) FindCollectionBySlug(slug string) (*Collection, error) {
+	for _, p := range collections {
+		if p.Slug == slug || p.TitleSlug == slug {
+			return &p, nil
+		}
+	}
+	return nil, DataSourceMissing
+}

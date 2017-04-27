@@ -14,4 +14,7 @@ func Init() {
 
 	models.AddDataSource(&BundleDataSource{})
 	models.AddDataSource(&BundleIndexDataSource{})
+
+	models.AddDataSource(&CollectionDataSource{})
+	models.AddDataSource(&CollectionIndexDataSource{})
 }

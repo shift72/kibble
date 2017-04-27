@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -51,8 +52,16 @@ func (ds *BundleDataSource) GetRouteForEntity(ctx models.RenderContext, entity i
 // GetRouteForSlug - get the route
 func (ds *BundleDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	p := strings.Split(slug, "/")
-	bundleID, _ := strconv.Atoi(p[2])
-	bundle, _ := ctx.Site.Bundles.FindBundleByID(bundleID)
+	bundleID, err := strconv.Atoi(p[2])
+	if err != nil {
+		return fmt.Sprintf("ERR(%s)", slug)
+	}
+	bundle, err := ctx.Site.Bundles.FindBundleByID(bundleID)
+
+	if err != nil {
+		return fmt.Sprintf("ERR(%s)", slug)
+	}
+
 	return ds.GetRouteForEntity(ctx, bundle)
 }
 

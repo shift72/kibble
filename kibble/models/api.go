@@ -13,14 +13,15 @@ type FeatureToggles map[string]bool
 
 // Site -
 type Site struct {
-	Config     ServiceConfig
-	SiteConfig *Config
-	Toggles    FeatureToggles
-	Navigation Navigation
-	Pages      PageCollection
-	Films      FilmCollection
-	Bundles    BundleCollection
-	Taxonomies Taxonomies
+	Config      ServiceConfig
+	SiteConfig  *Config
+	Toggles     FeatureToggles
+	Navigation  Navigation
+	Pages       PageCollection
+	Films       FilmCollection
+	Bundles     BundleCollection
+	Collections CollectionCollection
+	Taxonomies  Taxonomies
 }
 
 // "page_features": [{
@@ -39,6 +40,7 @@ type ImageSet struct {
 	CarouselImage   string
 	LandscapeImage  string
 	PortraitImage   string
+	HeaderImage     string
 }
 
 // GenericItem - used to store the common properties
@@ -220,4 +222,27 @@ type Bundle struct {
 	ExternalID     interface{}   `json:"external_id"`
 	Items          []string      `json:"items"`
 	ResolvedItems  []GenericItem `json:"-"`
+}
+
+// CollectionCollection - all collections
+type CollectionCollection []Collection
+
+// Collection - collection of films and tv seasons / episodes
+type Collection struct {
+	ID             int
+	Slug           string
+	Title          string
+	TitleSlug      string
+	Description    string
+	DisplayName    string
+	ItemLayout     string
+	ItemsPerRow    int
+	ImageSet       ImageSet
+	Items          []string
+	SearchQuery    string
+	SeoDescription string
+	SeoKeywords    string
+	SeoTitle       string
+	CreatedAt      string
+	UpdatedAt      string
 }
