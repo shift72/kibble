@@ -24,7 +24,7 @@ type FileRenderer struct {
 func (c FileRenderer) Initialise() {
 	os.RemoveAll(c.rootPath)
 
-	err := CopyDir(path.Join(".", publicFolder), path.Join(c.rootPath, publicFolder))
+	err := CopyDir(path.Join(publicFolder), path.Join(c.rootPath, publicFolder))
 	if err != nil {
 		fmt.Printf("Warn: static folder copy failed %s\n", err)
 	}

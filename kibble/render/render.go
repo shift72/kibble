@@ -16,7 +16,7 @@ import (
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
-var rootPath = path.Join(".", ".kibble", "build")
+var rootPath = path.Join(".kibble", "build")
 var publicFolder = "public"
 
 // Watch -

@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
-const (
-	privatePath = "./.kibble/private.json"
-	sitePath    = "./site.json"
+var (
+	privatePath = path.Join(".kibble", "private.json")
+	sitePath    = path.Join("site.json")
 )
 
 // LoadConfig - loaded the config
