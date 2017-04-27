@@ -7,21 +7,21 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
-// BundleCollectionDataSource - a list of all bundles
-type BundleCollectionDataSource struct{}
+// BundleIndexDataSource - a list of all bundles
+type BundleIndexDataSource struct{}
 
 // GetName - returns the name of the datasource
-func (ds *BundleCollectionDataSource) GetName() string {
-	return "BundleCollection"
+func (ds *BundleIndexDataSource) GetName() string {
+	return "BundleIndex"
 }
 
 // GetEntityType - Get the entity type
-func (ds *BundleCollectionDataSource) GetEntityType() reflect.Type {
+func (ds *BundleIndexDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf([]models.Bundle{})
 }
 
 // Iterator - return a list of all bundles, iteration of 1
-func (ds *BundleCollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *BundleIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
 	clonedBundles := make([]*models.Bundle, len(ctx.Site.Bundles))
 	for i, f := range ctx.Site.Bundles {
@@ -35,17 +35,17 @@ func (ds *BundleCollectionDataSource) Iterator(ctx models.RenderContext, rendere
 }
 
 // GetRouteForEntity - get the route
-func (ds *BundleCollectionDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+func (ds *BundleIndexDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	return ctx.RoutePrefix + ctx.Route.URLPath
 }
 
 // GetRouteForSlug - get the route
-func (ds *BundleCollectionDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
+func (ds *BundleIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	return models.DataSourceError
 }
 
 // IsSlugMatch - is the slug a match
-func (ds *BundleCollectionDataSource) IsSlugMatch(slug string) bool {
+func (ds *BundleIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
 }
 

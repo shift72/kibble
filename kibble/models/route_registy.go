@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 )
 
@@ -112,6 +113,8 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 
 	routeRegistry.routes = make([]*Route, len(config.Routes))
 
+	errorsFound := false
+
 	for i := 0; i < len(config.Routes); i++ {
 		route := config.Routes[i]
 
@@ -119,9 +122,15 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 		if route.ResolvedDataSouce != nil {
 			route.ResolvedEntityType = route.ResolvedDataSouce.GetEntityType()
 		} else {
-			fmt.Printf("Unable to find the datasource %s\n", route.DataSource)
+			fmt.Printf("Unable to find the datasource %s. Check routes registered in site.json\n", route.DataSource)
+			errorsFound = true
+
 		}
 		routeRegistry.routes[i] = &route
+	}
+
+	if errorsFound {
+		os.Exit(1)
 	}
 
 	return routeRegistry

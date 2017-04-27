@@ -7,21 +7,21 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
-// FilmCollectionDataSource - a list of all films
-type FilmCollectionDataSource struct{}
+// FilmIndexDataSource - a list of all films
+type FilmIndexDataSource struct{}
 
 // GetName - returns the name of the datasource
-func (ds *FilmCollectionDataSource) GetName() string {
-	return "FilmCollection"
+func (ds *FilmIndexDataSource) GetName() string {
+	return "FilmIndex"
 }
 
 // GetEntityType - Get the entity type
-func (ds *FilmCollectionDataSource) GetEntityType() reflect.Type {
+func (ds *FilmIndexDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf([]models.Film{})
 }
 
 // Iterator - return a list of all films, iteration of 1
-func (ds *FilmCollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *FilmIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
 	clonedFilms := make([]*models.Film, len(ctx.Site.Films))
 	for i, f := range ctx.Site.Films {
@@ -36,17 +36,17 @@ func (ds *FilmCollectionDataSource) Iterator(ctx models.RenderContext, renderer 
 }
 
 // GetRouteForEntity - get the route
-func (ds *FilmCollectionDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+func (ds *FilmIndexDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	return ctx.RoutePrefix + ctx.Route.URLPath
 }
 
 // GetRouteForSlug - get the route
-func (ds *FilmCollectionDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
+func (ds *FilmIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	return models.DataSourceError
 }
 
 // IsSlugMatch - is the slug a match
-func (ds *FilmCollectionDataSource) IsSlugMatch(slug string) bool {
+func (ds *FilmIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
 }
 

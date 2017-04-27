@@ -10,21 +10,21 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
-// PageCollectionDataSource - a list of all Pages
-type PageCollectionDataSource struct{}
+// PageIndexDataSource - a list of all Pages
+type PageIndexDataSource struct{}
 
 // GetName - returns the name of the datasource
-func (ds *PageCollectionDataSource) GetName() string {
-	return "PageCollection"
+func (ds *PageIndexDataSource) GetName() string {
+	return "PageIndex"
 }
 
 // GetEntityType - Get the entity type
-func (ds *PageCollectionDataSource) GetEntityType() reflect.Type {
+func (ds *PageIndexDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf([]models.Page{})
 }
 
 // Iterator - return a list of all Pages, iteration of 1
-func (ds *PageCollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
 	// rule for page 1
 	if ctx.Route.PageSize > 0 {
@@ -101,17 +101,17 @@ func (ds *PageCollectionDataSource) Iterator(ctx models.RenderContext, renderer 
 }
 
 // GetRouteForEntity - get the route
-func (ds *PageCollectionDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+func (ds *PageIndexDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	return ctx.RoutePrefix + ctx.Route.URLPath
 }
 
 // GetRouteForSlug - get the route
-func (ds *PageCollectionDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
+func (ds *PageIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	return models.DataSourceError
 }
 
 // IsSlugMatch - is the slug a match
-func (ds *PageCollectionDataSource) IsSlugMatch(slug string) bool {
+func (ds *PageIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
 }
 
