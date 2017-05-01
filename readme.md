@@ -6,6 +6,8 @@
 
 ```kibble render --watch``` - sample render, this is what will be deployed
 
+```kibble sync``` - sync files to a remote s3 bucket
+
 ```kibble help``` - help is here
 
 ## Installation

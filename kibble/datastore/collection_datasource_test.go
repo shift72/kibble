@@ -43,6 +43,18 @@ func TestCollectionGetRouteForSlug(t *testing.T) {
 	}
 }
 
+func TestCollectionIsSlugMatch(t *testing.T) {
+	collectionDS := CollectionDataSource{}
+
+	if !collectionDS.IsSlugMatch("/collection/123") {
+		t.Errorf("expected /collection/123 to match")
+	}
+
+	if !collectionDS.IsSlugMatch("/feature/123") {
+		t.Errorf("expected /feature/123 to match")
+	}
+}
+
 func TestCollectionGetRouteForMissingSlug(t *testing.T) {
 	collectionDS := CollectionDataSource{}
 
