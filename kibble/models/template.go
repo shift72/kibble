@@ -66,6 +66,14 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 
 	})
 
+	view.AddGlobal("config", func(key string) string {
+		return ctx.Site.Config[key]
+	})
+
+	view.AddGlobal("isEnabled", func(key string) bool {
+		return ctx.Site.Toggles[key]
+	})
+
 	return view
 }
 
