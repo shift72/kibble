@@ -30,7 +30,7 @@ func Sass(src, dst string) error {
 		return err
 	}
 
-	comp, err := libsass.New(f, r)
+	comp, err := libsass.New(f, r, libsass.IncludePaths([]string{"styles"}))
 	if err != nil {
 		return err
 	}
