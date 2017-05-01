@@ -48,12 +48,21 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 	o, ok := entity.(*models.Page)
 	if ok {
 
-		// special case for the home page
-		if o.PageType == "homepage" {
+		switch o.PageType {
+		// special case for the homepage
+		case "homepage":
 			return ctx.RoutePrefix + "/"
+		case "external":
+			// special case: map an old static url to a new one
+			if strings.Contains(o.URL, "/#!/") &&
+				strings.HasPrefix(o.URL, ctx.Site.SiteConfig.SiteURL) {
+				i := strings.Index(o.URL, "/#!/") + 3
+				return o.URL[i:len(o.URL)]
+			}
+			return o.URL
+		default:
+			return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.Slug, 1)
 		}
-
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.Slug, 1)
 	}
 	return models.DataSourceError
 }

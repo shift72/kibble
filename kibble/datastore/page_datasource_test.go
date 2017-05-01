@@ -71,9 +71,47 @@ func createTestContextExternal() models.RenderContext {
 		Site: &models.Site{
 			Pages: models.PageCollection{
 				models.Page{
+					ID:       1,
+					Slug:     "about-us",
+					PageType: "content",
+				},
+				models.Page{
 					ID:       123,
-					Slug:     "disney",
 					PageType: "external",
+					URL:      "https://www.shift72.com",
+				},
+				models.Page{
+					ID:       124,
+					PageType: "external",
+					URL:      "https://www.shift72.com/#!/page/about-us",
+				},
+			},
+			SiteConfig: &models.Config{
+				SiteURL: "https://www.shift72.com",
+			},
+		},
+	}
+
+	return ctx
+}
+
+func createTestContextExternalOnly() models.RenderContext {
+
+	r := &models.Route{
+		URLPath:      "/page/:slug",
+		TemplatePath: "page/:type.jet",
+		DataSource:   "Page",
+	}
+
+	ctx := models.RenderContext{
+		Route:       r,
+		RoutePrefix: "",
+		Site: &models.Site{
+			Pages: models.PageCollection{
+				models.Page{
+					ID:       123,
+					PageType: "external",
+					URL:      "https://www.shift72.com",
 				},
 			},
 		},
@@ -138,12 +176,30 @@ func TestExternalTemplateType(t *testing.T) {
 
 	renderer := &test.MockRenderer{}
 
-	ctx := createTestContextExternal()
+	ctx := createTestContextExternalOnly()
 
 	pageDS.Iterator(ctx, renderer)
 
 	if renderer.RenderCalled {
 		t.Error("Expected render to be not be called for external pages")
+	}
+}
+
+func TestGetRouteForExternalPage(t *testing.T) {
+	pageDS := PageDataSource{}
+
+	ctx := createTestContextExternal()
+
+	route := pageDS.GetRouteForSlug(ctx, "/page/123")
+
+	if route != "https://www.shift72.com" {
+		t.Error("expected https://www.shift72.com got ", route)
+	}
+
+	route = pageDS.GetRouteForSlug(ctx, "/page/124")
+
+	if route != "/page/about-us" {
+		t.Error("expected /page/about-us ", route)
 	}
 }
 
