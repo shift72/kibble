@@ -3,7 +3,7 @@ package render
 import (
 	"bytes"
 	"fmt"
-	"log"
+
 	"net/http"
 	"os"
 	"os/exec"
@@ -126,7 +126,8 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 	// wait for changes
 	changesChannel := make(chan bool)
 	go func() {
-		fmt.Println("starting live reload")
+		log.Info("Starting live reload")
+
 		for _ = range changesChannel {
 			fn()
 			live.lastModified = time.Now()
@@ -148,7 +149,7 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/", port))
 		err := cmd.Start()
 		if err != nil {
-			fmt.Println(err)
+			log.Error("Watcher: ", err)
 		}
 	}()
 
@@ -162,7 +163,7 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal(err)
+		//	log.Fatal(err)
 	}
 
 	// listen for fs events and pass via channel
@@ -171,11 +172,11 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 			select {
 			case event := <-watcher.Events:
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					fmt.Println("change detected:", event.Name)
+					log.Debugf("change detected:", event.Name)
 					changesChannel <- true
 				}
 			case err = <-watcher.Errors:
-				log.Println("error:", err)
+				log.Error("Watcher: ", err)
 			}
 		}
 	}()
@@ -190,14 +191,14 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 		if f.IsDir() {
 			err = watcher.Add(path)
 			if err != nil {
-				log.Fatal("unable to watch dir", err)
+				log.Error("Watcher: ", err)
 			}
 		}
 		return nil
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Error("Watcher: ", err)
 	}
 }
 

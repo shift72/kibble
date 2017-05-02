@@ -18,10 +18,13 @@ import (
 	"fmt"
 	"os"
 
+	logging "github.com/op/go-logging"
 	"github.com/spf13/cobra"
 )
 
 var cfgFile string
+
+var verbose bool
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -42,9 +45,13 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose logging")
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-
+	if verbose {
+		logging.SetLevel(logging.DEBUG, "")
+	}
 }

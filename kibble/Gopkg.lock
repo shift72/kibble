@@ -1,4 +1,4 @@
-memo = "d569bdfa4cea80c4b8055dc0432ec478cd0c9d150f1a2a833c60b312950260d2"
+memo = "ac15289776367b38faa6a186933c54b56377367488407f91e5e91de71ad5e9bc"
 
 [[projects]]
   branch = "master"
@@ -11,6 +11,18 @@ memo = "d569bdfa4cea80c4b8055dc0432ec478cd0c9d150f1a2a833c60b312950260d2"
   name = "github.com/CloudyKit/jet"
   packages = ["."]
   revision = "62d3289aafd039c4b6d00f82e935322a4480c8a6"
+
+[[projects]]
+  name = "github.com/aws/aws-sdk-go"
+  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/s3","service/sts"]
+  revision = "0dbc446aca87aebb6e0a24509b59bafc0e3ec0ae"
+  version = "v1.8.19"
+
+[[projects]]
+  name = "github.com/go-ini/ini"
+  packages = ["."]
+  revision = "e7fea39b01aea8d5671f6858f0532f56e8bff3a5"
+  version = "v1.27.0"
 
 [[projects]]
   branch = "master"
@@ -37,6 +49,12 @@ memo = "d569bdfa4cea80c4b8055dc0432ec478cd0c9d150f1a2a833c60b312950260d2"
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
 
 [[projects]]
+  name = "github.com/jmespath/go-jmespath"
+  packages = ["."]
+  revision = "3433f3ea46d9f8019119e7dd41274e112a2359a9"
+  version = "0.2.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
@@ -47,6 +65,12 @@ memo = "d569bdfa4cea80c4b8055dc0432ec478cd0c9d150f1a2a833c60b312950260d2"
   name = "github.com/nicksnyder/go-i18n"
   packages = ["i18n","i18n/bundle","i18n/language","i18n/translation"]
   revision = "5a40a66b242242b28cac9dd07177d50818512397"
+
+[[projects]]
+  name = "github.com/op/go-logging"
+  packages = ["."]
+  revision = "b2cb9fa56473e98db8caba80237377e83fe44db5"
+  version = "v1"
 
 [[projects]]
   branch = "master"

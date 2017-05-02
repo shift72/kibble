@@ -15,18 +15,17 @@ import (
 
 // FileRenderer - designed to render to the file system for testing
 type FileRenderer struct {
-	view        *jet.Set
-	rootPath    string
-	showSummary bool
+	view     *jet.Set
+	rootPath string
 }
 
 // Initialise - start the rendering process
 func (c FileRenderer) Initialise() {
 	os.RemoveAll(c.rootPath)
 
-	err := CopyDir(path.Join(publicFolder), path.Join(c.rootPath, publicFolder))
+	err := CopyDir(staticFolder, c.rootPath)
 	if err != nil {
-		fmt.Printf("Warn: static folder copy failed %s\n", err)
+		log.Warningf("Warn: static folder copy failed %s", err)
 	}
 }
 
@@ -40,9 +39,7 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 
 	dirPath := filepath.Dir(fullPath)
 
-	if c.showSummary {
-		fmt.Printf("FilePath: %s\n", fullPath)
-	}
+	log.Debugf("FilePath: %s", fullPath)
 
 	w := bytes.NewBufferString("")
 	t, err := c.view.GetTemplate(route.TemplatePath)
@@ -56,13 +53,12 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 		w.WriteString(err.Error())
 		w.WriteString("</pre>")
 
-		//TODO: need to write with a warning... if this occurs server side
-		fmt.Println("ERROR: Template execute error", err)
+		log.Errorf("Template execute error: %s", err)
 	}
 
 	os.MkdirAll(dirPath, 0777)
 	err = ioutil.WriteFile(fullPath, w.Bytes(), 0777)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("renderer:", err)
 	}
 }

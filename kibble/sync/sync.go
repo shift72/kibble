@@ -177,6 +177,6 @@ func SyncFiles(store Store, changes []FileRef) error {
 		return errors.New("Unable to sync files")
 	}
 
-	fmt.Printf("sync successful [added: %d][removed: %d]\n", added, removed)
+	log.Infof("sync successful [added: %d][removed: %d]\n", added, removed)
 	return nil
 }

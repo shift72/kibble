@@ -14,18 +14,19 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/perf"
 	"github.com/nicksnyder/go-i18n/i18n"
+	logging "github.com/op/go-logging"
 )
 
 var rootPath = path.Join(".kibble", "build")
-var publicFolder = "public"
+var staticFolder = "static"
 
 // Watch -
-func Watch(runAsAdmin bool, verbose bool, port int32) {
+func Watch(runAsAdmin bool, port int32) {
 
 	liveReload := LiveReload{}
 	liveReload.StartLiveReload(port, func() {
 		// re-render
-		Render(runAsAdmin, verbose)
+		Render(runAsAdmin)
 	})
 
 	cfg := config.LoadConfig(runAsAdmin)
@@ -42,13 +43,13 @@ func Watch(runAsAdmin bool, verbose bool, port int32) {
 
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
 	if err != nil {
-		fmt.Println(err)
+		log.Errorf("Web server failed: %s", err)
 		os.Exit(1)
 	}
 }
 
 // Render - render the files
-func Render(runAsAdmin bool, verbose bool) {
+func Render(runAsAdmin bool) {
 
 	initSW := perf.NewStopwatch("load")
 
@@ -58,15 +59,14 @@ func Render(runAsAdmin bool, verbose bool) {
 
 	site, err := api.LoadSite(cfg)
 	if err != nil {
-		fmt.Printf("Site load failed: %s", err)
+		log.Errorf("Site load failed: %s", err)
 		return
 	}
 
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
 	renderer := FileRenderer{
-		rootPath:    rootPath,
-		showSummary: verbose,
+		rootPath: rootPath,
 	}
 
 	renderer.Initialise()
@@ -78,18 +78,18 @@ func Render(runAsAdmin bool, verbose bool) {
 		path.Join("styles", "main.scss"),
 		path.Join(rootPath, "styles", "main.css"))
 	if err != nil {
-		fmt.Printf("Sass rendering failed: %s", err)
+		log.Errorf("Sass rendering failed: %s", err)
 		return
 	}
 	sassSW.Completed()
 
-	renderSW := perf.NewStopwatch("render")
+	renderSW := perf.NewStopwatchLevel("render", logging.NOTICE)
 	for lang, locale := range cfg.Languages {
 
 		renderLangSW := perf.NewStopwatchf("  render language: %s", lang)
 		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
 		if err != nil {
-			fmt.Println(err)
+			log.Errorf("Translation failed: %s", err)
 		}
 
 		ctx := models.RenderContext{

@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io"
-	"log"
+
 	"os"
 	"path/filepath"
 )

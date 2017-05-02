@@ -20,7 +20,6 @@ import (
 )
 
 var renderRunAsAdmin bool
-var verbose bool
 var port int32
 var watch bool
 
@@ -33,9 +32,9 @@ var renderCmd = &cobra.Command{
 Kibble is used to build and develop custom sites to run on the SHIFT72 platform.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if watch {
-			render.Watch(renderRunAsAdmin, verbose, port)
+			render.Watch(renderRunAsAdmin, port)
 		} else {
-			render.Render(renderRunAsAdmin, verbose)
+			render.Render(renderRunAsAdmin)
 		}
 	},
 }
@@ -43,7 +42,6 @@ Kibble is used to build and develop custom sites to run on the SHIFT72 platform.
 func init() {
 	RootCmd.AddCommand(renderCmd)
 	renderCmd.Flags().BoolVar(&renderRunAsAdmin, "admin", false, "Render using admin credentials")
-	renderCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "verbose logging")
 	renderCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
 	renderCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
 }
