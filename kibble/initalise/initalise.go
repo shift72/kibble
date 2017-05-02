@@ -58,8 +58,17 @@ func NewSite(force bool) {
 	fmt.Printf("\nCloning from %s\n", cloneURL)
 
 	// clone does not include the git files (windows check?)
-	// git --git-dir=/dev/null clone --depth=1 /url/to/repo
-	cmd := exec.Command("git", "--git-dir=/dev/null", "clone", "--depth=1", cloneURL, ".")
+	// ideally should not include the git files
+	cmd := exec.Command("git", "clone", "--depth=1", cloneURL, ".")
+	err = cmd.Start()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	cmd.Wait()
+
+	// remove origin
+	cmd = exec.Command("git", "remote", "remove", "origin")
 	err = cmd.Start()
 	if err != nil {
 		fmt.Println(err)
