@@ -57,8 +57,14 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 	}
 
 	os.MkdirAll(dirPath, 0777)
+
+	// optional check
+	if _, err := os.Stat(fullPath); err == nil {
+		log.Warningf("File exists and will be overwritten: %s", fullPath)
+	}
+
 	err = ioutil.WriteFile(fullPath, w.Bytes(), 0777)
 	if err != nil {
-		log.Error("renderer:", err)
+		log.Error("File write:", err)
 	}
 }
