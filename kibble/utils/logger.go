@@ -14,21 +14,28 @@ func init() {
 }
 
 // ConfigureStandardLogging - logging
-func ConfigureStandardLogging() {
+func ConfigureStandardLogging(verbose bool) {
 	logging.SetBackend(logging.NewLogBackend(os.Stdout, "", 0))
-	logging.SetLevel(logging.INFO, "")
+	setLogLevel(verbose)
 }
 
 // ConfigureWatchedLogging - logging to stdout + the unique logger
-func ConfigureWatchedLogging() *UniqueLogger {
+func ConfigureWatchedLogging(verbose bool) *UniqueLogger {
 	uni := NewUniqueLogger()
 	log1 := logging.NewBackendFormatter(uni, logging.MustStringFormatter(
 		`%{level} - %{message}`,
 	))
 	log2 := logging.NewLogBackend(os.Stdout, "", 0)
 	logging.SetBackend(logging.MultiLogger(log1, log2))
-	logging.SetLevel(logging.INFO, "")
+	setLogLevel(verbose)
 	return uni
+}
+func setLogLevel(verbose bool) {
+	if verbose {
+		logging.SetLevel(logging.DEBUG, "")
+	} else {
+		logging.SetLevel(logging.INFO, "")
+	}
 }
 
 // UniqueLogger - logs only the unique errors
