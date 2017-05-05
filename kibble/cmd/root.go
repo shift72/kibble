@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"os"
 
-	logging "github.com/op/go-logging"
 	"github.com/spf13/cobra"
 )
 
@@ -51,7 +50,5 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if verbose {
-		logging.SetLevel(logging.DEBUG, "")
-	}
+
 }

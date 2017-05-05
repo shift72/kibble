@@ -1,4 +1,4 @@
-memo = "ac15289776367b38faa6a186933c54b56377367488407f91e5e91de71ad5e9bc"
+memo = "e40e471d9c0527d939caf4ccbe8782b25e6aabe866705f32b3f36238ffb9c19f"
 
 [[projects]]
   branch = "master"
@@ -17,6 +17,12 @@ memo = "ac15289776367b38faa6a186933c54b56377367488407f91e5e91de71ad5e9bc"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/s3","service/sts"]
   revision = "0dbc446aca87aebb6e0a24509b59bafc0e3ec0ae"
   version = "v1.8.19"
+
+[[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/go-ini/ini"
@@ -91,6 +97,12 @@ memo = "ac15289776367b38faa6a186933c54b56377367488407f91e5e91de71ad5e9bc"
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/rainycape/unidecode"
   packages = ["."]
@@ -119,6 +131,12 @@ memo = "ac15289776367b38faa6a186933c54b56377367488407f91e5e91de71ad5e9bc"
   name = "github.com/spf13/pflag"
   packages = ["."]
   revision = "5ccb023bc27df288a957c5e994cd44fd19619465"
+
+[[projects]]
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
+  version = "v1.1.4"
 
 [[projects]]
   name = "github.com/wellington/go-libsass"

@@ -1,4 +1,4 @@
-package perf
+package utils
 
 import (
 	logging "github.com/op/go-logging"
@@ -7,5 +7,5 @@ import (
 var log *logging.Logger
 
 func init() {
-	log = logging.MustGetLogger("perf")
+	log = logging.MustGetLogger("utils")
 }

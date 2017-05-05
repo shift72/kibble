@@ -1,0 +1,80 @@
+package utils
+
+import (
+	"os"
+
+	logging "github.com/op/go-logging"
+)
+
+func init() {
+	logging.SetFormatter(
+		logging.MustStringFormatter(
+			`%{color}%{time:15:04:05.000} ▶ %{message}%{color:reset}`,
+		))
+}
+
+// ConfigureStandardLogging - logging
+func ConfigureStandardLogging() {
+	logging.SetBackend(logging.NewLogBackend(os.Stdout, "", 0))
+	logging.SetLevel(logging.INFO, "")
+}
+
+// ConfigureWatchedLogging - logging to stdout + the unique logger
+func ConfigureWatchedLogging() *UniqueLogger {
+	uni := NewUniqueLogger()
+	log1 := logging.NewBackendFormatter(uni, logging.MustStringFormatter(
+		`%{level} - %{message}`,
+	))
+	log2 := logging.NewLogBackend(os.Stdout, "", 0)
+	logging.SetBackend(logging.MultiLogger(log1, log2))
+	logging.SetLevel(logging.INFO, "")
+	return uni
+}
+
+// UniqueLogger - logs only the unique errors
+type UniqueLogger struct {
+	level logging.Level
+	store []string
+}
+
+// LogReader - reads logs
+type LogReader interface {
+	Logs() []string
+	Clear()
+}
+
+// NewUniqueLogger - creates a new unique logger
+func NewUniqueLogger() *UniqueLogger {
+	return &UniqueLogger{
+		level: logging.WARNING,
+		store: make([]string, 0),
+	}
+}
+
+// Log - only the unique errors
+func (l *UniqueLogger) Log(level logging.Level, calldepth int, rec *logging.Record) (err error) {
+
+	if level > l.level {
+		return
+	}
+
+	nm := rec.Formatted(calldepth)
+	for _, m := range l.store {
+		if nm == m {
+			return
+		}
+	}
+
+	l.store = append(l.store, nm)
+	return
+}
+
+// Logs -
+func (l *UniqueLogger) Logs() []string {
+	return l.store
+}
+
+// Clear the logs
+func (l *UniqueLogger) Clear() {
+	l.store = make([]string, 0)
+}

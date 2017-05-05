@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/indiereign/shift72-kibble/kibble/perf"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 const (
@@ -52,13 +52,13 @@ func Execute(config Config) error {
 	s3Store, _ := NewS3Store(config)
 	localStore, _ := NewLocalStore(config)
 
-	swDetect := perf.NewStopwatch("detect")
+	swDetect := utils.NewStopwatch("detect")
 	remote, _ := s3Store.List()
 	local, _ := localStore.List()
 	changes := compare(local, remote)
 	swDetect.Completed()
 
-	swSync := perf.NewStopwatch("sync")
+	swSync := utils.NewStopwatch("sync")
 	err := SyncFiles(s3Store, changes)
 	swSync.Completed()
 

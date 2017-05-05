@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+
 	"net/http"
 	"os"
 	"os/exec"
@@ -44,6 +46,7 @@ var ignorePaths = []string{".git", ".kibble"}
 // LiveReload -
 type LiveReload struct {
 	lastModified time.Time
+	logReader    utils.LogReader
 }
 
 // WrapperResponseWriter - wraps request
@@ -53,6 +56,7 @@ type WrapperResponseWriter struct {
 	status      int
 	wroteHeader bool
 	buf         bytes.Buffer
+	prefixBuf   bytes.Buffer
 }
 
 // NewWrapperResponseWriter - create a new response writer
@@ -71,10 +75,20 @@ func (w *WrapperResponseWriter) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
+// PrefixWithLogs - write the logs to the head of the page
+func (w *WrapperResponseWriter) PrefixWithLogs(logs []string) {
+	w.prefixBuf.Write([]byte("<div>"))
+	for _, s := range logs {
+		w.prefixBuf.Write([]byte(fmt.Sprintf("<pre>%s</pre>", s)))
+	}
+	w.prefixBuf.Write([]byte("</div>"))
+}
+
 // Done - called when are ready to return a result
 func (w *WrapperResponseWriter) Done() (n int, err error) {
-	w.Header().Set("Content-Length", strconv.Itoa(w.buf.Len()))
+	w.Header().Set("Content-Length", strconv.Itoa(w.buf.Len()+w.prefixBuf.Len()))
 	w.ResponseWriter.WriteHeader(w.status)
+	w.ResponseWriter.Write(w.prefixBuf.Bytes())
 	return w.ResponseWriter.Write(w.buf.Bytes())
 }
 
@@ -95,7 +109,9 @@ func (live *LiveReload) GetMiddleware(next http.Handler) http.Handler {
 			strings.HasSuffix(r.RequestURI, "/index.html") {
 
 			if ww.Status() == 200 {
+				ww.PrefixWithLogs(live.logReader.Logs())
 				ww.Write([]byte(embed))
+
 			}
 		}
 
@@ -163,7 +179,7 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		//	log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	// listen for fs events and pass via channel

@@ -12,7 +12,7 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/api"
 	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/perf"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
 	logging "github.com/op/go-logging"
 )
@@ -21,11 +21,12 @@ var rootPath = path.Join(".kibble", "build")
 var staticFolder = "static"
 
 // Watch -
-func Watch(runAsAdmin bool, port int32) {
+func Watch(runAsAdmin bool, port int32, logReader utils.LogReader) {
 
-	liveReload := LiveReload{}
+	liveReload := LiveReload{logReader: logReader}
 	liveReload.StartLiveReload(port, func() {
 		// re-render
+		logReader.Clear()
 		Render(runAsAdmin)
 	})
 
@@ -51,7 +52,7 @@ func Watch(runAsAdmin bool, port int32) {
 // Render - render the files
 func Render(runAsAdmin bool) {
 
-	initSW := perf.NewStopwatch("load")
+	initSW := utils.NewStopwatch("load")
 
 	cfg := config.LoadConfig(runAsAdmin)
 
@@ -73,7 +74,7 @@ func Render(runAsAdmin bool) {
 
 	initSW.Completed()
 
-	sassSW := perf.NewStopwatch("sass")
+	sassSW := utils.NewStopwatch("sass")
 	err = Sass(
 		path.Join("styles", "main.scss"),
 		path.Join(rootPath, "styles", "main.css"))
@@ -83,10 +84,10 @@ func Render(runAsAdmin bool) {
 	}
 	sassSW.Completed()
 
-	renderSW := perf.NewStopwatchLevel("render", logging.NOTICE)
+	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 	for lang, locale := range cfg.Languages {
 
-		renderLangSW := perf.NewStopwatchf("  render language: %s", lang)
+		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
 		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)
@@ -108,7 +109,7 @@ func Render(runAsAdmin bool) {
 		// render static files
 		files, _ := filepath.Glob("*.jet")
 
-		renderFilesSW := perf.NewStopwatch("  render files")
+		renderFilesSW := utils.NewStopwatch("  render files")
 		for _, f := range files {
 			filePath := path.Join(ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
 
@@ -123,7 +124,7 @@ func Render(runAsAdmin bool) {
 		renderFilesSW.Completed()
 
 		for _, route := range routeRegistry.GetAll() {
-			renderRouteSW := perf.NewStopwatchf("    render route %s", route.Name)
+			renderRouteSW := utils.NewStopwatchf("    render route %s", route.Name)
 			ctx.Route = route
 			if route.ResolvedDataSouce != nil {
 				route.ResolvedDataSouce.Iterator(ctx, renderer)

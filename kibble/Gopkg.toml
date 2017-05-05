@@ -31,6 +31,3 @@
   branch = "master"
   name = "github.com/spf13/cobra"
 
-[[dependencies]]
-  branch = "master"
-  name = "gopkg.in/fsnotify.v1"
