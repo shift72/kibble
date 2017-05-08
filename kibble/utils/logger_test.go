@@ -8,7 +8,7 @@ import (
 
 func TestWatchedLogging(t *testing.T) {
 
-	unique := ConfigureWatchedLogging()
+	unique := ConfigureWatchedLogging(false)
 
 	log.Critical("critical1") // logged
 	log.Critical("critical1") // not uniuq

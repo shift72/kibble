@@ -1,5 +1,7 @@
 package models
 
+import "github.com/indiereign/shift72-kibble/kibble/utils"
+
 // FindPageByID - find the page by id
 func (pages PageCollection) FindPageByID(pageID int) (*Page, error) {
 	for _, p := range pages {
@@ -67,6 +69,15 @@ func (film Film) GetGenericItem() GenericItem {
 		},
 		ItemType:  "film",
 		InnerItem: film,
+	}
+}
+
+// GetSEO - get the film seo
+func (film Film) GetSEO(config ServiceConfig) *Seo {
+
+	return &Seo{
+		Title:    config["seo_title_prefix"] + film.Title + config["seo_title_suffix"],
+		Keywords: utils.Join(", ", config["seo_site_keywords"], film.Keywords),
 	}
 }
 

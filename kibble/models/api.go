@@ -24,16 +24,6 @@ type Site struct {
 	Taxonomies  Taxonomies
 }
 
-// "page_features": [{
-//     "feature_id": 125,
-//     "layout": "slider",
-//     "items_per_row": 3,
-//     "item_layout": "portrait",
-//     "slug": "test-01234",
-//     "display_name": null,
-//     "items": ["/film/121"]
-// },
-
 // ImageSet - set of images
 type ImageSet struct {
 	BackgroundImage string
@@ -41,6 +31,16 @@ type ImageSet struct {
 	LandscapeImage  string
 	PortraitImage   string
 	HeaderImage     string
+}
+
+// Seo - common seo settings
+type Seo struct {
+	SiteName    string
+	Title       string
+	Description string
+	Keywords    string
+	Image       string
+	VideoURL    string
 }
 
 // GenericItem - used to store the common properties
@@ -52,6 +52,7 @@ type GenericItem struct {
 	Slug     string
 	Title    string
 	Images   ImageSet
+	Seo      Seo
 }
 
 // PageFeature - part of a page
@@ -178,6 +179,7 @@ type Film struct {
 	TitleSlug   string    `json:"-"`
 	Slug        string    `json:"slug"`
 	FilmID      int       `json:"film_id"`
+	Keywords    string    `json:"keywords"`
 	ID          int       `json:"id"`
 	ImageUrls   struct {
 		Portrait       string `json:"portrait"`
