@@ -61,7 +61,7 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 			}
 			return o.URL
 		default:
-			return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.Slug, 1)
+			return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
 		}
 	}
 	return models.DataSourceError

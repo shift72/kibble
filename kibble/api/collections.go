@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // LoadAllCollections - load all collections
@@ -23,40 +24,43 @@ func LoadAllCollections(cfg *models.Config, site *models.Site, itemIndex models.
 	}
 
 	for _, c := range details {
-
-		collection := models.Collection{
-			ID:          c.ID,
-			Slug:        fmt.Sprintf("/collection/%d", c.ID),
-			Title:       c.Title,
-			TitleSlug:   c.TitleSlug,
-			Description: c.Description,
-			DisplayName: c.DisplayName,
-			ItemLayout:  c.ItemLayout,
-			ItemsPerRow: c.ItemsPerRow,
-			ImageSet: models.ImageSet{
-				LandscapeImage: c.LandscapeImage,
-				PortraitImage:  c.PortraitImage,
-				CarouselImage:  c.CarouselImage,
-				HeaderImage:    c.HeaderImage,
-			},
-			Items:          c.Items, //TODO: map to generic item
-			SearchQuery:    c.SearchQuery,
-			SeoDescription: c.SeoDescription,
-			SeoKeywords:    c.SeoKeywords,
-			SeoTitle:       c.SeoTitle,
-			CreatedAt:      c.CreatedAt,
-			UpdatedAt:      c.UpdatedAt,
-		}
-
-		// add items
-		for _, slug := range collection.Items {
-			itemIndex.Set(slug, models.Unresolved)
-		}
-
+		collection := c.mapToModel(site.Config, itemIndex)
 		site.Collections = append(site.Collections, collection)
+		itemIndex.Set(collection.Slug, collection.GetGenericItem())
 	}
 
 	return nil
+}
+
+func (c CollectionV4) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Collection {
+
+	return models.Collection{
+		ID:          c.ID,
+		Slug:        fmt.Sprintf("/collection/%d", c.ID),
+		Title:       c.Title,
+		TitleSlug:   c.TitleSlug,
+		Description: c.Description,
+		DisplayName: c.DisplayName,
+		ItemLayout:  c.ItemLayout,
+		ItemsPerRow: c.ItemsPerRow,
+		Images: models.ImageSet{
+			Landscape: c.LandscapeImage,
+			Portrait:  c.PortraitImage,
+			Carousel:  c.CarouselImage,
+			Header:    c.HeaderImage,
+		},
+		Seo: models.Seo{
+			SiteName:    serviceConfig.GetSiteName(),
+			Title:       serviceConfig.GetSEOTitle(c.SeoTitle, c.Title),
+			Keywords:    serviceConfig.GetKeywords(c.SeoKeywords),
+			Description: utils.Coalesce(c.SeoDescription, c.Description),
+			Image:       serviceConfig.SelectDefaultImageType(c.LandscapeImage, c.PortraitImage),
+		},
+		SearchQuery: c.SearchQuery,
+		Items:       itemIndex.MapToUnresolvedItems(c.Items),
+		CreatedAt:   c.CreatedAt,
+		UpdatedAt:   c.UpdatedAt,
+	}
 }
 
 // CollectionV4 - mapped from the v4 api

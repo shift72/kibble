@@ -19,11 +19,12 @@ func createTestContextHomepage() (models.RenderContext, *models.Route) {
 		Route:       r,
 		RoutePrefix: "/fr",
 		Site: &models.Site{
-			Pages: models.PageCollection{
+			Pages: models.Pages{
 				models.Page{
-					ID:       123,
-					Slug:     "homepage-slug",
-					PageType: "homepage",
+					ID:        123,
+					Slug:      "/page/123",
+					TitleSlug: "homepage-slug",
+					PageType:  "homepage",
 				},
 			},
 		},
@@ -44,11 +45,12 @@ func createTestContextCurated() (models.RenderContext, *models.Route) {
 		Route:       r,
 		RoutePrefix: "",
 		Site: &models.Site{
-			Pages: models.PageCollection{
+			Pages: models.Pages{
 				models.Page{
-					ID:       123,
-					Slug:     "disney",
-					PageType: "curated",
+					ID:        123,
+					Slug:      "/page/123",
+					TitleSlug: "disney",
+					PageType:  "curated",
 				},
 			},
 		},
@@ -69,11 +71,11 @@ func createTestContextExternal() models.RenderContext {
 		Route:       r,
 		RoutePrefix: "",
 		Site: &models.Site{
-			Pages: models.PageCollection{
+			Pages: models.Pages{
 				models.Page{
-					ID:       1,
-					Slug:     "about-us",
-					PageType: "content",
+					ID:        1,
+					TitleSlug: "about-us",
+					PageType:  "content",
 				},
 				models.Page{
 					ID:       123,
@@ -107,7 +109,7 @@ func createTestContextExternalOnly() models.RenderContext {
 		Route:       r,
 		RoutePrefix: "",
 		Site: &models.Site{
-			Pages: models.PageCollection{
+			Pages: models.Pages{
 				models.Page{
 					ID:       123,
 					PageType: "external",

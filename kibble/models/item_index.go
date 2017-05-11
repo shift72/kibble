@@ -17,7 +17,7 @@ type ItemIndex map[string]map[string]GenericItem
 
 // IsResolved -
 func (genericItem GenericItem) IsResolved() bool {
-	return !(genericItem == Empty || genericItem == Unresolved)
+	return genericItem.InnerItem != nil
 }
 
 //
@@ -26,6 +26,19 @@ func (genericItem GenericItem) IsResolved() bool {
 //   Empty - could not be loaded
 //   Unresolved - found but has not been requested
 //
+
+// MapToUnresolvedItems - create an array of unresolved items from an array of slugs
+func (itemIndex ItemIndex) MapToUnresolvedItems(items []string) GenericItems {
+
+	genericItems := make(GenericItems, len(items))
+
+	for i, slug := range items {
+		genericItems[i].Slug = slug
+		itemIndex.Set(slug, Unresolved)
+	}
+
+	return genericItems
+}
 
 func getSlugType(slug string) string {
 	slugParts := strings.Split(slug, "/")
@@ -98,34 +111,30 @@ func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem
 func (site *Site) LinkItems(itemIndex ItemIndex) {
 
 	for i := range site.Films {
-		for _, slug := range site.Films[i].Recommendations {
-			t := itemIndex.Get(slug)
-			if t.IsResolved() {
-				site.Films[i].ResolvedRecommendations = append(site.Films[i].ResolvedRecommendations, t)
-			}
-		}
+		site.Films[i].Recommendations = itemIndex.Resolve(site.Films[i].Recommendations)
 	}
 
 	for i := range site.Pages {
-		for j := range site.Pages[i].PageFeatures {
-			for _, slug := range site.Pages[i].PageFeatures[j].Items {
-				t := itemIndex.Get(slug)
-				if t.IsResolved() {
-					site.Pages[i].PageFeatures[j].ResolvedItems = append(site.Pages[i].PageFeatures[j].ResolvedItems, t)
-				}
-			}
+		for j := range site.Pages[i].PageCollections {
+			site.Pages[i].PageCollections[j].Items = itemIndex.Resolve(site.Pages[i].PageCollections[j].Items)
 		}
 	}
 
 	for i := range site.Bundles {
-		for _, slug := range site.Bundles[i].Items {
-			t := itemIndex.Get(slug)
-			if t.IsResolved() {
-				site.Bundles[i].ResolvedItems = append(site.Bundles[i].ResolvedItems, t)
-			}
+		site.Bundles[i].Items = itemIndex.Resolve(site.Bundles[i].Items)
+	}
+}
+
+// Resolve - convert an array of generic items to resolved items
+func (itemIndex ItemIndex) Resolve(gItems GenericItems) GenericItems {
+	resolvedItems := make([]GenericItem, 0)
+	for _, item := range gItems {
+		t := itemIndex.Get(item.Slug)
+		if t.IsResolved() {
+			resolvedItems = append(resolvedItems, t)
 		}
 	}
-
+	return resolvedItems
 }
 
 // Print - print the item index

@@ -40,7 +40,7 @@ type Renderer interface {
 	Render(route *Route, filePath string, data jet.VarMap)
 }
 
-// Config -
+// Config - template configuration
 type Config struct {
 	DefaultLanguage string            `json:"defaultLanguage"`
 	Languages       map[string]string `json:"languages"`

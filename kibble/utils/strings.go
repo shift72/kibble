@@ -22,3 +22,13 @@ func Join(separator string, values ...string) string {
 
 	return result
 }
+
+// Coalesce - return the first non empty string
+func Coalesce(values ...string) string {
+	for i := 0; i < len(values); i++ {
+		if len(values[i]) > 0 {
+			return values[i]
+		}
+	}
+	return ""
+}

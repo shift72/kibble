@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/gosimple/slug"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
-// LoadFilmSummary - load the bios request
-func LoadFilmSummary(cfg *models.Config) ([]models.FilmSummary, error) {
+// loadFilmSummary - load the bios request
+func loadFilmSummary(cfg *models.Config) ([]filmSummary, error) {
 
-	summary := []models.FilmSummary{}
+	summary := []filmSummary{}
 
 	path := fmt.Sprintf("%s/services/meta/v2/film/index", cfg.SiteURL)
 
@@ -33,7 +34,7 @@ func LoadFilmSummary(cfg *models.Config) ([]models.FilmSummary, error) {
 // AppendAllFilms -
 func AppendAllFilms(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
 
-	summary, err := LoadFilmSummary(cfg)
+	summary, err := loadFilmSummary(cfg)
 	if err != nil {
 		return err
 	}
@@ -78,41 +79,181 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 
 	for i := 0; i < len(details); i++ {
 
-		var film models.Film
+		var film filmV2
 		err = json.Unmarshal(details[i], &film)
 
 		if err == nil {
 
-			// fix subtitles
-			if film.SubtitlesRaw == nil {
-				// do nothing
-			} else if strings.HasPrefix(string(film.SubtitlesRaw), "\"") {
-				film.Subtitles = []string{string(film.SubtitlesRaw)}
-			} else if strings.HasPrefix(string(film.SubtitlesRaw), "[") {
-				film.Subtitles = strings.Split(strings.Trim(string(film.SubtitlesRaw), "[]"), ",")
-			}
-			film.TitleSlug = slug.Make(film.Title)
-
-			// add film
-			site.Films = append(site.Films, film)
-			itemIndex.Set(film.Slug, film.GetGenericItem())
-
-			// add bonuses - supports linking to bonus entries (supported??)
-			for bonusIndex := 0; bonusIndex < len(film.Bonuses); bonusIndex++ {
-				itemIndex.Set(fmt.Sprintf("%s/bonus/%d", film.Slug, film.Bonuses[bonusIndex].Number), film.Bonuses[bonusIndex].GetGenericItem())
-			}
-
-			// add Recommendations
-			for _, slug := range film.Recommendations {
-				itemIndex.Set(slug, models.Unresolved)
-			}
+			f := film.mapToModel(site.Config, itemIndex)
+			site.Films = append(site.Films, f)
+			itemIndex.Set(f.Slug, f.GetGenericItem())
 
 		} else {
 			fmt.Println("err", err)
 			fmt.Println("invalid data", string(details[i]))
 		}
-
 	}
 
 	return nil
+}
+
+func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Film {
+
+	film := models.Film{
+		ID:          f.ID,
+		Slug:        f.Slug,
+		Title:       f.Title,
+		TitleSlug:   slug.Make(f.Title),
+		Overview:    f.Overview,
+		Tagline:     f.Tagline,
+		ReleaseDate: f.ReleaseDate,
+		Runtime:     f.Runtime,
+		Countries:   f.Countries,
+		Languages:   f.Languages,
+		Genres:      f.Genres,
+		Seo: models.Seo{
+			SiteName:    serviceConfig.GetSiteName(),
+			Title:       serviceConfig.GetSEOTitle("", f.Title),
+			Keywords:    serviceConfig.GetKeywords(f.Keywords),
+			Description: f.Tagline,
+			Image:       serviceConfig.SelectDefaultImageType(f.ImageUrls.Landscape, f.ImageUrls.Portrait),
+		},
+		Images: models.ImageSet{
+			Portrait:       f.ImageUrls.Portrait,
+			Landscape:      f.ImageUrls.Landscape,
+			Header:         f.ImageUrls.Header,
+			Carousel:       f.ImageUrls.Carousel,
+			Background:     f.ImageUrls.Bg,
+			Classification: f.ImageUrls.Classification,
+		},
+		Recommendations: itemIndex.MapToUnresolvedItems(f.Recommendations),
+		Trailers:        make([]models.Trailer, 0),
+		Cast:            make([]models.CastMember, 0),
+		Crew:            make([]models.CrewMember, 0),
+	}
+
+	// fix subtitles
+	if f.SubtitlesRaw == nil {
+		// do nothing
+	} else if strings.HasPrefix(string(f.SubtitlesRaw), "\"") {
+		film.Subtitles = []string{string(f.SubtitlesRaw)}
+	} else if strings.HasPrefix(string(f.SubtitlesRaw), "[") {
+		film.Subtitles = strings.Split(strings.Trim(string(f.SubtitlesRaw), "[]"), ",")
+	}
+
+	// map trailers
+	for i, t := range f.Trailers {
+		if i == 0 {
+			// set the first video URL
+			film.Seo.VideoURL = t.URL
+		}
+
+		film.Trailers = append(film.Trailers, models.Trailer{
+			URL:  t.URL,
+			Type: t.Type,
+		})
+	}
+
+	// cast
+	for _, t := range f.Cast {
+		film.Cast = append(film.Cast, models.CastMember{
+			Name:      t.Name,
+			Character: t.Character,
+		})
+	}
+
+	// crew
+	for _, t := range f.Crew {
+		film.Crew = append(film.Crew, models.CrewMember{
+			Name: t.Name,
+			Job:  t.Job,
+		})
+	}
+
+	// add bonuses - supports linking to bonus entries (supported??)
+	for _, bonus := range f.Bonuses {
+		b := bonus.mapToModel2(film.Slug, serviceConfig, itemIndex)
+		film.Bonuses = append(film.Bonuses, b)
+		itemIndex.Set(b.Slug, b.GetGenericItem())
+	}
+
+	return film
+}
+
+func (fb filmBonusV2) mapToModel2(filmSlug string, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.FilmBonus {
+
+	return models.FilmBonus{
+		Slug:   fmt.Sprintf("%s/bonus/%d", filmSlug, fb.Number),
+		Number: fb.Number,
+		Title:  fb.Title,
+		Images: models.ImageSet{
+			Portrait:       fb.ImageUrls.Portrait,
+			Landscape:      fb.ImageUrls.Landscape,
+			Header:         fb.ImageUrls.Header,
+			Carousel:       fb.ImageUrls.Carousel,
+			Background:     fb.ImageUrls.Bg,
+			Classification: fb.ImageUrls.Classification,
+		},
+		// 	SubtitleTracks []interface{} `json:"subtitle_tracks"`
+	}
+}
+
+// Film - all of the film bits
+type filmV2 struct {
+	Trailers []struct {
+		URL  string `json:"url"`
+		Type string `json:"type"`
+	} `json:"trailers,omitempty"`
+	Bonuses []filmBonusV2 `json:"bonuses"`
+	Cast    []struct {
+		Name      string `json:"name"`
+		Character string `json:"character"`
+	} `json:"cast"`
+	Crew []struct {
+		Name string `json:"name"`
+		Job  string `json:"job"`
+	} `json:"crew"`
+	Studio []struct {
+		Name string `json:"name"`
+	} `json:"studio"`
+	Overview    string    `json:"overview"`
+	Tagline     string    `json:"tagline"`
+	ReleaseDate time.Time `json:"release_date"`
+	Runtime     float32   `json:"runtime"`
+	Countries   []string  `json:"countries"`
+	Languages   []string  `json:"languages"`
+	Genres      []string  `json:"genres"`
+	Title       string    `json:"title"`
+	Slug        string    `json:"slug"`
+	FilmID      int       `json:"film_id"`
+	Keywords    string    `json:"keywords"`
+	ID          int       `json:"id"`
+	ImageUrls   struct {
+		Portrait       string `json:"portrait"`
+		Landscape      string `json:"landscape"`
+		Header         string `json:"header"`
+		Carousel       string `json:"carousel"`
+		Bg             string `json:"bg"`
+		Classification string `json:"classification"`
+	} `json:"image_urls"`
+	Recommendations []string `json:"recommendations"`
+	//TODO: add a subtitle tracks struct
+	SubtitleTracks []interface{} `json:"subtitle_tracks"`
+	// manage the inconsistent api
+	SubtitlesRaw json.RawMessage `json:"subtitles,omitempty"`
+}
+
+// FilmBonus - film bonus model
+type filmBonusV2 struct {
+	Number    int    `json:"number"`
+	Title     string `json:"title"`
+	ImageUrls struct {
+		Portrait       string `json:"portrait"`
+		Landscape      string `json:"landscape"`
+		Header         string `json:"header"`
+		Carousel       string `json:"carousel"`
+		Bg             string `json:"bg"`
+		Classification string `json:"classification"`
+	} `json:"image_urls"`
+	SubtitleTracks []interface{} `json:"subtitle_tracks"`
 }

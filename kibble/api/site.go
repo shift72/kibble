@@ -24,7 +24,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
-	bios, err := LoadBios(cfg, itemIndex)
+	pages, navigation, err := LoadBios(cfg, config, itemIndex)
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +33,8 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		SiteConfig:  cfg,
 		Config:      config,
 		Toggles:     toggles,
-		Navigation:  bios.Navigation,
-		Pages:       bios.Pages,
+		Navigation:  navigation,
+		Pages:       pages,
 		Films:       make(models.FilmCollection, 0),
 		Bundles:     make(models.BundleCollection, 0),
 		Collections: make(models.CollectionCollection, 0),
@@ -67,7 +67,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 
 	fmt.Printf("service config:\t%d\n", len(config))
 	fmt.Printf("toggles:\t%d\n", len(toggles))
-	fmt.Printf("pages:\t\t%d\n", len(bios.Pages))
+	fmt.Printf("pages:\t\t%d\n", len(pages))
 	fmt.Printf("collections:\t\t%d\n", len(site.Collections))
 	fmt.Printf("films:\t\t%d\n", len(site.Films))
 	fmt.Printf("bundles:\t%d\n", len(site.Bundles))

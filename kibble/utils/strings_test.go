@@ -15,3 +15,10 @@ func TestJoin(t *testing.T) {
 	assert.Equal(t, "a, b", Join(", ", "", "a", "", "b"), "test 6")
 	assert.Equal(t, "a, b", Join(", ", "", "a", "", "b", ""), "test 7")
 }
+
+func TestCoalesce(t *testing.T) {
+	assert.Equal(t, "a", Coalesce("a"), "test 1")
+	assert.Equal(t, "a", Coalesce("", "a"), "test 2")
+	assert.Equal(t, "a", Coalesce("", "a", "b"), "test 3")
+	assert.Equal(t, "a", Coalesce("a", "b"), "test 4")
+}
