@@ -1,6 +1,8 @@
 package api
 
 import (
+	"sort"
+
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 	logging "github.com/op/go-logging"
@@ -32,6 +34,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		SiteConfig:  cfg,
 		Config:      config,
 		Toggles:     toggles,
+		Languages:   sortLanguages(cfg),
 		Navigation:  navigation,
 		Pages:       pages,
 		Films:       make(models.FilmCollection, 0),
@@ -78,4 +81,22 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	}
 
 	return site, nil
+}
+
+func sortLanguages(cfg *models.Config) []models.Language {
+
+	result := make([]models.Language, 0)
+
+	var keys []string
+	for k := range cfg.Languages {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		result = append(result, models.Language{
+			IsDefault: k == cfg.DefaultLanguage,
+			Code:      k,
+		})
+	}
+	return result
 }

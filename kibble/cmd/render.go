@@ -15,6 +15,8 @@
 package cmd
 
 import (
+	"path"
+
 	"github.com/indiereign/shift72-kibble/kibble/render"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/spf13/cobra"
@@ -33,12 +35,14 @@ var renderCmd = &cobra.Command{
 Kibble is used to build and develop custom sites to run on the SHIFT72 platform.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		var rootPath = path.Join(".kibble", "build")
+
 		if watch {
 			log := utils.ConfigureWatchedLogging(verbose)
-			render.Watch(renderRunAsAdmin, port, log)
+			render.Watch(rootPath, renderRunAsAdmin, port, log)
 		} else {
 			utils.ConfigureStandardLogging(verbose)
-			render.Render(renderRunAsAdmin)
+			render.Render(rootPath, renderRunAsAdmin)
 		}
 	},
 }

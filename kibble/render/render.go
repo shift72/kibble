@@ -17,17 +17,16 @@ import (
 	logging "github.com/op/go-logging"
 )
 
-var rootPath = path.Join(".kibble", "build")
 var staticFolder = "static"
 
 // Watch -
-func Watch(runAsAdmin bool, port int32, logReader utils.LogReader) {
+func Watch(rootPath string, runAsAdmin bool, port int32, logReader utils.LogReader) {
 
 	liveReload := LiveReload{logReader: logReader}
 	liveReload.StartLiveReload(port, func() {
 		// re-render
 		logReader.Clear()
-		Render(runAsAdmin)
+		Render(rootPath, runAsAdmin)
 	})
 
 	cfg := config.LoadConfig(runAsAdmin)
@@ -50,7 +49,7 @@ func Watch(runAsAdmin bool, port int32, logReader utils.LogReader) {
 }
 
 // Render - render the files
-func Render(runAsAdmin bool) {
+func Render(rootPath string, runAsAdmin bool) {
 
 	initSW := utils.NewStopwatch("load")
 

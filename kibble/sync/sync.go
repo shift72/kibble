@@ -3,14 +3,18 @@ package sync
 import (
 	"errors"
 	"fmt"
+	"path"
 	"strings"
 	"sync"
 
+	"github.com/indiereign/shift72-kibble/kibble/render"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 const (
-	ADD    = 1
+	// ADD - addition detected
+	ADD = 1
+	// REMOVE - removal detected
 	REMOVE = 2
 )
 
@@ -59,13 +63,55 @@ func Execute(config Config) error {
 	swDetect.Completed()
 
 	swSync := utils.NewStopwatch("sync")
-	err := SyncFiles(s3Store, changes)
+	err := PerformSync(s3Store, changes)
 	swSync.Completed()
 
 	return err
 }
 
-// Compare - compare lists
+// TestIdempotent - run the sync twice and check for differences
+func TestIdempotent(config Config) error {
+
+	utils.ConfigureStandardLogging(false)
+
+	local, err := NewLocalStore(config)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	var sample1Path = path.Join(".kibble", "build-sample-1")
+
+	render.Render(sample1Path, false)
+
+	sample1, err := local.List()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	var sample2Path = path.Join(".kibble", "build-sample-2")
+
+	render.Render(sample2Path, false)
+
+	sample2, err := local.List()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	diff := compare(sample1, sample2)
+
+	if len(diff) > 0 {
+		log.Errorf("test failed. files have changed between executions")
+		log.Errorf("see folders %s and %s for more detail.", sample1Path, sample2Path)
+		diff.Print()
+	}
+
+	return nil
+}
+
+// compare - compare lists
 func compare(local, remote FileRefCollection) (changes FileRefCollection) {
 
 	found := false
@@ -121,8 +167,8 @@ func (c *FileRefCollection) Print() {
 	}
 }
 
-// SyncFiles - sync all files to the remote server
-func SyncFiles(store Store, changes []FileRef) error {
+// PerformSync - sync all files to the remote server
+func PerformSync(store Store, changes []FileRef) error {
 
 	concurrency := 20
 

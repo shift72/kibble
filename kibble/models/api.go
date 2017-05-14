@@ -13,11 +13,18 @@ type Site struct {
 	SiteConfig  *Config
 	Toggles     FeatureToggles
 	Navigation  Navigation
+	Languages   []Language
 	Pages       Pages
 	Films       FilmCollection
 	Bundles     BundleCollection
 	Collections CollectionCollection
 	Taxonomies  Taxonomies
+}
+
+// Language - instance of a language
+type Language struct {
+	Code      string
+	IsDefault bool
 }
 
 // ImageSet - set of images

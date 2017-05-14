@@ -22,6 +22,7 @@ import (
 )
 
 var cfg = sync.Config{}
+var testIdempotent bool
 
 // syncCmd represents the sync command
 var syncCmd = &cobra.Command{
@@ -31,9 +32,16 @@ var syncCmd = &cobra.Command{
 	Uses filename and etag to determine if the files require syncing.
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if testIdempotent {
+			return sync.TestIdempotent(cfg)
+		}
 		return sync.Execute(cfg)
 	},
 	PreRunE: func(cmd *cobra.Command, args []string) error {
+
+		if testIdempotent {
+			return nil
+		}
 
 		if cfg.Profile == "" {
 			return errors.New("Missing argument: profile must be set")
@@ -58,4 +66,5 @@ func init() {
 	syncCmd.Flags().StringVarP(&cfg.Bucket, "bucket", "b", "", "AWS Profile")
 	syncCmd.Flags().StringVarP(&cfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 ")
 	syncCmd.Flags().StringVarP(&cfg.FileRootPath, "filerootpath", "", "./.kibble/build/", "path to upload")
+	syncCmd.Flags().BoolVarP(&testIdempotent, "test-idempotent", "", false, "Checks that two runs of the render process produce the same result.")
 }
