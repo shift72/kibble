@@ -32,9 +32,9 @@ func NewStopwatchf(msg string, a ...interface{}) *Stopwatch {
 // Completed - stops the stop watch
 func (sw *Stopwatch) Completed() {
 	if log.IsEnabledFor(sw.level) {
-		log.Noticef("%s: %s", sw.msg, time.Now().Sub(sw.start))
+		log.Noticef("%s: %s", sw.msg, round(time.Now().Sub(sw.start), time.Millisecond))
 	} else {
-		log.Debugf("%s: %s", sw.msg, time.Now().Sub(sw.start))
+		log.Debugf("%s: %s", sw.msg, round(time.Now().Sub(sw.start), time.Millisecond))
 	}
 }
 
@@ -48,4 +48,23 @@ func MeasureElapsed(msg string, fn func()) {
 	} else {
 		log.Debugf("%s: %s", msg, stop.Sub(start).String())
 	}
+}
+
+func round(d, r time.Duration) time.Duration {
+	if r <= 0 {
+		return d
+	}
+	neg := d < 0
+	if neg {
+		d = -d
+	}
+	if m := d % r; m+m < r {
+		d = d - m
+	} else {
+		d = d + r - m
+	}
+	if neg {
+		return -d
+	}
+	return d
 }

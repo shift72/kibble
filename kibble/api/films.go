@@ -56,8 +56,6 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 		strings.Trim(strings.Join(strings.Fields(fmt.Sprint(slugs)), ","), "[]"),
 		"/film/", "", -1)
 
-	fmt.Println("loading film count:", len(slugs))
-
 	// set index to empty for the items requested
 	for _, s := range slugs {
 		itemIndex.Set(s, models.Empty)
@@ -72,8 +70,8 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 	var details []json.RawMessage
 	err = json.Unmarshal([]byte(data), &details)
 	if err != nil {
-		fmt.Println("film.error", err)
-		fmt.Println(string(data))
+		log.Error("film.error: %s", err)
+		log.Debug("invalid data %s", string(data))
 		return err
 	}
 
@@ -89,8 +87,8 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 			itemIndex.Set(f.Slug, f.GetGenericItem())
 
 		} else {
-			fmt.Println("err", err)
-			fmt.Println("invalid data", string(details[i]))
+			log.Error("film.error: %s", err)
+			log.Debug("invalid data %s", string(details[i]))
 		}
 	}
 

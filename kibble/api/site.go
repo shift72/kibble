@@ -1,16 +1,15 @@
 package api
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+	logging "github.com/op/go-logging"
 )
 
 // LoadSite - load the complete site
 func LoadSite(cfg *models.Config) (*models.Site, error) {
 
-	start := time.Now()
+	initAPI := utils.NewStopwatchLevel("api", logging.NOTICE)
 
 	itemIndex := make(models.ItemIndex)
 
@@ -65,15 +64,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 
 	//TODO: while there are unresolved tv seasons
 
-	fmt.Printf("service config:\t%d\n", len(config))
-	fmt.Printf("toggles:\t%d\n", len(toggles))
-	fmt.Printf("pages:\t\t%d\n", len(pages))
-	fmt.Printf("collections:\t\t%d\n", len(site.Collections))
-	fmt.Printf("films:\t\t%d\n", len(site.Films))
-	fmt.Printf("bundles:\t%d\n", len(site.Bundles))
-
-	stop := time.Now()
-	fmt.Printf("-------------------------\nLoad completed: %s\n-------------------------\n", stop.Sub(start))
+	initAPI.Completed()
 
 	site.LinkItems(itemIndex)
 
@@ -82,7 +73,9 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	site.PopulateTaxonomyWithFilms("cast", models.GetCast)
 	site.PopulateTaxonomyWithFilms("country", models.GetCountries)
 
-	itemIndex.PrintStats()
+	if log.IsEnabledFor(logging.DEBUG) {
+		itemIndex.PrintStats()
+	}
 
 	return site, nil
 }

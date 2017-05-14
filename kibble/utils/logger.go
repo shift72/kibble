@@ -19,6 +19,15 @@ func ConfigureStandardLogging(verbose bool) {
 	setLogLevel(verbose)
 }
 
+func ConfigureInteractiveLogging(verbose bool) {
+	logging.SetFormatter(
+		logging.MustStringFormatter(
+			`%{color}%{message}%{color:reset}`,
+		))
+	logging.SetBackend(logging.NewLogBackend(os.Stdout, "", 0))
+	setLogLevel(verbose)
+}
+
 // ConfigureWatchedLogging - logging to stdout + the unique logger
 func ConfigureWatchedLogging(verbose bool) *UniqueLogger {
 	uni := NewUniqueLogger()

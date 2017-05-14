@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"reflect"
 
 	"github.com/CloudyKit/jet"
@@ -60,7 +59,7 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 				return trans(translationID, s)
 			}
 
-			log.Printf("WARN: translating %s found unrecognised type %s", translationID, reflect.TypeOf(args[0]))
+			log.Errorf("WARN: translating %s found unrecognised type %s", translationID, reflect.TypeOf(args[0]))
 		}
 		return trans(translationID)
 

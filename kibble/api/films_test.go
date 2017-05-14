@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
@@ -26,8 +25,6 @@ func TestLoadFilms(t *testing.T) {
 	if len(summary) == 0 {
 		t.Error("Expected some values to be loaded")
 	}
-
-	fmt.Printf("loaded film summaries: %d\n", len(summary))
 }
 
 func TestFilmApiToModel(t *testing.T) {

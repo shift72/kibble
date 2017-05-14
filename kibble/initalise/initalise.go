@@ -8,17 +8,14 @@ import (
 	"strconv"
 	"strings"
 
-	logging "github.com/op/go-logging"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // NewSite - create a new site
 func NewSite(force bool) {
 
 	// set the log format for interactiveness
-	logging.SetFormatter(
-		logging.MustStringFormatter(
-			`%{color}%{message}%{color:reset}`,
-		))
+	utils.ConfigureInteractiveLogging(false)
 
 	if !force {
 		r, err := ioutil.ReadDir(".")

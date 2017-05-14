@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -140,14 +139,14 @@ func (itemIndex ItemIndex) Resolve(gItems GenericItems) GenericItems {
 // Print - print the item index
 func (itemIndex ItemIndex) Print() {
 	for t, val := range itemIndex {
-		fmt.Printf("type: %s\n", t)
+		log.Infof("type: %s", t)
 		for k, v := range val {
 			if v == Empty {
-				fmt.Printf("%s - %s : empty\n", t, k)
+				log.Infof("%s - %s : empty", t, k)
 			} else if v == Unresolved {
-				fmt.Printf("%s - %s : unresolved\n", t, k)
+				log.Infof("%s - %s : unresolved", t, k)
 			} else {
-				fmt.Printf("%s - %s : set\n", t, k)
+				log.Infof("%s - %s : set", t, k)
 			}
 		}
 	}
@@ -155,7 +154,7 @@ func (itemIndex ItemIndex) Print() {
 
 // PrintStats - print the stats about the index
 func (itemIndex ItemIndex) PrintStats() {
-	fmt.Println("item index:")
+	log.Info("item index:")
 	var loadedCount = 0
 	var totalCount = 0
 	for t, val := range itemIndex {
@@ -169,8 +168,8 @@ func (itemIndex ItemIndex) PrintStats() {
 				loadedCount++
 			}
 		}
-		fmt.Printf("type: %s\t\t%d/%d\n", t, loaded, count)
+		log.Infof("type: %s\t\t%d/%d", t, loaded, count)
 	}
 
-	fmt.Printf("total: \t\t\t%d/%d\n", loadedCount, totalCount)
+	log.Infof("total: \t\t\t%d/%d", loadedCount, totalCount)
 }

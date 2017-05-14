@@ -21,4 +21,5 @@ func TestCoalesce(t *testing.T) {
 	assert.Equal(t, "a", Coalesce("", "a"), "test 2")
 	assert.Equal(t, "a", Coalesce("", "a", "b"), "test 3")
 	assert.Equal(t, "a", Coalesce("a", "b"), "test 4")
+	assert.Equal(t, "", Coalesce("", ""), "test 5")
 }

@@ -21,21 +21,20 @@ func LoadConfig(runAsAdmin bool) *models.Config {
 
 	file, err := ioutil.ReadFile(sitePath)
 	if err != nil {
-		fmt.Printf("File error: %v\n", err)
+		log.Errorf("File error: %v\n", err)
 		os.Exit(1)
 	}
 
 	var cfg models.Config
 	err = json.Unmarshal(file, &cfg)
 	if err != nil {
-		fmt.Printf("Config file parsing error: %v\n", err)
+		log.Errorf("Config file parsing error: %v", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("url:\t\t%s\n", cfg.SiteURL)
+	log.Debugf("url: %s", cfg.SiteURL)
 
 	loadLanguages(&cfg)
-	fmt.Printf("languages:\t%d\n", len(cfg.Languages))
 
 	if runAsAdmin {
 		LoadPrivateConfig(&cfg)
@@ -47,13 +46,13 @@ func SaveConfig(cfg *models.Config) {
 
 	data, err := json.Marshal(cfg)
 	if err != nil {
-		fmt.Printf("File error: %v\n", err)
+		log.Errorf("File error: %v\n", err)
 		os.Exit(1)
 	}
 
 	err = ioutil.WriteFile(sitePath, data, 0777)
 	if err != nil {
-		fmt.Printf("File error: %v\n", err)
+		log.Errorf("File error: %v", err)
 		os.Exit(1)
 	}
 }
@@ -68,14 +67,14 @@ func LoadPrivateConfig(cfg *models.Config) {
 
 	file, err := ioutil.ReadFile(privatePath)
 	if err != nil {
-		fmt.Printf("File error: %v\n", err)
+		log.Errorf("File error: %v", err)
 		os.Exit(1)
 	}
 
 	var private models.PrivateConfig
 	err = json.Unmarshal(file, &private)
 	if err != nil {
-		fmt.Printf("Config file parsing error: %v\n", err)
+		log.Errorf("Config file parsing error: %v", err)
 		os.Exit(1)
 	}
 
@@ -87,13 +86,13 @@ func SavePrivateConfig(cfg *models.Config) {
 
 	data, err := json.Marshal(cfg.Private)
 	if err != nil {
-		fmt.Printf("File error: %v\n", err)
+		log.Errorf("File error: %v", err)
 		os.Exit(1)
 	}
 
 	err = ioutil.WriteFile(privatePath, data, 0777)
 	if err != nil {
-		fmt.Printf("File error: %v\n", err)
+		log.Errorf("File error: %v", err)
 		os.Exit(1)
 	}
 }

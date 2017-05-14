@@ -58,23 +58,18 @@ TODO:
   * create a base implementation - done
   * find repo based on - done
   * clone the repo - done
+* sync
+  * 
 
 ## TODO
  * model
     * tv -
     * subtitles -
     
-    * features - ?? collections ??
     * json? - what would choice tv tvguide do?
  * shortcodes - these need to happen as part of the markdown process
  * download
-    * build and release on github
-
- * track rendering errors
-   * used to display to the user on any page that is loaded (--watch)
-   * used to fail a render and tell the calling server (non --watch)
-
-    
+    * build and release on github   
     
  * upload
   * zip - https://godoc.org/github.com/pierrre/archivefile/zip
