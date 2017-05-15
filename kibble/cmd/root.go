@@ -22,7 +22,7 @@ import (
 )
 
 var cfgFile string
-
+var runAsAdmin bool
 var verbose bool
 
 // RootCmd represents the base command when called without any subcommands
@@ -43,12 +43,6 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-
+	RootCmd.PersistentFlags().BoolVar(&runAsAdmin, "admin", false, "Render using admin credentials")
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose logging")
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-
 }

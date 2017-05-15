@@ -141,23 +141,22 @@ type CrewMember struct {
 
 // Film - all of the film bits
 type Film struct {
-	ID          int
-	Slug        string
-	Title       string
-	TitleSlug   string
-	Trailers    []Trailer
-	Bonuses     FilmBonusCollection
-	Cast        []CastMember
-	Crew        []CrewMember
-	Studio      []string
-	Overview    string
-	Tagline     string
-	ReleaseDate time.Time
-	Runtime     float32
-	Countries   []string
-	Languages   []string
-	Genres      []string
-	// Keywords        string
+	ID              int
+	Slug            string
+	Title           string
+	TitleSlug       string
+	Trailers        []Trailer
+	Bonuses         FilmBonusCollection
+	Cast            []CastMember
+	Crew            []CrewMember
+	Studio          []string
+	Overview        string
+	Tagline         string
+	ReleaseDate     time.Time
+	Runtime         float32
+	Countries       []string
+	Languages       []string
+	Genres          []string
 	Seo             Seo
 	Images          ImageSet
 	Recommendations []GenericItem

@@ -49,7 +49,7 @@ func Watch(rootPath string, runAsAdmin bool, port int32, logReader utils.LogRead
 }
 
 // Render - render the files
-func Render(rootPath string, runAsAdmin bool) {
+func Render(rootPath string, runAsAdmin bool) error {
 
 	initSW := utils.NewStopwatch("load")
 
@@ -59,8 +59,7 @@ func Render(rootPath string, runAsAdmin bool) {
 
 	site, err := api.LoadSite(cfg)
 	if err != nil {
-		log.Errorf("Site load failed: %s", err)
-		return
+		return err
 	}
 
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
@@ -78,8 +77,7 @@ func Render(rootPath string, runAsAdmin bool) {
 		path.Join("styles", "main.scss"),
 		path.Join(rootPath, "styles", "main.css"))
 	if err != nil {
-		log.Errorf("Sass rendering failed: %s", err)
-		return
+		return err
 	}
 	sassSW.Completed()
 
@@ -135,4 +133,6 @@ func Render(rootPath string, runAsAdmin bool) {
 	}
 
 	renderSW.Completed()
+
+	return nil
 }

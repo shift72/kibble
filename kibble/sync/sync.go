@@ -62,7 +62,7 @@ func Execute(config Config) error {
 	changes := compare(local, remote)
 	swDetect.Completed()
 
-	swSync := utils.NewStopwatch("sync")
+	swSync := utils.NewStopwatch("sync files")
 	err := PerformSync(s3Store, changes)
 	swSync.Completed()
 
@@ -76,7 +76,7 @@ func TestIdempotent(config Config) error {
 
 	local, err := NewLocalStore(config)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("sync error", err)
 		return err
 	}
 
@@ -86,7 +86,7 @@ func TestIdempotent(config Config) error {
 
 	sample1, err := local.List()
 	if err != nil {
-		fmt.Println(err)
+		log.Error("sync error", err)
 		return err
 	}
 
@@ -96,7 +96,7 @@ func TestIdempotent(config Config) error {
 
 	sample2, err := local.List()
 	if err != nil {
-		fmt.Println(err)
+		log.Error("sync error", err)
 		return err
 	}
 
@@ -205,9 +205,11 @@ func PerformSync(store Store, changes []FileRef) error {
 	// queue the work
 	for _, f := range changes {
 		if f.action == ADD {
+			log.Debugf("added: %s", f.path)
 			added++
 		}
 		if f.action == REMOVE {
+			log.Debugf("removed: %s", f.path)
 			removed++
 		}
 		wg.Add(1)
@@ -223,6 +225,6 @@ func PerformSync(store Store, changes []FileRef) error {
 		return errors.New("Unable to sync files")
 	}
 
-	log.Infof("sync successful [added: %d][removed: %d]\n", added, removed)
+	log.Infof("sync successful [added: %d][removed: %d]", added, removed)
 	return nil
 }

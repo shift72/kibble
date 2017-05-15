@@ -2,7 +2,6 @@ package sync
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"strings"
 	"sync"
@@ -62,11 +61,9 @@ func (store *S3Store) Upload(wg *sync.WaitGroup, f FileRef) error {
 	src := store.config.FileRootPath + f.path
 	dst := store.config.BucketRootPath + f.path
 
-	// fmt.Printf("upload %s to %s\n", src, dst)
-
 	b, err := ioutil.ReadFile(src)
 	if err != nil {
-		fmt.Println("Upload file read", err)
+		log.Error("upload file read", err)
 		return err
 	}
 
@@ -79,7 +76,7 @@ func (store *S3Store) Upload(wg *sync.WaitGroup, f FileRef) error {
 		},
 	)
 	if err != nil {
-		fmt.Println("Upload err", err)
+		log.Error("upload err", err)
 		return err
 	}
 
@@ -103,7 +100,7 @@ func (store *S3Store) Delete(wg *sync.WaitGroup, f FileRef) error {
 		},
 	)
 	if err != nil {
-		fmt.Println("Upload err", err)
+		log.Error("upload err", err)
 		return err
 	}
 

@@ -16,13 +16,19 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"path"
 
+	"github.com/indiereign/shift72-kibble/kibble/render"
 	"github.com/indiereign/shift72-kibble/kibble/sync"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+	logging "github.com/op/go-logging"
 	"github.com/spf13/cobra"
 )
 
 var cfg = sync.Config{}
 var testIdempotent bool
+var renderAndSync bool
 
 // syncCmd represents the sync command
 var syncCmd = &cobra.Command{
@@ -32,10 +38,24 @@ var syncCmd = &cobra.Command{
 	Uses filename and etag to determine if the files require syncing.
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		swSync := utils.NewStopwatchLevel("sync", logging.NOTICE)
+
+		utils.ConfigureStandardLogging(verbose)
 		if testIdempotent {
 			return sync.TestIdempotent(cfg)
 		}
-		return sync.Execute(cfg)
+
+		if renderAndSync {
+			var rootPath = path.Join(".kibble", "build")
+			err := render.Render(rootPath, runAsAdmin)
+			if err != nil {
+				fmt.Println("Render failed:", err)
+				return err
+			}
+		}
+		err := sync.Execute(cfg)
+		swSync.Completed()
+		return err
 	},
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 
@@ -66,5 +86,7 @@ func init() {
 	syncCmd.Flags().StringVarP(&cfg.Bucket, "bucket", "b", "", "AWS Profile")
 	syncCmd.Flags().StringVarP(&cfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 ")
 	syncCmd.Flags().StringVarP(&cfg.FileRootPath, "filerootpath", "", "./.kibble/build/", "path to upload")
+
+	syncCmd.Flags().BoolVarP(&renderAndSync, "render", "", false, "Renders before syncing.")
 	syncCmd.Flags().BoolVarP(&testIdempotent, "test-idempotent", "", false, "Checks that two runs of the render process produce the same result.")
 }

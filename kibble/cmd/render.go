@@ -22,7 +22,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var renderRunAsAdmin bool
 var port int32
 var watch bool
 
@@ -39,17 +38,16 @@ Kibble is used to build and develop custom sites to run on the SHIFT72 platform.
 
 		if watch {
 			log := utils.ConfigureWatchedLogging(verbose)
-			render.Watch(rootPath, renderRunAsAdmin, port, log)
+			render.Watch(rootPath, runAsAdmin, port, log)
 		} else {
 			utils.ConfigureStandardLogging(verbose)
-			render.Render(rootPath, renderRunAsAdmin)
+			render.Render(rootPath, runAsAdmin)
 		}
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(renderCmd)
-	renderCmd.Flags().BoolVar(&renderRunAsAdmin, "admin", false, "Render using admin credentials")
 	renderCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
 	renderCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
 }
