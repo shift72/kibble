@@ -2,45 +2,29 @@ package datastore
 
 import (
 	"fmt"
-	"net/http"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/pressly/chi"
 )
 
-// PageCollectionDataSource - a list of all Pages
-type PageCollectionDataSource struct{}
+// PageIndexDataSource - a list of all Pages
+type PageIndexDataSource struct{}
 
 // GetName - returns the name of the datasource
-func (ds *PageCollectionDataSource) GetName() string {
-	return "PageCollection"
+func (ds *PageIndexDataSource) GetName() string {
+	return "PageIndex"
 }
 
 // GetEntityType - Get the entity type
-func (ds *PageCollectionDataSource) GetEntityType() reflect.Type {
+func (ds *PageIndexDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf([]models.Page{})
 }
 
-// Query - return the list of all Pages
-func (ds *PageCollectionDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
-
-	clonedPages := make([]*models.Page, len(ctx.Site.Pages))
-	for i, f := range ctx.Site.Pages {
-		clonedPages[i] = transformPage(f)
-	}
-
-	vars := make(jet.VarMap)
-	vars.Set("pages", clonedPages)
-	vars.Set("site", ctx.Site)
-	return vars, nil
-}
-
 // Iterator - return a list of all Pages, iteration of 1
-func (ds *PageCollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
 	// rule for page 1
 	if ctx.Route.PageSize > 0 {
@@ -49,7 +33,6 @@ func (ds *PageCollectionDataSource) Iterator(ctx models.RenderContext, renderer 
 			panic(fmt.Errorf("Page route is missing an :index. Either add and index placeholder or remove the pageSize\n"))
 		}
 
-		fmt.Printf("Pages... page size:%d page total:%d\n", ctx.Route.PageSize, len(ctx.Site.Pages))
 		ctx.Route.Pagination = models.Pagination{
 			Index: 1,
 			Total: (len(ctx.Site.Pages) / ctx.Route.PageSize) + 1,
@@ -93,7 +76,7 @@ func (ds *PageCollectionDataSource) Iterator(ctx models.RenderContext, renderer 
 			vars.Set("pages", clonedPages)
 			vars.Set("pagination", ctx.Route.Pagination)
 			vars.Set("site", ctx.Site)
-			renderer.Render(ctx.Route, path, vars)
+			renderer.Render(ctx.Route, ctx.RoutePrefix+path, vars)
 		}
 	} else {
 
@@ -112,32 +95,26 @@ func (ds *PageCollectionDataSource) Iterator(ctx models.RenderContext, renderer 
 		vars.Set("pages", clonedPages)
 		vars.Set("pagination", ctx.Route.Pagination)
 		vars.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, ctx.Route.URLPath, vars)
+		renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 	}
 }
 
 // GetRouteForEntity - get the route
-func (ds *PageCollectionDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	return ctx.Route.URLPath
+func (ds *PageIndexDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+	return ctx.RoutePrefix + ctx.Route.URLPath
 }
 
 // GetRouteForSlug - get the route
-func (ds *PageCollectionDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
+func (ds *PageIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 	return models.DataSourceError
 }
 
 // IsSlugMatch - is the slug a match
-func (ds *PageCollectionDataSource) IsSlugMatch(slug string) bool {
+func (ds *PageIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
 }
 
 func transformPage(f models.Page) *models.Page {
 	f.Content = models.ApplyContentTransforms(f.Content)
 	return &f
-}
-
-// RegisterRoutes - add the routes to the chi router
-func (ds *PageCollectionDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
-	router.Get(route.URLPath, handler)
-	router.Get("/:lang"+route.URLPath, handler)
 }

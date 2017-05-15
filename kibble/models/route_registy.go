@@ -2,11 +2,8 @@ package models
 
 import (
 	"fmt"
-	"log"
-	"net/http"
+	"os"
 	"reflect"
-
-	"github.com/pressly/chi"
 )
 
 // Route - represents a route for rendering and
@@ -19,6 +16,20 @@ type Route struct {
 	ResolvedEntityType reflect.Type `json:"-"`
 	PageSize           int          `json:"pageSize"`
 	Pagination         Pagination   `json:"-"`
+}
+
+// Clone - create a copy of the route
+func (r *Route) Clone() *Route {
+	return &Route{
+		Name:               r.Name,
+		URLPath:            r.URLPath,
+		TemplatePath:       r.TemplatePath,
+		DataSource:         r.DataSource,
+		ResolvedDataSouce:  r.ResolvedDataSouce,
+		ResolvedEntityType: r.ResolvedEntityType,
+		PageSize:           r.PageSize,
+		Pagination:         r.Pagination,
+	}
 }
 
 // RouteRegistry - stores a list of routes
@@ -89,7 +100,7 @@ func (r *RouteRegistry) GetRouteForSlug(ctx RenderContext, slug string, routeNam
 	ctx.Route = r.FindBySlugAndRouteName(slug, routeName)
 
 	if ctx.Route != nil {
-		// fmt.Printf("Found route, name:%s, path: %s\n", foundRoute.Name, foundRoute.URLPath)
+		//fmt.Printf("Found route name:%s prefix:%s path: %s\n", ctx.Route.Name, ctx.RoutePrefix, ctx.Route.URLPath)
 		return ctx.Route.ResolvedDataSouce.GetRouteForSlug(ctx, slug)
 	}
 
@@ -102,6 +113,8 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 
 	routeRegistry.routes = make([]*Route, len(config.Routes))
 
+	errorsFound := false
+
 	for i := 0; i < len(config.Routes); i++ {
 		route := config.Routes[i]
 
@@ -109,19 +122,16 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 		if route.ResolvedDataSouce != nil {
 			route.ResolvedEntityType = route.ResolvedDataSouce.GetEntityType()
 		} else {
-			fmt.Printf("Unable to find the datasource %s\n", route.DataSource)
+			fmt.Printf("Unable to find the datasource %s. Check routes registered in site.json\n", route.DataSource)
+			errorsFound = true
+
 		}
 		routeRegistry.routes[i] = &route
 	}
 
-	return routeRegistry
-}
-
-// AddToRouter - adds the route to the router
-func (route *Route) AddToRouter(r chi.Router, handler func(w http.ResponseWriter, req *http.Request)) {
-	if route.ResolvedDataSouce != nil {
-		route.ResolvedDataSouce.RegisterRoutes(r, route, handler)
-	} else {
-		log.Printf("Route skipped, unknown data source %s\n", route.DataSource)
+	if errorsFound {
+		os.Exit(1)
 	}
+
+	return routeRegistry
 }

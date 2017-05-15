@@ -25,7 +25,7 @@ var cache = httpcache.Cache(httpcache.NewMemoryCache())
 // CheckAdminCredentials - check that the admin credentials are valid
 func CheckAdminCredentials(cfg *models.Config, runAsAdmin bool) {
 
-	if cfg.Private.APIKey != "" {
+	if runAsAdmin {
 		isAdmin, err := IsAdmin(cfg)
 		if err != nil {
 			fmt.Println(err)

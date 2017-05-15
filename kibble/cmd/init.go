@@ -15,27 +15,23 @@
 package cmd
 
 import (
-	"github.com/indiereign/shift72-kibble/kibble/server"
+	"github.com/indiereign/shift72-kibble/kibble/initalise"
 	"github.com/spf13/cobra"
 )
 
-var port int32
-var watch bool
-var serverRunAsAdmin bool
+var force = false
 
-// serveCmd represents the serve command
-var serveCmd = &cobra.Command{
-	Use:   "serve",
-	Short: "Start a server to serve the site for testing",
-	Long:  `Creates a local web server to test local template development.`,
+// initCmd represents the init command
+var initCmd = &cobra.Command{
+	Use:   "init",
+	Short: "Initalise a new site",
+	Long:  `Configures a new site from an existing templates.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		server.StartNew(port, watch, serverRunAsAdmin)
+		initalise.NewSite(force)
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(serveCmd)
-	serveCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
-	serveCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
-	serveCmd.Flags().BoolVar(&serverRunAsAdmin, "admin", false, "Serve using admin credentials")
+	RootCmd.AddCommand(initCmd)
+	initCmd.Flags().BoolVar(&force, "force", false, "Force initalising in non empty directory")
 }

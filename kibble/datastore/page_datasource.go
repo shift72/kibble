@@ -1,14 +1,13 @@
 package datastore
 
 import (
-	"net/http"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/pressly/chi"
 )
 
 // PageDataSource - single Page datasource
@@ -24,36 +23,6 @@ func (ds *PageDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf(&models.Page{})
 }
 
-// Query - return a single Page
-func (ds *PageDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
-
-	var p *models.Page
-	var err error
-
-	// handle the special case of the homepage
-	if req.URL.Path == "/index.html" {
-		for i := range ctx.Site.Pages {
-			if ctx.Site.Pages[i].PageType == "homepage" {
-				p = &ctx.Site.Pages[i]
-				break
-			}
-		}
-	} else {
-		pageSlug := chi.URLParam(req, "slug")
-		p, err = ctx.Site.Pages.FindPageBySlug(pageSlug)
-	}
-
-	if err != nil || p == nil {
-		return nil, err
-	}
-	c := transformPage(*p)
-
-	vars := make(jet.VarMap)
-	vars.Set("page", c)
-	vars.Set("site", ctx.Site)
-	return vars, nil
-}
-
 // Iterator - loop over each Page
 func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
 
@@ -65,9 +34,12 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 			continue // don't render external pages
 		}
 
+		route := ctx.Route.Clone()
+		route.TemplatePath = strings.Replace(route.TemplatePath, ":type", p.PageType, 1)
+
 		data.Set("page", transformPage(p))
 		data.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, ds.GetRouteForEntity(ctx, &p), data)
+		renderer.Render(route, ds.GetRouteForEntity(ctx, &p), data)
 	}
 }
 
@@ -75,35 +47,45 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.Page)
 	if ok {
-		// special case for the home page
-		if o.PageType == "homepage" {
-			return "/index.html"
+
+		switch o.PageType {
+		// special case for the homepage
+		case "homepage":
+			return ctx.RoutePrefix + "/"
+		case "external":
+			// special case: map an old static url to a new one
+			if strings.Contains(o.URL, "/#!/") &&
+				strings.HasPrefix(o.URL, ctx.Site.SiteConfig.SiteURL) {
+				i := strings.Index(o.URL, "/#!/") + 3
+				return o.URL[i:len(o.URL)]
+			}
+			return o.URL
+		default:
+			return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
 		}
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.Slug, 1)
 	}
 	return models.DataSourceError
 }
 
 // GetRouteForSlug - get the route
 func (ds *PageDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	//TODO: parse slug
-	//TODO: fix errors
-	p := strings.Split(slug, "/")
-	pageID, _ := strconv.Atoi(p[2])
-	page, _ := ctx.Site.Pages.FindPageByID(pageID)
 
-	//TODO: does not work page, _ := ctx.Site.Pages.FindPageBySlug(slug)
+	p := strings.Split(slug, "/")
+	pageID, err := strconv.Atoi(p[2])
+	if err != nil {
+		return fmt.Sprintf("ERR(%s)", slug)
+	}
+
+	page, err := ctx.Site.Pages.FindPageByID(pageID)
+
+	if err != nil {
+		return fmt.Sprintf("ERR(%s)", slug)
+	}
+
 	return ds.GetRouteForEntity(ctx, page)
 }
 
 // IsSlugMatch - checks if the slug is a match
 func (ds *PageDataSource) IsSlugMatch(slug string) bool {
 	return strings.HasPrefix(slug, "/page/")
-}
-
-// RegisterRoutes - add the routes to the chi router
-func (ds *PageDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
-	router.Get("/index.html", handler)
-	router.Get(route.URLPath, handler)
-	router.Get("/:lang"+route.URLPath, handler)
 }

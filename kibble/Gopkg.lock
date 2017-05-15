@@ -1,4 +1,4 @@
-memo = "131f7f947abf920aa2f99355bc7de88d8031348ec87ab1e6b5584dece4cef864"
+memo = "e40e471d9c0527d939caf4ccbe8782b25e6aabe866705f32b3f36238ffb9c19f"
 
 [[projects]]
   branch = "master"
@@ -11,6 +11,24 @@ memo = "131f7f947abf920aa2f99355bc7de88d8031348ec87ab1e6b5584dece4cef864"
   name = "github.com/CloudyKit/jet"
   packages = ["."]
   revision = "62d3289aafd039c4b6d00f82e935322a4480c8a6"
+
+[[projects]]
+  name = "github.com/aws/aws-sdk-go"
+  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/restxml","private/protocol/xml/xmlutil","service/s3","service/sts"]
+  revision = "0dbc446aca87aebb6e0a24509b59bafc0e3ec0ae"
+  version = "v1.8.19"
+
+[[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/go-ini/ini"
+  packages = ["."]
+  revision = "e7fea39b01aea8d5671f6858f0532f56e8bff3a5"
+  version = "v1.27.0"
 
 [[projects]]
   branch = "master"
@@ -37,6 +55,12 @@ memo = "131f7f947abf920aa2f99355bc7de88d8031348ec87ab1e6b5584dece4cef864"
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
 
 [[projects]]
+  name = "github.com/jmespath/go-jmespath"
+  packages = ["."]
+  revision = "3433f3ea46d9f8019119e7dd41274e112a2359a9"
+  version = "0.2.2"
+
+[[projects]]
   branch = "master"
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
@@ -47,6 +71,12 @@ memo = "131f7f947abf920aa2f99355bc7de88d8031348ec87ab1e6b5584dece4cef864"
   name = "github.com/nicksnyder/go-i18n"
   packages = ["i18n","i18n/bundle","i18n/language","i18n/translation"]
   revision = "5a40a66b242242b28cac9dd07177d50818512397"
+
+[[projects]]
+  name = "github.com/op/go-logging"
+  packages = ["."]
+  revision = "b2cb9fa56473e98db8caba80237377e83fe44db5"
+  version = "v1"
 
 [[projects]]
   branch = "master"
@@ -67,10 +97,10 @@ memo = "131f7f947abf920aa2f99355bc7de88d8031348ec87ab1e6b5584dece4cef864"
   version = "v0.8.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/pressly/chi"
-  packages = [".","middleware","render"]
-  revision = "bb4b58688bb945cee02713c22c06c4ef27c5bf61"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -101,6 +131,24 @@ memo = "131f7f947abf920aa2f99355bc7de88d8031348ec87ab1e6b5584dece4cef864"
   name = "github.com/spf13/pflag"
   packages = ["."]
   revision = "5ccb023bc27df288a957c5e994cd44fd19619465"
+
+[[projects]]
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
+  version = "v1.1.4"
+
+[[projects]]
+  name = "github.com/wellington/go-libsass"
+  packages = ["."]
+  revision = "4cdf225c9b570199942b38c82397670be237829f"
+  version = "v0.9.0"
+
+[[projects]]
+  name = "github.com/wellington/spritewell"
+  packages = ["."]
+  revision = "3a43f26d94a6da8e40884d1edca0ff372ab7487d"
+  version = "v0.4.0"
 
 [[projects]]
   branch = "master"

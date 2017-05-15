@@ -1,15 +1,13 @@
 package datastore
 
 import (
-	"errors"
-	"net/http"
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/pressly/chi"
 )
 
 // FilmDataSource - single film datasource
@@ -24,39 +22,6 @@ func (ds *FilmDataSource) GetName() string {
 // GetEntityType - Get the entity type
 func (ds *FilmDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf(&models.Film{})
-}
-
-// Query - return a single film
-func (ds *FilmDataSource) Query(ctx models.RenderContext, req *http.Request) (jet.VarMap, error) {
-
-	var f *models.Film
-
-	if strings.Contains(ctx.Route.URLPath, ":filmID") {
-
-		filmID, err := strconv.Atoi(chi.URLParam(req, "filmID"))
-		if err != nil {
-			return nil, err
-		}
-
-		f, err = ctx.Site.Films.FindFilmByID(filmID)
-		if err != nil || f == nil {
-			return nil, err
-		}
-
-	} else if strings.Contains(ctx.Route.URLPath, ":slug") {
-		slug := chi.URLParam(req, "slug")
-		f, _ = ctx.Site.Films.FindFilmBySlug(slug)
-	}
-
-	if f == nil {
-		//TODO: indicate a 404 error
-		return nil, errors.New("Not found")
-	}
-
-	vars := make(jet.VarMap)
-	vars.Set("film", transformFilm(*f))
-	vars.Set("site", ctx.Site)
-	return vars, nil
 }
 
 // Iterator - loop over each film
@@ -89,8 +54,16 @@ func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 	if strings.Contains(ctx.Route.URLPath, ":filmID") {
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", p[2], 1)
 	} else if strings.Contains(ctx.Route.URLPath, ":slug") {
-		filmID, _ := strconv.Atoi(p[2])
-		film, _ := ctx.Site.Films.FindFilmByID(filmID)
+		filmID, err := strconv.Atoi(p[2])
+		if err != nil {
+			return fmt.Sprintf("ERR(%s)", slug)
+		}
+
+		film, err := ctx.Site.Films.FindFilmByID(filmID)
+		if err != nil {
+			return fmt.Sprintf("ERR(%s)", slug)
+		}
+
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", film.TitleSlug, 1)
 	}
 	return models.DataSourceError
@@ -99,10 +72,4 @@ func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 // IsSlugMatch - checks if the slug is a match
 func (ds *FilmDataSource) IsSlugMatch(slug string) bool {
 	return strings.HasPrefix(slug, "/film/")
-}
-
-// RegisterRoutes - add the routes to the chi router
-func (ds *FilmDataSource) RegisterRoutes(router chi.Router, route *models.Route, handler func(w http.ResponseWriter, req *http.Request)) {
-	router.Get(route.URLPath, handler)
-	router.Get("/:lang"+route.URLPath, handler)
 }

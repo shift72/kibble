@@ -2,22 +2,56 @@ package render
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+	"path"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/api"
 	"github.com/indiereign/shift72-kibble/kibble/config"
-	"github.com/indiereign/shift72-kibble/kibble/datastore"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
+	logging "github.com/op/go-logging"
 )
 
-// Render - render the files
-func Render(runAsAdmin bool, verbose bool) {
+var staticFolder = "static"
 
-	datastore.Init()
+// Watch -
+func Watch(rootPath string, runAsAdmin bool, port int32, logReader utils.LogReader) {
+
+	liveReload := LiveReload{logReader: logReader}
+	liveReload.StartLiveReload(port, func() {
+		// re-render
+		logReader.Clear()
+		Render(rootPath, runAsAdmin)
+	})
+
+	cfg := config.LoadConfig(runAsAdmin)
+	proxy := NewProxy(cfg.SiteURL)
+
+	// server
+	mux := http.NewServeMux()
+	mux.HandleFunc("/kibble/live_reload", liveReload.Handler)
+	mux.Handle("/",
+		proxy.GetMiddleware(
+			liveReload.GetMiddleware(
+				http.FileServer(
+					http.Dir(rootPath)))))
+
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
+	if err != nil {
+		log.Errorf("Web server failed: %s", err)
+		os.Exit(1)
+	}
+}
+
+// Render - render the files
+func Render(rootPath string, runAsAdmin bool) error {
+
+	initSW := utils.NewStopwatch("load")
 
 	cfg := config.LoadConfig(runAsAdmin)
 
@@ -25,24 +59,35 @@ func Render(runAsAdmin bool, verbose bool) {
 
 	site, err := api.LoadSite(cfg)
 	if err != nil {
-		fmt.Printf("Site load failed: %s", err)
-		return
+		return err
 	}
 
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
 	renderer := FileRenderer{
-		rootPath:    "./.kibble/build",
-		showSummary: verbose,
+		rootPath: rootPath,
 	}
+
 	renderer.Initialise()
 
-	start := time.Now()
+	initSW.Completed()
+
+	sassSW := utils.NewStopwatch("sass")
+	err = Sass(
+		path.Join("styles", "main.scss"),
+		path.Join(rootPath, "styles", "main.css"))
+	if err != nil {
+		return err
+	}
+	sassSW.Completed()
+
+	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 	for lang, locale := range cfg.Languages {
 
+		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
 		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
 		if err != nil {
-			fmt.Println(err)
+			log.Errorf("Translation failed: %s", err)
 		}
 
 		ctx := models.RenderContext{
@@ -51,18 +96,19 @@ func Render(runAsAdmin bool, verbose bool) {
 			Language:    lang,
 		}
 
-		// set the template view
-		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, "./")
-
 		if lang != cfg.DefaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
 		}
 
+		// set the template view
+		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, "./")
+
 		// render static files
 		files, _ := filepath.Glob("*.jet")
-		for _, f := range files {
 
-			filePath := fmt.Sprintf("%s/%s", ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
+		renderFilesSW := utils.NewStopwatch("  render files")
+		for _, f := range files {
+			filePath := path.Join(ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
 
 			route := &models.Route{
 				TemplatePath: f,
@@ -70,21 +116,23 @@ func Render(runAsAdmin bool, verbose bool) {
 
 			data := jet.VarMap{}
 			data.Set("site", site)
-
 			renderer.Render(route, filePath, data)
 		}
+		renderFilesSW.Completed()
 
 		for _, route := range routeRegistry.GetAll() {
-
+			renderRouteSW := utils.NewStopwatchf("    render route %s", route.Name)
 			ctx.Route = route
-
 			if route.ResolvedDataSouce != nil {
 				route.ResolvedDataSouce.Iterator(ctx, renderer)
 			}
+			renderRouteSW.Completed()
 		}
+
+		renderLangSW.Completed()
 	}
 
-	stop := time.Now()
+	renderSW.Completed()
 
-	fmt.Printf("\nRendered: %s", stop.Sub(start))
+	return nil
 }

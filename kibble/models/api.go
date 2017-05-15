@@ -1,43 +1,50 @@
 package models
 
 import (
-	"encoding/json"
 	"time"
 )
-
-// ServiceConfig -
-type ServiceConfig map[string]string
 
 // FeatureToggles - store feature toggles
 type FeatureToggles map[string]bool
 
 // Site -
 type Site struct {
-	Config     ServiceConfig
-	Toggles    FeatureToggles
-	Navigation Navigation
-	Pages      PageCollection
-	Films      FilmCollection
-	Bundles    BundleCollection
-	Taxonomies Taxonomies
+	Config      ServiceConfig
+	SiteConfig  *Config
+	Toggles     FeatureToggles
+	Navigation  Navigation
+	Languages   []Language
+	Pages       Pages
+	Films       FilmCollection
+	Bundles     BundleCollection
+	Collections CollectionCollection
+	Taxonomies  Taxonomies
 }
 
-// "page_features": [{
-//     "feature_id": 125,
-//     "layout": "slider",
-//     "items_per_row": 3,
-//     "item_layout": "portrait",
-//     "slug": "test-01234",
-//     "display_name": null,
-//     "items": ["/film/121"]
-// },
+// Language - instance of a language
+type Language struct {
+	Code      string
+	IsDefault bool
+}
 
 // ImageSet - set of images
 type ImageSet struct {
-	BackgroundImage *string
-	CarouselImage   *string
-	LandscapeImage  *string
-	PortraitImage   *string
+	Background     string
+	Carousel       string
+	Landscape      string
+	Portrait       string
+	Header         string
+	Classification string
+}
+
+// Seo - common seo settings
+type Seo struct {
+	SiteName    string
+	Title       string
+	Description string
+	Keywords    string
+	Image       string
+	VideoURL    string
 }
 
 // GenericItem - used to store the common properties
@@ -49,41 +56,38 @@ type GenericItem struct {
 	Slug     string
 	Title    string
 	Images   ImageSet
+	Seo      Seo
 }
 
-// PageFeature - part of a page
-type PageFeature struct {
-	FeatureID     int           `json:"feature_id"`
-	Layout        string        `json:"layout"`
-	ItemsPerRow   int           `json:"items_per_row"`
-	ItemLayout    string        `json:"item_layout"`
-	Slug          string        `json:"slug"`
-	DisplayName   *string       `json:"display_name"`
-	Items         []string      `json:"items"`
-	ResolvedItems []GenericItem `json:"-"`
+// PageCollection - part of a page
+type PageCollection struct {
+	ID          int
+	Layout      string
+	ItemsPerRow int
+	ItemLayout  string
+	Slug        string
+	TitleSlug   string
+	DisplayName string
+	Items       []GenericItem
 }
 
 // Page - page structure
 type Page struct {
-	CarouselImage  *string       `json:"carousel_image"`
-	Content        string        `json:"content"`
-	HeaderImage    *string       `json:"header_image"`
-	ID             int           `json:"id"`
-	LandscapeImage *string       `json:"landscape_image"`
-	PageFeatures   []PageFeature `json:"page_features"`
-	PageType       string        `json:"page_type"`
-	PortraitImage  *string       `json:"portrait_image"`
-	SeoDescription *string       `json:"seo_description"`
-	SeoKeywords    *string       `json:"seo_keywords"`
-	SeoTitle       *string       `json:"seo_title"`
-	Slug           string        `json:"slug"`
-	Tagline        *string       `json:"tagline"`
-	Title          string        `json:"title"`
-	URL            string        `json:"url"`
+	ID              int
+	Slug            string
+	Title           string
+	TitleSlug       string
+	Content         string
+	Tagline         string
+	Seo             Seo
+	Images          ImageSet
+	PageCollections []PageCollection
+	PageType        string
+	URL             string
 }
 
-// PageCollection -
-type PageCollection []Page
+// Pages -
+type Pages []Page
 
 // NavigationItem - nestable structure
 type NavigationItem struct {
@@ -102,121 +106,59 @@ type Navigation struct {
 	Header []NavigationItem `json:"header"`
 }
 
-// Bios - contains all pages and navigation items
-type Bios struct {
-	Navigation Navigation     `json:"navigation"`
-	Pages      PageCollection `json:"pages"`
-}
-
-// FilmSummary - summary of the Film
-type FilmSummary struct {
-	BackgroundImage     interface{} `json:"background_image"`
-	CarouselImage       interface{} `json:"carousel_image"`
-	ClassificationImage interface{} `json:"classification_image"`
-	HeaderImage         interface{} `json:"header_image"`
-	ID                  int         `json:"id"`
-	ImdbID              interface{} `json:"imdb_id"`
-	LandscapeImage      interface{} `json:"landscape_image"`
-	PortraitImage       string      `json:"portrait_image"`
-	PublishedDate       string      `json:"published_date"`
-	Slug                string      `json:"slug"`
-	StatusID            int         `json:"status_id"`
-	Title               string      `json:"title"`
-}
-
 // FilmBonusCollection - all films
 type FilmBonusCollection []FilmBonus
 
 // FilmBonus - film bonus model
 type FilmBonus struct {
-	Number    int    `json:"number"`
-	Title     string `json:"title"`
-	ImageUrls struct {
-		Portrait       string `json:"portrait"`
-		Landscape      string `json:"landscape"`
-		Header         string `json:"header"`
-		Carousel       string `json:"carousel"`
-		Bg             string `json:"bg"`
-		Classification string `json:"classification"`
-	} `json:"image_urls"`
-	SubtitleTracks []interface{} `json:"subtitle_tracks"`
+	Slug   string
+	Number int
+	Title  string
+	Images ImageSet
+	// SubtitleTracks []interface{} `json:"subtitle_tracks"`
 }
 
 // FilmCollection - all films
 type FilmCollection []Film
 
-// Film - all of the film bits
-type Film struct {
-	Trailers []struct {
-		URL  string `json:"url"`
-		Type string `json:"type"`
-	} `json:"trailers,omitempty"`
-	//TODO: add a bonus struct
-	Bonuses FilmBonusCollection `json:"bonuses"`
-	Cast    []struct {
-		Name      string `json:"name"`
-		Character string `json:"character"`
-	} `json:"cast"`
-	Crew []struct {
-		Name string `json:"name"`
-		Job  string `json:"job"`
-	} `json:"crew"`
-	Studio []struct {
-		Name string `json:"name"`
-	} `json:"studio"`
-	Overview    string    `json:"overview"`
-	Tagline     string    `json:"tagline"`
-	ReleaseDate time.Time `json:"release_date"`
-	Runtime     float32   `json:"runtime"`
-	Countries   []string  `json:"countries"`
-	Languages   []string  `json:"languages"`
-	Genres      []string  `json:"genres"`
-	Title       string    `json:"title"`
-	TitleSlug   string    `json:"-"`
-	Slug        string    `json:"slug"`
-	FilmID      int       `json:"film_id"`
-	ID          int       `json:"id"`
-	ImageUrls   struct {
-		Portrait       string `json:"portrait"`
-		Landscape      string `json:"landscape"`
-		Header         string `json:"header"`
-		Carousel       string `json:"carousel"`
-		Bg             string `json:"bg"`
-		Classification string `json:"classification"`
-	} `json:"image_urls"`
-	Recommendations         []string      `json:"recommendations"`
-	ResolvedRecommendations []GenericItem `json:"-"`
-	//TODO: add a subtitle tracks struct
-	SubtitleTracks []interface{} `json:"subtitle_tracks"`
-	Subtitles      []string      `json:"-"`
-	// manage the inconsistent api
-	SubtitlesRaw json.RawMessage `json:"subtitles,omitempty"`
+// Trailer -
+type Trailer struct {
+	URL  string
+	Type string
 }
 
-// BundleCollection - all bundles
-type BundleCollection []Bundle
+// CastMember -
+type CastMember struct {
+	Name      string
+	Character string
+}
 
-// Bundle - model
-type Bundle struct {
-	ID             int           `json:"id"`
-	Slug           string        `json:"-"`
-	Title          string        `json:"title"`
-	TitleSlug      string        `json:"-"`
-	Tagline        string        `json:"tagline"`
-	Description    string        `json:"description"`
-	Status         string        `json:"status"`
-	PublishedDate  time.Time     `json:"published_date"`
-	SeoTitle       string        `json:"seo_title"`
-	SeoKeywords    string        `json:"seo_keywords"`
-	SeoDescription string        `json:"seo_description"`
-	PortraitImage  string        `json:"portrait_image"`
-	LandscapeImage string        `json:"landscape_image"`
-	CarouselImage  string        `json:"carousel_image"`
-	CreatedAt      time.Time     `json:"created_at"`
-	UpdatedAt      time.Time     `json:"updated_at"`
-	BgImage        string        `json:"bg_image"`
-	PromoURL       string        `json:"promo_url"`
-	ExternalID     interface{}   `json:"external_id"`
-	Items          []string      `json:"items"`
-	ResolvedItems  []GenericItem `json:"-"`
+// CrewMember -
+type CrewMember struct {
+	Name string
+	Job  string
+}
+
+// Film - all of the film bits
+type Film struct {
+	ID              int
+	Slug            string
+	Title           string
+	TitleSlug       string
+	Trailers        []Trailer
+	Bonuses         FilmBonusCollection
+	Cast            []CastMember
+	Crew            []CrewMember
+	Studio          []string
+	Overview        string
+	Tagline         string
+	ReleaseDate     time.Time
+	Runtime         float32
+	Countries       []string
+	Languages       []string
+	Genres          []string
+	Seo             Seo
+	Images          ImageSet
+	Recommendations []GenericItem
+	Subtitles       []string
 }

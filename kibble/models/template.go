@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"reflect"
 
 	"github.com/CloudyKit/jet"
@@ -26,8 +25,9 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 	})
 	view.AddGlobal("canonicalRouteToSlug", func(slug string) string {
 		// override the route prefix
-		ctx.RoutePrefix = ""
-		return routeRegistry.GetRouteForSlug(ctx, slug, "")
+		ctxClone := ctx
+		ctxClone.RoutePrefix = ""
+		return routeRegistry.GetRouteForSlug(ctxClone, slug, "")
 	})
 	view.AddGlobal("routeToSlugWithName", func(slug string, routeName string) string {
 		return routeRegistry.GetRouteForSlug(ctx, slug, routeName)
@@ -59,10 +59,18 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 				return trans(translationID, s)
 			}
 
-			log.Printf("WARN: translating %s found unrecognised type %s", translationID, reflect.TypeOf(args[0]))
+			log.Errorf("WARN: translating %s found unrecognised type %s", translationID, reflect.TypeOf(args[0]))
 		}
 		return trans(translationID)
 
+	})
+
+	view.AddGlobal("config", func(key string) string {
+		return ctx.Site.Config[key]
+	})
+
+	view.AddGlobal("isEnabled", func(key string) bool {
+		return ctx.Site.Toggles[key]
 	})
 
 	return view

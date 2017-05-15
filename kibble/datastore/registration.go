@@ -7,11 +7,14 @@ import (
 // Init -
 func Init() {
 	models.AddDataSource(&FilmDataSource{})
-	models.AddDataSource(&FilmCollectionDataSource{})
+	models.AddDataSource(&FilmIndexDataSource{})
 
 	models.AddDataSource(&PageDataSource{})
-	models.AddDataSource(&PageCollectionDataSource{})
+	models.AddDataSource(&PageIndexDataSource{})
 
 	models.AddDataSource(&BundleDataSource{})
-	models.AddDataSource(&BundleCollectionDataSource{})
+	models.AddDataSource(&BundleIndexDataSource{})
+
+	models.AddDataSource(&CollectionDataSource{})
+	models.AddDataSource(&CollectionIndexDataSource{})
 }

@@ -21,7 +21,7 @@
         {
             "name": "pageItem",
             "urlPath": "/page/:slug",
-            "templatePath": "page/item.jet",
+            "templatePath": "page/:type.jet",
             "datasource": "Page"
         },
         {

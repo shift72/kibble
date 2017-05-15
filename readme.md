@@ -4,18 +4,22 @@
 ## Usage
 ```kibble config``` - configure kibble to use the api key when requesting req
 
-```kibble server --watch``` - starts a server
+```kibble render --watch``` - sample render, this is what will be deployed
 
-```kibble render``` - sample render, this is what will be deployed
+```kibble sync``` - sync files to a remote s3 bucket
 
 ```kibble help``` - help is here
 
 ## Installation
+* Requires go 1.8.1 (cgo fix needed)
 * Install dep ```go get -u github.com/golang/dep/...```
 * Install dependencies ```dep ensure -update```. This might not work, so try ```dep ensure -v github.com/fsnotify/fsnotify@^1.4.2``` in case of errors.
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 
+# LibSass Build
+TODO:
+  
 
 ## Supports
 * model
@@ -26,6 +30,7 @@
      * genre - done
      * year - done
    * pages - done
+     * type - templates - done
    * page features - done
    * bundles - done
    * custom pages -> page.html.jet -> page.html - done
@@ -33,6 +38,9 @@
      * humans.txt - done
    * config / toggles - done
    * navigation - done
+   * pagination
+      * pages - done
+      * language routes - done
 * watch files / live reload - done
 * cache - done
 * support markdown - done
@@ -43,20 +51,29 @@
    * route renders - done
    * canonical route - done
 * admin
-  * render as admin
-  * check admin token is valid
-  * request user to (re)login
-
+  * render as admin - done
+  * check admin token is valid - done
+  * request user to (re)login - done
+* init
+  * create a base implementation - done
+  * find repo based on - done
+  * clone the repo - done
+* sync
+  * 
 
 ## TODO
  * model
     * tv -
     * subtitles -
-    * pagination - ??
-    * features - ?? collections ??
+    
     * json? - what would choice tv tvguide do?
  * shortcodes - these need to happen as part of the markdown process
- * init
-    * create a base implementation
+ * download
+    * build and release on github   
+    
  * upload
+  * zip - https://godoc.org/github.com/pierrre/archivefile/zip
+  * build process ?? sass / less
+  * api to upload the file
+
  * diff / merge ??

@@ -4,6 +4,10 @@
   name = "github.com/CloudyKit/jet"
 
 [[dependencies]]
+  name = "github.com/fsnotify/fsnotify"
+  version = "^1.4.2"
+
+[[dependencies]]
   branch = "master"
   name = "github.com/gosimple/slug"
 
@@ -21,16 +25,9 @@
 
 [[dependencies]]
   branch = "master"
-  name = "github.com/pressly/chi"
-
-[[dependencies]]
-  branch = "master"
   name = "github.com/russross/blackfriday"
 
 [[dependencies]]
   branch = "master"
   name = "github.com/spf13/cobra"
 
-[[dependencies]]
-  branch = "master"
-  name = "gopkg.in/fsnotify.v1"

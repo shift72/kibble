@@ -1,16 +1,17 @@
 package api
 
 import (
-	"fmt"
-	"time"
+	"sort"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+	logging "github.com/op/go-logging"
 )
 
 // LoadSite - load the complete site
 func LoadSite(cfg *models.Config) (*models.Site, error) {
 
-	start := time.Now()
+	initAPI := utils.NewStopwatchLevel("api", logging.NOTICE)
 
 	itemIndex := make(models.ItemIndex)
 
@@ -24,19 +25,27 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
-	bios, err := LoadBios(cfg, itemIndex)
+	pages, navigation, err := LoadBios(cfg, config, itemIndex)
 	if err != nil {
 		return nil, err
 	}
 
 	site := &models.Site{
-		Config:     config,
-		Toggles:    toggles,
-		Navigation: bios.Navigation,
-		Pages:      bios.Pages,
-		Films:      make(models.FilmCollection, 0),
-		Bundles:    make(models.BundleCollection, 0),
-		Taxonomies: make(models.Taxonomies),
+		SiteConfig:  cfg,
+		Config:      config,
+		Toggles:     toggles,
+		Languages:   sortLanguages(cfg),
+		Navigation:  navigation,
+		Pages:       pages,
+		Films:       make(models.FilmCollection, 0),
+		Bundles:     make(models.BundleCollection, 0),
+		Collections: make(models.CollectionCollection, 0),
+		Taxonomies:  make(models.Taxonomies),
+	}
+
+	err = LoadAllCollections(cfg, site, itemIndex)
+	if err != nil {
+		return nil, err
 	}
 
 	err = AppendAllFilms(cfg, site, itemIndex)
@@ -58,14 +67,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 
 	//TODO: while there are unresolved tv seasons
 
-	fmt.Printf("service config:\t%d\n", len(config))
-	fmt.Printf("toggles:\t%d\n", len(toggles))
-	fmt.Printf("pages:\t\t%d\n", len(bios.Pages))
-	fmt.Printf("films:\t\t%d\n", len(site.Films))
-	fmt.Printf("bundles:\t%d\n", len(site.Bundles))
-
-	stop := time.Now()
-	fmt.Printf("-------------------------\nLoad completed: %s\n-------------------------\n", stop.Sub(start))
+	initAPI.Completed()
 
 	site.LinkItems(itemIndex)
 
@@ -74,7 +76,27 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	site.PopulateTaxonomyWithFilms("cast", models.GetCast)
 	site.PopulateTaxonomyWithFilms("country", models.GetCountries)
 
-	itemIndex.PrintStats()
+	if log.IsEnabledFor(logging.DEBUG) {
+		itemIndex.PrintStats()
+	}
 
 	return site, nil
+}
+
+func sortLanguages(cfg *models.Config) []models.Language {
+
+	result := make([]models.Language, 0)
+
+	var keys []string
+	for k := range cfg.Languages {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		result = append(result, models.Language{
+			IsDefault: k == cfg.DefaultLanguage,
+			Code:      k,
+		})
+	}
+	return result
 }

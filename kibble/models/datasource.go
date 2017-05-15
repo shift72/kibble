@@ -1,8 +1,11 @@
 package models
 
-const (
+import "errors"
+
+var (
 	// DataSourceError - Error to be written to the template
-	DataSourceError = "!Error"
+	DataSourceError   = "!Error"
+	DataSourceMissing = errors.New("Missing")
 )
 
 var store map[string]DataSource
