@@ -24,7 +24,7 @@ func (ds *PageDataSource) GetEntityType() reflect.Type {
 }
 
 // Iterator - loop over each Page
-func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
 
@@ -39,8 +39,10 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 
 		data.Set("page", transformPage(p))
 		data.Set("site", ctx.Site)
-		renderer.Render(route, ds.GetRouteForEntity(ctx, &p), data)
+		errCount += renderer.Render(route, ds.GetRouteForEntity(ctx, &p), data)
 	}
+
+	return
 }
 
 // GetRouteForEntity - get the route
@@ -64,7 +66,7 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 			return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
 		}
 	}
-	return models.DataSourceError
+	return models.ErrDataSource
 }
 
 // GetRouteForSlug - get the route

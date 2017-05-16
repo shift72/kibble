@@ -24,7 +24,7 @@ func (ds *BundleDataSource) GetEntityType() reflect.Type {
 }
 
 // Iterator - loop over each Bundle
-func (ds *BundleDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *BundleDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
 
@@ -36,8 +36,9 @@ func (ds *BundleDataSource) Iterator(ctx models.RenderContext, renderer models.R
 
 		data.Set("bundle", c)
 		data.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, filePath, data)
+		errCount += renderer.Render(ctx.Route, filePath, data)
 	}
+	return
 }
 
 // GetRouteForEntity - get the route
@@ -46,7 +47,7 @@ func (ds *BundleDataSource) GetRouteForEntity(ctx models.RenderContext, entity i
 	if ok {
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
 	}
-	return models.DataSourceError
+	return models.ErrDataSource
 }
 
 // GetRouteForSlug - get the route

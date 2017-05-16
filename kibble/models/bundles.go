@@ -31,7 +31,7 @@ func (bundles BundleCollection) FindBundleByID(bundleID int) (*Bundle, error) {
 			return &b, nil
 		}
 	}
-	return nil, DataSourceMissing
+	return nil, ErrDataSourceMissing
 }
 
 // FindBundleBySlug - find the bundle by the slug
@@ -41,7 +41,7 @@ func (bundles BundleCollection) FindBundleBySlug(slug string) (*Bundle, error) {
 			return &p, nil
 		}
 	}
-	return nil, DataSourceMissing
+	return nil, ErrDataSourceMissing
 }
 
 // GetGenericItem - returns a generic item

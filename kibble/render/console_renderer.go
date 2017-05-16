@@ -21,7 +21,7 @@ func (c ConsoleRenderer) Initialise() {
 }
 
 // Render - render to the console
-func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
+func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.VarMap) (errorCount int) {
 
 	if c.showSummary {
 		fmt.Printf("FilePath: %s\n", filePath)
@@ -53,4 +53,6 @@ func (c ConsoleRenderer) Render(route *models.Route, filePath string, data jet.V
 	if c.showOutput {
 		fmt.Println(w)
 	}
+
+	return
 }

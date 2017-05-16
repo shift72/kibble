@@ -7,28 +7,32 @@ import (
 	"os"
 	"path"
 
+	goversion "github.com/hashicorp/go-version"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	version "github.com/indiereign/shift72-kibble/kibble/version"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
 var (
-	privatePath = path.Join(".kibble", "private.json")
-	sitePath    = path.Join("site.json")
+	privatePath       = path.Join(".kibble", "private.json")
+	sitePath          = path.Join("site.json")
+	currentVersion, _ = goversion.NewVersion(version.Version)
 )
 
-// LoadConfig - loaded the config
+// LoadConfig loads the configuration from disk. If runAsAdmin it will attempt
+// to load the private config
 func LoadConfig(runAsAdmin bool) *models.Config {
 
 	file, err := ioutil.ReadFile(sitePath)
 	if err != nil {
-		log.Errorf("File error: %v\n", err)
+		log.Errorf("file error: %v\n", err)
 		os.Exit(1)
 	}
 
 	var cfg models.Config
 	err = json.Unmarshal(file, &cfg)
 	if err != nil {
-		log.Errorf("Config file parsing error: %v", err)
+		log.Errorf("config file parsing error: %v", err)
 		os.Exit(1)
 	}
 
@@ -42,9 +46,10 @@ func LoadConfig(runAsAdmin bool) *models.Config {
 	return &cfg
 }
 
+// SaveConfig writes the configuration to disk
 func SaveConfig(cfg *models.Config) {
 
-	data, err := json.Marshal(cfg)
+	data, err := json.MarshalIndent(cfg, "", "  ")
 	if err != nil {
 		log.Errorf("File error: %v\n", err)
 		os.Exit(1)
@@ -57,7 +62,34 @@ func SaveConfig(cfg *models.Config) {
 	}
 }
 
-// LoadPrivateConfig - load any private configuratio
+// CheckVersion is responsible for displaying an warning message if the version of kibble is newer than
+// the version the template was built with
+func CheckVersion(cfg *models.Config) {
+
+	if cfg.BuiltWithVersion == "" {
+		return
+	}
+
+	bwv, err := goversion.NewVersion(cfg.BuiltWithVersion)
+	if err != nil {
+		log.Warning("invalid version, assuming version 0.0.0")
+		bwv, _ = goversion.NewVersion("0.0.0")
+	}
+
+	if bwv.GreaterThan(currentVersion) {
+		log.Warning("this template was built with a newer version of kibble, some templates possibly will not work")
+	}
+}
+
+// UpdateBuiltWithVersion updates the build with version with the current version and saves the config
+func UpdateBuiltWithVersion(cfg *models.Config) {
+	if cfg.BuiltWithVersion != version.Version {
+		cfg.BuiltWithVersion = version.Version
+		SaveConfig(cfg)
+	}
+}
+
+// LoadPrivateConfig is responsible for loading the private configuration if it exists
 func LoadPrivateConfig(cfg *models.Config) {
 
 	_, err := os.Stat(privatePath)
@@ -67,14 +99,14 @@ func LoadPrivateConfig(cfg *models.Config) {
 
 	file, err := ioutil.ReadFile(privatePath)
 	if err != nil {
-		log.Errorf("File error: %v", err)
+		log.Errorf("file error: %v", err)
 		os.Exit(1)
 	}
 
 	var private models.PrivateConfig
 	err = json.Unmarshal(file, &private)
 	if err != nil {
-		log.Errorf("Config file parsing error: %v", err)
+		log.Errorf("config file parsing error: %v", err)
 		os.Exit(1)
 	}
 

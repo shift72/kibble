@@ -19,9 +19,10 @@ func (c *MockRenderer) Initialise() {
 }
 
 // Render - render to the console
-func (c *MockRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
+func (c *MockRenderer) Render(route *models.Route, filePath string, data jet.VarMap) (errCount int) {
 	c.RenderCalled = true
 	c.Route = route
 	c.FilePath = filePath
 	c.Data = data
+	return
 }

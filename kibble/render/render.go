@@ -54,6 +54,7 @@ func Render(rootPath string, runAsAdmin bool) error {
 	initSW := utils.NewStopwatch("load")
 
 	cfg := config.LoadConfig(runAsAdmin)
+	config.CheckVersion(cfg)
 
 	api.CheckAdminCredentials(cfg, runAsAdmin)
 
@@ -80,6 +81,8 @@ func Render(rootPath string, runAsAdmin bool) error {
 		return err
 	}
 	sassSW.Completed()
+
+	errCount := 0
 
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 	for lang, locale := range cfg.Languages {
@@ -116,7 +119,7 @@ func Render(rootPath string, runAsAdmin bool) error {
 
 			data := jet.VarMap{}
 			data.Set("site", site)
-			renderer.Render(route, filePath, data)
+			errCount += renderer.Render(route, filePath, data)
 		}
 		renderFilesSW.Completed()
 
@@ -134,5 +137,10 @@ func Render(rootPath string, runAsAdmin bool) error {
 
 	renderSW.Completed()
 
+	log.Debug("error count %d", errCount)
+
+	if errCount == 0 {
+		config.UpdateBuiltWithVersion(cfg)
+	}
 	return nil
 }

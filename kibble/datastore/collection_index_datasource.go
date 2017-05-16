@@ -21,7 +21,7 @@ func (ds *CollectionIndexDataSource) GetEntityType() reflect.Type {
 }
 
 // Iterator - return a list of all Collections, iteration of 1
-func (ds *CollectionIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *CollectionIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	clonedCollections := make([]*models.Collection, len(ctx.Site.Collections))
 	for i, f := range ctx.Site.Collections {
@@ -31,7 +31,7 @@ func (ds *CollectionIndexDataSource) Iterator(ctx models.RenderContext, renderer
 	vars := make(jet.VarMap)
 	vars.Set("collections", clonedCollections)
 	vars.Set("site", ctx.Site)
-	renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
+	return renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 }
 
 // GetRouteForEntity - get the route
@@ -41,7 +41,7 @@ func (ds *CollectionIndexDataSource) GetRouteForEntity(ctx models.RenderContext,
 
 // GetRouteForSlug - get the route
 func (ds *CollectionIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	return models.DataSourceError
+	return models.ErrDataSource
 }
 
 // IsSlugMatch - is the slug a match

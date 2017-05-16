@@ -29,9 +29,10 @@ func (c FileRenderer) Initialise() {
 }
 
 // Render - render to the console
-func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
+func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarMap) (errorCount int) {
 	defer func() {
 		if r := recover(); r != nil {
+			errorCount++
 			log.Debug("Error. Recovered from ", r)
 		}
 	}()
@@ -40,16 +41,19 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 	if strings.HasSuffix(filePath, "/") {
 		fullPath = path.Join(fullPath, "index.html")
 	}
+
 	log.Debugf("FilePath: %s", fullPath)
 
 	w := bytes.NewBufferString("")
 	t, err := c.view.GetTemplate(route.TemplatePath)
 	if err != nil {
+		errorCount++
 		log.Error("Template load error", err)
 		return
 	}
 
 	if err = t.Execute(w, data, nil); err != nil {
+		errorCount++
 		w.WriteString("<pre>")
 		w.WriteString(err.Error())
 		w.WriteString("</pre>")
@@ -67,6 +71,9 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 
 	err = ioutil.WriteFile(fullPath, w.Bytes(), 0777)
 	if err != nil {
+		errorCount++
 		log.Error("File write:", err)
 	}
+
+	return
 }

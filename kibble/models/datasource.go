@@ -3,9 +3,10 @@ package models
 import "errors"
 
 var (
-	// DataSourceError - Error to be written to the template
-	DataSourceError   = "!Error"
-	DataSourceMissing = errors.New("Missing")
+	// ErrDataSource is returned when no datasource could be found
+	ErrDataSource = "!Error"
+	// ErrDataSourceMissing raises when the datasource could not be found
+	ErrDataSourceMissing = errors.New("Missing")
 )
 
 var store map[string]DataSource

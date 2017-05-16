@@ -28,7 +28,7 @@ func (collections CollectionCollection) FindCollectionByID(collectionID int) (*C
 			return &b, nil
 		}
 	}
-	return nil, DataSourceMissing
+	return nil, ErrDataSourceMissing
 }
 
 // FindCollectionBySlug - find the collection by the slug
@@ -38,7 +38,7 @@ func (collections CollectionCollection) FindCollectionBySlug(slug string) (*Coll
 			return &p, nil
 		}
 	}
-	return nil, DataSourceMissing
+	return nil, ErrDataSourceMissing
 }
 
 // GetGenericItem - returns a generic item

@@ -24,7 +24,7 @@ func (ds *CollectionDataSource) GetEntityType() reflect.Type {
 }
 
 // Iterator - loop over each Collection
-func (ds *CollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *CollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
 
@@ -36,8 +36,10 @@ func (ds *CollectionDataSource) Iterator(ctx models.RenderContext, renderer mode
 
 		data.Set("collection", c)
 		data.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, filePath, data)
+		errCount += renderer.Render(ctx.Route, filePath, data)
 	}
+
+	return
 }
 
 // GetRouteForEntity - get the route
@@ -47,7 +49,7 @@ func (ds *CollectionDataSource) GetRouteForEntity(ctx models.RenderContext, enti
 	if ok {
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
 	}
-	return models.DataSourceError
+	return models.ErrDataSource
 }
 
 // GetRouteForSlug - get the route

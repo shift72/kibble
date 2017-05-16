@@ -6,7 +6,7 @@ import (
 	"github.com/CloudyKit/jet"
 )
 
-// Pagination -
+// Pagination describes a single page of results
 type Pagination struct {
 	Index       int
 	Size        int
@@ -15,11 +15,11 @@ type Pagination struct {
 	NextURL     string
 }
 
-// DataSource - provides a set of data for querying and iterating over
+// DataSource provides a set of data for querying and iterating over
 type DataSource interface {
 	GetName() string
 	GetEntityType() reflect.Type
-	Iterator(ctx RenderContext, renderer Renderer)
+	Iterator(ctx RenderContext, renderer Renderer) (errorCount int)
 	IsSlugMatch(slug string) bool
 	GetRouteForEntity(ctx RenderContext, entity interface{}) string
 	GetRouteForSlug(ctx RenderContext, slug string) string
@@ -37,16 +37,17 @@ type RenderContext struct {
 // Renderer - rendering implementation
 type Renderer interface {
 	Initialise()
-	Render(route *Route, filePath string, data jet.VarMap)
+	Render(route *Route, filePath string, data jet.VarMap) (errorCount int)
 }
 
 // Config - template configuration
 type Config struct {
-	DefaultLanguage string            `json:"defaultLanguage"`
-	Languages       map[string]string `json:"languages"`
-	Routes          []Route           `json:"routes"`
-	SiteURL         string            `json:"siteUrl"`
-	Private         PrivateConfig     `json:"-"`
+	DefaultLanguage  string            `json:"defaultLanguage"`
+	Languages        map[string]string `json:"languages"`
+	Routes           []Route           `json:"routes"`
+	SiteURL          string            `json:"siteUrl"`
+	BuiltWithVersion string            `json:"builtWithVersion"`
+	Private          PrivateConfig     `json:"-"`
 }
 
 // PrivateConfig - config loaded from

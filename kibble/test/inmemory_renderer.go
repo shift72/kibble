@@ -64,7 +64,7 @@ func (c *InMemoryRenderer) Initialise() {
 }
 
 // Render - render the pages to memory
-func (c *InMemoryRenderer) Render(route *models.Route, filePath string, data jet.VarMap) {
+func (c *InMemoryRenderer) Render(route *models.Route, filePath string, data jet.VarMap) (errCount int) {
 
 	if c.Results == nil {
 		c.Results = make([]InMemoryResult, 1, 10)
@@ -79,11 +79,15 @@ func (c *InMemoryRenderer) Render(route *models.Route, filePath string, data jet
 
 	t, err := c.View.GetTemplate(route.TemplatePath)
 	if err != nil {
+		errCount++
 		result.err = err
 		return
 	}
 
 	if err = t.Execute(result.buffer, data, nil); err != nil {
+		errCount++
 		result.err = err
 	}
+
+	return
 }

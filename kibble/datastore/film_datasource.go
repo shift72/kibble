@@ -25,7 +25,7 @@ func (ds *FilmDataSource) GetEntityType() reflect.Type {
 }
 
 // Iterator - loop over each film
-func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
 
@@ -33,8 +33,10 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 		filePath := ds.GetRouteForEntity(ctx, &f)
 		data.Set("film", transformFilm(f))
 		data.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, filePath, data)
+		errCount += renderer.Render(ctx.Route, filePath, data)
 	}
+
+	return
 }
 
 // GetRouteForEntity - get the route
@@ -43,7 +45,7 @@ func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 	if ok {
 		return ds.GetRouteForSlug(ctx, o.Slug)
 	}
-	return models.DataSourceError
+	return models.ErrDataSource
 }
 
 // GetRouteForSlug - get the route
@@ -66,7 +68,7 @@ func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 
 		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", film.TitleSlug, 1)
 	}
-	return models.DataSourceError
+	return models.ErrDataSource
 }
 
 // IsSlugMatch - checks if the slug is a match

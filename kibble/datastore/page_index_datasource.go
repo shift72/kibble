@@ -24,7 +24,7 @@ func (ds *PageIndexDataSource) GetEntityType() reflect.Type {
 }
 
 // Iterator - return a list of all Pages, iteration of 1
-func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) {
+func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	// rule for page 1
 	if ctx.Route.PageSize > 0 {
@@ -76,7 +76,7 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 			vars.Set("pages", clonedPages)
 			vars.Set("pagination", ctx.Route.Pagination)
 			vars.Set("site", ctx.Site)
-			renderer.Render(ctx.Route, ctx.RoutePrefix+path, vars)
+			errCount += renderer.Render(ctx.Route, ctx.RoutePrefix+path, vars)
 		}
 	} else {
 
@@ -95,8 +95,10 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 		vars.Set("pages", clonedPages)
 		vars.Set("pagination", ctx.Route.Pagination)
 		vars.Set("site", ctx.Site)
-		renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
+		errCount += renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 	}
+
+	return
 }
 
 // GetRouteForEntity - get the route
@@ -106,7 +108,7 @@ func (ds *PageIndexDataSource) GetRouteForEntity(ctx models.RenderContext, entit
 
 // GetRouteForSlug - get the route
 func (ds *PageIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	return models.DataSourceError
+	return models.ErrDataSource
 }
 
 // IsSlugMatch - is the slug a match
