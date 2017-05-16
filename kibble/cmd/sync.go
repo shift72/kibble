@@ -26,7 +26,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfg = sync.Config{}
+var cfg sync.Config
 var testIdempotent bool
 var renderAndSync bool
 

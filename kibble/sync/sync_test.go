@@ -44,7 +44,7 @@ func TestCompareAddChanges(t *testing.T) {
 		parseFileRef("file2.html|bbb"),
 	}
 
-	remote := []FileRef{}
+	var remote []FileRef
 
 	changes := compare(local, remote)
 
@@ -152,8 +152,8 @@ func (store mockStore) List() (FileRefCollection, error) {
 
 func TestSync(t *testing.T) {
 
-	store := mockStore{}
-	changes := []FileRef{}
+	var store mockStore
+	var changes []FileRef
 
 	for i := 0; i < 50; i++ {
 		changes = append(changes, add(fmt.Sprintf("file%d.html|ccc", i)))
@@ -168,7 +168,7 @@ func TestSyncWithErrors(t *testing.T) {
 		returnErrors: true,
 	}
 
-	changes := []FileRef{}
+	var changes []FileRef
 
 	for i := 0; i < 10; i++ {
 		changes = append(changes, add(fmt.Sprintf("file%d.html|ccc", i)))

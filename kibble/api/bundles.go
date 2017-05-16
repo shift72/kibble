@@ -19,7 +19,7 @@ func LoadAllBundles(cfg *models.Config, site *models.Site, itemIndex models.Item
 		return err
 	}
 
-	apiBundles := []BundleV1{}
+	var apiBundles []BundleV1
 	err = json.Unmarshal([]byte(data), &apiBundles)
 	if err != nil {
 		return err

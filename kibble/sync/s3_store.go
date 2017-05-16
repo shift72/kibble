@@ -34,7 +34,7 @@ func NewS3Store(config Config) (*S3Store, error) {
 
 // List - list all files
 func (store *S3Store) List() (FileRefCollection, error) {
-	fileList := []FileRef{}
+	var fileList []FileRef
 
 	err := store.svc.ListObjectsPages(&s3.ListObjectsInput{
 		Bucket: &store.config.Bucket,

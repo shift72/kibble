@@ -64,7 +64,7 @@ func TestFilmDataStore(t *testing.T) {
 		},
 	}
 
-	fds := &FilmDataSource{}
+	var fds FilmDataSource
 	fds.Iterator(ctx, renderer1)
 
 	if renderer1.ErrorCount() != 0 {
@@ -104,7 +104,7 @@ func TestRenderingGlobal(t *testing.T) {
 		},
 	}
 
-	fds := &FilmDataSource{}
+	var fds FilmDataSource
 	fds.Iterator(ctx, renderer1)
 
 	if renderer1.Result.Output() != "v1.1.145" {
@@ -152,7 +152,7 @@ func TestRenderingSlug(t *testing.T) {
 		Template: tem,
 	}
 
-	fds := &FilmDataSource{}
+	var fds FilmDataSource
 	fds.Iterator(ctx, renderer)
 
 	if renderer.Result.Output() != "/fr/film-special/the-big-lebowski" {
@@ -198,7 +198,7 @@ func TestRouteToFilm(t *testing.T) {
 		Template: tem,
 	}
 
-	fds := &FilmDataSource{}
+	var fds FilmDataSource
 	fds.Iterator(ctx, renderer)
 
 	if renderer.Result.Output() != "/fr/film-special/123" {
@@ -245,7 +245,7 @@ func TestTransLanguage(t *testing.T) {
 		Template: tem,
 	}
 
-	fds := &FilmDataSource{}
+	var fds FilmDataSource
 	fds.Iterator(ctx, renderer)
 
 	if renderer.Result.Output() != "MSG settings_title" {

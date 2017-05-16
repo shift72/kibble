@@ -32,7 +32,7 @@ func createTestCollection() (models.RenderContext, *models.Route) {
 }
 
 func TestCollectionGetRouteForSlug(t *testing.T) {
-	collectionDS := CollectionDataSource{}
+	var collectionDS CollectionDataSource
 
 	ctx, _ := createTestCollection()
 
@@ -44,7 +44,7 @@ func TestCollectionGetRouteForSlug(t *testing.T) {
 }
 
 func TestCollectionIsSlugMatch(t *testing.T) {
-	collectionDS := CollectionDataSource{}
+	var collectionDS CollectionDataSource
 
 	if !collectionDS.IsSlugMatch("/collection/123") {
 		t.Errorf("expected /collection/123 to match")
@@ -56,7 +56,7 @@ func TestCollectionIsSlugMatch(t *testing.T) {
 }
 
 func TestCollectionGetRouteForMissingSlug(t *testing.T) {
-	collectionDS := CollectionDataSource{}
+	var collectionDS CollectionDataSource
 
 	ctx, _ := createTestCollection()
 
@@ -68,7 +68,7 @@ func TestCollectionGetRouteForMissingSlug(t *testing.T) {
 }
 
 func TestCollectionGetRouteForInvalidSlug(t *testing.T) {
-	collectionDS := CollectionDataSource{}
+	var collectionDS CollectionDataSource
 
 	ctx, _ := createTestCollection()
 

@@ -124,7 +124,7 @@ func createTestContextExternalOnly() models.RenderContext {
 
 func TestHomepageTemplateType(t *testing.T) {
 
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	renderer := &test.MockRenderer{}
 
@@ -147,7 +147,7 @@ func TestHomepageTemplateType(t *testing.T) {
 
 func TestCuratedTemplateType(t *testing.T) {
 
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	renderer := &test.MockRenderer{}
 
@@ -174,7 +174,7 @@ func TestCuratedTemplateType(t *testing.T) {
 
 func TestExternalTemplateType(t *testing.T) {
 
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	renderer := &test.MockRenderer{}
 
@@ -188,7 +188,7 @@ func TestExternalTemplateType(t *testing.T) {
 }
 
 func TestGetRouteForExternalPage(t *testing.T) {
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	ctx := createTestContextExternal()
 
@@ -206,7 +206,7 @@ func TestGetRouteForExternalPage(t *testing.T) {
 }
 
 func TestParse(t *testing.T) {
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	if !pageDS.IsSlugMatch("/page/2") {
 		t.Error("expected /page/2")
@@ -218,7 +218,7 @@ func TestParse(t *testing.T) {
 }
 
 func TestGetEntityType(t *testing.T) {
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	if pageDS.GetEntityType().String() != "*models.Page" {
 		t.Error("expected *models.Page")
@@ -226,7 +226,7 @@ func TestGetEntityType(t *testing.T) {
 }
 
 func TestGetRouteForSlug(t *testing.T) {
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	ctx, _ := createTestContextCurated()
 
@@ -238,7 +238,7 @@ func TestGetRouteForSlug(t *testing.T) {
 }
 
 func TestGetRouteForInvalidSlug(t *testing.T) {
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	ctx, _ := createTestContextCurated()
 
@@ -250,7 +250,7 @@ func TestGetRouteForInvalidSlug(t *testing.T) {
 }
 
 func TestGetRouteForMissingSlug(t *testing.T) {
-	pageDS := PageDataSource{}
+	var pageDS PageDataSource
 
 	ctx, _ := createTestContextCurated()
 

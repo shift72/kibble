@@ -10,7 +10,7 @@ import (
 // LoadBios - load the bios request
 func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) (models.Pages, models.Navigation, error) {
 
-	bios := &biosV1{}
+	var bios biosV1
 
 	path := fmt.Sprintf("%s/services/meta/v1/bios", cfg.SiteURL)
 

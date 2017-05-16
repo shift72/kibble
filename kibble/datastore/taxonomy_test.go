@@ -35,7 +35,7 @@ func TestTaxonomyDataStore(t *testing.T) {
 		},
 	}
 
-	fds := &FilmDataSource{}
+	var fds FilmDataSource
 	fds.Iterator(ctx, renderer1)
 
 	if renderer1.ErrorCount() != 0 {

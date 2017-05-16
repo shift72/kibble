@@ -10,11 +10,11 @@ import (
 // GetTemplates - load the kibble templates from github
 func GetTemplates() (*SearchResults, error) {
 
-	results := &SearchResults{}
+	var results SearchResults
 
 	req, err := http.NewRequest("GET", "https://api.github.com/search/repositories?q=topic:kibble+topic:template&sort=stars&order=desc", nil)
 	if err != nil {
-		return results, err
+		return &results, err
 	}
 
 	req.Header.Add("Content-Type", "application/vnd.github.v3.text-match+json")
@@ -25,21 +25,21 @@ func GetTemplates() (*SearchResults, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return results, err
+		return &results, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return results, fmt.Errorf("Unable to load the templates. code:%d", resp.StatusCode)
+		return &results, fmt.Errorf("Unable to load the templates. code:%d", resp.StatusCode)
 	}
 
 	decoder := json.NewDecoder(resp.Body)
 	err = decoder.Decode(results)
 	if err != nil {
-		return results, err
+		return &results, err
 	}
 
-	return results, nil
+	return &results, nil
 }
 
 // SearchResults - github search results

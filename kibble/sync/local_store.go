@@ -36,7 +36,7 @@ func (store *LocalStore) List() (FileRefCollection, error) {
 	}
 	defer os.Chdir(wd)
 
-	fileList := []FileRef{}
+	var fileList []FileRef
 	err = filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
 		if !f.IsDir() {
 			fileList = append(fileList, calcMd5(store.config.FileRootPath, path))

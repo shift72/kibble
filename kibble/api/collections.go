@@ -17,7 +17,7 @@ func LoadAllCollections(cfg *models.Config, site *models.Site, itemIndex models.
 		return err
 	}
 
-	details := []CollectionV4{}
+	var details []CollectionV4
 	err = json.Unmarshal([]byte(data), &details)
 	if err != nil {
 		return err

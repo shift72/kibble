@@ -14,7 +14,7 @@ import (
 // loadFilmSummary - load the bios request
 func loadFilmSummary(cfg *models.Config) ([]filmSummary, error) {
 
-	summary := []filmSummary{}
+	var summary []filmSummary
 
 	path := fmt.Sprintf("%s/services/meta/v2/film/index", cfg.SiteURL)
 
