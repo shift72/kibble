@@ -23,9 +23,9 @@ import (
 var cache = httpcache.Cache(httpcache.NewMemoryCache())
 
 // CheckAdminCredentials - check that the admin credentials are valid
-func CheckAdminCredentials(cfg *models.Config, runAsAdmin bool) {
+func CheckAdminCredentials(cfg *models.Config) {
 
-	if runAsAdmin {
+	if cfg.RunAsAdmin {
 		isAdmin, err := IsAdmin(cfg)
 		if err != nil {
 			fmt.Println(err)
@@ -43,11 +43,11 @@ func CheckAdminCredentials(cfg *models.Config, runAsAdmin bool) {
 		}
 	}
 
-	setCache(runAsAdmin)
+	setCache(cfg)
 }
 
-func setCache(runAsAdmin bool) {
-	if runAsAdmin {
+func setCache(cfg *models.Config) {
+	if cfg.RunAsAdmin {
 		cache = diskcache.New(".kibble/cache/admin")
 	} else {
 		cache = diskcache.New(".kibble/cache")
@@ -107,9 +107,13 @@ func Get(cfg *models.Config, url string) ([]byte, error) {
 	}
 
 	client := &http.Client{
-		Timeout:   10 * time.Second,
-		Transport: httpcache.NewTransport(cache),
+		Timeout: 10 * time.Second,
 	}
+
+	if !cfg.DisableCache {
+		client.Transport = httpcache.NewTransport(cache)
+	}
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err

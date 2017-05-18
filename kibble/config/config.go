@@ -21,7 +21,7 @@ var (
 
 // LoadConfig loads the configuration from disk. If runAsAdmin it will attempt
 // to load the private config
-func LoadConfig(runAsAdmin bool) *models.Config {
+func LoadConfig(runAsAdmin, disableCache bool) *models.Config {
 
 	file, err := ioutil.ReadFile(sitePath)
 	if err != nil {
@@ -36,13 +36,15 @@ func LoadConfig(runAsAdmin bool) *models.Config {
 		os.Exit(1)
 	}
 
+	cfg.RunAsAdmin = runAsAdmin
+	cfg.DisableCache = disableCache
+
 	log.Debugf("url: %s", cfg.SiteURL)
 
 	loadLanguages(&cfg)
 
-	if runAsAdmin {
-		LoadPrivateConfig(&cfg)
-	}
+	LoadPrivateConfig(&cfg)
+
 	return &cfg
 }
 
@@ -91,6 +93,10 @@ func UpdateBuiltWithVersion(cfg *models.Config) {
 
 // LoadPrivateConfig is responsible for loading the private configuration if it exists
 func LoadPrivateConfig(cfg *models.Config) {
+
+	if !cfg.RunAsAdmin {
+		return
+	}
 
 	_, err := os.Stat(privatePath)
 	if os.IsNotExist(err) {

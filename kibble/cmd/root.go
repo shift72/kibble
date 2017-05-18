@@ -23,6 +23,7 @@ import (
 
 var cfgFile string
 var runAsAdmin bool
+var disableCache bool
 var verbose bool
 
 // RootCmd represents the base command when called without any subcommands
@@ -44,5 +45,6 @@ func Execute() {
 
 func init() {
 	RootCmd.PersistentFlags().BoolVar(&runAsAdmin, "admin", false, "Render using admin credentials")
+	RootCmd.PersistentFlags().BoolVar(&disableCache, "disable-cache", false, "Prevent caching")
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose logging")
 }

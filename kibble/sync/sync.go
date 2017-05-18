@@ -7,6 +7,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/render"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
@@ -70,7 +71,7 @@ func Execute(config Config) error {
 }
 
 // TestIdempotent - run the sync twice and check for differences
-func TestIdempotent(config Config) error {
+func TestIdempotent(config Config, cfg *models.Config) error {
 
 	utils.ConfigureStandardLogging(false)
 
@@ -82,7 +83,7 @@ func TestIdempotent(config Config) error {
 
 	var sample1Path = path.Join(".kibble", "build-sample-1")
 
-	render.Render(sample1Path, false)
+	render.Render(sample1Path, cfg)
 
 	sample1, err := local.List()
 	if err != nil {
@@ -92,7 +93,7 @@ func TestIdempotent(config Config) error {
 
 	var sample2Path = path.Join(".kibble", "build-sample-2")
 
-	render.Render(sample2Path, false)
+	render.Render(sample2Path, cfg)
 
 	sample2, err := local.List()
 	if err != nil {

@@ -48,6 +48,8 @@ type Config struct {
 	SiteURL          string            `json:"siteUrl"`
 	BuiltWithVersion string            `json:"builtWithVersion"`
 	Private          PrivateConfig     `json:"-"`
+	DisableCache     bool              `json:"-"`
+	RunAsAdmin       bool              `json:"-"`
 }
 
 // PrivateConfig - config loaded from

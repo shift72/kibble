@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"path"
 
+	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/render"
 	"github.com/indiereign/shift72-kibble/kibble/sync"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
@@ -26,7 +27,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfg sync.Config
+var syncCfg sync.Config
 var testIdempotent bool
 var renderAndSync bool
 
@@ -41,19 +42,24 @@ var syncCmd = &cobra.Command{
 		swSync := utils.NewStopwatchLevel("sync", logging.NOTICE)
 
 		utils.ConfigureStandardLogging(verbose)
+
+		cfg := config.LoadConfig(runAsAdmin, disableCache)
+		config.CheckVersion(cfg)
+
 		if testIdempotent {
-			return sync.TestIdempotent(cfg)
+			return sync.TestIdempotent(syncCfg, cfg)
 		}
 
 		if renderAndSync {
 			var rootPath = path.Join(".kibble", "build")
-			err := render.Render(rootPath, runAsAdmin)
+
+			err := render.Render(rootPath, cfg)
 			if err != nil {
 				fmt.Println("Render failed:", err)
 				return err
 			}
 		}
-		err := sync.Execute(cfg)
+		err := sync.Execute(syncCfg)
 		swSync.Completed()
 		return err
 	},
@@ -63,15 +69,15 @@ var syncCmd = &cobra.Command{
 			return nil
 		}
 
-		if cfg.Profile == "" {
+		if syncCfg.Profile == "" {
 			return errors.New("Missing argument: profile must be set")
 		}
 
-		if cfg.Bucket == "" {
+		if syncCfg.Bucket == "" {
 			return errors.New("Missing argument: bucket must be set")
 		}
 
-		if cfg.BucketRootPath == "" {
+		if syncCfg.BucketRootPath == "" {
 			return errors.New("Missing argument: bucketrootpath must be set")
 		}
 
@@ -81,11 +87,11 @@ var syncCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(syncCmd)
-	syncCmd.Flags().StringVarP(&cfg.Profile, "profile", "p", "", "AWS Profile")
-	syncCmd.Flags().StringVarP(&cfg.Region, "region", "r", "us-east-1", "AWS Region (default us-east-1)")
-	syncCmd.Flags().StringVarP(&cfg.Bucket, "bucket", "b", "", "AWS Profile")
-	syncCmd.Flags().StringVarP(&cfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 ")
-	syncCmd.Flags().StringVarP(&cfg.FileRootPath, "filerootpath", "", "./.kibble/build/", "path to upload")
+	syncCmd.Flags().StringVarP(&syncCfg.Profile, "profile", "p", "", "AWS Profile")
+	syncCmd.Flags().StringVarP(&syncCfg.Region, "region", "r", "us-east-1", "AWS Region (default us-east-1)")
+	syncCmd.Flags().StringVarP(&syncCfg.Bucket, "bucket", "b", "", "AWS Profile")
+	syncCmd.Flags().StringVarP(&syncCfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 ")
+	syncCmd.Flags().StringVarP(&syncCfg.FileRootPath, "filerootpath", "", "./.kibble/build/", "path to upload")
 
 	syncCmd.Flags().BoolVarP(&renderAndSync, "render", "", false, "Renders before syncing.")
 	syncCmd.Flags().BoolVarP(&testIdempotent, "test-idempotent", "", false, "Checks that two runs of the render process produce the same result.")

@@ -17,6 +17,7 @@ package cmd
 import (
 	"path"
 
+	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/render"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/spf13/cobra"
@@ -38,10 +39,14 @@ Kibble is used to build and develop custom sites to run on the SHIFT72 platform.
 
 		if watch {
 			log := utils.ConfigureWatchedLogging(verbose)
-			render.Watch(rootPath, runAsAdmin, port, log)
+			cfg := config.LoadConfig(runAsAdmin, disableCache)
+			config.CheckVersion(cfg)
+			render.Watch(rootPath, cfg, port, log)
 		} else {
 			utils.ConfigureStandardLogging(verbose)
-			render.Render(rootPath, runAsAdmin)
+			cfg := config.LoadConfig(runAsAdmin, disableCache)
+			config.CheckVersion(cfg)
+			render.Render(rootPath, cfg)
 		}
 	},
 }

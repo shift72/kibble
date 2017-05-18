@@ -20,16 +20,15 @@ import (
 var staticFolder = "static"
 
 // Watch -
-func Watch(rootPath string, runAsAdmin bool, port int32, logReader utils.LogReader) {
+func Watch(rootPath string, cfg *models.Config, port int32, logReader utils.LogReader) {
 
 	liveReload := LiveReload{logReader: logReader}
 	liveReload.StartLiveReload(port, func() {
 		// re-render
 		logReader.Clear()
-		Render(rootPath, runAsAdmin)
+		Render(rootPath, cfg)
 	})
 
-	cfg := config.LoadConfig(runAsAdmin)
 	proxy := NewProxy(cfg.SiteURL)
 
 	// server
@@ -49,14 +48,11 @@ func Watch(rootPath string, runAsAdmin bool, port int32, logReader utils.LogRead
 }
 
 // Render - render the files
-func Render(rootPath string, runAsAdmin bool) error {
+func Render(rootPath string, cfg *models.Config) error {
 
 	initSW := utils.NewStopwatch("load")
 
-	cfg := config.LoadConfig(runAsAdmin)
-	config.CheckVersion(cfg)
-
-	api.CheckAdminCredentials(cfg, runAsAdmin)
+	api.CheckAdminCredentials(cfg)
 
 	site, err := api.LoadSite(cfg)
 	if err != nil {
@@ -72,7 +68,6 @@ func Render(rootPath string, runAsAdmin bool) error {
 	renderer.Initialise()
 
 	initSW.Completed()
-
 	sassSW := utils.NewStopwatch("sass")
 	err = Sass(
 		path.Join("styles", "main.scss"),
