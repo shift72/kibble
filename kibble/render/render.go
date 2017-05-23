@@ -10,7 +10,6 @@ import (
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/api"
-	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
@@ -69,7 +68,7 @@ func Render(rootPath string, cfg *models.Config) error {
 
 	initSW.Completed()
 	sassSW := utils.NewStopwatch("sass")
-	err = Sass(
+	err = utils.Sass(
 		path.Join("styles", "main.scss"),
 		path.Join(rootPath, "styles", "main.css"))
 	if err != nil {
@@ -133,9 +132,5 @@ func Render(rootPath string, cfg *models.Config) error {
 	renderSW.Completed()
 
 	log.Debug("error count %d", errCount)
-
-	if errCount == 0 {
-		config.UpdateBuiltWithVersion(cfg)
-	}
 	return nil
 }

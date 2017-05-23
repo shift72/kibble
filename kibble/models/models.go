@@ -50,6 +50,7 @@ type Config struct {
 	Private          PrivateConfig     `json:"-"`
 	DisableCache     bool              `json:"-"`
 	RunAsAdmin       bool              `json:"-"`
+	SkipLogin        bool              `json:"-"`
 }
 
 // PrivateConfig - config loaded from

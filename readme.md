@@ -19,7 +19,31 @@
 
 # LibSass Build
 TODO:
-  
+
+# build and build order
+/static           >  copy  > .kibble/
+/styles           >  sass  > .kibble/styles/main.css
+/templates        > render > .kibble/
+[**/*.jet]        > render > .kibble/
+[languages.json]  > render > .kibble/
+[site.json]       
+
+# zip structure
+/static           >        zip > /static
+/styles           > sass > zip > /styles/main.css
+/templates        >        zip > /templates
+[languages.json]  >        zip > /
+[**/*.jet]        >        zip > /
+[site.json]       >        zip > /
+
+# server side render
+/static           >  copy  > .kibble/
+/styles           >  sass  > .kibble/styles/main.css
+/templates        > render > .kibble/
+[**/*.jet]        > render > .kibble/
+[languages.json]  > render > .kibble/
+[site.json]       
+
 
 ## Supports
 * model

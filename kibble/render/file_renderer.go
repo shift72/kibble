@@ -10,6 +10,7 @@ import (
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // FileRenderer - designed to render to the file system for testing
@@ -22,7 +23,7 @@ type FileRenderer struct {
 func (c FileRenderer) Initialise() {
 	os.RemoveAll(c.rootPath)
 
-	err := CopyDir(staticFolder, c.rootPath)
+	err := utils.CopyDir(staticFolder, c.rootPath)
 	if err != nil {
 		log.Warningf("Warn: static folder copy failed %s", err)
 	}
