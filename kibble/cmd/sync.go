@@ -39,11 +39,11 @@ var syncCmd = &cobra.Command{
 	Uses filename and etag to determine if the files require syncing.
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		swSync := utils.NewStopwatchLevel("sync", logging.NOTICE)
+		swSync := utils.NewStopwatchLevel("sync total", logging.NOTICE)
 
 		utils.ConfigureStandardLogging(verbose)
 
-		cfg := config.LoadConfig(runAsAdmin, disableCache)
+		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 		config.CheckVersion(cfg)
 
 		if testIdempotent {

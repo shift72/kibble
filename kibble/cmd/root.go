@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +26,8 @@ var cfgFile string
 var runAsAdmin bool
 var disableCache bool
 var verbose bool
+var apiKey string
+var rootPath = path.Join(".kibble", "build")
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -45,6 +48,7 @@ func Execute() {
 
 func init() {
 	RootCmd.PersistentFlags().BoolVar(&runAsAdmin, "admin", false, "Render using admin credentials")
+	RootCmd.PersistentFlags().StringVar(&apiKey, "api-key", "", "Api key to authenicate with")
 	RootCmd.PersistentFlags().BoolVar(&disableCache, "disable-cache", false, "Prevent caching")
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose logging")
 }

@@ -21,7 +21,7 @@ var (
 
 // LoadConfig loads the configuration from disk. If runAsAdmin it will attempt
 // to load the private config
-func LoadConfig(runAsAdmin, disableCache bool) *models.Config {
+func LoadConfig(runAsAdmin bool, apiKey string, disableCache bool) *models.Config {
 
 	file, err := ioutil.ReadFile(sitePath)
 	if err != nil {
@@ -29,21 +29,21 @@ func LoadConfig(runAsAdmin, disableCache bool) *models.Config {
 		os.Exit(1)
 	}
 
-	var cfg models.Config
+	cfg := models.Config{
+		RunAsAdmin:   runAsAdmin,
+		DisableCache: disableCache,
+	}
 	err = json.Unmarshal(file, &cfg)
 	if err != nil {
 		log.Errorf("config file parsing error: %v", err)
 		os.Exit(1)
 	}
 
-	cfg.RunAsAdmin = runAsAdmin
-	cfg.DisableCache = disableCache
-
 	log.Debugf("url: %s", cfg.SiteURL)
 
 	loadLanguages(&cfg)
 
-	LoadPrivateConfig(&cfg)
+	LoadPrivateConfig(&cfg, apiKey)
 
 	return &cfg
 }
@@ -92,9 +92,17 @@ func UpdateBuiltWithVersion(cfg *models.Config) {
 }
 
 // LoadPrivateConfig is responsible for loading the private configuration if it exists
-func LoadPrivateConfig(cfg *models.Config) {
+func LoadPrivateConfig(cfg *models.Config, apiKey string) {
 
 	if !cfg.RunAsAdmin {
+		return
+	}
+
+	if apiKey != "" {
+		cfg.SkipLogin = true
+		cfg.Private = models.PrivateConfig{
+			APIKey: apiKey,
+		}
 		return
 	}
 
