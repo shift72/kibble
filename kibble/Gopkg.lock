@@ -1,4 +1,4 @@
-memo = "e40e471d9c0527d939caf4ccbe8782b25e6aabe866705f32b3f36238ffb9c19f"
+memo = "c7e366f4afe1785d06cc29714562368ad95a25ce3a7c01956b2b1249bfb43680"
 
 [[projects]]
   branch = "master"
@@ -47,6 +47,12 @@ memo = "e40e471d9c0527d939caf4ccbe8782b25e6aabe866705f32b3f36238ffb9c19f"
   name = "github.com/gregjones/httpcache"
   packages = [".","diskcache"]
   revision = "d02018f006d98f58512bf3adfc171d88d17626df"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/hashicorp/go-version"
+  packages = ["."]
+  revision = "03c5bf6be031b6dd45afec16b1cf94fc8938bc77"
 
 [[projects]]
   branch = "master"

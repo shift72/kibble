@@ -14,6 +14,7 @@ import (
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx RenderContext, templatePath string) *jet.Set {
 	view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", version.Version)
+	view.AddGlobal("lang", ctx.Language)
 	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
 		return routeRegistry.GetRouteForEntity(ctx, entity, "")
 	})
