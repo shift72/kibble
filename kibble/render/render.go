@@ -67,14 +67,6 @@ func Render(rootPath string, cfg *models.Config) error {
 	renderer.Initialise()
 
 	initSW.Completed()
-	sassSW := utils.NewStopwatch("sass")
-	err = utils.Sass(
-		path.Join("styles", "main.scss"),
-		path.Join(rootPath, "styles", "main.css"))
-	if err != nil {
-		return err
-	}
-	sassSW.Completed()
 
 	errCount := 0
 

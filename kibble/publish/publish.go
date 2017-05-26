@@ -7,8 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-
-	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // Execute the publish process by
@@ -16,16 +14,9 @@ func Execute(rootPath string) error {
 
 	os.RemoveAll(rootPath)
 
-	err := utils.Sass(
-		path.Join("styles", "main.scss"),
-		path.Join(rootPath, "styles", "main.css"))
-	if err != nil {
-		return err
-	}
+	target := path.Join(rootPath, "kibble-nibble.zip")
 
-	target := path.Join(rootPath, "dist", "kibble-nibble.zip")
-
-	err = createArchive(target)
+	err := createArchive(target)
 	if err != nil {
 		return err
 	}
@@ -53,12 +44,7 @@ func createArchive(target string) error {
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
-	err = zipit("./", archive, []string{".git", ".kibble", "styles", "dist", "kibble-nibble.zip"})
-	if err != nil {
-		return err
-	}
-
-	err = zipit(".kibble/build/", archive, []string{"dist", "kibble-nibble.zip"})
+	err = zipit(".kibble/dist/", archive, []string{"dist", "kibble-nibble.zip"})
 	if err != nil {
 		return err
 	}

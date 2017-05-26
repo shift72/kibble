@@ -17,33 +17,14 @@
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 
-# LibSass Build
-TODO:
+# Publish
+Publish will zip all files placed in the ```/.kibble/dist``` directory
 
-# build and build order
-/static           >  copy  > .kibble/
-/styles           >  sass  > .kibble/styles/main.css
-/templates        > render > .kibble/
-[**/*.jet]        > render > .kibble/
-[languages.json]  > render > .kibble/
-[site.json]       
-
-# zip structure
-/static           >        zip > /static
-/styles           > sass > zip > /styles/main.css
-/templates        >        zip > /templates
-[languages.json]  >        zip > /
-[**/*.jet]        >        zip > /
-[site.json]       >        zip > /
-
-# server side render
-/static           >  copy  > .kibble/
-/styles           >  sass  > .kibble/styles/main.css
-/templates        > render > .kibble/
-[**/*.jet]        > render > .kibble/
-[languages.json]  > render > .kibble/
-[site.json]       
-
+```
+/.kibble
+  /dist       - publish directory
+  /kibble.zip - zip file to be published
+```
 
 ## Supports
 * model

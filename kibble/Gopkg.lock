@@ -1,4 +1,4 @@
-memo = "c7e366f4afe1785d06cc29714562368ad95a25ce3a7c01956b2b1249bfb43680"
+memo = "f4eaba87ac71cc353ff64063195056f2fa11058b75c4645088f8630b3d30e15a"
 
 [[projects]]
   branch = "master"
@@ -143,18 +143,6 @@ memo = "c7e366f4afe1785d06cc29714562368ad95a25ce3a7c01956b2b1249bfb43680"
   packages = ["assert"]
   revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
   version = "v1.1.4"
-
-[[projects]]
-  name = "github.com/wellington/go-libsass"
-  packages = ["."]
-  revision = "4cdf225c9b570199942b38c82397670be237829f"
-  version = "v0.9.0"
-
-[[projects]]
-  name = "github.com/wellington/spritewell"
-  packages = ["."]
-  revision = "3a43f26d94a6da8e40884d1edca0ff372ab7487d"
-  version = "v0.4.0"
 
 [[projects]]
   branch = "master"

@@ -1,5 +1,5 @@
 build:
-  binary: kibb
+  binary: kibble
   goos:
     - windows
     - darwin
