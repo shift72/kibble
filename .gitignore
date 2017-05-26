@@ -3,3 +3,4 @@ kibble/api/.tmp
 kibble/.tmp
 kibble/.kibble
 kibble/vendor
+kibble/dist
