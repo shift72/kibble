@@ -1,6 +1,18 @@
 # kibble
 *def: To chop or grind coarsely*
 
+
+```npm install -g kibble``` - installs kibble
+
+```kibble init``` - find a template to start with
+
+```cd new-template``` 
+
+```npm start``` - starts kibble
+
+```npm run publish``` - publish to the current site
+
+
 ## Usage
 ```kibble config``` - configure kibble to use the api key when requesting req
 

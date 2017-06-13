@@ -4,3 +4,4 @@ kibble/.tmp
 kibble/.kibble
 kibble/vendor
 kibble/dist
+kibble-npm/node_modules

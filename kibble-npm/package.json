@@ -1,0 +1,25 @@
+{
+  "name": "s72-kibble",
+  "version": "0.1.2",
+  "description": "SHIFT72 static site generator",
+  "preferGlobal": true,
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "install": "binwrap-install",
+    "test": "binwrap-test",
+    "prepublish": "npm test"
+  },
+  "keywords": [
+    "SHIFT72",
+    "kibble",
+    "static site generator"
+  ],
+  "author": "SHIFT72 Ltd",
+  "license": "MIT",
+  "devDependencies": {
+    "binwrap": "^0.1.4"
+  }
+}
