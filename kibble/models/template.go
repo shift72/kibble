@@ -1,7 +1,11 @@
 package models
 
 import (
+	"bytes"
+	"fmt"
 	"reflect"
+	"regexp"
+	"strings"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/version"
@@ -9,6 +13,9 @@ import (
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/russross/blackfriday"
 )
+
+var templateTagRegex = regexp.MustCompile("(?U:{{.+}})+")
+var shortCodeView *jet.Set
 
 // CreateTemplateView - create a template view
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx RenderContext, templatePath string) *jet.Set {
@@ -63,7 +70,6 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 			log.Errorf("WARN: translating %s found unrecognised type %s", translationID, reflect.TypeOf(args[0]))
 		}
 		return trans(translationID)
-
 	})
 
 	view.AddGlobal("config", func(key string) string {
@@ -80,14 +86,93 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 // ApplyContentTransforms - add the markdown / sanitization / shortcodes
 func ApplyContentTransforms(data string) string {
 
-	//TODO: apply shortcodes
-
 	// apply mark down
 	unsafe := blackfriday.MarkdownCommon([]byte(data))
 
-	// return string(unsafe)
-	// apply sanitization
-	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+	// apply the templates
+	return insertTemplates(string(unsafe))
+}
 
-	return string(html)
+// insertTemplates applys any templates and sanitise the output
+func insertTemplates(data string) string {
+	var p string
+
+	matches := templateTagRegex.FindAllStringSubmatchIndex(data, -1)
+
+	c := len(matches)
+	if c > 0 {
+		p = ""
+		for i := 0; i < c; i++ {
+			if i == 0 {
+				p = p + bluemonday.UGCPolicy().Sanitize(data[:matches[i][0]]) +
+					processTemplateTag(data[matches[i][0]:matches[i][1]])
+			}
+			if i == c-1 {
+				p = p + bluemonday.UGCPolicy().Sanitize(data[matches[i][1]:])
+			} else {
+				p = p + bluemonday.UGCPolicy().Sanitize(data[matches[i][1]:matches[i+1][0]]) +
+					processTemplateTag(data[matches[i+1][0]:matches[i+1][1]])
+			}
+		}
+	} else {
+		p = bluemonday.UGCPolicy().Sanitize(data)
+	}
+
+	return p
+}
+
+// ConfigureShortcodeTemplatePath sets the directory where the short codes
+// will be loaded from
+func ConfigureShortcodeTemplatePath(templatePath string) {
+	if shortCodeView == nil {
+		// get the template view
+		shortCodeView = jet.NewHTMLSet(templatePath)
+
+		// built-in templates
+		shortCodeView.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
+		shortCodeView.LoadTemplate("youtube.jet", `
+<div {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;\"" | raw }} >
+<iframe src="//www.youtube.com/embed/{{id}}" {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: absolute; top: 0; left: 0; width: 100%; height: 100%;\"" | raw }}{{if isset(autoplay) && autoplay=="true" }} autoplay=1{{end}} allowfullscreen frameborder="0"></iframe>
+</div>`)
+	}
+}
+
+func processTemplateTag(templateTag string) string {
+
+	templateName, data, err := parseParameters(templateTag)
+
+	w := bytes.NewBufferString("")
+	t, err := shortCodeView.GetTemplate(fmt.Sprintf("%s.jet", templateName))
+	if err != nil {
+		log.Error("Template load error", err)
+		return "Err"
+	}
+
+	if err = t.Execute(w, *data, nil); err != nil {
+		w.WriteString("<pre>")
+		w.WriteString(err.Error())
+		w.WriteString("</pre>")
+		log.Errorf("Template execute error: %s", err)
+	}
+
+	return string(w.Bytes())
+}
+
+// parse the template tag into the template and arguments
+func parseParameters(templateTag string) (string, *jet.VarMap, error) {
+
+	parameters := strings.Fields(strings.Trim(templateTag, "{} "))
+
+	data := jet.VarMap{}
+
+	if len(parameters) > 1 {
+		for _, p := range parameters[1:] {
+			s := strings.Split(p, "=")
+			if len(s) == 2 {
+				data.Set(s[0], s[1])
+			}
+		}
+	}
+
+	return parameters[0], &data, nil
 }
