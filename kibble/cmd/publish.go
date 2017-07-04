@@ -15,7 +15,11 @@
 package cmd
 
 import (
+	"fmt"
+
+	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/publish"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -26,8 +30,15 @@ var publishCmd = &cobra.Command{
 	Long:  `Publishing will upload the current template to your site.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		//var rootPath = path.Join(".kibble", "build")
-		publish.Execute(rootPath)
+		utils.ConfigureInteractiveLogging(verbose)
+		// force to run as admin
+		runAsAdmin = true
+		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
+
+		err := publish.Execute(".", cfg)
+		if err != nil {
+			fmt.Printf("Publish failed: %v", err)
+		}
 	},
 }
 

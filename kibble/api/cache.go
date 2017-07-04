@@ -2,11 +2,15 @@ package api
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
@@ -125,6 +129,72 @@ func Get(cfg *models.Config, url string) ([]byte, error) {
 	}
 
 	return ioutil.ReadAll(resp.Body)
+}
+
+// Upload a file
+func Upload(cfg *models.Config, url string, params map[string]string, target string) error {
+	req, err := newfileUploadRequest(url, params, "file", target)
+	if err != nil {
+		return err
+	}
+
+	if cfg.Private.APIKey != "" {
+		req.Header.Add("x-auth-token", cfg.Private.APIKey)
+	}
+
+	client := &http.Client{
+		Timeout: 10 * time.Minute,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	body := &bytes.Buffer{}
+	_, err = body.ReadFrom(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	resp.Body.Close()
+	if resp.StatusCode != 200 {
+		// fmt.Println(resp.StatusCode)
+		// fmt.Println(resp.Header)
+		// fmt.Println(body)
+		return errors.New(fmt.Sprintln(body))
+	}
+
+	return nil
+}
+
+func newfileUploadRequest(uri string, params map[string]string, paramName, path string) (*http.Request, error) {
+
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, err := writer.CreateFormFile(paramName, filepath.Base(path))
+	if err != nil {
+		return nil, err
+	}
+	count, err := io.Copy(part, file)
+	log.Debugf("uploading bytes %d", count)
+
+	for key, val := range params {
+		_ = writer.WriteField(key, val)
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", uri, body)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	return req, err
 }
 
 func login(cfg *models.Config) error {

@@ -68,11 +68,11 @@ func SaveConfig(cfg *models.Config) {
 // the version the template was built with
 func CheckVersion(cfg *models.Config) {
 
-	if cfg.BuiltWithVersion == "" {
+	if cfg.BuilderVersion == "" {
 		return
 	}
 
-	bwv, err := goversion.NewVersion(cfg.BuiltWithVersion)
+	bwv, err := goversion.NewVersion(cfg.BuilderVersion)
 	if err != nil {
 		log.Warning("invalid version, assuming version 0.0.0")
 		bwv, _ = goversion.NewVersion("0.0.0")
@@ -83,10 +83,10 @@ func CheckVersion(cfg *models.Config) {
 	}
 }
 
-// UpdateBuiltWithVersion updates the build with version with the current version and saves the config
-func UpdateBuiltWithVersion(cfg *models.Config) {
-	if cfg.BuiltWithVersion != version.Version {
-		cfg.BuiltWithVersion = version.Version
+// UpdateBuilderVersion updates the build with version with the current version and saves the config
+func UpdateBuilderVersion(cfg *models.Config) {
+	if cfg.BuilderVersion != version.Version {
+		cfg.BuilderVersion = version.Version
 		SaveConfig(cfg)
 	}
 }

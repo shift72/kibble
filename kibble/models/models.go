@@ -42,15 +42,17 @@ type Renderer interface {
 
 // Config - template configuration
 type Config struct {
-	DefaultLanguage  string            `json:"defaultLanguage"`
-	Languages        map[string]string `json:"languages"`
-	Routes           []Route           `json:"routes"`
-	SiteURL          string            `json:"siteUrl"`
-	BuiltWithVersion string            `json:"builtWithVersion"`
-	Private          PrivateConfig     `json:"-"`
-	DisableCache     bool              `json:"-"`
-	RunAsAdmin       bool              `json:"-"`
-	SkipLogin        bool              `json:"-"`
+	DefaultLanguage string            `json:"defaultLanguage"`
+	Languages       map[string]string `json:"languages"`
+	Routes          []Route           `json:"routes"`
+	SiteURL         string            `json:"siteUrl"`
+	BuilderVersion  string            `json:"builderVersion"`
+	Version         string            `json:"version"`
+	Name            string            `json:"Name"`
+	Private         PrivateConfig     `json:"-"`
+	DisableCache    bool              `json:"-"`
+	RunAsAdmin      bool              `json:"-"`
+	SkipLogin       bool              `json:"-"`
 }
 
 // PrivateConfig - config loaded from

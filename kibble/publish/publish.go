@@ -7,12 +7,13 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/indiereign/shift72-kibble/kibble/api"
+	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
 // Execute the publish process by
-func Execute(rootPath string) error {
-
-	os.RemoveAll(rootPath)
+func Execute(rootPath string, cfg *models.Config) error {
 
 	target := path.Join(rootPath, "kibble-nibble.zip")
 
@@ -21,9 +22,21 @@ func Execute(rootPath string) error {
 		return err
 	}
 
-	//TODO: upload
+	api.CheckAdminCredentials(cfg)
 
-	return err
+	extraParams := map[string]string{
+		"name":           cfg.Name,
+		"version":        cfg.Version,
+		"builderVersion": cfg.BuilderVersion,
+	}
+
+	log.Infof("uploading name: %s@%s built with %s", cfg.Name, cfg.Version, cfg.BuilderVersion)
+	err = api.Upload(cfg, cfg.SiteURL+"/services/users/v1/site_templates", extraParams, target)
+	if err != nil {
+		return err
+	}
+	log.Info("upload successful")
+	return nil
 }
 
 func createArchive(target string) error {
@@ -44,6 +57,11 @@ func createArchive(target string) error {
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
+	err = zipit("./", archive, []string{".git", ".kibble", "styles", "dist", "kibble-nibble.zip"})
+	if err != nil {
+		return err
+	}
+
 	err = zipit(".kibble/dist/", archive, []string{"dist", "kibble-nibble.zip"})
 	if err != nil {
 		return err
@@ -54,8 +72,13 @@ func createArchive(target string) error {
 func zipit(source string, archive *zip.Writer, ignorePaths []string) error {
 
 	info, err := os.Stat(source)
+	if err != nil && os.IsNotExist(err) {
+		os.MkdirAll(source, 0777)
+	}
+
+	info, err = os.Stat(source)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	var baseDir string
