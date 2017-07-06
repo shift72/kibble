@@ -1,11 +1,13 @@
 package sync
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/render"
@@ -51,8 +53,18 @@ type Sync struct {
 	Store  Store
 }
 
+// Summary of the sync process
+type Summary struct {
+	FilesRemoved            int           `json:"filesRemoved"`
+	FilesAdded              int           `json:"filesAdded"`
+	FilesTotal              int           `json:"filesTotal"`
+	RenderDuration          time.Duration `json:"renderDuration"`
+	ChangesDetectedDuration time.Duration `json:"changesDetectedDuration"`
+	UploadDuration          time.Duration `json:"uploadDuration"`
+}
+
 // Execute - start a sync
-func Execute(config Config) error {
+func Execute(config Config) (*Summary, error) {
 
 	s3Store, _ := NewS3Store(config)
 	localStore, _ := NewLocalStore(config)
@@ -61,13 +73,31 @@ func Execute(config Config) error {
 	remote, _ := s3Store.List()
 	local, _ := localStore.List()
 	changes := compare(local, remote)
-	swDetect.Completed()
+	detect := swDetect.Completed()
 
 	swSync := utils.NewStopwatch("sync files")
-	err := PerformSync(s3Store, changes)
-	swSync.Completed()
+	added, removed, err := PerformSync(s3Store, changes)
+	upload := swSync.Completed()
 
-	return err
+	s := &Summary{
+		FilesAdded:              added,
+		FilesRemoved:            removed,
+		FilesTotal:              len(local),
+		ChangesDetectedDuration: detect,
+		UploadDuration:          upload,
+	}
+
+	return s, err
+}
+
+// ToJSON renders the summary to json
+func (s *Summary) ToJSON() string {
+	data, err := json.MarshalIndent(s, "", "  ")
+	if err != nil {
+		log.Errorf("failed to serialize. %s", err)
+		return "{\"error\":\"unable to render json\"}"
+	}
+	return string(data)
 }
 
 // TestIdempotent - run the sync twice and check for differences
@@ -169,7 +199,7 @@ func (c *FileRefCollection) Print() {
 }
 
 // PerformSync - sync all files to the remote server
-func PerformSync(store Store, changes []FileRef) error {
+func PerformSync(store Store, changes []FileRef) (added int, removed int, err error) {
 
 	concurrency := 20
 
@@ -200,8 +230,8 @@ func PerformSync(store Store, changes []FileRef) error {
 		}(w)
 	}
 
-	added := 0
-	removed := 0
+	added = 0
+	removed = 0
 
 	// queue the work
 	for _, f := range changes {
@@ -223,9 +253,9 @@ func PerformSync(store Store, changes []FileRef) error {
 	close(errorChan)
 
 	if len(errorChan) > 0 {
-		return errors.New("Unable to sync files")
+		return added, removed, errors.New("Unable to sync files")
 	}
 
 	log.Infof("sync successful [added: %d][removed: %d]", added, removed)
-	return nil
+	return added, removed, nil
 }

@@ -57,12 +57,12 @@ func createArchive(target string) error {
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
-	err = zipit("./", archive, []string{".git", ".kibble", "node_modules", "styles", "dist", "kibble-nibble.zip"})
+	err = zipit(".", archive, []string{".git", ".", ".kibble", "node_modules", "styles", "dist", "kibble-nibble.zip"})
 	if err != nil {
 		return err
 	}
 
-	err = zipit(".kibble/dist/", archive, []string{"dist", "kibble-nibble.zip"})
+	err = zipit(".kibble/dist/", archive, []string{"dist", "/", "kibble-nibble.zip"})
 	if err != nil {
 		return err
 	}

@@ -144,9 +144,11 @@ func SavePrivateConfig(cfg *models.Config) {
 }
 
 func loadLanguages(cfg *models.Config) {
-	i18n.MustLoadTranslationFile(fmt.Sprintf("%s.all.json", cfg.Languages[cfg.DefaultLanguage]))
+	if len(cfg.Languages) > 0 {
+		i18n.MustLoadTranslationFile(fmt.Sprintf("%s.all.json", cfg.Languages[cfg.DefaultLanguage]))
 
-	for _, locale := range cfg.Languages {
-		i18n.LoadTranslationFile(fmt.Sprintf("%s.all.json", locale))
+		for _, locale := range cfg.Languages {
+			i18n.LoadTranslationFile(fmt.Sprintf("%s.all.json", locale))
+		}
 	}
 }

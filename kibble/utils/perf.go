@@ -30,12 +30,14 @@ func NewStopwatchf(msg string, a ...interface{}) *Stopwatch {
 }
 
 // Completed - stops the stop watch
-func (sw *Stopwatch) Completed() {
+func (sw *Stopwatch) Completed() time.Duration {
+	d := round(time.Now().Sub(sw.start), time.Millisecond)
 	if log.IsEnabledFor(sw.level) {
-		log.Noticef("%s: %s", sw.msg, round(time.Now().Sub(sw.start), time.Millisecond))
+		log.Noticef("%s: %s", sw.msg, d)
 	} else {
-		log.Debugf("%s: %s", sw.msg, round(time.Now().Sub(sw.start), time.Millisecond))
+		log.Debugf("%s: %s", sw.msg, d)
 	}
+	return d
 }
 
 // MeasureElapsed - measure the time taken to complete the function

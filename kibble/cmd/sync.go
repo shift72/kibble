@@ -1,23 +1,10 @@
-// Copyright © 2017 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
 	"errors"
 	"fmt"
 	"path"
+	"time"
 
 	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/render"
@@ -50,16 +37,22 @@ var syncCmd = &cobra.Command{
 			return sync.TestIdempotent(syncCfg, cfg)
 		}
 
+		var renderDuration time.Duration
 		if renderAndSync {
 			var rootPath = path.Join(".kibble", "build")
 
+			swRender := utils.NewStopwatchLevel("render", logging.NOTICE)
 			err := render.Render(rootPath, cfg)
+			renderDuration = swRender.Completed()
 			if err != nil {
 				fmt.Println("Render failed:", err)
 				return err
 			}
 		}
-		err := sync.Execute(syncCfg)
+		summary, err := sync.Execute(syncCfg)
+		summary.RenderDuration = renderDuration
+		fmt.Println(summary.ToJSON())
+
 		swSync.Completed()
 		return err
 	},
@@ -67,10 +60,6 @@ var syncCmd = &cobra.Command{
 
 		if testIdempotent {
 			return nil
-		}
-
-		if syncCfg.Profile == "" {
-			return errors.New("Missing argument: profile must be set")
 		}
 
 		if syncCfg.Bucket == "" {
@@ -89,10 +78,10 @@ func init() {
 	RootCmd.AddCommand(syncCmd)
 	syncCmd.Flags().StringVarP(&syncCfg.Profile, "profile", "p", "", "AWS Profile")
 	syncCmd.Flags().StringVarP(&syncCfg.Region, "region", "r", "us-east-1", "AWS Region (default us-east-1)")
-	syncCmd.Flags().StringVarP(&syncCfg.Bucket, "bucket", "b", "", "AWS Profile")
-	syncCmd.Flags().StringVarP(&syncCfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 ")
+	syncCmd.Flags().StringVarP(&syncCfg.Bucket, "bucket", "b", "", "AWS S3 Bucket")
+	syncCmd.Flags().StringVarP(&syncCfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 Path")
 	syncCmd.Flags().StringVarP(&syncCfg.FileRootPath, "filerootpath", "", "./.kibble/build/", "path to upload")
 
-	syncCmd.Flags().BoolVarP(&renderAndSync, "render", "", false, "Renders before syncing.")
+	syncCmd.Flags().BoolVarP(&renderAndSync, "render", "", false, "Renders the site before syncing.")
 	syncCmd.Flags().BoolVarP(&testIdempotent, "test-idempotent", "", false, "Checks that two runs of the render process produce the same result.")
 }

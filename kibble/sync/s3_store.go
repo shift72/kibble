@@ -19,11 +19,15 @@ type S3Store struct {
 // NewS3Store - create a new store
 func NewS3Store(config Config) (*S3Store, error) {
 
-	sess := session.Must(session.NewSessionWithOptions(
-		session.Options{
-			Profile: config.Profile,
-		},
-	))
+	options := session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}
+
+	if config.Profile != "" {
+		options.Profile = config.Profile
+	}
+
+	sess := session.Must(session.NewSessionWithOptions(options))
 	sess.Config.Region = &config.Region
 
 	return &S3Store{
@@ -90,8 +94,6 @@ func (store *S3Store) Delete(wg *sync.WaitGroup, f FileRef) error {
 	dst := store.config.BucketRootPath + f.path
 
 	//TODO: bulk delete
-
-	// fmt.Printf("delete remote file %s\n", dst)
 
 	_, err := store.svc.DeleteObject(
 		&s3.DeleteObjectInput{
