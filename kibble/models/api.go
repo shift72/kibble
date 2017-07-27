@@ -23,8 +23,10 @@ type Site struct {
 
 // Language - instance of a language
 type Language struct {
-	Code      string
-	IsDefault bool
+	Code              string
+	Locale            string
+	DefinitionFileURL string
+	IsDefault         bool
 }
 
 // ImageSet - set of images

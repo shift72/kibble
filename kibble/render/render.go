@@ -82,7 +82,12 @@ func Render(rootPath string, cfg *models.Config) error {
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
-			Language:    lang,
+			Language: &models.Language{
+				Code:              lang,
+				Locale:            locale,
+				IsDefault:         (lang != cfg.DefaultLanguage),
+				DefinitionFileURL: fmt.Sprintf("/%s.all.json", locale),
+			},
 		}
 
 		if lang != cfg.DefaultLanguage {
