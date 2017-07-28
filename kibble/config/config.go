@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -10,7 +9,6 @@ import (
 	goversion "github.com/hashicorp/go-version"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	version "github.com/indiereign/shift72-kibble/kibble/version"
-	"github.com/nicksnyder/go-i18n/i18n"
 )
 
 var (
@@ -40,8 +38,6 @@ func LoadConfig(runAsAdmin bool, apiKey string, disableCache bool) *models.Confi
 	}
 
 	log.Debugf("url: %s", cfg.SiteURL)
-
-	loadLanguages(&cfg)
 
 	LoadPrivateConfig(&cfg, apiKey)
 
@@ -140,15 +136,5 @@ func SavePrivateConfig(cfg *models.Config) {
 	if err != nil {
 		log.Errorf("File error: %v", err)
 		os.Exit(1)
-	}
-}
-
-func loadLanguages(cfg *models.Config) {
-	if len(cfg.Languages) > 0 {
-		i18n.MustLoadTranslationFile(fmt.Sprintf("%s.all.json", cfg.Languages[cfg.DefaultLanguage]))
-
-		for _, locale := range cfg.Languages {
-			i18n.LoadTranslationFile(fmt.Sprintf("%s.all.json", locale))
-		}
 	}
 }
