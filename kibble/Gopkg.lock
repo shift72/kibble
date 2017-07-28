@@ -1,4 +1,4 @@
-memo = "f4eaba87ac71cc353ff64063195056f2fa11058b75c4645088f8630b3d30e15a"
+memo = "beb60e4556211915a29143e41da300fee14b2e0e35cd3f3f3f9a4ce1422e6444"
 
 [[projects]]
   branch = "master"
@@ -73,16 +73,28 @@ memo = "f4eaba87ac71cc353ff64063195056f2fa11058b75c4645088f8630b3d30e15a"
   revision = "e79763773ab6222ca1d5a7cbd9d62d83c1f77081"
 
 [[projects]]
-  branch = "master"
   name = "github.com/nicksnyder/go-i18n"
   packages = ["i18n","i18n/bundle","i18n/language","i18n/translation"]
-  revision = "5a40a66b242242b28cac9dd07177d50818512397"
+  revision = "3e70a1a463008cea6726380c908b1a6a8bdf7b24"
+  version = "v1.8.1"
 
 [[projects]]
   name = "github.com/op/go-logging"
   packages = ["."]
   revision = "b2cb9fa56473e98db8caba80237377e83fe44db5"
   version = "v1"
+
+[[projects]]
+  name = "github.com/pelletier/go-buffruneio"
+  packages = ["."]
+  revision = "c37440a7cf42ac63b919c752ca73a85067e05992"
+  version = "v0.2.0"
+
+[[projects]]
+  name = "github.com/pelletier/go-toml"
+  packages = ["."]
+  revision = "5ccdfb18c776b740aecaf085c4d9a2779199c279"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
