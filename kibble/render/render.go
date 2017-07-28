@@ -77,18 +77,18 @@ func Render(rootPath string, cfg *models.Config) error {
 			RoutePrefix: "",
 			Site:        site,
 			Language: &models.Language{
-				Code:              lang,
-				Locale:            locale,
-				IsDefault:         (lang != cfg.DefaultLanguage),
-				DefinitionFileURL: fmt.Sprintf("%s.all.json", locale),
+				Code:               lang,
+				Locale:             locale,
+				IsDefault:          (lang != cfg.DefaultLanguage),
+				DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
 			},
 		}
 
 		if lang != cfg.DefaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
-			i18n.LoadTranslationFile(ctx.Language.DefinitionFileURL)
+			i18n.LoadTranslationFile(ctx.Language.DefinitionFilePath)
 		} else {
-			i18n.MustLoadTranslationFile(ctx.Language.DefinitionFileURL)
+			i18n.MustLoadTranslationFile(ctx.Language.DefinitionFilePath)
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
