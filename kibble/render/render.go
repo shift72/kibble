@@ -73,20 +73,28 @@ func Render(rootPath string, cfg *models.Config) error {
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 	for lang, locale := range cfg.Languages {
 
-		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
-		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
-		if err != nil {
-			log.Errorf("Translation failed: %s", err)
-		}
-
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
-			Language:    lang,
+			Language: &models.Language{
+				Code:               lang,
+				Locale:             locale,
+				IsDefault:          (lang != cfg.DefaultLanguage),
+				DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
+			},
 		}
 
 		if lang != cfg.DefaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
+			i18n.LoadTranslationFile(ctx.Language.DefinitionFilePath)
+		} else {
+			i18n.MustLoadTranslationFile(ctx.Language.DefinitionFilePath)
+		}
+
+		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
+		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
+		if err != nil {
+			log.Errorf("Translation failed: %s", err)
 		}
 
 		// set the template view
