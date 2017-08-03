@@ -42,7 +42,7 @@ var syncCmd = &cobra.Command{
 			var buildPath = path.Join(".kibble", "build")
 
 			swRender := utils.NewStopwatchLevel("render", logging.NOTICE)
-			err := render.Render(buildPath, cfg)
+			err := render.Render(cfg.SourcePath(), buildPath, cfg)
 			renderDuration = swRender.Completed()
 			if err != nil {
 				fmt.Println("Render failed:", err)

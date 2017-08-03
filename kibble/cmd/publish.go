@@ -35,7 +35,7 @@ var publishCmd = &cobra.Command{
 		runAsAdmin = true
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 
-		err := publish.Execute(".", cfg)
+		err := publish.Execute(cfg.SourcePath(), cfg)
 		if err != nil {
 			fmt.Printf("Publish failed: %v", err)
 		}

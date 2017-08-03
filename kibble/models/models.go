@@ -41,6 +41,7 @@ type Renderer interface {
 }
 
 // Config - template configuration
+// NOTE: Don't use `SiteRootPath directly`, use `Config.SourcePath()` instead.
 type Config struct {
 	DefaultLanguage string            `json:"defaultLanguage"`
 	Languages       map[string]string `json:"languages"`

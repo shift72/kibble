@@ -19,13 +19,17 @@ import (
 var staticFolder = "static"
 
 // Watch -
-func Watch(buildPath string, cfg *models.Config, port int32, logReader utils.LogReader) {
+func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, logReader utils.LogReader) {
 
-	liveReload := LiveReload{logReader: logReader}
+	liveReload := LiveReload{
+		logReader:  logReader,
+		sourcePath: sourcePath,
+	}
+
 	liveReload.StartLiveReload(port, func() {
 		// re-render
 		logReader.Clear()
-		Render(buildPath, cfg)
+		Render(sourcePath, buildPath, cfg)
 	})
 
 	proxy := NewProxy(cfg.SiteURL)
@@ -47,7 +51,7 @@ func Watch(buildPath string, cfg *models.Config, port int32, logReader utils.Log
 }
 
 // Render - render the files
-func Render(buildPath string, cfg *models.Config) error {
+func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 
 	initSW := utils.NewStopwatch("load")
 
@@ -59,8 +63,6 @@ func Render(buildPath string, cfg *models.Config) error {
 	}
 
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
-
-	sourcePath := filepath.Join(".", cfg.SiteRootPath)
 
 	renderer := FileRenderer{
 		buildPath:  buildPath,
@@ -83,7 +85,7 @@ func Render(buildPath string, cfg *models.Config) error {
 				Code:               lang,
 				Locale:             locale,
 				IsDefault:          (lang != cfg.DefaultLanguage),
-				DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
+				DefinitionFilePath: filepath.Join(sourcePath, fmt.Sprintf("%s.all.json", locale)),
 			},
 		}
 
@@ -101,10 +103,10 @@ func Render(buildPath string, cfg *models.Config) error {
 		}
 
 		// set the template view
-		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, "./")
+		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, sourcePath)
 
 		// render static files
-		files, _ := filepath.Glob("*.jet")
+		files, _ := filepath.Glob(filepath.Join(sourcePath, "*.jet"))
 
 		renderFilesSW := utils.NewStopwatch("  render files")
 		for _, f := range files {

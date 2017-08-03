@@ -53,6 +53,7 @@ var ignorePaths = []string{
 type LiveReload struct {
 	lastModified time.Time
 	logReader    utils.LogReader
+	sourcePath   string
 }
 
 // WrapperResponseWriter - wraps request
@@ -204,8 +205,7 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 	}()
 
 	// search the path for files that might have changed
-	var searchDir = "."
-	err = filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
+	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
 		if ignorePath(path) {
 			return nil
 		}
