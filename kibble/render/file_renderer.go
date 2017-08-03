@@ -30,8 +30,7 @@ func (c FileRenderer) Initialise() {
 	}
 
 	// copy language files too, they are a special file name format
-	cd, _ := os.Getwd()
-	glob := filepath.Join(cd, "/*.all.json")
+	glob := filepath.Join(c.sourcePath, "/*.all.json")
 	langFiles, err := filepath.Glob(glob)
 	if len(langFiles) > 0 {
 		for _, file := range langFiles {
