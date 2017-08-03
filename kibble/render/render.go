@@ -85,15 +85,15 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 				Code:               lang,
 				Locale:             locale,
 				IsDefault:          (lang != cfg.DefaultLanguage),
-				DefinitionFilePath: filepath.Join(sourcePath, fmt.Sprintf("%s.all.json", locale)),
+				DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
 			},
 		}
 
 		if lang != cfg.DefaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
-			i18n.LoadTranslationFile(ctx.Language.DefinitionFilePath)
+			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		} else {
-			i18n.MustLoadTranslationFile(ctx.Language.DefinitionFilePath)
+			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
@@ -112,8 +112,12 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 		for _, f := range files {
 			filePath := path.Join(ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
 
+			// jet prefers relative template paths, so lets make it relativeish,
+			// be removing the `sourcePath` from the start of it.
+			relativeFilePath := strings.Replace(f, sourcePath, "", 1)
+
 			route := &models.Route{
-				TemplatePath: f,
+				TemplatePath: relativeFilePath,
 			}
 
 			data := jet.VarMap{}
