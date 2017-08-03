@@ -13,9 +13,9 @@ import (
 )
 
 // Execute the publish process by
-func Execute(rootPath string, cfg *models.Config) error {
+func Execute(buildPath string, cfg *models.Config) error {
 
-	target := path.Join(rootPath, "kibble-nibble.zip")
+	target := path.Join(buildPath, "kibble-nibble.zip")
 
 	err := createArchive(target)
 	if err != nil {

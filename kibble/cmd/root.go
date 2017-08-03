@@ -28,7 +28,7 @@ var runAsAdmin bool
 var disableCache bool
 var verbose bool
 var apiKey string
-var rootPath = path.Join(".kibble", "build")
+var buildPath = path.Join(".kibble", "build")
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{

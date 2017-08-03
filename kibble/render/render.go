@@ -19,13 +19,13 @@ import (
 var staticFolder = "static"
 
 // Watch -
-func Watch(rootPath string, cfg *models.Config, port int32, logReader utils.LogReader) {
+func Watch(buildPath string, cfg *models.Config, port int32, logReader utils.LogReader) {
 
 	liveReload := LiveReload{logReader: logReader}
 	liveReload.StartLiveReload(port, func() {
 		// re-render
 		logReader.Clear()
-		Render(rootPath, cfg)
+		Render(buildPath, cfg)
 	})
 
 	proxy := NewProxy(cfg.SiteURL)
@@ -37,7 +37,7 @@ func Watch(rootPath string, cfg *models.Config, port int32, logReader utils.LogR
 		proxy.GetMiddleware(
 			liveReload.GetMiddleware(
 				http.FileServer(
-					http.Dir(rootPath)))))
+					http.Dir(buildPath)))))
 
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
 	if err != nil {
@@ -47,7 +47,7 @@ func Watch(rootPath string, cfg *models.Config, port int32, logReader utils.LogR
 }
 
 // Render - render the files
-func Render(rootPath string, cfg *models.Config) error {
+func Render(buildPath string, cfg *models.Config) error {
 
 	initSW := utils.NewStopwatch("load")
 
@@ -60,8 +60,11 @@ func Render(rootPath string, cfg *models.Config) error {
 
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
+	sourcePath := filepath.Join(".", cfg.SiteRootPath)
+
 	renderer := FileRenderer{
-		rootPath: rootPath,
+		buildPath:  buildPath,
+		sourcePath: sourcePath,
 	}
 
 	renderer.Initialise()

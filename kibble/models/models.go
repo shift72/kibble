@@ -53,6 +53,13 @@ type Config struct {
 	DisableCache    bool              `json:"-"`
 	RunAsAdmin      bool              `json:"-"`
 	SkipLogin       bool              `json:"-"`
+	SiteRootPath    string            `json:"siteRootPath"`
+	LiveReload      LiveReloadConfig  `json:"liveReload"`
+}
+
+// LiveReloadConfig - configuration options for the live_reloader
+type LiveReloadConfig struct {
+	IgnoredPaths []string `json:"ignoredPaths"`
 }
 
 // PrivateConfig - config loaded from

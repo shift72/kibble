@@ -41,7 +41,13 @@ var embed = `
 </script>
 `
 
-var ignorePaths = []string{".git", ".kibble"}
+var ignorePaths = []string{
+	".git",
+	".kibble",
+	"node_modules",
+	"npm-debug.log",
+	"package.json",
+}
 
 // LiveReload -
 type LiveReload struct {
@@ -220,7 +226,13 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 
 func ignorePath(name string) bool {
 	for _, c := range ignorePaths {
-		if strings.HasPrefix(name, c) {
+
+		isMatch, err := filepath.Match(c, name)
+		if err != nil {
+			log.Errorf("Watcher failed matching %s to %s. %s", name, c, err.Error())
+		}
+		// support both file globs and simple dir names (which the `filepath.Match` command seems to not support).
+		if isMatch || strings.HasPrefix(name, c) {
 			return true
 		}
 	}
