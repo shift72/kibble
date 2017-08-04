@@ -158,7 +158,7 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 			// throttle the amount of changes, due to some editors
 			// *cough* Sublime Text *cough* sending multiple WRITES for 1 file
 			if !live.lastModified.IsZero() && now.Sub(live.lastModified).Seconds() <= 1 {
-				log.Critical("Ignoring multiple changes")
+				log.Debug("Ignoring multiple changes")
 				continue
 			}
 
@@ -221,6 +221,8 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 	for i, p := range patterns {
 		patterns[i] = filepath.Join(live.sourcePath, p)
 	}
+
+	log.Debug("Ignoring - ", patterns)
 
 	// search the path for files that might have changed
 	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
