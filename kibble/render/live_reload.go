@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 
 	"net/http"
@@ -54,6 +55,7 @@ type LiveReload struct {
 	lastModified time.Time
 	logReader    utils.LogReader
 	sourcePath   string
+	config       models.LiveReloadConfig
 }
 
 // WrapperResponseWriter - wraps request
@@ -204,9 +206,18 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 		}
 	}()
 
+	// make a single list of things to ignore,
+	// so its not generated everytime we do a file compare
+	patterns := append(ignorePaths, live.config.IgnoredPaths...)
+	for i, p := range patterns {
+		patterns[i] = filepath.Join(live.sourcePath, p)
+	}
+
+	log.Error("Ignoring ", patterns)
+
 	// search the path for files that might have changed
 	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
-		if ignorePath(path) {
+		if live.ignorePath(path, patterns) {
 			return nil
 		}
 
@@ -224,17 +235,26 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 	}
 }
 
-func ignorePath(name string) bool {
-	for _, c := range ignorePaths {
-
-		isMatch, err := filepath.Match(c, name)
-		if err != nil {
-			log.Errorf("Watcher failed matching %s to %s. %s", name, c, err.Error())
-		}
-		// support both file globs and simple dir names (which the `filepath.Match` command seems to not support).
-		if isMatch || strings.HasPrefix(name, c) {
+func (live LiveReload) ignorePath(name string, patterns []string) bool {
+	// check default ignored file patterns
+	for _, c := range patterns {
+		if filePathMatches(name, c) {
 			return true
 		}
 	}
+
+	return false
+}
+
+func filePathMatches(path string, pattern string) bool {
+	isMatch, err := filepath.Match(pattern, path)
+	if err != nil {
+		log.Errorf("Watcher failed matching %s to %s. %s", path, pattern, err.Error())
+	}
+	// support both file globs and simple dir names (which the `filepath.Match` command seems to not support).
+	if isMatch || strings.HasPrefix(path, pattern) {
+		return true
+	}
+
 	return false
 }

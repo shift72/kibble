@@ -24,6 +24,7 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 	liveReload := LiveReload{
 		logReader:  logReader,
 		sourcePath: sourcePath,
+		config:     cfg.LiveReload,
 	}
 
 	liveReload.StartLiveReload(port, func() {
