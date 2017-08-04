@@ -154,6 +154,14 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 		log.Info("Starting live reload")
 
 		for _ = range changesChannel {
+			now := time.Now()
+			// throttle the amount of changes, due to some editors
+			// *cough* Sublime Text *cough* sending multiple WRITES for 1 file
+			if !live.lastModified.IsZero() && now.Sub(live.lastModified).Seconds() <= 1 {
+				log.Critical("Ignoring multiple changes")
+				return
+			}
+
 			fn()
 			live.lastModified = time.Now()
 
@@ -196,8 +204,9 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 		for {
 			select {
 			case event := <-watcher.Events:
+				log.Critical("change (%s) detected: %s", event.Op, event.Name)
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Debugf("change detected:", event.Name)
+					log.Debugf("change (%s) detected: %s", event.Op, event.Name)
 					changesChannel <- true
 				}
 			case err = <-watcher.Errors:
@@ -208,10 +217,11 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 
 	// make a single list of things to ignore,
 	// so its not generated everytime we do a file compare
-	patterns := append(ignorePaths, live.config.IgnoredPaths...)
-	for i, p := range patterns {
-		patterns[i] = filepath.Join(live.sourcePath, p)
-	}
+	patterns := ignorePaths
+	// append(ignorePaths, live.config.IgnoredPaths...)
+	// for i, p := range patterns {
+	// 	patterns[i] = filepath.Join(live.sourcePath, p)
+	// }
 
 	// search the path for files that might have changed
 	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
