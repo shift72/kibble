@@ -159,7 +159,7 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 			// *cough* Sublime Text *cough* sending multiple WRITES for 1 file
 			if !live.lastModified.IsZero() && now.Sub(live.lastModified).Seconds() <= 1 {
 				log.Critical("Ignoring multiple changes")
-				return
+				continue
 			}
 
 			fn()
