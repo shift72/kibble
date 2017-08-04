@@ -213,8 +213,6 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 		patterns[i] = filepath.Join(live.sourcePath, p)
 	}
 
-	log.Error("Ignoring ", patterns)
-
 	// search the path for files that might have changed
 	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
 		if live.ignorePath(path, patterns) {
