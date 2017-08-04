@@ -217,11 +217,10 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 
 	// make a single list of things to ignore,
 	// so its not generated everytime we do a file compare
-	patterns := ignorePaths
-	// append(ignorePaths, live.config.IgnoredPaths...)
-	// for i, p := range patterns {
-	// 	patterns[i] = filepath.Join(live.sourcePath, p)
-	// }
+	patterns := append(ignorePaths, live.config.IgnoredPaths...)
+	for i, p := range patterns {
+		patterns[i] = filepath.Join(live.sourcePath, p)
+	}
 
 	// search the path for files that might have changed
 	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
