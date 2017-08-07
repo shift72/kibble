@@ -215,18 +215,11 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 		}
 	}()
 
-	// make a single list of things to ignore,
-	// so its not generated everytime we do a file compare
-	patterns := append(ignorePaths, live.config.IgnoredPaths...)
-	for i, p := range patterns {
-		patterns[i] = filepath.Join(live.sourcePath, p)
-	}
-
-	log.Debug("Ignoring - ", patterns)
+	ignorer := utils.NewFileIgnorer(live.sourcePath, live.config.IgnoredPaths)
 
 	// search the path for files that might have changed
 	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
-		if shouldIgnorePath(path, patterns) {
+		if ignorer.IsIgnored(path) {
 			return nil
 		}
 
@@ -242,20 +235,4 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 	if err != nil {
 		log.Error("Watcher: ", err)
 	}
-}
-
-func shouldIgnorePath(path string, patterns []string) bool {
-
-	for _, pattern := range patterns {
-		isMatch, err := filepath.Match(pattern, path)
-		if err != nil {
-			log.Errorf("Watcher failed matching %s to %s. %s", path, pattern, err.Error())
-		}
-		// support both file globs and simple dir names (which the `filepath.Match` command seems to not support).
-		if isMatch || strings.HasPrefix(path, pattern) {
-			return true
-		}
-	}
-
-	return false
 }
