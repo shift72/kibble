@@ -13,7 +13,7 @@ import (
 
 var (
 	privatePath       = path.Join(".kibble", "private.json")
-	sitePath          = path.Join("site.json")
+	sitePath          = path.Join("kibble.json")
 	currentVersion, _ = goversion.NewVersion(version.Version)
 )
 

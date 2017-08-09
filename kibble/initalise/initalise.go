@@ -81,7 +81,7 @@ func NewSite(force bool) {
 
 	log.Notice("Setup complete!\n")
 	log.Notice("Next steps:")
-	log.Notice(" 1. update site.json with the url of your site")
+	log.Notice(" 1. update kibble.json with the url of your site")
 	log.Notice(" 2. initalise git and push to your repository")
 	log.Notice("    `git init`")
 	log.Notice("    `git remote add origin https://github.com/user/repo.git`")
