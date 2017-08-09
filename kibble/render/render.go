@@ -19,13 +19,18 @@ import (
 var staticFolder = "static"
 
 // Watch -
-func Watch(rootPath string, cfg *models.Config, port int32, logReader utils.LogReader) {
+func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, logReader utils.LogReader) {
 
-	liveReload := LiveReload{logReader: logReader}
+	liveReload := LiveReload{
+		logReader:  logReader,
+		sourcePath: sourcePath,
+		config:     cfg.LiveReload,
+	}
+
 	liveReload.StartLiveReload(port, func() {
 		// re-render
 		logReader.Clear()
-		Render(rootPath, cfg)
+		Render(sourcePath, buildPath, cfg)
 	})
 
 	proxy := NewProxy(cfg.SiteURL)
@@ -37,7 +42,7 @@ func Watch(rootPath string, cfg *models.Config, port int32, logReader utils.LogR
 		proxy.GetMiddleware(
 			liveReload.GetMiddleware(
 				http.FileServer(
-					http.Dir(rootPath)))))
+					http.Dir(buildPath)))))
 
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
 	if err != nil {
@@ -47,7 +52,7 @@ func Watch(rootPath string, cfg *models.Config, port int32, logReader utils.LogR
 }
 
 // Render - render the files
-func Render(rootPath string, cfg *models.Config) error {
+func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 
 	initSW := utils.NewStopwatch("load")
 
@@ -61,7 +66,8 @@ func Render(rootPath string, cfg *models.Config) error {
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
 
 	renderer := FileRenderer{
-		rootPath: rootPath,
+		buildPath:  buildPath,
+		sourcePath: sourcePath,
 	}
 
 	renderer.Initialise()
@@ -86,9 +92,9 @@ func Render(rootPath string, cfg *models.Config) error {
 
 		if lang != cfg.DefaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
-			i18n.LoadTranslationFile(ctx.Language.DefinitionFilePath)
+			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		} else {
-			i18n.MustLoadTranslationFile(ctx.Language.DefinitionFilePath)
+			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
@@ -98,17 +104,21 @@ func Render(rootPath string, cfg *models.Config) error {
 		}
 
 		// set the template view
-		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, "./")
+		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, sourcePath)
 
 		// render static files
-		files, _ := filepath.Glob("*.jet")
+		files, _ := filepath.Glob(filepath.Join(sourcePath, "*.jet"))
 
 		renderFilesSW := utils.NewStopwatch("  render files")
 		for _, f := range files {
 			filePath := path.Join(ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
 
+			// jet prefers relative template paths, so lets make it relativeish,
+			// be removing the `sourcePath` from the start of it.
+			relativeFilePath := strings.Replace(f, sourcePath, "", 1)
+
 			route := &models.Route{
-				TemplatePath: f,
+				TemplatePath: relativeFilePath,
 			}
 
 			data := jet.VarMap{}

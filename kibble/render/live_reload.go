@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 
 	"net/http"
@@ -41,12 +42,20 @@ var embed = `
 </script>
 `
 
-var ignorePaths = []string{".git", ".kibble"}
+var ignorePaths = []string{
+	".git",
+	".kibble",
+	"node_modules",
+	"npm-debug.log",
+	"package.json",
+}
 
 // LiveReload -
 type LiveReload struct {
 	lastModified time.Time
 	logReader    utils.LogReader
+	sourcePath   string
+	config       models.LiveReloadConfig
 }
 
 // WrapperResponseWriter - wraps request
@@ -145,6 +154,14 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 		log.Info("Starting live reload")
 
 		for _ = range changesChannel {
+			now := time.Now()
+			// throttle the amount of changes, due to some editors
+			// *cough* Sublime Text *cough* sending multiple WRITES for 1 file
+			if !live.lastModified.IsZero() && now.Sub(live.lastModified).Seconds() <= 1 {
+				log.Debug("Ignoring multiple changes")
+				continue
+			}
+
 			fn()
 			live.lastModified = time.Now()
 
@@ -187,8 +204,9 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 		for {
 			select {
 			case event := <-watcher.Events:
+				log.Critical("change (%s) detected: %s", event.Op, event.Name)
 				if event.Op&fsnotify.Write == fsnotify.Write {
-					log.Debugf("change detected:", event.Name)
+					log.Debugf("change (%s) detected: %s", event.Op, event.Name)
 					changesChannel <- true
 				}
 			case err = <-watcher.Errors:
@@ -197,10 +215,11 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 		}
 	}()
 
+	ignorer := utils.NewFileIgnorer(live.sourcePath, live.config.IgnoredPaths)
+
 	// search the path for files that might have changed
-	var searchDir = "."
-	err = filepath.Walk(searchDir, func(path string, f os.FileInfo, err error) error {
-		if ignorePath(path) {
+	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
+		if ignorer.IsIgnored(path) {
 			return nil
 		}
 
@@ -216,13 +235,4 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 	if err != nil {
 		log.Error("Watcher: ", err)
 	}
-}
-
-func ignorePath(name string) bool {
-	for _, c := range ignorePaths {
-		if strings.HasPrefix(name, c) {
-			return true
-		}
-	}
-	return false
 }

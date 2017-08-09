@@ -112,8 +112,9 @@ func TestIdempotent(config Config, cfg *models.Config) error {
 	}
 
 	var sample1Path = path.Join(".kibble", "build-sample-1")
+	sourcePath := cfg.SourcePath()
 
-	render.Render(sample1Path, cfg)
+	render.Render(sourcePath, sample1Path, cfg)
 
 	sample1, err := local.List()
 	if err != nil {
@@ -123,7 +124,7 @@ func TestIdempotent(config Config, cfg *models.Config) error {
 
 	var sample2Path = path.Join(".kibble", "build-sample-2")
 
-	render.Render(sample2Path, cfg)
+	render.Render(sourcePath, sample2Path, cfg)
 
 	sample2, err := local.List()
 	if err != nil {

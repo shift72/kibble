@@ -10,14 +10,17 @@ import (
 
 	"github.com/indiereign/shift72-kibble/kibble/api"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // Execute the publish process by
-func Execute(rootPath string, cfg *models.Config) error {
+func Execute(sourcePath string, buildPath string, cfg *models.Config) error {
 
-	target := path.Join(rootPath, "kibble-nibble.zip")
+	target := path.Join(buildPath, "kibble-nibble.zip")
 
-	err := createArchive(target)
+	ignoredPaths := utils.NewFileIgnorer(sourcePath, cfg.LiveReload.IgnoredPaths)
+
+	err := createArchive(target, sourcePath, ignoredPaths)
 	if err != nil {
 		return err
 	}
@@ -39,7 +42,7 @@ func Execute(rootPath string, cfg *models.Config) error {
 	return nil
 }
 
-func createArchive(target string) error {
+func createArchive(target string, sourcePath string, ignoredPaths utils.FileIgnorer) error {
 
 	targetPath := filepath.Dir(target)
 
@@ -57,19 +60,15 @@ func createArchive(target string) error {
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
-	err = zipit(".", archive, []string{".git", ".", ".kibble", "node_modules", "styles", "dist", "kibble-nibble.zip"})
+	err = zipit(sourcePath, archive, ignoredPaths)
 	if err != nil {
 		return err
 	}
 
-	err = zipit(".kibble/dist/", archive, []string{"dist", "/", "kibble-nibble.zip"})
-	if err != nil {
-		return err
-	}
 	return err
 }
 
-func zipit(source string, archive *zip.Writer, ignorePaths []string) error {
+func zipit(source string, archive *zip.Writer, ignoredPaths utils.FileIgnorer) error {
 
 	info, err := os.Stat(source)
 	if err != nil && os.IsNotExist(err) {
@@ -91,7 +90,7 @@ func zipit(source string, archive *zip.Writer, ignorePaths []string) error {
 			return err
 		}
 
-		if ignorePath(ignorePaths, path) {
+		if ignoredPaths.IsIgnored(path) {
 			return nil
 		}
 

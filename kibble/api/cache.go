@@ -158,9 +158,6 @@ func Upload(cfg *models.Config, url string, params map[string]string, target str
 
 	resp.Body.Close()
 	if resp.StatusCode != 200 {
-		// fmt.Println(resp.StatusCode)
-		// fmt.Println(resp.Header)
-		// fmt.Println(body)
 		return errors.New(fmt.Sprintln(body))
 	}
 

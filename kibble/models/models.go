@@ -41,6 +41,7 @@ type Renderer interface {
 }
 
 // Config - template configuration
+// NOTE: Don't use `SiteRootPath directly`, use `Config.SourcePath()` instead.
 type Config struct {
 	DefaultLanguage string            `json:"defaultLanguage"`
 	Languages       map[string]string `json:"languages"`
@@ -53,6 +54,13 @@ type Config struct {
 	DisableCache    bool              `json:"-"`
 	RunAsAdmin      bool              `json:"-"`
 	SkipLogin       bool              `json:"-"`
+	SiteRootPath    string            `json:"siteRootPath"`
+	LiveReload      LiveReloadConfig  `json:"liveReload"`
+}
+
+// LiveReloadConfig - configuration options for the live_reloader
+type LiveReloadConfig struct {
+	IgnoredPaths []string `json:"ignoredPaths"`
 }
 
 // PrivateConfig - config loaded from

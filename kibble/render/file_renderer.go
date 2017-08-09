@@ -15,26 +15,26 @@ import (
 
 // FileRenderer - designed to render to the file system for testing
 type FileRenderer struct {
-	view     *jet.Set
-	rootPath string
+	view       *jet.Set
+	buildPath  string
+	sourcePath string
 }
 
 // Initialise - start the rendering process
 func (c FileRenderer) Initialise() {
-	os.RemoveAll(c.rootPath)
+	os.RemoveAll(c.buildPath)
 
-	err := utils.CopyDir(staticFolder, c.rootPath)
+	err := utils.CopyDir(filepath.Join(c.sourcePath, staticFolder), c.buildPath)
 	if err != nil {
 		log.Warningf("Warn: static folder copy failed %s", err)
 	}
 
 	// copy language files too, they are a special file name format
-	cd, _ := os.Getwd()
-	glob := filepath.Join(cd, "/*.all.json")
+	glob := filepath.Join(c.sourcePath, "/*.all.json")
 	langFiles, err := filepath.Glob(glob)
 	if len(langFiles) > 0 {
 		for _, file := range langFiles {
-			dst := filepath.Join(c.rootPath, filepath.Base(file))
+			dst := filepath.Join(c.buildPath, filepath.Base(file))
 			err := utils.CopyFile(file, dst)
 			if err != nil {
 				log.Warningf("Warn: language file (%s) copy failed %s", file, err)
@@ -52,7 +52,7 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 		}
 	}()
 
-	fullPath := path.Join(c.rootPath, filePath)
+	fullPath := path.Join(c.buildPath, filePath)
 	if strings.HasSuffix(filePath, "/") {
 		fullPath = path.Join(fullPath, "index.html")
 	}
