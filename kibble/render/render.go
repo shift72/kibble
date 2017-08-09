@@ -111,11 +111,11 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 
 		renderFilesSW := utils.NewStopwatch("  render files")
 		for _, f := range files {
-			filePath := path.Join(ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
-
 			// jet prefers relative template paths, so lets make it relativeish,
 			// be removing the `sourcePath` from the start of it.
 			relativeFilePath := strings.Replace(f, sourcePath, "", 1)
+
+			outputFilePath := path.Join(ctx.RoutePrefix, strings.Replace(relativeFilePath, ".jet", "", 1))
 
 			route := &models.Route{
 				TemplatePath: relativeFilePath,
@@ -123,7 +123,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 
 			data := jet.VarMap{}
 			data.Set("site", site)
-			errCount += renderer.Render(route, filePath, data)
+			errCount += renderer.Render(route, outputFilePath, data)
 		}
 		renderFilesSW.Completed()
 
