@@ -204,7 +204,6 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 		for {
 			select {
 			case event := <-watcher.Events:
-				log.Critical("change (%s) detected: %s", event.Op, event.Name)
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					log.Debugf("change (%s) detected: %s", event.Op, event.Name)
 					changesChannel <- true
