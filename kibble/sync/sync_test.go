@@ -174,7 +174,7 @@ func TestSyncWithErrors(t *testing.T) {
 		changes = append(changes, add(fmt.Sprintf("file%d.html|ccc", i)))
 	}
 
-	err := PerformSync(store, changes)
+	_, _, err := PerformSync(store, changes)
 	if err == nil {
 		t.Error("Expected errors")
 	}
