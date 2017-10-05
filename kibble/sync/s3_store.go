@@ -3,6 +3,8 @@ package sync
 import (
 	"bytes"
 	"io/ioutil"
+	"mime"
+	"path"
 	"strings"
 	"sync"
 
@@ -86,10 +88,11 @@ func (store *S3Store) Upload(wg *sync.WaitGroup, f FileRef) error {
 
 	_, err = store.svc.PutObject(
 		&s3.PutObjectInput{
-			Bucket: &store.config.Bucket,
-			Key:    &dst,
-			Body:   bytes.NewReader(b),
-			//	ACL: // defaults to read only
+			Bucket:      &store.config.Bucket,
+			Key:         &dst,
+			Body:        bytes.NewReader(b),
+			ACL:         aws.String("public-read"),
+			ContentType: aws.String(mime.TypeByExtension(path.Ext(f.path))),
 		},
 	)
 	if err != nil {
