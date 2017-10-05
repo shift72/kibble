@@ -87,7 +87,7 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 func ApplyContentTransforms(data string) string {
 
 	// apply mark down
-	unsafe := blackfriday.MarkdownCommon([]byte(data))
+	unsafe := blackfriday.Run([]byte(data))
 
 	// apply the templates
 	return insertTemplates(string(unsafe))

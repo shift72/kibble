@@ -66,17 +66,33 @@ type Summary struct {
 // Execute - start a sync
 func Execute(config Config) (*Summary, error) {
 
-	s3Store, _ := NewS3Store(config)
-	localStore, _ := NewLocalStore(config)
+	s3Store, err := NewS3Store(config)
+	if err != nil {
+		return nil, err
+	}
+	localStore, err := NewLocalStore(config)
+	if err != nil {
+		return nil, err
+	}
 
 	swDetect := utils.NewStopwatch("detect")
-	remote, _ := s3Store.List()
-	local, _ := localStore.List()
+	remote, err := s3Store.List()
+	if err != nil {
+		return nil, err
+	}
+
+	local, err := localStore.List()
+	if err != nil {
+		return nil, err
+	}
 	changes := compare(local, remote)
 	detect := swDetect.Completed()
 
 	swSync := utils.NewStopwatch("sync files")
 	added, removed, err := PerformSync(s3Store, changes)
+	if err != nil {
+		return nil, err
+	}
 	upload := swSync.Completed()
 
 	s := &Summary{

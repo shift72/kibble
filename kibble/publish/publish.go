@@ -14,7 +14,7 @@ import (
 )
 
 // Execute the publish process by
-func Execute(sourcePath string, buildPath string, cfg *models.Config) error {
+func Execute(sourcePath string, buildPath string, cfg *models.Config, zipOnly bool) error {
 
 	target := path.Join(buildPath, "kibble-nibble.zip")
 
@@ -23,6 +23,11 @@ func Execute(sourcePath string, buildPath string, cfg *models.Config) error {
 	err := createArchive(target, sourcePath, ignoredPaths)
 	if err != nil {
 		return err
+	}
+
+	if zipOnly {
+		log.Info("zip only successful")
+		return nil
 	}
 
 	api.CheckAdminCredentials(cfg)

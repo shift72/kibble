@@ -6,6 +6,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
@@ -19,20 +21,31 @@ type S3Store struct {
 // NewS3Store - create a new store
 func NewS3Store(config Config) (*S3Store, error) {
 
-	options := session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}
+	var sess *session.Session
+	var s3Config *aws.Config
 
 	if config.Profile != "" {
-		options.Profile = config.Profile
-	}
+		sess = session.Must(session.NewSessionWithOptions(
+			session.Options{
+				SharedConfigState: session.SharedConfigEnable,
+				Profile:           config.Profile,
+			},
+		))
 
-	sess := session.Must(session.NewSessionWithOptions(options))
-	sess.Config.Region = &config.Region
+		s3Config = &aws.Config{
+			Region: aws.String(config.Region),
+		}
+	} else {
+		sess = session.Must(session.NewSession())
+		s3Config = &aws.Config{
+			Credentials: ec2rolecreds.NewCredentials(sess),
+			Region:      aws.String(config.Region),
+		}
+	}
 
 	return &S3Store{
 		config: config,
-		svc:    s3.New(sess),
+		svc:    s3.New(sess, s3Config),
 	}, nil
 }
 

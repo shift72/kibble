@@ -23,6 +23,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var zipOnly bool
+
 // publishCmd represents the publish command
 var publishCmd = &cobra.Command{
 	Use:   "publish",
@@ -35,7 +37,7 @@ var publishCmd = &cobra.Command{
 		runAsAdmin = true
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 
-		err := publish.Execute(cfg.SourcePath(), "./.kibble/dist", cfg)
+		err := publish.Execute(".", "./.kibble/dist", cfg, zipOnly)
 		if err != nil {
 			fmt.Printf("Publish failed: %v", err)
 		}
@@ -44,4 +46,5 @@ var publishCmd = &cobra.Command{
 
 func init() {
 	RootCmd.AddCommand(publishCmd)
+	publishCmd.Flags().BoolVar(&zipOnly, "zip-only", false, "only create the zip")
 }
