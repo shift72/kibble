@@ -105,9 +105,10 @@ func Get(cfg *models.Config, url string) ([]byte, error) {
 	}
 
 	req.Header.Add("Content-Type", "application/json")
+	// force the cache to be bypassed regardless of being logged in or not
+	req.Header.Add("x-bypass-cache", "1")
 	if cfg.Private.APIKey != "" {
 		req.Header.Add("x-auth-token", cfg.Private.APIKey)
-		req.Header.Add("x-bypass-cache", "1")
 	}
 
 	client := &http.Client{
