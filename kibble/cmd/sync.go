@@ -53,6 +53,10 @@ var syncCmd = &cobra.Command{
 				return err
 			}
 		}
+
+		// copy from the correct directory
+		syncCfg.FileRootPath = cfg.FileRootPath()
+
 		summary, err := sync.Execute(syncCfg)
 		summary.RenderDuration = renderDuration
 		fmt.Println(summary.ToJSON())
@@ -84,7 +88,6 @@ func init() {
 	syncCmd.Flags().StringVarP(&syncCfg.Region, "region", "r", "us-east-1", "AWS Region (default us-east-1)")
 	syncCmd.Flags().StringVarP(&syncCfg.Bucket, "bucket", "b", "", "AWS S3 Bucket")
 	syncCmd.Flags().StringVarP(&syncCfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 Path")
-	syncCmd.Flags().StringVarP(&syncCfg.FileRootPath, "filerootpath", "", "./.kibble/build/", "path to upload")
 
 	syncCmd.Flags().BoolVarP(&renderAndSync, "render", "", false, "Renders the site before syncing.")
 	syncCmd.Flags().BoolVarP(&testIdempotent, "test-idempotent", "", false, "Checks that two runs of the render process produce the same result.")

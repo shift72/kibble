@@ -76,3 +76,8 @@ func (cfg *Config) BuildPath() string {
 	}
 	return path.Join(".kibble", "build")
 }
+
+// FileRootPath returns the path to be used for copying
+func (cfg *Config) FileRootPath() string {
+	return "./" + cfg.BuildPath() + "/"
+}
