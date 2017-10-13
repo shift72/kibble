@@ -1,6 +1,7 @@
 package models
 
 import (
+	"path"
 	"reflect"
 
 	"github.com/CloudyKit/jet"
@@ -66,4 +67,12 @@ type LiveReloadConfig struct {
 // PrivateConfig - config loaded from
 type PrivateConfig struct {
 	APIKey string `json:"apikey"`
+}
+
+// BuildPath returns the build path for current config
+func (cfg *Config) BuildPath() string {
+	if cfg.RunAsAdmin {
+		return path.Join(".kibble", "build-admin")
+	}
+	return path.Join(".kibble", "build")
 }

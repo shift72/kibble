@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"path"
 	"time"
 
 	"github.com/indiereign/shift72-kibble/kibble/config"
@@ -29,7 +28,13 @@ var syncCmd = &cobra.Command{
 		var err error
 		swSync := utils.NewStopwatchLevel("sync total", logging.NOTICE)
 
-		utils.ConfigureStandardLogging(verbose)
+		if apiKey != "" {
+			//TODO: suppress errors for the moment
+			runAsAdmin = true
+			utils.ConfigureStandardLoggingLevel(logging.CRITICAL)
+		} else {
+			utils.ConfigureStandardLogging(verbose)
+		}
 
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 		config.CheckVersion(cfg)
@@ -40,10 +45,8 @@ var syncCmd = &cobra.Command{
 
 		var renderDuration time.Duration
 		if renderAndSync {
-			var buildPath = path.Join(".kibble", "build")
-
 			swRender := utils.NewStopwatchLevel("render", logging.NOTICE)
-			err := render.Render(cfg.SourcePath(), buildPath, cfg)
+			err := render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)
 			renderDuration = swRender.Completed()
 			if err != nil {
 				fmt.Println("Render failed:", err)

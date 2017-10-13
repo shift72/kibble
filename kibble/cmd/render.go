@@ -37,12 +37,12 @@ Kibble is used to build and develop custom sites to run on the SHIFT72 platform.
 			log := utils.ConfigureWatchedLogging(verbose)
 			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 			config.CheckVersion(cfg)
-			render.Watch(cfg.SourcePath(), buildPath, cfg, port, log)
+			render.Watch(cfg.SourcePath(), cfg.BuildPath(), cfg, port, log)
 		} else {
 			utils.ConfigureStandardLogging(verbose)
 			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 			config.CheckVersion(cfg)
-			render.Render(cfg.SourcePath(), buildPath, cfg)
+			render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)
 		}
 	},
 }
