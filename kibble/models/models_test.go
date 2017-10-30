@@ -27,5 +27,5 @@ func TestFileRootPath_As_Admin(t *testing.T) {
 	cfg := &Config{
 		RunAsAdmin: true,
 	}
-	assert.Equal(t, "/.kibble/build-admin/", cfg.FileRootPath())
+	assert.Equal(t, "./.kibble/build-admin/", cfg.FileRootPath())
 }

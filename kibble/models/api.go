@@ -113,11 +113,11 @@ type FilmBonusCollection []FilmBonus
 
 // FilmBonus - film bonus model
 type FilmBonus struct {
-	Slug   string
-	Number int
-	Title  string
-	Images ImageSet
-	// SubtitleTracks []interface{} `json:"subtitle_tracks"`
+	Slug      string
+	Number    int
+	Title     string
+	Images    ImageSet
+	Subtitles []SubtitleTrack
 }
 
 // FilmCollection - all films
@@ -141,6 +141,14 @@ type CrewMember struct {
 	Job  string
 }
 
+// SubtitleTrack -
+type SubtitleTrack struct {
+	Language string
+	Name     string
+	Type     string
+	Path     string
+}
+
 // Film - all of the film bits
 type Film struct {
 	ID              int
@@ -162,5 +170,5 @@ type Film struct {
 	Seo             Seo
 	Images          ImageSet
 	Recommendations []GenericItem
-	Subtitles       []string
+	Subtitles       []SubtitleTrack
 }

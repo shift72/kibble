@@ -36,7 +36,6 @@ var publishCmd = &cobra.Command{
 		// force to run as admin
 		runAsAdmin = true
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
-
 		err := publish.Execute(".", "./.kibble/dist", cfg, zipOnly)
 		if err != nil {
 			fmt.Printf("Publish failed: %v", err)

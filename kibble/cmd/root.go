@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/spf13/cobra"
 )
 
@@ -46,8 +45,6 @@ func Execute() {
 }
 
 func init() {
-	models.ConfigureShortcodeTemplatePath("./templates/shortcodes")
-
 	RootCmd.PersistentFlags().BoolVar(&runAsAdmin, "admin", false, "Render using admin credentials")
 	RootCmd.PersistentFlags().StringVar(&apiKey, "api-key", "", "Api key to authenicate with")
 	RootCmd.PersistentFlags().BoolVar(&disableCache, "disable-cache", false, "Prevent caching")

@@ -32,3 +32,8 @@ func (cfg Config) SourcePath() string {
 	// We shouldnt get here, maybe this method should also return an error?
 	return wd
 }
+
+// ShortCodePath is the path where the short code templates will be stored
+func (cfg Config) ShortCodePath() string {
+	return filepath.Join(cfg.SourcePath(), "templates/shortcodes")
+}

@@ -58,6 +58,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 
 	api.CheckAdminCredentials(cfg)
 
+	models.ConfigureShortcodeTemplatePath(cfg)
+
 	site, err := api.LoadSite(cfg)
 	if err != nil {
 		return err
