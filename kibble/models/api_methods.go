@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 // FindPageByID - find the page by id
 func (pages Pages) FindPageByID(pageID int) (*Page, error) {
 	for _, p := range pages {
@@ -57,6 +59,27 @@ func (film Film) GetGenericItem() GenericItem {
 		Images:    film.Images,
 		ItemType:  "film",
 		InnerItem: film,
+	}
+}
+
+// FindTVSeasonBySlug - find the film by the slug
+func (tvSeasons TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, error) {
+	for _, p := range tvSeasons {
+		if p.Slug == slug {
+			return &p, nil
+		}
+	}
+	return nil, ErrDataSourceMissing
+}
+
+// GetGenericItem - returns a generic item
+func (season TVSeason) GetGenericItem() GenericItem {
+	return GenericItem{
+		Title:     fmt.Sprintf("%s - Season - %d", season.ShowInfo.Title, season.SeasonNumber),
+		Slug:      season.Slug,
+		Images:    season.Images,
+		ItemType:  "tvseason",
+		InnerItem: season,
 	}
 }
 

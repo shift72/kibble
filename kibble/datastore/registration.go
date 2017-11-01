@@ -17,4 +17,7 @@ func Init() {
 
 	models.AddDataSource(&CollectionDataSource{})
 	models.AddDataSource(&CollectionIndexDataSource{})
+
+	models.AddDataSource(&TVSeasonDataSource{})
+	models.AddDataSource(&TVSeasonIndexDataSource{})
 }

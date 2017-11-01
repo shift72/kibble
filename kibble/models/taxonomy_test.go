@@ -35,18 +35,27 @@ func TestBuildGenreTaxonomy(t *testing.T) {
 				Genres:    []string{"comedy", "drama"},
 			},
 		},
+		TVSeasons: TVSeasonCollection{
+			TVSeason{
+				Slug: "/tv/1/season/1",
+				ShowInfo: TVShow{
+					Genres: []string{"comedy", "drama"},
+				},
+			},
+		},
 		Taxonomies: make(Taxonomies),
 	}
 
 	// act
 	s.PopulateTaxonomyWithFilms("genres", GetGenres)
+	s.PopulateTaxonomyWithTVSeasons("genres", GetTVShowGenres)
 
 	// expect
 	if len(s.Taxonomies["genres"]) != 2 {
 		t.Errorf("expected 2 genres found %d", len(s.Taxonomies["genres"]))
 	}
 
-	if len(s.Taxonomies["genres"]["comedy"]) != 1 {
+	if len(s.Taxonomies["genres"]["comedy"]) != 2 {
 		t.Errorf("expected 1 film found %d", len(s.Taxonomies["genres"]))
 	}
 }

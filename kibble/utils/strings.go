@@ -1,5 +1,10 @@
 package utils
 
+import (
+	"strconv"
+	"strings"
+)
+
 // Join - using the separator join the strings
 func Join(separator string, values ...string) string {
 
@@ -31,4 +36,10 @@ func Coalesce(values ...string) string {
 		}
 	}
 	return ""
+}
+
+// ParseIntFromSlug - return the index from a slug
+func ParseIntFromSlug(slug string, index int) (int, error) {
+	p := strings.Split(slug, "/")
+	return strconv.Atoi(p[index])
 }

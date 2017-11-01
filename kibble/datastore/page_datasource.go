@@ -3,11 +3,11 @@ package datastore
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // PageDataSource - single Page datasource
@@ -72,8 +72,7 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 // GetRouteForSlug - get the route
 func (ds *PageDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 
-	p := strings.Split(slug, "/")
-	pageID, err := strconv.Atoi(p[2])
+	pageID, err := utils.ParseIntFromSlug(slug, 2)
 	if err != nil {
 		return fmt.Sprintf("ERR(%s)", slug)
 	}

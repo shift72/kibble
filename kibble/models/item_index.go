@@ -46,7 +46,6 @@ func getSlugType(slug string) string {
 	if len(slugParts) == 5 {
 		return slugParts[1] + "-" + slugParts[3]
 	}
-	//TODO: tv season bonus
 
 	// film
 	return slugParts[1]
@@ -111,6 +110,10 @@ func (site *Site) LinkItems(itemIndex ItemIndex) {
 
 	for i := range site.Films {
 		site.Films[i].Recommendations = itemIndex.Resolve(site.Films[i].Recommendations)
+	}
+
+	for i := range site.TVSeasons {
+		site.TVSeasons[i].Recommendations = itemIndex.Resolve(site.TVSeasons[i].Recommendations)
 	}
 
 	for i := range site.Pages {

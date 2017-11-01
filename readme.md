@@ -42,6 +42,7 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
 * model
    * film - done
      * bonus - done
+   * tv - done 
    * taxonomies - done
      * cast - done
      * genre - done
@@ -81,17 +82,6 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
 * sync
   * upload - done
 
-## TODO
- * model
-    * tv - 
-    * json? - what would choice tv tvguide do?
- 
- * download
-    * build and release on github   
-    
- * upload
-  * zip - https://godoc.org/github.com/pierrre/archivefile/zip
-  * build process ?? sass / less
-  * api to upload the file
-
- * diff / merge ??
+## TODO 
+* download
+  * build and release on github   

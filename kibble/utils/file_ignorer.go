@@ -13,7 +13,6 @@ type FileIgnorer struct {
 }
 
 var defaultIgnorePaths = []string{
-	"/",
 	".git",
 	".kibble",
 	"node_modules",

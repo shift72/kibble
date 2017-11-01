@@ -16,6 +16,7 @@ type Site struct {
 	Languages   []Language
 	Pages       Pages
 	Films       FilmCollection
+	TVSeasons   TVSeasonCollection
 	Bundles     BundleCollection
 	Collections CollectionCollection
 	Taxonomies  Taxonomies
@@ -172,3 +173,50 @@ type Film struct {
 	Recommendations []GenericItem
 	Subtitles       []SubtitleTrack
 }
+
+// TVShow -
+type TVShow struct {
+	Trailers         []Trailer
+	Genres           []string
+	Overview         string
+	Countries        []string
+	Languages        []string
+	ReleaseDate      time.Time
+	Tagline          string
+	Studio           []string
+	Title            string
+	TitleSlug        string
+	AvailableSeasons []string
+}
+
+// TVEpisode -
+type TVEpisode struct {
+	Title         string
+	EpisodeNumber int
+	DisplayTitle  string //TODO: display title?? @graham?
+	Overview      string
+	Runtime       int
+	Images        ImageSet
+	Subtitles     []SubtitleTrack
+}
+
+// TVSeason -
+type TVSeason struct {
+	Slug            string
+	SeasonNumber    int
+	Title           string
+	Tagline         string
+	Overview        string
+	PublishingState string
+	ShowInfo        TVShow
+	Seo             Seo
+	Images          ImageSet
+	Trailers        []Trailer
+	Episodes        []TVEpisode
+	Cast            []CastMember
+	Crew            []CrewMember
+	Recommendations []GenericItem
+}
+
+// TVSeasonCollection -
+type TVSeasonCollection []TVSeason
