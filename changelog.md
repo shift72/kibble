@@ -5,6 +5,7 @@ Support subtitles
 Exclude path of '/' from zipfile
 TV Support
 Fixed bundle support
+Include errors in sync summary
 
 # 0.2.0
 Fixed zip file creation, preserves structure

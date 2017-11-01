@@ -81,7 +81,8 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
   * common shortcodes - done
 * sync
   * upload - done
+  * return errors via summary
 
 ## TODO 
 * download
-  * build and release on github   
+  * build and release on github
