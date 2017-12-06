@@ -130,13 +130,13 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Crew:            make([]models.CrewMember, 0),
 	}
 
-	// fix subtitles
-	if f.SubtitlesRaw == nil {
-		// do nothing
-	} else if strings.HasPrefix(string(f.SubtitlesRaw), "\"") {
-		film.Subtitles = []string{string(f.SubtitlesRaw)}
-	} else if strings.HasPrefix(string(f.SubtitlesRaw), "[") {
-		film.Subtitles = strings.Split(strings.Trim(string(f.SubtitlesRaw), "[]"), ",")
+	for _, t := range f.Subtitles {
+		film.Subtitles = append(film.Subtitles, models.SubtitleTrack{
+			Language: t.Language,
+			Name:     t.Name,
+			Type:     t.Type,
+			Path:     t.Path,
+		})
 	}
 
 	// map trailers
@@ -180,7 +180,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 
 func (fb filmBonusV2) mapToModel2(filmSlug string, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.FilmBonus {
 
-	return models.FilmBonus{
+	b := models.FilmBonus{
 		Slug:   fmt.Sprintf("%s/bonus/%d", filmSlug, fb.Number),
 		Number: fb.Number,
 		Title:  fb.Title,
@@ -192,8 +192,19 @@ func (fb filmBonusV2) mapToModel2(filmSlug string, serviceConfig models.ServiceC
 			Background:     fb.ImageUrls.Bg,
 			Classification: fb.ImageUrls.Classification,
 		},
-		// 	SubtitleTracks []interface{} `json:"subtitle_tracks"`
 	}
+
+	for _, t := range fb.Subtitles {
+		b.Subtitles = append(b.Subtitles, models.SubtitleTrack{
+			Language: t.Language,
+			Name:     t.Name,
+			Type:     t.Type,
+			Path:     t.Path,
+		})
+	}
+
+	return b
+
 }
 
 // Film - all of the film bits
@@ -234,11 +245,8 @@ type filmV2 struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	Recommendations []string `json:"recommendations"`
-	//TODO: add a subtitle tracks struct
-	SubtitleTracks []interface{} `json:"subtitle_tracks"`
-	// manage the inconsistent api
-	SubtitlesRaw json.RawMessage `json:"subtitles,omitempty"`
+	Recommendations []string          `json:"recommendations"`
+	Subtitles       []subtitleTrackV1 `json:"subtitle_tracks"`
 }
 
 // FilmBonus - film bonus model
@@ -253,5 +261,12 @@ type filmBonusV2 struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	SubtitleTracks []interface{} `json:"subtitle_tracks"`
+	Subtitles []subtitleTrackV1 `json:"subtitle_tracks"`
+}
+
+type subtitleTrackV1 struct {
+	Language string `json:"language"`
+	Name     string `json:"language_name"`
+	Type     string `json:"type"`
+	Path     string `json:"path"`
 }

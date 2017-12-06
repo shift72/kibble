@@ -123,10 +123,11 @@ func insertTemplates(data string) string {
 
 // ConfigureShortcodeTemplatePath sets the directory where the short codes
 // will be loaded from
-func ConfigureShortcodeTemplatePath(templatePath string) {
+func ConfigureShortcodeTemplatePath(cfg *Config) {
+
 	if shortCodeView == nil {
 		// get the template view
-		shortCodeView = jet.NewHTMLSet(templatePath)
+		shortCodeView = jet.NewHTMLSet(cfg.ShortCodePath())
 
 		// built-in templates
 		shortCodeView.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
@@ -142,9 +143,10 @@ func processTemplateTag(templateTag string) string {
 	templateName, data, err := parseParameters(templateTag)
 
 	w := bytes.NewBufferString("")
-	t, err := shortCodeView.GetTemplate(fmt.Sprintf("%s.jet", templateName))
+	templatePath := fmt.Sprintf("%s.jet", templateName)
+	t, err := shortCodeView.GetTemplate(templatePath)
 	if err != nil {
-		log.Error("Template load error", err)
+		log.Error("Template load error. Loading %s %s", templatePath, err)
 		return "Err"
 	}
 

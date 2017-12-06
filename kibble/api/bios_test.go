@@ -47,7 +47,7 @@ func TestPageToPageFeatures(t *testing.T) {
 				Layout:      "slider",
 				ItemsPerRow: 3,
 				ItemLayout:  "landscape",
-				Slug:        "blam",
+				Slug:        "/page-feature/blam",
 				DisplayName: "New Releases",
 				Items: []string{
 					"/film/1",
@@ -65,7 +65,8 @@ func TestPageToPageFeatures(t *testing.T) {
 	assert.Equal(t, "/page/123", model.Slug, "slug")
 
 	// page features
-	assert.Equal(t, "blam", model.PageCollections[0].Slug, "slug") //TODO: should this be title slug?
+	assert.Equal(t, "/page-feature/120", model.PageCollections[0].Slug)
+	assert.Equal(t, "/page-feature/blam", model.PageCollections[0].TitleSlug)
 
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 	assert.Equal(t, 1, len(itemIndex["bundle"]), "expect the item index to include 1 bundles")

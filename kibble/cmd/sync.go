@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"path"
 	"time"
 
 	"github.com/indiereign/shift72-kibble/kibble/config"
@@ -29,7 +28,13 @@ var syncCmd = &cobra.Command{
 		var err error
 		swSync := utils.NewStopwatchLevel("sync total", logging.NOTICE)
 
-		utils.ConfigureStandardLogging(verbose)
+		if apiKey != "" {
+			//TODO: suppress errors for the moment
+			runAsAdmin = true
+			utils.ConfigureStandardLoggingLevel(logging.CRITICAL)
+		} else {
+			utils.ConfigureStandardLogging(verbose)
+		}
 
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 		config.CheckVersion(cfg)
@@ -40,16 +45,18 @@ var syncCmd = &cobra.Command{
 
 		var renderDuration time.Duration
 		if renderAndSync {
-			var buildPath = path.Join(".kibble", "build")
-
 			swRender := utils.NewStopwatchLevel("render", logging.NOTICE)
-			err := render.Render(cfg.SourcePath(), buildPath, cfg)
+			err := render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)
 			renderDuration = swRender.Completed()
 			if err != nil {
 				fmt.Println("Render failed:", err)
 				return err
 			}
 		}
+
+		// copy from the correct directory
+		syncCfg.FileRootPath = cfg.FileRootPath()
+
 		summary, err := sync.Execute(syncCfg)
 		summary.RenderDuration = renderDuration
 		fmt.Println(summary.ToJSON())
@@ -81,7 +88,6 @@ func init() {
 	syncCmd.Flags().StringVarP(&syncCfg.Region, "region", "r", "us-east-1", "AWS Region (default us-east-1)")
 	syncCmd.Flags().StringVarP(&syncCfg.Bucket, "bucket", "b", "", "AWS S3 Bucket")
 	syncCmd.Flags().StringVarP(&syncCfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 Path")
-	syncCmd.Flags().StringVarP(&syncCfg.FileRootPath, "filerootpath", "", "./.kibble/build/", "path to upload")
 
 	syncCmd.Flags().BoolVarP(&renderAndSync, "render", "", false, "Renders the site before syncing.")
 	syncCmd.Flags().BoolVarP(&testIdempotent, "test-idempotent", "", false, "Checks that two runs of the render process produce the same result.")

@@ -13,12 +13,19 @@ func init() {
 		))
 }
 
-// ConfigureStandardLogging - logging
+// ConfigureStandardLoggingLevel - logging
+func ConfigureStandardLoggingLevel(level logging.Level) {
+	logging.SetBackend(logging.NewLogBackend(os.Stdout, "", 0))
+	logging.SetLevel(level, "")
+}
+
+// ConfigureStandardLogging - verbose
 func ConfigureStandardLogging(verbose bool) {
 	logging.SetBackend(logging.NewLogBackend(os.Stdout, "", 0))
 	setLogLevel(verbose)
 }
 
+// ConfigureInteractiveLogging - logging
 func ConfigureInteractiveLogging(verbose bool) {
 	logging.SetFormatter(
 		logging.MustStringFormatter(

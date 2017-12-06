@@ -55,6 +55,7 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
      * humans.txt - done
    * config / toggles - done
    * navigation - done
+   * subtitles - done
    * pagination
       * pages - done
       * language routes - done
@@ -75,16 +76,16 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
   * create a base implementation - done
   * find repo based on - done
   * clone the repo - done
+* shortcodes 
+  * common shortcodes - done
 * sync
-  * 
+  * upload - done
 
 ## TODO
  * model
-    * tv -
-    * subtitles -
-    
+    * tv - 
     * json? - what would choice tv tvguide do?
- * shortcodes - these need to happen as part of the markdown process
+ 
  * download
     * build and release on github   
     

@@ -59,6 +59,12 @@ func TestFilmApiToModel(t *testing.T) {
 			Name: "Peter Jackson",
 			Job:  "Director",
 		}},
+		Subtitles: []subtitleTrackV1{{
+			Language: "it",
+			Name:     "Italian",
+			Type:     "caption",
+			Path:     "/subtitles/film/49/bonus/1/it/caption-18.vtt",
+		}},
 		Recommendations: []string{"/film/1", "/film/2"},
 		Bonuses: []filmBonusV2{{
 			Number: 1,
@@ -99,4 +105,6 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 2, len(model.Recommendations), "expect 2 generic items")
 
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
+
+	assert.Equal(t, 1, len(model.Subtitles), "expect the subtitles to be 1")
 }
