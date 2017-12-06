@@ -18,7 +18,11 @@ func Execute(sourcePath string, buildPath string, cfg *models.Config, zipOnly bo
 
 	target := path.Join(buildPath, "kibble-nibble.zip")
 
-	ignoredPaths := utils.NewFileIgnorer(sourcePath, cfg.LiveReload.IgnoredPaths)
+	// unzipping wigs out on the build server unless we specifically ignore "/",
+	// for some reason an entry is added for "/" (even though its empty) in the zip file unless we ignore it
+	ignorePatterns := append(cfg.LiveReload.IgnoredPaths, "/")
+
+	ignoredPaths := utils.NewFileIgnorer(sourcePath, ignorePatterns)
 
 	err := createArchive(target, sourcePath, ignoredPaths)
 	if err != nil {
@@ -95,7 +99,7 @@ func zipit(source string, archive *zip.Writer, ignoredPaths utils.FileIgnorer) e
 			return err
 		}
 
-		if ignoredPaths.IsIgnored(path) {
+		if path == "/" || ignoredPaths.IsIgnored(path) {
 			return nil
 		}
 
