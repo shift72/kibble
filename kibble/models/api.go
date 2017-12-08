@@ -118,6 +118,8 @@ type FilmBonus struct {
 	Title     string
 	Images    ImageSet
 	Subtitles []SubtitleTrack
+	Runtime   int
+	Overview  string
 }
 
 // FilmCollection - all films

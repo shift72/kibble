@@ -51,5 +51,9 @@ func (ds *FilmIndexDataSource) IsSlugMatch(slug string) bool {
 
 func transformFilm(f models.Film) *models.Film {
 	f.Overview = models.ApplyContentTransforms(f.Overview)
+	// do the same to any bonus content
+	for _, b := range f.Bonuses {
+		b.Overview = models.ApplyContentTransforms(b.Overview)
+	}
 	return &f
 }
