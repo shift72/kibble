@@ -253,10 +253,10 @@ type filmV2 struct {
 
 // FilmBonus - film bonus model
 type filmBonusV2 struct {
-	Number    int    `json:"number"`
-	Title     string `json:"title"`
-	Overview  string `json:"description"`
-	Runtime   int    `json:"runtime"`
+	Number    int     `json:"number"`
+	Title     string  `json:"title"`
+	Overview  string  `json:"description"`
+	Runtime   float64 `json:"runtime"`
 	ImageUrls struct {
 		Portrait       string `json:"portrait"`
 		Landscape      string `json:"landscape"`
