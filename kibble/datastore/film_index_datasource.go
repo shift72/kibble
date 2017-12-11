@@ -5,6 +5,7 @@ import (
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	logging "github.com/op/go-logging"
 )
 
 // FilmIndexDataSource - a list of all films
@@ -49,11 +50,13 @@ func (ds *FilmIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
 }
 
+var log = logging.MustGetLogger("datastore")
+
 func transformFilm(f models.Film) *models.Film {
 	f.Overview = models.ApplyContentTransforms(f.Overview)
 	// do the same to any bonus content
-	for _, b := range f.Bonuses {
-		b.Overview = models.ApplyContentTransforms(b.Overview)
+	for i := range f.Bonuses {
+		f.Bonuses[i].Overview = models.ApplyContentTransforms(f.Bonuses[i].Overview)
 	}
 	return &f
 }
