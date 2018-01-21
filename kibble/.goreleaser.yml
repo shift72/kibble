@@ -1,0 +1,43 @@
+# Build customization
+builds:
+  - binary: kibble
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+    ldflags: -s -w -X github.com/indiereign/shift72-kibble/kibble/version.Version={{.Version}}
+    hooks:
+      post: ./deploy_aws.sh
+
+archive:
+  format: tar.gz
+  replacements:
+    amd64: 64-bit
+    darwin: macOS
+    linux: Tux
+  files:
+    - ../readme.md
+    #- LICENSE
+    
+changelog:
+  filters:
+    # commit messages matching the regexp listed here will be removed from
+    # the changelog
+    # Default is empty
+    exclude:
+      - '^docs:'
+      - typo
+      - (?i)foo
+
+# TODO: push to s3
+
+release:
+  github:
+    owner: indiereign
+    name: shift72-kibble
+
+  # If set to true, will not auto-publish the release.
+  # Default is false.
+  draft: false
