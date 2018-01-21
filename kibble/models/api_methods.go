@@ -1,6 +1,10 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/nicksnyder/go-i18n/i18n"
+)
 
 // FindPageByID - find the page by id
 func (pages Pages) FindPageByID(pageID int) (*Page, bool) {
@@ -22,15 +26,6 @@ func (pages Pages) FindPageBySlug(slug string) (*Page, bool) {
 	return nil, false
 }
 
-// GetGenericItem - returns a generic item
-func (page Page) GetGenericItem() GenericItem {
-	return GenericItem{
-		Title:     page.Title,
-		Images:    page.Images,
-		InnerItem: page,
-	}
-}
-
 // FindFilmByID - find film by id
 func (films FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 	for _, p := range films {
@@ -49,17 +44,6 @@ func (films FilmCollection) FindFilmBySlug(slug string) (*Film, bool) {
 		}
 	}
 	return nil, false
-}
-
-// GetGenericItem - returns a generic item
-func (film Film) GetGenericItem() GenericItem {
-	return GenericItem{
-		Title:     film.Title,
-		Slug:      film.Slug,
-		Images:    film.Images,
-		ItemType:  "film",
-		InnerItem: film,
-	}
 }
 
 // FindTVShowByID - find tv show by id
@@ -93,6 +77,26 @@ func (tvSeasons TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, 
 }
 
 // GetGenericItem - returns a generic item
+func (page Page) GetGenericItem() GenericItem {
+	return GenericItem{
+		Title:     page.Title,
+		Images:    page.Images,
+		InnerItem: page,
+	}
+}
+
+// GetGenericItem - returns a generic item
+func (film Film) GetGenericItem() GenericItem {
+	return GenericItem{
+		Title:     film.Title,
+		Slug:      film.Slug,
+		Images:    film.Images,
+		ItemType:  "film",
+		InnerItem: film,
+	}
+}
+
+// GetGenericItem - returns a generic item
 func (show TVShow) GetGenericItem() GenericItem {
 	return GenericItem{
 		Title:     show.Title,
@@ -123,4 +127,20 @@ func (bonus FilmBonus) GetGenericItem() GenericItem {
 		ItemType:  "bonus",
 		InnerItem: bonus,
 	}
+}
+
+// GetTitle - returns the title in the current language
+// expect to be called as item.GetTitle(i18n) where i18n is the translation function
+// for the current language
+func (i *GenericItem) GetTitle(T i18n.TranslateFunc) string {
+	switch i.ItemType {
+	case "tvseason":
+		if s, ok := i.InnerItem.(TVSeason); ok {
+			return T(i.ItemType, map[string]interface{}{
+				"ShowInfo": s.ShowInfo,
+				"Season":   s,
+			})
+		}
+	}
+	return i.Title
 }

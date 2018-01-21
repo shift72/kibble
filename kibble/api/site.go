@@ -60,7 +60,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
-	err = AppendAllTVSeasons(cfg, site, itemIndex)
+	err = AppendAllTVShows(cfg, site, itemIndex)
 	if err != nil {
 		return nil, err
 	}

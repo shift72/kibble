@@ -12,8 +12,8 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
-// LoadAllTVSeasons - loads all tv seasons
-func loadAllTVSeasons(cfg *models.Config) ([]tvShowSummaryV3, error) {
+// loadAllTVShows - loads all tv shows
+func loadAllTVShows(cfg *models.Config) ([]tvShowSummaryV3, error) {
 
 	// load all seasons
 	var summary []tvShowSummaryV3
@@ -33,10 +33,10 @@ func loadAllTVSeasons(cfg *models.Config) ([]tvShowSummaryV3, error) {
 	return summary, nil
 }
 
-// AppendAllTVSeasons -
-func AppendAllTVSeasons(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
+// AppendAllTVShows -
+func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
 
-	summary, err := loadAllTVSeasons(cfg)
+	summary, err := loadAllTVShows(cfg)
 	if err != nil {
 		return err
 	}
