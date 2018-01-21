@@ -181,9 +181,11 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 func (fb filmBonusV2) mapToModel2(filmSlug string, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.FilmBonus {
 
 	b := models.FilmBonus{
-		Slug:   fmt.Sprintf("%s/bonus/%d", filmSlug, fb.Number),
-		Number: fb.Number,
-		Title:  fb.Title,
+		Slug:     fmt.Sprintf("%s/bonus/%d", filmSlug, fb.Number),
+		Number:   fb.Number,
+		Title:    fb.Title,
+		Runtime:  fb.Runtime,
+		Overview: fb.Overview,
 		Images: models.ImageSet{
 			Portrait:       fb.ImageUrls.Portrait,
 			Landscape:      fb.ImageUrls.Landscape,
@@ -251,8 +253,10 @@ type filmV2 struct {
 
 // FilmBonus - film bonus model
 type filmBonusV2 struct {
-	Number    int    `json:"number"`
-	Title     string `json:"title"`
+	Number    int     `json:"number"`
+	Title     string  `json:"title"`
+	Overview  string  `json:"description"`
+	Runtime   float64 `json:"runtime"`
 	ImageUrls struct {
 		Portrait       string `json:"portrait"`
 		Landscape      string `json:"landscape"`
