@@ -23,7 +23,7 @@ func createTestTVSeason() (models.RenderContext, *models.Route) {
 			TVSeasons: models.TVSeasonCollection{
 				models.TVSeason{
 					SeasonNumber: 2,
-					ShowInfo: models.TVShow{
+					ShowInfo: &models.TVShow{
 						Title:     "Breaking Bad",
 						TitleSlug: "breaking-bad",
 					},
@@ -48,14 +48,8 @@ func TestTVSeasonGetRouteForSlug(t *testing.T) {
 
 func TestTVSeasonIsSlugMatch(t *testing.T) {
 	var tvSeasonDS TVSeasonDataSource
-
-	if !tvSeasonDS.IsSlugMatch("/tv/123/season/2") {
-		t.Errorf("expected /tv/123/season/2 to match")
-	}
-
-	if !tvSeasonDS.IsSlugMatch("/tv/123") {
-		t.Errorf("expected /tv/123 to match")
-	}
+	assert.True(t, tvSeasonDS.IsSlugMatch("/tv/123/season/3"))
+	assert.False(t, tvSeasonDS.IsSlugMatch("/tv/123"))
 }
 
 func TestTVSeasonGetRouteForMissingSlug(t *testing.T) {

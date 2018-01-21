@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"bytes"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // Join - using the separator join the strings
@@ -39,7 +41,30 @@ func Coalesce(values ...string) string {
 }
 
 // ParseIntFromSlug - return the index from a slug
-func ParseIntFromSlug(slug string, index int) (int, error) {
+func ParseIntFromSlug(slug string, index int) (int, bool) {
 	p := strings.Split(slug, "/")
-	return strconv.Atoi(p[index])
+	i, err := strconv.Atoi(p[index])
+	return i, err == nil
+}
+
+// ParseIntFromString - return a int where possible
+func ParseIntFromString(data string) int {
+	var buffer bytes.Buffer
+
+	for i := range data {
+		r := rune(data[i])
+		if unicode.IsSpace(r) {
+			// skip
+		} else if unicode.IsDigit(r) {
+			buffer.WriteRune(r)
+		} else {
+			break
+		}
+	}
+
+	c, err := strconv.Atoi(buffer.String())
+	if err != nil {
+		return 0
+	}
+	return c
 }

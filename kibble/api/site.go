@@ -41,6 +41,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		Bundles:     make(models.BundleCollection, 0),
 		Collections: make(models.CollectionCollection, 0),
 		Taxonomies:  make(models.Taxonomies),
+		TVShows:     make(models.TVShowCollection, 0),
 		TVSeasons:   make(models.TVSeasonCollection, 0),
 	}
 

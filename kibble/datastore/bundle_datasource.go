@@ -52,8 +52,8 @@ func (ds *BundleDataSource) GetRouteForEntity(ctx models.RenderContext, entity i
 
 // GetRouteForSlug - get the route
 func (ds *BundleDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	bundleID, err := utils.ParseIntFromSlug(slug, 2)
-	if err != nil {
+	bundleID, ok := utils.ParseIntFromSlug(slug, 2)
+	if !ok {
 		return fmt.Sprintf("ERR(%s)", slug)
 	}
 	bundle, err := ctx.Site.Bundles.FindBundleByID(bundleID)

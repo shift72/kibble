@@ -105,7 +105,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Overview:    f.Overview,
 		Tagline:     f.Tagline,
 		ReleaseDate: f.ReleaseDate,
-		Runtime:     f.Runtime,
+		Runtime:     int(f.Runtime),
 		Countries:   f.Countries,
 		Languages:   f.Languages,
 		Genres:      f.Genres,
@@ -228,7 +228,7 @@ type filmV2 struct {
 	Overview    string    `json:"overview"`
 	Tagline     string    `json:"tagline"`
 	ReleaseDate time.Time `json:"release_date"`
-	Runtime     float32   `json:"runtime"`
+	Runtime     float64   `json:"runtime"`
 	Countries   []string  `json:"countries"`
 	Languages   []string  `json:"languages"`
 	Genres      []string  `json:"genres"`

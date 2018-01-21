@@ -54,8 +54,8 @@ func (ds *CollectionDataSource) GetRouteForEntity(ctx models.RenderContext, enti
 
 // GetRouteForSlug - get the route
 func (ds *CollectionDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	collectionID, err := utils.ParseIntFromSlug(slug, 2)
-	if err != nil {
+	collectionID, ok := utils.ParseIntFromSlug(slug, 2)
+	if !ok {
 		return fmt.Sprintf("ERR(%s)", slug)
 	}
 	collection, err := ctx.Site.Collections.FindCollectionByID(collectionID)

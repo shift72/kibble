@@ -38,6 +38,7 @@ func TestFilmApiToModel(t *testing.T) {
 		Title:   "Film One",
 		Slug:    "/film/52",
 		Tagline: "Tag line",
+		Runtime: 123,
 		Trailers: []struct {
 			URL  string `json:"url"`
 			Type string `json:"type"`

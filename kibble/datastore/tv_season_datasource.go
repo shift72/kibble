@@ -54,8 +54,8 @@ func (ds *TVSeasonDataSource) GetRouteForSlug(ctx models.RenderContext, slug str
 
 	// supports having tv/:slug/season/:seasonNumber
 	if strings.Contains(ctx.Route.URLPath, ":slug") {
-		tvSeason, err := ctx.Site.TVSeasons.FindTVSeasonBySlug(slug)
-		if err != nil {
+		tvSeason, found := ctx.Site.TVSeasons.FindTVSeasonBySlug(slug)
+		if !found {
 			return fmt.Sprintf("ERR(%s)", slug)
 		}
 
@@ -69,5 +69,5 @@ func (ds *TVSeasonDataSource) GetRouteForSlug(ctx models.RenderContext, slug str
 
 // IsSlugMatch - checks if the slug is a match
 func (ds *TVSeasonDataSource) IsSlugMatch(slug string) bool {
-	return strings.HasPrefix(slug, "/tv/")
+	return strings.HasPrefix(slug, "/tv/") && strings.Contains(slug, "/season/")
 }

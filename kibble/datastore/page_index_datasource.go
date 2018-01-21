@@ -30,7 +30,7 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 	if ctx.Route.PageSize > 0 {
 
 		if !strings.Contains(ctx.Route.URLPath, ":index") {
-			panic(fmt.Errorf("Page route is missing an :index. Either add and index placeholder or remove the pageSize\n"))
+			panic(fmt.Errorf("Page route is missing an :index. Either add and index placeholder or remove the pageSize"))
 		}
 
 		ctx.Route.Pagination = models.Pagination{

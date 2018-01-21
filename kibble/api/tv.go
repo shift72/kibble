@@ -13,10 +13,10 @@ import (
 )
 
 // LoadAllTVSeasons - loads all tv seasons
-func loadAllTVSeasons(cfg *models.Config) ([]tvSeasonSummaryV3, error) {
+func loadAllTVSeasons(cfg *models.Config) ([]tvShowSummaryV3, error) {
 
 	// load all seasons
-	var summary []tvSeasonSummaryV3
+	var summary []tvShowSummaryV3
 
 	path := fmt.Sprintf("%s/services/meta/v3/tv/index", cfg.SiteURL)
 
@@ -42,6 +42,10 @@ func AppendAllTVSeasons(cfg *models.Config, site *models.Site, itemIndex models.
 	}
 
 	for ti := 0; ti < len(summary); ti++ {
+
+		// add tv showws
+		site.TVShows = append(site.TVShows, summary[ti].mapToModel())
+
 		for si := 0; si < len(summary[ti].Seasons); si++ {
 			itemIndex.Set(summary[ti].Seasons[si].Slug, models.Unresolved)
 		}
@@ -82,10 +86,52 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 			season := seasonV2.mapToModel(site.Config, itemIndex)
 			site.TVSeasons = append(site.TVSeasons, season)
 			itemIndex.Set(season.Slug, season.GetGenericItem())
+
+			// merge the tv show information collected by the tvShowSummary and the season meta object
+			if tvShowID, ok := utils.ParseIntFromSlug(season.Slug, 2); ok {
+				if show, ok := site.TVShows.FindTVShowByID(tvShowID); ok {
+					season.ShowInfo = mergeTVShow(show, season.ShowInfo)
+
+					itemIndex.Set(season.ShowInfo.Slug, season.ShowInfo.GetGenericItem())
+				}
+			}
+		}
+	}
+
+	// populate the tvshow with loaded seasons
+	for i := 0; i < len(site.TVShows); i++ {
+		for _, seasonSlug := range site.TVShows[i].AvailableSeasons {
+			if season, ok := site.TVSeasons.FindTVSeasonBySlug(seasonSlug); ok {
+				site.TVShows[i].Seasons = append(site.TVShows[i].Seasons, *season)
+			}
 		}
 	}
 
 	return nil
+}
+
+func (t tvShowSummaryV3) mapToModel() models.TVShow {
+	return models.TVShow{
+		ID:        t.ID,
+		Slug:      t.Slug,
+		Title:     t.Title,
+		TitleSlug: slug.Make(t.Title),
+		Images: models.ImageSet{
+			Portrait:  t.ImageUrls.Portrait,
+			Landscape: t.ImageUrls.Landscape,
+		},
+	}
+}
+
+func mergeTVShow(tvShowA *models.TVShow, tvShowB *models.TVShow) *models.TVShow {
+	tvShowA.Genres = tvShowB.Genres
+	tvShowA.Overview = tvShowB.Overview
+	tvShowA.Countries = tvShowB.Countries
+	tvShowA.Languages = tvShowB.Languages
+	tvShowA.ReleaseDate = tvShowB.ReleaseDate
+	tvShowA.Studio = tvShowB.Studio
+	tvShowA.AvailableSeasons = tvShowB.AvailableSeasons
+	return tvShowA
 }
 
 func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.TVSeason {
@@ -161,7 +207,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 	return season
 }
 
-func (t tvShowV2) mapToModel() models.TVShow {
+func (t tvShowV2) mapToModel() *models.TVShow {
 
 	show := models.TVShow{
 		Title:            t.Title,
@@ -180,7 +226,7 @@ func (t tvShowV2) mapToModel() models.TVShow {
 		show.Studio = append(show.Studio, t.Name)
 	}
 
-	return show
+	return &show
 }
 
 func (t tvEpisodeV2) mapToModel() models.TVEpisode {
@@ -188,9 +234,8 @@ func (t tvEpisodeV2) mapToModel() models.TVEpisode {
 	episode := models.TVEpisode{
 		Title:         t.Title,
 		EpisodeNumber: t.EpisodeNumber,
-		// DisplayTitle:  string //TODO: display title or title @Graham?
-		Overview: t.Overview,
-		Runtime:  t.Runtime,
+		Overview:      t.Overview,
+		Runtime:       int(t.Runtime),
 		Images: models.ImageSet{
 			Portrait:       t.ImageUrls.Portrait,
 			Landscape:      t.ImageUrls.Landscape,
@@ -215,12 +260,12 @@ func (t tvEpisodeV2) mapToModel() models.TVEpisode {
 }
 
 type tvEpisodeV2 struct {
-	Title          string `json:"title"`
-	EpisodeNumber  int    `json:"episode_number"`
-	DisplayTitle   string `json:"displayTitle"`
-	Overview       string `json:"overview"`
-	Runtime        int    `json:"runtime"`
-	LandscapeImage string `json:"landscape_image"`
+	Title          string  `json:"title"`
+	EpisodeNumber  int     `json:"episode_number"`
+	DisplayTitle   string  `json:"displayTitle"`
+	Overview       string  `json:"overview"`
+	Runtime        float32 `json:"runtime"`
+	LandscapeImage string  `json:"landscape_image"`
 	ImageUrls      struct {
 		Portrait       string `json:"portrait"`
 		Landscape      string `json:"landscape"`
@@ -289,7 +334,7 @@ type tvSeasonShowMultipleResponseV2 struct {
 	Seasons []json.RawMessage `json:"seasons"`
 }
 
-type tvSeasonSummaryV3 struct {
+type tvShowSummaryV3 struct {
 	ID            int       `json:"id"`
 	Slug          string    `json:"slug"`
 	Title         string    `json:"title"`
@@ -299,4 +344,8 @@ type tvSeasonSummaryV3 struct {
 		Slug     string `json:"slug"`
 		StatusID int    `json:"status_id"`
 	} `json:"seasons"`
+	ImageUrls struct {
+		Portrait  string `json:"portrait_image"`
+		Landscape string `json:"landscape"`
+	}
 }

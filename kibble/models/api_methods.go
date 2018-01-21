@@ -3,23 +3,23 @@ package models
 import "fmt"
 
 // FindPageByID - find the page by id
-func (pages Pages) FindPageByID(pageID int) (*Page, error) {
+func (pages Pages) FindPageByID(pageID int) (*Page, bool) {
 	for _, p := range pages {
 		if p.ID == pageID {
-			return &p, nil
+			return &p, true
 		}
 	}
-	return nil, ErrDataSourceMissing
+	return nil, false
 }
 
 // FindPageBySlug - find the page by the slug
-func (pages Pages) FindPageBySlug(slug string) (*Page, error) {
+func (pages Pages) FindPageBySlug(slug string) (*Page, bool) {
 	for _, p := range pages {
 		if p.Slug == slug {
-			return &p, nil
+			return &p, true
 		}
 	}
-	return nil, ErrDataSourceMissing
+	return nil, false
 }
 
 // GetGenericItem - returns a generic item
@@ -32,23 +32,23 @@ func (page Page) GetGenericItem() GenericItem {
 }
 
 // FindFilmByID - find film by id
-func (films FilmCollection) FindFilmByID(filmID int) (*Film, error) {
+func (films FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 	for _, p := range films {
 		if p.ID == filmID {
-			return &p, nil
+			return &p, true
 		}
 	}
-	return nil, ErrDataSourceMissing
+	return nil, false
 }
 
 // FindFilmBySlug - find the film by the slug
-func (films FilmCollection) FindFilmBySlug(slug string) (*Film, error) {
+func (films FilmCollection) FindFilmBySlug(slug string) (*Film, bool) {
 	for _, p := range films {
 		if p.Slug == slug || p.TitleSlug == slug {
-			return &p, nil
+			return &p, true
 		}
 	}
-	return nil, ErrDataSourceMissing
+	return nil, false
 }
 
 // GetGenericItem - returns a generic item
@@ -62,14 +62,45 @@ func (film Film) GetGenericItem() GenericItem {
 	}
 }
 
-// FindTVSeasonBySlug - find the film by the slug
-func (tvSeasons TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, error) {
-	for _, p := range tvSeasons {
-		if p.Slug == slug {
-			return &p, nil
+// FindTVShowByID - find tv show by id
+func (shows TVShowCollection) FindTVShowByID(showID int) (*TVShow, bool) {
+	for i := range shows {
+		if shows[i].ID == showID {
+			return &shows[i], true
 		}
 	}
-	return nil, ErrDataSourceMissing
+	return nil, false
+}
+
+// FindTVShowBySlug - find the tv show by the slug
+func (shows TVShowCollection) FindTVShowBySlug(slug string) (*TVShow, bool) {
+	for _, p := range shows {
+		if p.Slug == slug || p.TitleSlug == slug {
+			return &p, true
+		}
+	}
+	return nil, false
+}
+
+// FindTVSeasonBySlug - find the film by the slug
+func (tvSeasons TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, bool) {
+	for _, p := range tvSeasons {
+		if p.Slug == slug {
+			return &p, true
+		}
+	}
+	return nil, false
+}
+
+// GetGenericItem - returns a generic item
+func (show TVShow) GetGenericItem() GenericItem {
+	return GenericItem{
+		Title:     show.Title,
+		Slug:      show.Slug,
+		Images:    show.Images,
+		ItemType:  "tvshow",
+		InnerItem: show,
+	}
 }
 
 // GetGenericItem - returns a generic item

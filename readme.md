@@ -1,12 +1,12 @@
 # kibble
-*def: To chop or grind coarsely*
 
+def: To chop or grind coarsely
 
 ```npm install -g kibble``` - installs kibble
 
 ```kibble init``` - find a template to start with
 
-```cd new-template``` 
+```cd new-template```
 
 ```npm start``` - starts kibble
 
@@ -14,6 +14,7 @@
 
 
 ## Usage
+
 ```kibble config``` - configure kibble to use the api key when requesting req
 
 ```kibble render --watch``` - sample render, this is what will be deployed
@@ -23,43 +24,48 @@
 ```kibble help``` - help is here
 
 ## Installation
+
 * Requires go 1.8.1 (cgo fix needed)
 * Install dep ```go get -u github.com/golang/dep/...```
 * Install dependencies ```dep ensure -update```. This might not work, so try ```dep ensure -v github.com/fsnotify/fsnotify@^1.4.2``` in case of errors.
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 
-# Publish
+## Publish
+
 Publish will zip all files placed in the ```/.kibble/dist``` directory
 
-```
+```bash
+
 /.kibble
   /dist       - publish directory
   /kibble.zip - zip file to be published
+
 ```
 
 ## Supports
+
 * model
-   * film - done
-     * bonus - done
-   * tv - done 
-   * taxonomies - done
-     * cast - done
-     * genre - done
-     * year - done
-   * pages - done
-     * type - templates - done
-   * page features - done
-   * bundles - done
-   * custom pages -> page.html.jet -> page.html - done
-     * robots.txt - done
-     * humans.txt - done
-   * config / toggles - done
-   * navigation - done
-   * subtitles - done
-   * pagination
-      * pages - done
-      * language routes - done
+  * film - done
+    * bonus - done
+  * tv - done
+  * taxonomies - done
+    * cast - done
+    * genre - done
+    * year - done
+  * pages - done
+    * type - templates - done
+  * page features - done
+  * bundles - done
+  * custom pages -> page.html.jet -> page.html - done
+    * robots.txt - done
+    * humans.txt - done
+  * config / toggles - done
+  * navigation - done
+  * subtitles - done
+  * pagination
+    * pages - done
+    * language routes - done
 * watch files / live reload - done
 * cache - done
 * support markdown - done
@@ -77,12 +83,13 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
   * create a base implementation - done
   * find repo based on - done
   * clone the repo - done
-* shortcodes 
+* shortcodes
   * common shortcodes - done
 * sync
   * upload - done
   * return errors via summary
 
-## TODO 
+## TODO
+
 * download
   * build and release on github

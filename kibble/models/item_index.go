@@ -171,8 +171,8 @@ func (itemIndex ItemIndex) PrintStats() {
 				loadedCount++
 			}
 		}
-		log.Infof("type: %s\t\t%d/%d", t, loaded, count)
+		log.Infof("type: %-15s%4d / %d", t, loaded, count)
 	}
 
-	log.Infof("total: \t\t\t%d/%d", loadedCount, totalCount)
+	log.Infof("total: %18d / %d", loadedCount, totalCount)
 }

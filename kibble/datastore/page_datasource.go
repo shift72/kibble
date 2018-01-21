@@ -72,14 +72,14 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 // GetRouteForSlug - get the route
 func (ds *PageDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 
-	pageID, err := utils.ParseIntFromSlug(slug, 2)
-	if err != nil {
+	pageID, ok := utils.ParseIntFromSlug(slug, 2)
+	if !ok {
 		return fmt.Sprintf("ERR(%s)", slug)
 	}
 
-	page, err := ctx.Site.Pages.FindPageByID(pageID)
+	page, ok := ctx.Site.Pages.FindPageByID(pageID)
 
-	if err != nil {
+	if !ok {
 		return fmt.Sprintf("ERR(%s)", slug)
 	}
 
