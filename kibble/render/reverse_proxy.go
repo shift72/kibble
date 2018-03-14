@@ -31,7 +31,7 @@ func NewProxy(target string) *Prox {
 func (p *Prox) GetMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.RequestURI, "/services") {
-			w.Header().Set("X-GoProxy", "GoProxy")
+			w.Header().Add("X-GoProxy", "GoProxy")
 			p.proxy.ServeHTTP(w, r)
 		} else {
 			next.ServeHTTP(w, r)
