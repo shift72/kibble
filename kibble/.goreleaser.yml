@@ -20,6 +20,11 @@ archive:
   files:
     - ../readme.md
     #- LICENSE
+  format_overrides:
+    - goos: windows
+      format: zip
+    - goos: darwin
+      format: zip
     
 changelog:
   filters:
