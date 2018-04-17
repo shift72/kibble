@@ -224,6 +224,7 @@ type TVSeason struct {
 	Recommendations []GenericItem
 }
 
+// StringCollection - Allows us to add methods to []string for easing UI array usage
 type StringCollection []string
 
 // TVShowCollection -
