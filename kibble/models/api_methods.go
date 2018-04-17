@@ -16,10 +16,13 @@ func (strings StringCollection) Join(separator string) string {
 	return utils.Join(separator, strings...)
 }
 
+// Hours - returns the basic number of hours in the runtime
 func (rt Runtime) Hours() int {
 	return int(rt) / 60
 }
 
+// Minutes - returns the number of minutes (left =over from any hours) in the runtime.
+// This is not the total minutes.
 func (rt Runtime) Minutes() int {
 	return int(rt) % 60
 }
