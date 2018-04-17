@@ -16,6 +16,14 @@ func (strings StringCollection) Join(separator string) string {
 	return utils.Join(separator, strings...)
 }
 
+func (rt Runtime) Hours() int {
+	return int(rt) / 60
+}
+
+func (rt Runtime) Minutes() int {
+	return int(rt) % 60
+}
+
 // FindPageByID - find the page by id
 func (pages Pages) FindPageByID(pageID int) (*Page, bool) {
 	for _, p := range pages {

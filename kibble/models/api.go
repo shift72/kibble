@@ -167,7 +167,7 @@ type Film struct {
 	Overview        string
 	Tagline         string
 	ReleaseDate     time.Time
-	Runtime         int
+	Runtime         Runtime
 	Countries       StringCollection
 	Languages       StringCollection
 	Genres          StringCollection
@@ -201,7 +201,7 @@ type TVEpisode struct {
 	Title         string
 	EpisodeNumber int
 	Overview      string
-	Runtime       int
+	Runtime       Runtime
 	Images        ImageSet
 	Subtitles     []SubtitleTrack
 }
@@ -226,6 +226,9 @@ type TVSeason struct {
 
 // StringCollection - Allows us to add methods to []string for easing UI array usage
 type StringCollection []string
+
+// Runtime - Allows us to get accurate measures of hours and minutes.
+type Runtime int
 
 // TVShowCollection -
 type TVShowCollection []TVShow
