@@ -2,9 +2,17 @@ package models
 
 import (
 	"fmt"
-
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
+
+func (strings StringCollection) String() string {
+	return strings.Join(", ")
+}
+
+func (strings StringCollection) Join(separator string) string {
+	return utils.Join(separator, strings...)
+}
 
 // FindPageByID - find the page by id
 func (pages Pages) FindPageByID(pageID int) (*Page, bool) {

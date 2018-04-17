@@ -168,9 +168,9 @@ type Film struct {
 	Tagline         string
 	ReleaseDate     time.Time
 	Runtime         int
-	Countries       []string
-	Languages       []string
-	Genres          []string
+	Countries       StringCollection
+	Languages       StringCollection
+	Genres          StringCollection
 	Seo             Seo
 	Images          ImageSet
 	Recommendations []GenericItem
@@ -182,10 +182,10 @@ type TVShow struct {
 	ID               int
 	Slug             string
 	Trailers         []Trailer
-	Genres           []string
+	Genres           StringCollection
 	Overview         string
-	Countries        []string
-	Languages        []string
+	Countries        StringCollection
+	Languages        StringCollection
 	ReleaseDate      time.Time
 	Tagline          string
 	Studio           []string
@@ -223,6 +223,8 @@ type TVSeason struct {
 	Crew            []CrewMember
 	Recommendations []GenericItem
 }
+
+type StringCollection []string
 
 // TVShowCollection -
 type TVShowCollection []TVShow

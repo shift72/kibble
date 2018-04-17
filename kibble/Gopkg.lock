@@ -70,7 +70,7 @@
   branch = "master"
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
-  revision = "68fecaef60268522d2ac3f0123cec9d3bcab7b6e"
+  revision = "995366fdf961d03629cd17361bddd32745718e2c"
 
 [[projects]]
   name = "github.com/nicksnyder/go-i18n"
@@ -160,7 +160,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["html","html/atom"]
-  revision = "0a9397675ba34b2845f758fe3cd68828369c6517"
+  revision = "8d16fa6dc9a85c1cd3ed24ad08ff21cf94f10888"
 
 [[projects]]
   branch = "master"
