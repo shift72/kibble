@@ -167,10 +167,10 @@ type Film struct {
 	Overview        string
 	Tagline         string
 	ReleaseDate     time.Time
-	Runtime         int
-	Countries       []string
-	Languages       []string
-	Genres          []string
+	Runtime         Runtime
+	Countries       StringCollection
+	Languages       StringCollection
+	Genres          StringCollection
 	Seo             Seo
 	Images          ImageSet
 	Recommendations []GenericItem
@@ -182,10 +182,10 @@ type TVShow struct {
 	ID               int
 	Slug             string
 	Trailers         []Trailer
-	Genres           []string
+	Genres           StringCollection
 	Overview         string
-	Countries        []string
-	Languages        []string
+	Countries        StringCollection
+	Languages        StringCollection
 	ReleaseDate      time.Time
 	Tagline          string
 	Studio           []string
@@ -201,7 +201,7 @@ type TVEpisode struct {
 	Title         string
 	EpisodeNumber int
 	Overview      string
-	Runtime       int
+	Runtime       Runtime
 	Images        ImageSet
 	Subtitles     []SubtitleTrack
 }
@@ -223,6 +223,12 @@ type TVSeason struct {
 	Crew            []CrewMember
 	Recommendations []GenericItem
 }
+
+// StringCollection - Allows us to add methods to []string for easing UI array usage
+type StringCollection []string
+
+// Runtime - Allows us to get accurate measures of hours and minutes.
+type Runtime int
 
 // TVShowCollection -
 type TVShowCollection []TVShow
