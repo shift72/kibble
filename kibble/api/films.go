@@ -105,7 +105,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Overview:    f.Overview,
 		Tagline:     f.Tagline,
 		ReleaseDate: f.ReleaseDate,
-		Runtime:     int(f.Runtime),
+		Runtime:     models.Runtime(f.Runtime),
 		Countries:   f.Countries,
 		Languages:   f.Languages,
 		Genres:      f.Genres,
@@ -184,7 +184,7 @@ func (fb filmBonusV2) mapToModel2(filmSlug string, serviceConfig models.ServiceC
 		Slug:     fmt.Sprintf("%s/bonus/%d", filmSlug, fb.Number),
 		Number:   fb.Number,
 		Title:    fb.Title,
-		Runtime:  fb.Runtime,
+		Runtime:  models.Runtime(fb.Runtime),
 		Overview: fb.Overview,
 		Images: models.ImageSet{
 			Portrait:       fb.ImageUrls.Portrait,

@@ -235,7 +235,7 @@ func (t tvEpisodeV2) mapToModel() models.TVEpisode {
 		Title:         t.Title,
 		EpisodeNumber: t.EpisodeNumber,
 		Overview:      t.Overview,
-		Runtime:       int(t.Runtime),
+		Runtime:       models.Runtime(t.Runtime),
 		Images: models.ImageSet{
 			Portrait:       t.ImageUrls.Portrait,
 			Landscape:      t.ImageUrls.Landscape,

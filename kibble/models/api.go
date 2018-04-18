@@ -120,7 +120,7 @@ type FilmBonus struct {
 	Title     string
 	Images    ImageSet
 	Subtitles []SubtitleTrack
-	Runtime   float64
+	Runtime   Runtime
 	Overview  string
 }
 
