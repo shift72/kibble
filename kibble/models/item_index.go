@@ -125,6 +125,10 @@ func (site *Site) LinkItems(itemIndex ItemIndex) {
 	for i := range site.Bundles {
 		site.Bundles[i].Items = itemIndex.Resolve(site.Bundles[i].Items)
 	}
+
+	for i := range site.Collections {
+		site.Collections[i].Items = itemIndex.Resolve(site.Collections[i].Items)
+	}
 }
 
 // Resolve - convert an array of generic items to resolved items
