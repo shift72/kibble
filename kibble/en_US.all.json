@@ -1,4 +1,5 @@
-[{
+[
+    {
         "id": "settings_title",
         "translation": "Settings"
     },
@@ -8,5 +9,17 @@
             "one": "You have {{.Count}} unread email.",
             "other": "You have {{.Count}} unread emails."
         }
+    },
+    {
+        "id": "runtime",
+        "translation": {
+            "zero": "{{.Minutes}}m",
+            "one": "{{.Hours}}h {{.Minutes}}m",
+            "other": "{{.Hours}}h {{.Minutes}}m"
+        }
+    },
+    {
+        "id": "runtime_minutes_only",
+        "translation": "{{.Minutes}}m"
     }
 ]

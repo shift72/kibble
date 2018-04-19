@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
@@ -25,6 +26,23 @@ func (rt Runtime) Hours() int {
 // This is not the total minutes.
 func (rt Runtime) Minutes() int {
 	return int(rt) % 60
+}
+
+// Localise - returns the localised runtime format
+func (rt Runtime) Localise(T i18n.TranslateFunc) string {
+	arg := map[string]interface{}{
+		"Hours":   rt.Hours(),
+		"Minutes": rt.Minutes(),
+	}
+
+	h := rt.Hours()
+	if h == 0 {
+		// zero != 0 in languages
+		// https://github.com/nicksnyder/go-i18n/issues/58
+		return T("runtime_minutes_only", arg)
+	}
+
+	return T("runtime", h, arg)
 }
 
 // FindPageByID - find the page by id

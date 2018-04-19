@@ -105,7 +105,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Overview:    f.Overview,
 		Tagline:     f.Tagline,
 		ReleaseDate: f.ReleaseDate,
-		Runtime:     int(f.Runtime),
+		Runtime:     models.Runtime(f.Runtime),
 		Countries:   f.Countries,
 		Languages:   f.Languages,
 		Genres:      f.Genres,
