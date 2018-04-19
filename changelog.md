@@ -1,3 +1,6 @@
+# 0.5.2
+  Fixed resolving the collection items
+
 
 # 0.2.1
 Moved short codes underneath the [site root]/templates/shortcodes

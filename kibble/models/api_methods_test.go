@@ -17,31 +17,25 @@ func TestStringCollectionJoin(t *testing.T) {
 }
 
 func TestRuntimeHours(t *testing.T) {
-	var runtime Runtime = 100
-	assert.Equal(t, 1, runtime.Hours())
+	assert.Equal(t, 1, Runtime(100).Hours())
 }
 
 func TestRuntimeHoursLessThanOne(t *testing.T) {
-	var runtime Runtime = 3
-	assert.Equal(t, 0, runtime.Hours())
+	assert.Equal(t, 0, Runtime(3).Hours())
 }
 
 func TestRuntimeHoursZero(t *testing.T) {
-	var runtime Runtime = 0
-	assert.Equal(t, 0, runtime.Hours())
+	assert.Equal(t, 0, Runtime(0).Hours())
 }
 
 func TestRuntimeMinutesLessThanAnHour(t *testing.T) {
-	var runtime Runtime = 2
-	assert.Equal(t, 2, runtime.Minutes())
+	assert.Equal(t, 2, Runtime(2).Minutes())
 }
 
 func TestRuntimeMinutesExactlyAnHour(t *testing.T) {
-	var runtime Runtime = 60
-	assert.Equal(t, 0, runtime.Minutes())
+	assert.Equal(t, 0, Runtime(60).Minutes())
 }
 
 func TestRuntimeMinutesZero(t *testing.T) {
-	var runtime Runtime = 0
-	assert.Equal(t, 0, runtime.Minutes())
+	assert.Equal(t, 0, Runtime(0).Minutes())
 }
