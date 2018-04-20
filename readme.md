@@ -70,11 +70,11 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
 * cache - done
 * support markdown - done
 * internationalization - done
-   * default language - done
-   * language routes /:lang/film/:id - done
+  * default language - done
+  * language routes /:lang/film/:id - done
 * helpers
-   * route renders - done
-   * canonical route - done
+  * route renders - done
+  * canonical route - done
 * admin
   * render as admin - done
   * check admin token is valid - done
