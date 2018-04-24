@@ -73,7 +73,6 @@ func (r *RouteRegistry) FindBySlugAndRouteName(slug string, routeName string) *R
 			return r
 		}
 	}
-
 	return nil
 }
 

@@ -39,8 +39,8 @@ func TestPagehasAbsoluteImagePaths(t *testing.T) {
 		SeoKeywords:    "key key key",
 		PortraitImage:  "/portrait",
 		LandscapeImage: "/landscape",
-		CarouselImage: "/carousel",
-		HeaderImage: "/header",
+		CarouselImage:  "/carousel",
+		HeaderImage:    "/header",
 	}
 
 	model := apiPage.mapToModel(serviceConfig, itemIndex)

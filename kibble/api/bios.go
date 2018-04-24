@@ -35,7 +35,6 @@ func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex 
 }
 
 func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Page {
-
 	page := models.Page{
 		ID:        p.ID,
 		Slug:      fmt.Sprintf("/page/%d", p.ID),
