@@ -13,6 +13,15 @@ func (cfg ServiceConfig) SelectDefaultImageType(landscape, portrait string) stri
 	return portrait
 }
 
+// ForceAbsoluteImagePath fixes up relative image path by prefixing the `image_root_path` to it.
+func (cfg ServiceConfig) ForceAbsoluteImagePath(url string) string {
+	if (len(url) > 0){
+		return cfg["image_root_path"] + url
+	}
+
+	return url
+}
+
 // GetSEOTitle - get the seo title
 func (cfg ServiceConfig) GetSEOTitle(seoTitle, title string) string {
 	return utils.Join(", ",
