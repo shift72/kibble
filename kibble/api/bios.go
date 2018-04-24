@@ -35,6 +35,7 @@ func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex 
 }
 
 func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Page {
+
 	page := models.Page{
 		ID:        p.ID,
 		Slug:      fmt.Sprintf("/page/%d", p.ID),
@@ -43,19 +44,22 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Tagline:   p.Tagline,
 		PageType:  p.PageType,
 		URL:       p.URL,
+		// Page images are currently relatively pathed in the bios response
 		Images: models.ImageSet{
-			Portrait:   p.PortraitImage,
-			Landscape:  p.LandscapeImage,
-			Carousel:   p.CarouselImage,
-			Background: p.HeaderImage,
-		},
-		Seo: models.Seo{
-			SiteName: serviceConfig.GetSiteName(),
-			Title:    serviceConfig.GetSEOTitle(p.SeoTitle, p.Title),
-			Keywords: serviceConfig.GetKeywords(p.SeoKeywords),
-			Image:    serviceConfig.SelectDefaultImageType(p.LandscapeImage, p.PortraitImage),
+			Portrait:   serviceConfig.ForceAbsoluteImagePath(p.PortraitImage),
+			Landscape:  serviceConfig.ForceAbsoluteImagePath(p.LandscapeImage),
+			Carousel:   serviceConfig.ForceAbsoluteImagePath(p.CarouselImage),
+			Background: serviceConfig.ForceAbsoluteImagePath(p.HeaderImage),
+			Header: 		serviceConfig.ForceAbsoluteImagePath(p.HeaderImage),
 		},
 		PageCollections: make([]models.PageCollection, 0),
+	}
+
+	page.Seo = models.Seo{
+		SiteName: serviceConfig.GetSiteName(),
+		Title:    serviceConfig.GetSEOTitle(p.SeoTitle, page.Title),
+		Keywords: serviceConfig.GetKeywords(p.SeoKeywords),
+		Image:    serviceConfig.SelectDefaultImageType(page.Images.Landscape, page.Images.Portrait),
 	}
 
 	for _, pf := range p.PageFeatures {

@@ -16,8 +16,8 @@ func TestPageToSeoMap(t *testing.T) {
 	apiPage := pageV1{
 		Title:          "Page One",
 		SeoKeywords:    "key key key",
-		PortraitImage:  "portrait",
-		LandscapeImage: "landscape",
+		PortraitImage:  "/portrait",
+		LandscapeImage: "/landscape",
 	}
 
 	model := apiPage.mapToModel(serviceConfig, itemIndex)
@@ -25,7 +25,31 @@ func TestPageToSeoMap(t *testing.T) {
 	assert.Equal(t, "Film On Demand", model.Seo.SiteName, "site name")
 	assert.Equal(t, "SHIFT72 , Page One,  VOD", model.Seo.Title, "page title")
 	assert.Equal(t, "SHIFT72, VOD, key key key", model.Seo.Keywords, "keywords")
-	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")
+	assert.Equal(t, "https://s3-bla-bla/portrait", model.Seo.Image, "the default seo image is portrait")
+}
+
+func TestPagehasAbsoluteImagePaths(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiPage := pageV1{
+		Title:          "Page One",
+		SeoKeywords:    "key key key",
+		PortraitImage:  "/portrait",
+		LandscapeImage: "/landscape",
+		CarouselImage: "/carousel",
+		HeaderImage: "/header",
+	}
+
+	model := apiPage.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, "https://s3-bla-bla/portrait", model.Images.Portrait, "portrait")
+	assert.Equal(t, "https://s3-bla-bla/landscape", model.Images.Landscape, "landscape")
+	assert.Equal(t, "https://s3-bla-bla/carousel", model.Images.Carousel, "carousel")
+	assert.Equal(t, "https://s3-bla-bla/header", model.Images.Header, "header")
+	assert.Equal(t, "https://s3-bla-bla/header", model.Images.Background, "background")
 }
 
 func TestPageToPageFeatures(t *testing.T) {

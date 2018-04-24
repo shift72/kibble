@@ -118,8 +118,10 @@ func (tvSeasons TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, 
 // GetGenericItem - returns a generic item
 func (page Page) GetGenericItem() GenericItem {
 	return GenericItem{
+		Slug: 		 page.Slug,
 		Title:     page.Title,
 		Images:    page.Images,
+		ItemType:  "page",
 		InnerItem: page,
 	}
 }
