@@ -42,6 +42,7 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		TitleSlug: p.Slug, // pages already has a property called slug which is really a title slug
 		Title:     p.Title,
 		Tagline:   p.Tagline,
+    Content: p.Content,
 		PageType:  p.PageType,
 		URL:       p.URL,
 		// Page images are currently relatively pathed in the bios response
