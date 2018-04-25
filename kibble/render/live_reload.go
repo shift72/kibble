@@ -86,6 +86,10 @@ func (w *WrapperResponseWriter) Write(p []byte) (n int, err error) {
 
 // PrefixWithLogs - write the logs to the head of the page
 func (w *WrapperResponseWriter) PrefixWithLogs(logs []string) {
+	if len(logs) == 0 {
+		return
+	}
+
 	w.prefixBuf.Write([]byte("<div>"))
 	for _, s := range logs {
 		w.prefixBuf.Write([]byte(fmt.Sprintf("<pre>%s</pre>", s)))
