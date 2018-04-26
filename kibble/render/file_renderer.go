@@ -67,6 +67,7 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 		return
 	}
 
+	data.Set("currentUrlPath", filePath)
 	if err = t.Execute(w, data, nil); err != nil {
 		errorCount++
 		w.WriteString("<pre>")
