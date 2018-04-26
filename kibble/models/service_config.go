@@ -24,7 +24,7 @@ func (cfg ServiceConfig) ForceAbsoluteImagePath(url string) string {
 
 // GetSEOTitle - get the seo title
 func (cfg ServiceConfig) GetSEOTitle(seoTitle, title string) string {
-	return utils.Join(", ",
+	return utils.Join(" ",
 		cfg["seo_title_prefix"],
 		utils.Coalesce(seoTitle, title),
 		cfg["seo_title_suffix"])
