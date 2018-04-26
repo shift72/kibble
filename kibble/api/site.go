@@ -41,6 +41,8 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		Bundles:     make(models.BundleCollection, 0),
 		Collections: make(models.CollectionCollection, 0),
 		Taxonomies:  make(models.Taxonomies),
+		TVShows:     make(models.TVShowCollection, 0),
+		TVSeasons:   make(models.TVSeasonCollection, 0),
 	}
 
 	err = LoadAllCollections(cfg, site, itemIndex)
@@ -58,6 +60,11 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
+	err = AppendAllTVShows(cfg, site, itemIndex)
+	if err != nil {
+		return nil, err
+	}
+
 	// while there are unresolved film slugs
 	s := itemIndex.FindUnresolvedSlugs("film")
 	for len(s) > 0 {
@@ -65,7 +72,12 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		s = itemIndex.FindUnresolvedSlugs("film")
 	}
 
-	//TODO: while there are unresolved tv seasons
+	// while there are unresolved tv season slugs
+	tvs := itemIndex.FindUnresolvedSlugs("tv-season")
+	for len(tvs) > 0 {
+		AppendTVSeasons(cfg, site, tvs, itemIndex)
+		tvs = itemIndex.FindUnresolvedSlugs("tv-season")
+	}
 
 	initAPI.Completed()
 
@@ -75,6 +87,11 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	site.PopulateTaxonomyWithFilms("genre", models.GetGenres)
 	site.PopulateTaxonomyWithFilms("cast", models.GetCast)
 	site.PopulateTaxonomyWithFilms("country", models.GetCountries)
+
+	site.PopulateTaxonomyWithTVSeasons("year", models.GetTVSeasonYear)
+	site.PopulateTaxonomyWithTVSeasons("genre", models.GetTVShowGenres)
+	site.PopulateTaxonomyWithTVSeasons("cast", models.GetTVShowCast)
+	site.PopulateTaxonomyWithTVSeasons("country", models.GetTVShowCountries)
 
 	if log.IsEnabledFor(logging.DEBUG) {
 		itemIndex.PrintStats()

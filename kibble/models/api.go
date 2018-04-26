@@ -16,6 +16,8 @@ type Site struct {
 	Languages   []Language
 	Pages       Pages
 	Films       FilmCollection
+	TVShows     TVShowCollection
+	TVSeasons   TVSeasonCollection
 	Bundles     BundleCollection
 	Collections CollectionCollection
 	Taxonomies  Taxonomies
@@ -165,7 +167,7 @@ type Film struct {
 	Overview        string
 	Tagline         string
 	ReleaseDate     time.Time
-	Runtime         float32
+	Runtime         int
 	Countries       []string
 	Languages       []string
 	Genres          []string
@@ -174,3 +176,56 @@ type Film struct {
 	Recommendations []GenericItem
 	Subtitles       []SubtitleTrack
 }
+
+// TVShow -
+type TVShow struct {
+	ID               int
+	Slug             string
+	Trailers         []Trailer
+	Genres           []string
+	Overview         string
+	Countries        []string
+	Languages        []string
+	ReleaseDate      time.Time
+	Tagline          string
+	Studio           []string
+	Title            string
+	TitleSlug        string
+	AvailableSeasons []string
+	Seasons          TVSeasonCollection
+	Images           ImageSet
+}
+
+// TVEpisode -
+type TVEpisode struct {
+	Title         string
+	EpisodeNumber int
+	Overview      string
+	Runtime       int
+	Images        ImageSet
+	Subtitles     []SubtitleTrack
+}
+
+// TVSeason -
+type TVSeason struct {
+	Slug            string
+	SeasonNumber    int
+	Title           string
+	Tagline         string
+	Overview        string
+	PublishingState string
+	ShowInfo        *TVShow
+	Seo             Seo
+	Images          ImageSet
+	Trailers        []Trailer
+	Episodes        []TVEpisode
+	Cast            []CastMember
+	Crew            []CrewMember
+	Recommendations []GenericItem
+}
+
+// TVShowCollection -
+type TVShowCollection []TVShow
+
+// TVSeasonCollection -
+type TVSeasonCollection []TVSeason

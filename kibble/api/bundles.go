@@ -36,6 +36,7 @@ func LoadAllBundles(cfg *models.Config, site *models.Site, itemIndex models.Item
 
 func (b BundleV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Bundle {
 	return models.Bundle{
+		ID:            b.ID,
 		Slug:          fmt.Sprintf("/bundle/%d", b.ID),
 		TitleSlug:     slug.Make(b.Title),
 		Title:         b.Title,

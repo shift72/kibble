@@ -19,6 +19,30 @@ func TestAddingBundlesToItemIndex(t *testing.T) {
 	assert.Equal(t, Unresolved, itemIndex.Get("/bundle/123"), "expect item to be Unresolved")
 }
 
+func TestAddingTVSeasonToItemIndex(t *testing.T) {
+
+	itemIndex := make(ItemIndex)
+
+	itemIndex.MapToUnresolvedItems([]string{"/tv/123/season/456"})
+
+	assert.Equal(t, 1, len(itemIndex["tv-season"]), "expect item index to include the tv season")
+	assert.Equal(t, Unresolved, itemIndex["tv-season"]["/tv/123/season/456"], "expect item to be unresolved")
+	assert.Equal(t, false, itemIndex["tv-season"]["/tv/123/season/456"].IsResolved(), "expect item to be IsResolved() == false")
+	assert.Equal(t, Unresolved, itemIndex.Get("/tv/123/season/456"), "expect item to be Unresolved")
+}
+
+func TestAddingTVShowToItemIndex(t *testing.T) {
+
+	itemIndex := make(ItemIndex)
+
+	itemIndex.MapToUnresolvedItems([]string{"/tv/123"})
+
+	assert.Equal(t, 1, len(itemIndex["tv"]), "expect item index to include the tv show")
+	assert.Equal(t, Unresolved, itemIndex["tv"]["/tv/123"], "expect item to be unresolved")
+	assert.Equal(t, false, itemIndex["tv"]["/tv/123"].IsResolved(), "expect item to be IsResolved() == false")
+	assert.Equal(t, Unresolved, itemIndex.Get("/tv/123"), "expect item to be Unresolved")
+}
+
 func TestLinkingBundlesItems(t *testing.T) {
 
 	itemIndex := make(ItemIndex)

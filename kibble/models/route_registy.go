@@ -90,7 +90,7 @@ func (r *RouteRegistry) GetRouteForEntity(ctx RenderContext, entity interface{},
 		return ctx.Route.ResolvedDataSouce.GetRouteForEntity(ctx, entity)
 	}
 
-	return fmt.Sprintf("!Error. Route not found for entity:%s and route name %v", reflect.TypeOf(entity).Name(), routeName)
+	return fmt.Sprintf("!Error. Route not found for entity:%s and route name '%s'", reflect.TypeOf(entity).Name(), routeName)
 }
 
 // GetRouteForSlug - finds the route by the name and type and creates a route from it
@@ -102,7 +102,7 @@ func (r *RouteRegistry) GetRouteForSlug(ctx RenderContext, slug string, routeNam
 		return ctx.Route.ResolvedDataSouce.GetRouteForSlug(ctx, slug)
 	}
 
-	return fmt.Sprintf("!Error. Route not found for slug:%s and route name %v", slug, routeName)
+	return fmt.Sprintf("!Error. Route not found for slug:%s and route name '%s'", slug, routeName)
 }
 
 // NewRouteRegistryFromConfig - create a new route registry from the config

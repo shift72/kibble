@@ -46,6 +46,19 @@ func ConfigureWatchedLogging(verbose bool) *UniqueLogger {
 	setLogLevel(verbose)
 	return uni
 }
+
+// ConfigureSyncLogging - logging only to the unique logger
+func ConfigureSyncLogging(verbose bool) *UniqueLogger {
+	uni := NewUniqueLogger()
+	logging.SetBackend(
+		logging.NewBackendFormatter(uni,
+			logging.MustStringFormatter(`%{level} - %{message}`),
+		),
+	)
+	setLogLevel(verbose)
+	return uni
+}
+
 func setLogLevel(verbose bool) {
 	if verbose {
 		logging.SetLevel(logging.DEBUG, "")

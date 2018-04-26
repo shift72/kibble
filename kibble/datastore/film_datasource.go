@@ -8,6 +8,7 @@ import (
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // FilmDataSource - single film datasource
@@ -50,19 +51,17 @@ func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 
 // GetRouteForSlug - get the route
 func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	p := strings.Split(slug, "/")
+	filmID, ok := utils.ParseIntFromSlug(slug, 2)
+	if !ok {
+		return fmt.Sprintf("ERR(%s)", slug)
+	}
 
 	// supports having /:filmID in a path and /:slug
 	if strings.Contains(ctx.Route.URLPath, ":filmID") {
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", p[2], 1)
+		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", strconv.Itoa(filmID), 1)
 	} else if strings.Contains(ctx.Route.URLPath, ":slug") {
-		filmID, err := strconv.Atoi(p[2])
-		if err != nil {
-			return fmt.Sprintf("ERR(%s)", slug)
-		}
-
-		film, err := ctx.Site.Films.FindFilmByID(filmID)
-		if err != nil {
+		film, ok := ctx.Site.Films.FindFilmByID(filmID)
+		if !ok {
 			return fmt.Sprintf("ERR(%s)", slug)
 		}
 

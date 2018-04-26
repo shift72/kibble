@@ -61,6 +61,7 @@ type Summary struct {
 	RenderDuration          time.Duration `json:"renderDuration"`
 	ChangesDetectedDuration time.Duration `json:"changesDetectedDuration"`
 	UploadDuration          time.Duration `json:"uploadDuration"`
+	Errors                  []string      `json:"errors"`
 }
 
 // Execute - start a sync
@@ -101,6 +102,7 @@ func Execute(config Config) (*Summary, error) {
 		FilesTotal:              len(local),
 		ChangesDetectedDuration: detect,
 		UploadDuration:          upload,
+		Errors:                  make([]string, 0),
 	}
 
 	return s, err

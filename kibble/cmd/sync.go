@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/indiereign/shift72-kibble/kibble/config"
@@ -28,12 +29,10 @@ var syncCmd = &cobra.Command{
 		var err error
 		swSync := utils.NewStopwatchLevel("sync total", logging.NOTICE)
 
+		logger := utils.ConfigureSyncLogging(verbose)
+
 		if apiKey != "" {
-			//TODO: suppress errors for the moment
 			runAsAdmin = true
-			utils.ConfigureStandardLoggingLevel(logging.CRITICAL)
-		} else {
-			utils.ConfigureStandardLogging(verbose)
 		}
 
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
@@ -58,7 +57,14 @@ var syncCmd = &cobra.Command{
 		syncCfg.FileRootPath = cfg.FileRootPath()
 
 		summary, err := sync.Execute(syncCfg)
+		if err != nil {
+			fmt.Println("Sync failed:", err)
+			return err
+		}
 		summary.RenderDuration = renderDuration
+		summary.Errors = logger.Logs()
+
+		// return the summary to the stdout
 		fmt.Println(summary.ToJSON())
 
 		swSync.Completed()
@@ -76,6 +82,10 @@ var syncCmd = &cobra.Command{
 
 		if syncCfg.BucketRootPath == "" {
 			return errors.New("Missing argument: bucketrootpath must be set")
+		}
+
+		if !strings.HasSuffix(syncCfg.BucketRootPath, "/") {
+			syncCfg.BucketRootPath = syncCfg.BucketRootPath + "/"
 		}
 
 		return nil

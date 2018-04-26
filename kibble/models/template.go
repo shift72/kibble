@@ -57,14 +57,16 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 			       Count field must be an integer type (int, int8, int16, int32, int64) or a float formatted as a string (e.g. "123.45").
 		*/
 		if len(args) == 1 {
-			f, ok := args[0].(float64)
-			if ok {
+			if f, ok := args[0].(float64); ok {
 				return trans(translationID, int(f))
 			}
 
-			s, ok := args[0].(string)
-			if ok {
+			if s, ok := args[0].(string); ok {
 				return trans(translationID, s)
+			}
+
+			if m, ok := args[0].(map[string]interface{}); ok {
+				return trans(translationID, m)
 			}
 
 			log.Errorf("WARN: translating %s found unrecognised type %s", translationID, reflect.TypeOf(args[0]))

@@ -2,7 +2,10 @@
 # 0.2.1
 Moved short codes underneath the [site root]/templates/shortcodes
 Support subtitles
-
+Exclude path of '/' from zipfile
+TV Support
+Fixed bundle support
+Include errors in sync summary
 
 # 0.2.0
 Fixed zip file creation, preserves structure

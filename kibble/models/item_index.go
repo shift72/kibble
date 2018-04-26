@@ -46,7 +46,6 @@ func getSlugType(slug string) string {
 	if len(slugParts) == 5 {
 		return slugParts[1] + "-" + slugParts[3]
 	}
-	//TODO: tv season bonus
 
 	// film
 	return slugParts[1]
@@ -113,6 +112,10 @@ func (site *Site) LinkItems(itemIndex ItemIndex) {
 		site.Films[i].Recommendations = itemIndex.Resolve(site.Films[i].Recommendations)
 	}
 
+	for i := range site.TVSeasons {
+		site.TVSeasons[i].Recommendations = itemIndex.Resolve(site.TVSeasons[i].Recommendations)
+	}
+
 	for i := range site.Pages {
 		for j := range site.Pages[i].PageCollections {
 			site.Pages[i].PageCollections[j].Items = itemIndex.Resolve(site.Pages[i].PageCollections[j].Items)
@@ -168,8 +171,8 @@ func (itemIndex ItemIndex) PrintStats() {
 				loadedCount++
 			}
 		}
-		log.Infof("type: %s\t\t%d/%d", t, loaded, count)
+		log.Infof("type: %-15s%4d / %d", t, loaded, count)
 	}
 
-	log.Infof("total: \t\t\t%d/%d", loadedCount, totalCount)
+	log.Infof("total: %18d / %d", loadedCount, totalCount)
 }

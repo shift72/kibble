@@ -61,6 +61,30 @@ func (s Site) PopulateTaxonomyWithFilms(taxonomy string, finder func(*Film) []st
 	}
 }
 
+// PopulateTaxonomyWithTVSeasons - select the taxonomy and the tv season attribute
+func (s Site) PopulateTaxonomyWithTVSeasons(taxonomy string, finder func(*TVSeason) []string) {
+
+	t, ok := s.Taxonomies[taxonomy]
+
+	if !ok {
+		t = make(Taxonomy)
+		s.Taxonomies[taxonomy] = t
+	}
+
+	for _, f := range s.TVSeasons {
+		for _, key := range finder(&f) {
+			// omit any empty keys
+			if key != "" {
+				_, ok := t[key]
+				if !ok {
+					t[key] = make(GenericItems, 0)
+				}
+				t[key] = append(t[key], f.GetGenericItem())
+			}
+		}
+	}
+}
+
 // Alphabetical - sort the keys
 func (t Taxonomy) Alphabetical() OrderedEntries {
 	keys := t.getKeys()

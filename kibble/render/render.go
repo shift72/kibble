@@ -84,12 +84,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
-			Language: &models.Language{
-				Code:               lang,
-				Locale:             locale,
-				IsDefault:          (lang != cfg.DefaultLanguage),
-				DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
-			},
+			Language:    createLanguage(cfg, lang, locale),
 		}
 
 		if lang != cfg.DefaultLanguage {
@@ -145,4 +140,13 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 
 	log.Debug("error count %d", errCount)
 	return nil
+}
+
+func createLanguage(cfg *models.Config, lang string, locale string) *models.Language {
+	return &models.Language{
+		Code:               lang,
+		Locale:             locale,
+		IsDefault:          (lang != cfg.DefaultLanguage),
+		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
+	}
 }

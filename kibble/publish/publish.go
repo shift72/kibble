@@ -118,6 +118,10 @@ func zipit(source string, archive *zip.Writer, ignoredPaths utils.FileIgnorer) e
 			header.Method = zip.Deflate
 		}
 
+		if header.Name == "/" {
+			return nil
+		}
+
 		writer, err := archive.CreateHeader(header)
 		if err != nil {
 			return err

@@ -34,7 +34,7 @@ func GetTemplates() (*SearchResults, error) {
 	}
 
 	decoder := json.NewDecoder(resp.Body)
-	err = decoder.Decode(results)
+	err = decoder.Decode(&results)
 	if err != nil {
 		return &results, err
 	}
