@@ -15,7 +15,7 @@ import (
 func NewSite(force bool) {
 
 	// set the log format for interactiveness
-	utils.ConfigureInteractiveLogging(false)
+	utils.ConfigureInteractiveLogging(utils.ConvertToLoggingLevel(false))
 
 	if !force {
 		r, err := ioutil.ReadDir(".")

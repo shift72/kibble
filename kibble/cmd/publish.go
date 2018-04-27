@@ -32,7 +32,7 @@ var publishCmd = &cobra.Command{
 	Long:  `Publishing will upload the current template to your site.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		utils.ConfigureInteractiveLogging(verbose)
+		utils.ConfigureInteractiveLogging(utils.ConvertToLoggingLevel(verbose))
 		// force to run as admin
 		runAsAdmin = true
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)

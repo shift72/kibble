@@ -43,12 +43,13 @@ func (c FileRenderer) Initialise() {
 	}
 }
 
-// Render - render to the console
-func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarMap) (errorCount int) {
+// Render - render to a file
+func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarMap) int {
+	errorCount := 0
 	defer func() {
 		if r := recover(); r != nil {
 			errorCount++
-			log.Debug("Error. Recovered from ", r)
+			log.Errorf("Error. Recovered from %s", r)
 		}
 	}()
 
@@ -63,8 +64,8 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 	t, err := c.view.GetTemplate(route.TemplatePath)
 	if err != nil {
 		errorCount++
-		log.Error("Template load error", err)
-		return
+		log.Errorf("Template load error: %s", err)
+		return errorCount
 	}
 
 	data.Set("currentUrlPath", filePath)
@@ -73,8 +74,8 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 		w.WriteString("<pre>")
 		w.WriteString(err.Error())
 		w.WriteString("</pre>")
-
 		log.Errorf("Template execute error: %s", err)
+		return errorCount
 	}
 
 	dirPath := filepath.Dir(fullPath)
@@ -88,8 +89,8 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 	err = ioutil.WriteFile(fullPath, w.Bytes(), 0777)
 	if err != nil {
 		errorCount++
-		log.Error("File write:", err)
+		log.Errorf("File write: %s", err)
 	}
 
-	return
+	return errorCount
 }

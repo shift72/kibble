@@ -9,6 +9,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/op/go-logging"
+
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/render"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
@@ -61,7 +63,8 @@ type Summary struct {
 	RenderDuration          time.Duration `json:"renderDuration"`
 	ChangesDetectedDuration time.Duration `json:"changesDetectedDuration"`
 	UploadDuration          time.Duration `json:"uploadDuration"`
-	Errors                  []string      `json:"errors"`
+	ErrorCount              int           `json:"errorCount"`
+	Logs                    []string      `json:"logs"`
 }
 
 // Execute - start a sync
@@ -102,7 +105,7 @@ func Execute(config Config) (*Summary, error) {
 		FilesTotal:              len(local),
 		ChangesDetectedDuration: detect,
 		UploadDuration:          upload,
-		Errors:                  make([]string, 0),
+		Logs:                    make([]string, 0),
 	}
 
 	return s, err
@@ -121,7 +124,7 @@ func (s *Summary) ToJSON() string {
 // TestIdempotent - run the sync twice and check for differences
 func TestIdempotent(config Config, cfg *models.Config) error {
 
-	utils.ConfigureStandardLogging(false)
+	utils.ConfigureStandardLogging(logging.INFO)
 
 	local, err := NewLocalStore(config)
 	if err != nil {
@@ -132,7 +135,10 @@ func TestIdempotent(config Config, cfg *models.Config) error {
 	var sample1Path = path.Join(".kibble", "build-sample-1")
 	sourcePath := cfg.SourcePath()
 
-	render.Render(sourcePath, sample1Path, cfg)
+	errCount := render.Render(sourcePath, sample1Path, cfg)
+	if errCount > 0 {
+		return fmt.Errorf("render failed. errors %d", errCount)
+	}
 
 	sample1, err := local.List()
 	if err != nil {
@@ -142,7 +148,10 @@ func TestIdempotent(config Config, cfg *models.Config) error {
 
 	var sample2Path = path.Join(".kibble", "build-sample-2")
 
-	render.Render(sourcePath, sample2Path, cfg)
+	errCount = render.Render(sourcePath, sample2Path, cfg)
+	if errCount > 0 {
+		return fmt.Errorf("render failed. errors %d", errCount)
+	}
 
 	sample2, err := local.List()
 	if err != nil {

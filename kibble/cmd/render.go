@@ -34,12 +34,12 @@ Kibble is used to build and develop custom sites to run on the SHIFT72 platform.
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if watch {
-			log := utils.ConfigureWatchedLogging(verbose)
+			log := utils.ConfigureWatchedLogging(utils.ConvertToLoggingLevel(verbose))
 			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 			config.CheckVersion(cfg)
 			render.Watch(cfg.SourcePath(), cfg.BuildPath(), cfg, port, log)
 		} else {
-			utils.ConfigureStandardLogging(verbose)
+			utils.ConfigureStandardLogging(utils.ConvertToLoggingLevel(verbose))
 			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 			config.CheckVersion(cfg)
 			render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)

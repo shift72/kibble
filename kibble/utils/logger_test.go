@@ -3,12 +3,14 @@ package utils
 import (
 	"testing"
 
+	"github.com/op/go-logging"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func TestWatchedLogging(t *testing.T) {
 
-	unique := ConfigureWatchedLogging(false)
+	unique := ConfigureWatchedLogging(logging.INFO)
 
 	log.Critical("critical1") // logged
 	log.Critical("critical1") // not uniuq
