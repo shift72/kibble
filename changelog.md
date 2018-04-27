@@ -1,5 +1,10 @@
 # Change log
 
+## 0.7.0
+
+  Prevent syncing if there were errors durring rendering
+  Added currentUrlPath
+
 ## 0.6.0
 
   Added Runtime.Localise
