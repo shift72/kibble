@@ -52,7 +52,7 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 }
 
 // Render - render the files
-func Render(sourcePath string, buildPath string, cfg *models.Config) error {
+func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 	initSW := utils.NewStopwatch("load")
 
@@ -62,7 +62,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 
 	site, err := api.LoadSite(cfg)
 	if err != nil {
-		return err
+		log.Errorf("Loading site config failed: %s", err)
+		return 1
 	}
 
 	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
@@ -98,6 +99,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)
+			errCount++
 		}
 
 		// set the template view
@@ -128,7 +130,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 			renderRouteSW := utils.NewStopwatchf("    render route %s", route.Name)
 			ctx.Route = route
 			if route.ResolvedDataSouce != nil {
-				route.ResolvedDataSouce.Iterator(ctx, renderer)
+				errCount += route.ResolvedDataSouce.Iterator(ctx, renderer)
 			}
 			renderRouteSW.Completed()
 		}
@@ -138,8 +140,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) error {
 
 	renderSW.Completed()
 
-	log.Debug("error count %d", errCount)
-	return nil
+	return errCount
 }
 
 func createLanguage(cfg *models.Config, lang string, locale string) *models.Language {

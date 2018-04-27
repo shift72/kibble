@@ -20,51 +20,51 @@ func ConfigureStandardLoggingLevel(level logging.Level) {
 }
 
 // ConfigureStandardLogging - verbose
-func ConfigureStandardLogging(verbose bool) {
+func ConfigureStandardLogging(level logging.Level) {
 	logging.SetBackend(logging.NewLogBackend(os.Stdout, "", 0))
-	setLogLevel(verbose)
+	logging.SetLevel(level, "")
 }
 
 // ConfigureInteractiveLogging - logging
-func ConfigureInteractiveLogging(verbose bool) {
+func ConfigureInteractiveLogging(level logging.Level) {
 	logging.SetFormatter(
 		logging.MustStringFormatter(
 			`%{color}%{message}%{color:reset}`,
 		))
 	logging.SetBackend(logging.NewLogBackend(os.Stdout, "", 0))
-	setLogLevel(verbose)
+	logging.SetLevel(level, "")
 }
 
 // ConfigureWatchedLogging - logging to stdout + the unique logger
-func ConfigureWatchedLogging(verbose bool) *UniqueLogger {
-	uni := NewUniqueLogger()
+func ConfigureWatchedLogging(level logging.Level) *UniqueLogger {
+	uni := NewUniqueLogger(logging.WARNING)
 	log1 := logging.NewBackendFormatter(uni, logging.MustStringFormatter(
 		`%{level} - %{message}`,
 	))
 	log2 := logging.NewLogBackend(os.Stdout, "", 0)
 	logging.SetBackend(logging.MultiLogger(log1, log2))
-	setLogLevel(verbose)
+	logging.SetLevel(level, "")
 	return uni
 }
 
 // ConfigureSyncLogging - logging only to the unique logger
-func ConfigureSyncLogging(verbose bool) *UniqueLogger {
-	uni := NewUniqueLogger()
+func ConfigureSyncLogging(level logging.Level) *UniqueLogger {
+	uni := NewUniqueLogger(level)
 	logging.SetBackend(
 		logging.NewBackendFormatter(uni,
 			logging.MustStringFormatter(`%{level} - %{message}`),
 		),
 	)
-	setLogLevel(verbose)
+	logging.SetLevel(level, "")
 	return uni
 }
 
-func setLogLevel(verbose bool) {
+// ConvertToLoggingLevel - convert to
+func ConvertToLoggingLevel(verbose bool) logging.Level {
 	if verbose {
-		logging.SetLevel(logging.DEBUG, "")
-	} else {
-		logging.SetLevel(logging.INFO, "")
+		return logging.DEBUG
 	}
+	return logging.WARNING
 }
 
 // UniqueLogger - logs only the unique errors
@@ -80,9 +80,9 @@ type LogReader interface {
 }
 
 // NewUniqueLogger - creates a new unique logger
-func NewUniqueLogger() *UniqueLogger {
+func NewUniqueLogger(level logging.Level) *UniqueLogger {
 	return &UniqueLogger{
-		level: logging.WARNING,
+		level: level,
 		store: make([]string, 0),
 	}
 }

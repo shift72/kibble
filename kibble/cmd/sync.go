@@ -26,10 +26,11 @@ var syncCmd = &cobra.Command{
 	Uses filename and etag to determine if the files require syncing.
 	`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		var err error
+		// var err error
+		var errCount int
 		swSync := utils.NewStopwatchLevel("sync total", logging.NOTICE)
 
-		logger := utils.ConfigureSyncLogging(verbose)
+		logger := utils.ConfigureSyncLogging(utils.ConvertToLoggingLevel(verbose))
 
 		if apiKey != "" {
 			runAsAdmin = true
@@ -45,11 +46,17 @@ var syncCmd = &cobra.Command{
 		var renderDuration time.Duration
 		if renderAndSync {
 			swRender := utils.NewStopwatchLevel("render", logging.NOTICE)
-			err := render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)
+			errCount := render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)
 			renderDuration = swRender.Completed()
-			if err != nil {
-				fmt.Println("Render failed:", err)
-				return err
+			if errCount > 0 {
+				summary := sync.Summary{}
+				summary.RenderDuration = renderDuration
+				summary.ErrorCount = errCount
+				summary.Logs = logger.Logs()
+
+				// return the summary to the stdout
+				fmt.Println(summary.ToJSON())
+				return nil
 			}
 		}
 
@@ -58,17 +65,18 @@ var syncCmd = &cobra.Command{
 
 		summary, err := sync.Execute(syncCfg)
 		if err != nil {
-			fmt.Println("Sync failed:", err)
-			return err
+			fmt.Printf("Sync failed: %s\n", err)
+			return nil
 		}
 		summary.RenderDuration = renderDuration
-		summary.Errors = logger.Logs()
+		summary.ErrorCount = errCount
+		summary.Logs = logger.Logs()
 
 		// return the summary to the stdout
 		fmt.Println(summary.ToJSON())
 
 		swSync.Completed()
-		return err
+		return nil
 	},
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 
