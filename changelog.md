@@ -1,5 +1,9 @@
 # Change log
 
+## 0.7.1
+
+  Improve change detection speed
+
 ## 0.7.0
 
   Prevent syncing if there were errors durring rendering
