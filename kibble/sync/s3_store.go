@@ -53,9 +53,23 @@ func NewS3Store(config Config) (*S3Store, error) {
 
 // List - list all files
 func (store *S3Store) List() (FileRefCollection, error) {
-	var fileList []FileRef
+	var fileList FileRefCollection
 
-	err := store.svc.ListObjectsPages(&s3.ListObjectsInput{
+	// attempt to download an index file
+	foundIndexObject, err := store.svc.GetObject(&s3.GetObjectInput{
+		Bucket: &store.config.Bucket,
+		Key:    aws.String(store.config.BucketRootPath + "index.kibble"),
+	})
+
+	if err == nil {
+		defer foundIndexObject.Body.Close()
+		err = fileList.Parse(foundIndexObject.Body)
+		if err == nil {
+			return fileList, nil
+		}
+	}
+
+	err = store.svc.ListObjectsPages(&s3.ListObjectsInput{
 		Bucket: &store.config.Bucket,
 	}, func(p *s3.ListObjectsOutput, last bool) (shouldContinue bool) {
 		for _, obj := range p.Contents {
@@ -101,6 +115,20 @@ func (store *S3Store) Upload(wg *sync.WaitGroup, f FileRef) error {
 	}
 
 	return nil
+}
+
+// UploadFileIndex - the file index
+func (store *S3Store) UploadFileIndex(f FileRefCollection) error {
+	_, err := store.svc.PutObject(
+		&s3.PutObjectInput{
+			Bucket:      &store.config.Bucket,
+			Key:         aws.String(store.config.BucketRootPath + "index.kibble"),
+			Body:        f.GetReader(),
+			ACL:         aws.String("public-read"),
+			ContentType: aws.String("text/plain"),
+		},
+	)
+	return err
 }
 
 // Delete - delete file from S3

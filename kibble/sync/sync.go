@@ -1,9 +1,12 @@
 package sync
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"path"
 	"strings"
 	"sync"
@@ -47,6 +50,7 @@ type Store interface {
 	List() (FileRefCollection, error)
 	Upload(wg *sync.WaitGroup, file FileRef) error
 	Delete(wg *sync.WaitGroup, file FileRef) error
+	UploadFileIndex(FileRefCollection) error
 }
 
 // Sync -
@@ -89,14 +93,15 @@ func Execute(config Config) (*Summary, error) {
 	if err != nil {
 		return nil, err
 	}
-	changes := compare(local, remote)
+
 	detect := swDetect.Completed()
 
 	swSync := utils.NewStopwatch("sync files")
-	added, removed, err := PerformSync(s3Store, changes)
+	added, removed, err := PerformSync(s3Store, local, remote)
 	if err != nil {
 		return nil, err
 	}
+
 	upload := swSync.Completed()
 
 	s := &Summary{
@@ -226,10 +231,36 @@ func (c *FileRefCollection) Print() {
 	}
 }
 
+// Parse the file references
+func (c *FileRefCollection) Parse(reader io.Reader) error {
+
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
+		*c = append(*c, parseFileRef(scanner.Text()))
+	}
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetReader -
+func (c *FileRefCollection) GetReader() *bytes.Reader {
+	var b bytes.Buffer
+	for _, f := range *c {
+		b.WriteString(f.String())
+		b.WriteString("\n")
+	}
+	return bytes.NewReader(b.Bytes())
+}
+
 // PerformSync - sync all files to the remote server
-func PerformSync(store Store, changes []FileRef) (added int, removed int, err error) {
+func PerformSync(store Store, local []FileRef, remote []FileRef) (added int, removed int, err error) {
 
 	concurrency := 20
+
+	changes := compare(local, remote)
 
 	var wg sync.WaitGroup
 	work := make(chan FileRef, concurrency)
@@ -282,6 +313,11 @@ func PerformSync(store Store, changes []FileRef) (added int, removed int, err er
 
 	if len(errorChan) > 0 {
 		return added, removed, errors.New("Unable to sync files")
+	}
+
+	err = store.UploadFileIndex(local)
+	if err != nil {
+		return added, removed, err
 	}
 
 	log.Infof("sync successful [added: %d][removed: %d]", added, removed)

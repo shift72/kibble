@@ -5,7 +5,37 @@ import (
 	"fmt"
 	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
+
+func TestSave(t *testing.T) {
+
+	saved := FileRefCollection{
+		parseFileRef("ccc.html|ccc"),
+		parseFileRef("ddd.html|ddd"),
+	}
+
+	reader := saved.GetReader()
+
+	assert.Equal(t, 26, reader.Len())
+}
+
+func TestSaveAndLoad(t *testing.T) {
+
+	loaded := FileRefCollection{}
+	saved := FileRefCollection{
+		parseFileRef("ccc.html|ccc"),
+		parseFileRef("ddd.html|ddd"),
+	}
+
+	reader := saved.GetReader()
+
+	err := loaded.Parse(reader)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 2, len(loaded))
+}
 
 func TestCompareNoChanges(t *testing.T) {
 	local := []FileRef{
@@ -136,6 +166,10 @@ func (store mockStore) Upload(wg *sync.WaitGroup, f FileRef) error {
 	return nil
 }
 
+func (store mockStore) UploadFileIndex(FileRefCollection) error {
+	return nil
+}
+
 func (store mockStore) Delete(wg *sync.WaitGroup, f FileRef) error {
 	defer wg.Done()
 	// fmt.Println("deleted ", f)
@@ -153,13 +187,13 @@ func (store mockStore) List() (FileRefCollection, error) {
 func TestSync(t *testing.T) {
 
 	var store mockStore
-	var changes []FileRef
+	var local, remote []FileRef
 
 	for i := 0; i < 50; i++ {
-		changes = append(changes, add(fmt.Sprintf("file%d.html|ccc", i)))
+		local = append(local, add(fmt.Sprintf("file%d.html|ccc", i)))
 	}
 
-	PerformSync(store, changes)
+	PerformSync(store, local, remote)
 }
 
 func TestSyncWithErrors(t *testing.T) {
@@ -168,13 +202,13 @@ func TestSyncWithErrors(t *testing.T) {
 		returnErrors: true,
 	}
 
-	var changes []FileRef
+	var local, remote []FileRef
 
 	for i := 0; i < 10; i++ {
-		changes = append(changes, add(fmt.Sprintf("file%d.html|ccc", i)))
+		local = append(local, add(fmt.Sprintf("file%d.html|ccc", i)))
 	}
 
-	_, _, err := PerformSync(store, changes)
+	_, _, err := PerformSync(store, local, remote)
 	if err == nil {
 		t.Error("Expected errors")
 	}
