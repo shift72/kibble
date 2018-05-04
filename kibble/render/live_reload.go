@@ -119,12 +119,11 @@ func (live *LiveReload) GetMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(ww, r)
 
 		if strings.HasSuffix(r.RequestURI, "/") ||
-			strings.HasSuffix(r.RequestURI, "/index.html") {
+			strings.HasSuffix(r.RequestURI, ".html") {
 
 			if ww.Status() == 200 {
 				ww.PrefixWithLogs(live.logReader.Logs())
 				ww.Write([]byte(embed))
-
 			}
 		}
 
