@@ -64,7 +64,7 @@ func ConvertToLoggingLevel(verbose bool) logging.Level {
 	if verbose {
 		return logging.DEBUG
 	}
-	return logging.WARNING
+	return logging.INFO
 }
 
 // UniqueLogger - logs only the unique errors
