@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/test"
 )
 
 func createTestCollection() (models.RenderContext, *models.Route) {
@@ -98,4 +99,33 @@ func TestCollectionGetRouteWithIDForSlug(t *testing.T) {
 	route := collectionDS.GetRouteForSlug(ctx, "/collection/111")
 
 	assert.Equal(t, "/fr/collection/111.html", route)
+}
+
+func TestRenderCollection(t *testing.T) {
+	var ds CollectionDataSource
+
+	ctx, _ := createTestCollection()
+	renderer := &test.MockRenderer{}
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/fr/collection/movies-to-help-with-constipation")
+	assert.Equal(t, "collection/:type.jet", renderer.Route.TemplatePath)
+}
+
+func TestPartialRenderCollection(t *testing.T) {
+	var ds CollectionDataSource
+
+	ctx, _ := createTestCollection()
+	ctx.Route.PartialTemplatePath = "/collection/partial.jet"
+	ctx.Route.PartialURLPath = "/partials/collection/:collectionID.html"
+
+	renderer := &test.MockRenderer{}
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/fr/partials/collection/111.html")
+	assert.Equal(t, "/collection/partial.jet", renderer.Route.TemplatePath)
 }

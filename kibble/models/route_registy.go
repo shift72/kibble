@@ -23,14 +23,16 @@ type Route struct {
 // Clone - create a copy of the route
 func (r *Route) Clone() *Route {
 	return &Route{
-		Name:               r.Name,
-		URLPath:            r.URLPath,
-		TemplatePath:       r.TemplatePath,
-		DataSource:         r.DataSource,
-		ResolvedDataSouce:  r.ResolvedDataSouce,
-		ResolvedEntityType: r.ResolvedEntityType,
-		PageSize:           r.PageSize,
-		Pagination:         r.Pagination,
+		Name:                r.Name,
+		URLPath:             r.URLPath,
+		TemplatePath:        r.TemplatePath,
+		PartialURLPath:      r.PartialURLPath,
+		PartialTemplatePath: r.PartialTemplatePath,
+		DataSource:          r.DataSource,
+		ResolvedDataSouce:   r.ResolvedDataSouce,
+		ResolvedEntityType:  r.ResolvedEntityType,
+		PageSize:            r.PageSize,
+		Pagination:          r.Pagination,
 	}
 }
 

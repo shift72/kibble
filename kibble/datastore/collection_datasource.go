@@ -28,16 +28,21 @@ func (ds *CollectionDataSource) GetEntityType() reflect.Type {
 func (ds *CollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
+	data.Set("site", ctx.Site)
 
 	for _, p := range ctx.Site.Collections {
+		c := transformCollection(p)
+		data.Set("collection", c)
 
 		filePath := ds.GetRouteForEntity(ctx, &p)
-
-		c := transformCollection(p)
-
-		data.Set("collection", c)
-		data.Set("site", ctx.Site)
 		errCount += renderer.Render(ctx.Route, filePath, data)
+
+		if ctx.Route.HasPartial() {
+			route := ctx.Route.Clone()
+			route.TemplatePath = ctx.Route.PartialTemplatePath
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, &p)
+			errCount += renderer.Render(route, partialFilePath, data)
+		}
 	}
 
 	return
@@ -57,6 +62,18 @@ func (ds *CollectionDataSource) GetRouteForEntity(ctx models.RenderContext, enti
 			url = strings.Replace(url, ":slug", o.TitleSlug, 1)
 		}
 
+		return ctx.RoutePrefix + url
+	}
+	return models.ErrDataSource
+}
+
+// GetPartialRouteForEntity - get the partial route
+func (ds *CollectionDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+
+	o, ok := entity.(*models.Collection)
+	if ok {
+		url := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.TitleSlug, 1)
+		url = strings.Replace(url, ":collectionID", strconv.Itoa(o.ID), 1)
 		return ctx.RoutePrefix + url
 	}
 	return models.ErrDataSource
