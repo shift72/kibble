@@ -93,9 +93,9 @@ func TestCollectionGetRouteForInvalidSlug(t *testing.T) {
 func TestCollectionGetRouteWithIDForSlug(t *testing.T) {
 	var collectionDS CollectionDataSource
 
-	ctx, _ := createTestCollectionWithCustomURLPath("/collection/:collectionID")
+	ctx, _ := createTestCollectionWithCustomURLPath("/collection/:collectionID.html")
 
 	route := collectionDS.GetRouteForSlug(ctx, "/collection/111")
 
-	assert.Equal(t, "/fr/collection/111", route)
+	assert.Equal(t, "/fr/collection/111.html", route)
 }
