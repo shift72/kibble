@@ -3,6 +3,7 @@ package datastore
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
@@ -47,7 +48,16 @@ func (ds *CollectionDataSource) GetRouteForEntity(ctx models.RenderContext, enti
 
 	o, ok := entity.(*models.Collection)
 	if ok {
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
+		url := ctx.Route.URLPath
+		if strings.Contains(url, ":collectionID") {
+			url = strings.Replace(url, ":collectionID", strconv.Itoa(o.ID), 1)
+		}
+
+		if strings.Contains(url, ":slug") {
+			url = strings.Replace(url, ":slug", o.TitleSlug, 1)
+		}
+
+		return ctx.RoutePrefix + url
 	}
 	return models.ErrDataSource
 }
