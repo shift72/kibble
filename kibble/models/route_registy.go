@@ -8,14 +8,16 @@ import (
 
 // Route - represents a route for rendering and
 type Route struct {
-	Name               string       `json:"name"`
-	URLPath            string       `json:"urlPath"`
-	TemplatePath       string       `json:"templatePath"`
-	DataSource         string       `json:"datasource"`
-	ResolvedDataSouce  DataSource   `json:"-"`
-	ResolvedEntityType reflect.Type `json:"-"`
-	PageSize           int          `json:"pageSize"`
-	Pagination         Pagination   `json:"-"`
+	Name                string       `json:"name"`
+	URLPath             string       `json:"urlPath"`
+	TemplatePath        string       `json:"templatePath"`
+	PartialURLPath      string       `json:"partialUrlPath"`
+	PartialTemplatePath string       `json:"partialTemplatePath"`
+	DataSource          string       `json:"datasource"`
+	ResolvedDataSouce   DataSource   `json:"-"`
+	ResolvedEntityType  reflect.Type `json:"-"`
+	PageSize            int          `json:"pageSize"`
+	Pagination          Pagination   `json:"-"`
 }
 
 // Clone - create a copy of the route
@@ -30,6 +32,11 @@ func (r *Route) Clone() *Route {
 		PageSize:           r.PageSize,
 		Pagination:         r.Pagination,
 	}
+}
+
+// HasPartial returns whether the route has partial path (url and template) definitions
+func (r *Route) HasPartial() bool {
+	return len(r.PartialURLPath) > 0 && len(r.PartialTemplatePath) > 0
 }
 
 // RouteRegistry - stores a list of routes

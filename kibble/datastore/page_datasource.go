@@ -28,19 +28,27 @@ func (ds *PageDataSource) GetEntityType() reflect.Type {
 func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
+	data.Set("site", ctx.Site)
 
 	for _, p := range ctx.Site.Pages {
 
-		if p.PageType == "external" {
-			continue // don't render external pages
+		data.Set("page", transformPage(p))
+
+		// render page endpoints first
+		// don't render external pages
+		if p.PageType != "external" {
+			route := ctx.Route.Clone()
+			route.TemplatePath = strings.Replace(ctx.Route.TemplatePath, ":type", p.PageType, 1)
+			errCount += renderer.Render(route, ds.GetRouteForEntity(ctx, &p), data)
 		}
 
-		route := ctx.Route.Clone()
-		route.TemplatePath = strings.Replace(route.TemplatePath, ":type", p.PageType, 1)
+		// now partial end points
+		if ctx.Route.HasPartial() {
+			route := ctx.Route.Clone()
+			route.TemplatePath = strings.Replace(ctx.Route.PartialTemplatePath, ":type", p.PageType, 1)
+			errCount += renderer.Render(route, ds.GetPartialRouteForEntity(ctx, &p), data)
+		}
 
-		data.Set("page", transformPage(p))
-		data.Set("site", ctx.Site)
-		errCount += renderer.Render(route, ds.GetRouteForEntity(ctx, &p), data)
 	}
 
 	return
@@ -68,6 +76,17 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 			s = strings.Replace(s, ":pageID", strconv.Itoa(o.ID), 1)
 			return ctx.RoutePrefix + s
 		}
+	}
+	return models.ErrDataSource
+}
+
+// GetPartialRouteForEntity - get the partial route
+func (ds *PageDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+	o, ok := entity.(*models.Page)
+	if ok {
+		s := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.TitleSlug, 1)
+		s = strings.Replace(s, ":pageID", strconv.Itoa(o.ID), 1)
+		return ctx.RoutePrefix + s
 	}
 	return models.ErrDataSource
 }

@@ -52,12 +52,6 @@ func createTestContextCuratedWithCustomURLPath(urlPath string) (models.RenderCon
 		Site: &models.Site{
 			Pages: models.Pages{
 				models.Page{
-					ID:        123,
-					Slug:      "/page/123",
-					TitleSlug: "disney",
-					PageType:  "curated",
-				},
-				models.Page{
 					ID:       2,
 					PageType: "external",
 					URL:      "https://www.shift72.com",
@@ -67,6 +61,12 @@ func createTestContextCuratedWithCustomURLPath(urlPath string) (models.RenderCon
 					Slug:      "/page/1",
 					TitleSlug: "homepage-slug",
 					PageType:  "homepage",
+				},
+				models.Page{
+					ID:        123,
+					Slug:      "/page/123",
+					TitleSlug: "disney",
+					PageType:  "curated",
 				},
 			},
 		},
@@ -304,4 +304,49 @@ func TestGetRouteWithIDForExternalSlug(t *testing.T) {
 	route := pageDS.GetRouteForSlug(ctx, "/page/2")
 
 	assert.Equal(t, "https://www.shift72.com", route)
+}
+
+func TestPartialRenderForCuratedPage(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextCurated()
+	ctx.Route.PartialTemplatePath = "/page/partial.jet"
+	ctx.Route.PartialURLPath = "/partials/page/:pageID.html"
+
+	renderer := &test.MockRenderer{}
+
+	pageDS.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/partials/page/123.html")
+}
+
+func TestPartialRenderForHomePage(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextHomepage()
+	ctx.Route.PartialTemplatePath = "/page/partial.jet"
+	ctx.Route.PartialURLPath = "/partials/page/:pageID.html"
+
+	renderer := &test.MockRenderer{}
+
+	pageDS.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/fr/partials/page/123.html")
+}
+
+func TestPartialRenderForExternalPage(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx := createTestContextExternalOnly()
+	ctx.Route.PartialTemplatePath = "/page/partial.jet"
+	ctx.Route.PartialURLPath = "/partials/page/:pageID.html"
+
+	renderer := &test.MockRenderer{}
+
+	pageDS.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/partials/page/123.html")
 }
