@@ -45,6 +45,7 @@ func TestRenderForBundle(t *testing.T) {
 
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, "/bundle/111/marks-big-saggy-bundle", renderer.FilePath)
+	assert.Equal(t, "bundle/item.jet", renderer.Route.TemplatePath)
 }
 
 func TestPartialRenderForBundle(t *testing.T) {
@@ -60,4 +61,5 @@ func TestPartialRenderForBundle(t *testing.T) {
 
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, "/partials/bundle/111.html", renderer.FilePath)
+	assert.Equal(t, "/bundle/partial.jet", renderer.Route.TemplatePath)
 }

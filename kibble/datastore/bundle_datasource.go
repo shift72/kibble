@@ -40,8 +40,11 @@ func (ds *BundleDataSource) Iterator(ctx models.RenderContext, renderer models.R
 
 		// bundle partials
 		if ctx.Route.HasPartial() {
+			route := ctx.Route.Clone()
+			// renderer only looks at TemplatePath, so overwrite it
+			route.TemplatePath = ctx.Route.PartialTemplatePath
 			partialFilePath := ds.GetPartialRouteForEntity(ctx, &p)
-			errCount += renderer.Render(ctx.Route, partialFilePath, data)
+			errCount += renderer.Render(route, partialFilePath, data)
 		}
 	}
 	return
