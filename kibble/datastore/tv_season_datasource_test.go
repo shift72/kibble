@@ -9,9 +9,13 @@ import (
 )
 
 func createTestTVSeason() (models.RenderContext, *models.Route) {
+	return createTestTVSeasonWithCustomURLPath("/tv/:slug/season/:seasonNumber")
+}
+
+func createTestTVSeasonWithCustomURLPath(urlPath string) (models.RenderContext, *models.Route) {
 
 	r := &models.Route{
-		URLPath:      "/tv/:slug/season/:seasonNumber",
+		URLPath:      urlPath,
 		TemplatePath: "tv/:type.jet",
 		DataSource:   "TVSeason",
 	}
@@ -24,6 +28,7 @@ func createTestTVSeason() (models.RenderContext, *models.Route) {
 				models.TVSeason{
 					SeasonNumber: 2,
 					ShowInfo: &models.TVShow{
+						ID:        123,
 						Title:     "Breaking Bad",
 						TitleSlug: "breaking-bad",
 					},
@@ -70,4 +75,14 @@ func TestTVSeasonGetRouteForInvalidSlug(t *testing.T) {
 	route := tvSeasonDS.GetRouteForSlug(ctx, "/tv/a")
 
 	assert.Equal(t, "ERR(/tv/a)", route)
+}
+
+func TestTVSeasonGetRouteWithShowIDForSlug(t *testing.T) {
+	var tvSeasonDS TVSeasonDataSource
+
+	ctx, _ := createTestTVSeasonWithCustomURLPath("/tv/:showID/season/:seasonNumber.html")
+
+	route := tvSeasonDS.GetRouteForSlug(ctx, "/tv/123/season/2")
+
+	assert.Equal(t, "/fr/tv/123/season/2.html", route)
 }

@@ -52,19 +52,16 @@ func (ds *TVSeasonDataSource) GetRouteForEntity(ctx models.RenderContext, entity
 // GetRouteForSlug - get the route
 func (ds *TVSeasonDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 
-	// supports having tv/:slug/season/:seasonNumber
-	if strings.Contains(ctx.Route.URLPath, ":slug") {
-		tvSeason, found := ctx.Site.TVSeasons.FindTVSeasonBySlug(slug)
-		if !found {
-			return fmt.Sprintf("ERR(%s)", slug)
-		}
-
-		s := strings.Replace(ctx.Route.URLPath, ":slug", tvSeason.ShowInfo.TitleSlug, 1)
-		s = strings.Replace(s, ":seasonNumber", strconv.Itoa(tvSeason.SeasonNumber), 1)
-
-		return ctx.RoutePrefix + s
+	// supports having tv/:slug/season/:seasonNumber, or any params: :showID, seasonNumber, or :slug
+	tvSeason, found := ctx.Site.TVSeasons.FindTVSeasonBySlug(slug)
+	if !found {
+		return fmt.Sprintf("ERR(%s)", slug)
 	}
-	return models.ErrDataSource
+	s := strings.Replace(ctx.Route.URLPath, ":slug", tvSeason.ShowInfo.TitleSlug, 1)
+	s = strings.Replace(s, ":seasonNumber", strconv.Itoa(tvSeason.SeasonNumber), 1)
+	s = strings.Replace(s, ":showID", strconv.Itoa(tvSeason.ShowInfo.ID), 1)
+
+	return ctx.RoutePrefix + s
 }
 
 // IsSlugMatch - checks if the slug is a match

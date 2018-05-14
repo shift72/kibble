@@ -3,6 +3,7 @@ package datastore
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
@@ -51,18 +52,16 @@ func (ds *TVShowDataSource) GetRouteForEntity(ctx models.RenderContext, entity i
 // GetRouteForSlug - get the route
 func (ds *TVShowDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 
-	// supports having tv/:slug
-	if strings.Contains(ctx.Route.URLPath, ":slug") {
-		tvShow, found := ctx.Site.TVShows.FindTVShowBySlug(slug)
-		if !found {
-			return fmt.Sprintf("ERR(%s)", slug)
-		}
-
-		s := strings.Replace(ctx.Route.URLPath, ":slug", tvShow.TitleSlug, 1)
-
-		return ctx.RoutePrefix + s
+	// supports any params: :slug, :showID
+	tvShow, found := ctx.Site.TVShows.FindTVShowBySlug(slug)
+	if !found {
+		return fmt.Sprintf("ERR(%s)", slug)
 	}
-	return models.ErrDataSource
+
+	s := strings.Replace(ctx.Route.URLPath, ":slug", tvShow.TitleSlug, 1)
+	s = strings.Replace(s, ":showID", strconv.Itoa(tvShow.ID), 1)
+
+	return ctx.RoutePrefix + s
 }
 
 // IsSlugMatch - checks if the slug is a match

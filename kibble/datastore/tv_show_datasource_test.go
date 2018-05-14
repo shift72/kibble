@@ -9,9 +9,13 @@ import (
 )
 
 func createTestTVShow() (models.RenderContext, *models.Route) {
+	return createTestTVShowWithCustomURLPath("/tv/:slug")
+}
+
+func createTestTVShowWithCustomURLPath(urlPath string) (models.RenderContext, *models.Route) {
 
 	r := &models.Route{
-		URLPath:      "/tv/:slug",
+		URLPath:      urlPath,
 		TemplatePath: "tv/:type.jet",
 		DataSource:   "TVShow",
 	}
@@ -69,4 +73,14 @@ func TestTVShowGetRouteForInvalidSlug(t *testing.T) {
 	route := TVShowDS.GetRouteForSlug(ctx, "/tv/a")
 
 	assert.Equal(t, "ERR(/tv/a)", route)
+}
+
+func TestTVShowGetRouteWithIDForSlug(t *testing.T) {
+	var TVShowDS TVShowDataSource
+
+	ctx, _ := createTestTVShowWithCustomURLPath("/tv/:showID.html")
+
+	route := TVShowDS.GetRouteForSlug(ctx, "/tv/3")
+
+	assert.Equal(t, "/fr/tv/3.html", route)
 }
