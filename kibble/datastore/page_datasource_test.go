@@ -3,6 +3,8 @@ package datastore
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/test"
 )
@@ -32,11 +34,14 @@ func createTestContextHomepage() (models.RenderContext, *models.Route) {
 
 	return ctx, r
 }
-
 func createTestContextCurated() (models.RenderContext, *models.Route) {
+	return createTestContextCuratedWithCustomURLPath("/page/:slug")
+}
+
+func createTestContextCuratedWithCustomURLPath(urlPath string) (models.RenderContext, *models.Route) {
 
 	r := &models.Route{
-		URLPath:      "/page/:slug",
+		URLPath:      urlPath,
 		TemplatePath: "page/:type.jet",
 		DataSource:   "Page",
 	}
@@ -51,6 +56,17 @@ func createTestContextCurated() (models.RenderContext, *models.Route) {
 					Slug:      "/page/123",
 					TitleSlug: "disney",
 					PageType:  "curated",
+				},
+				models.Page{
+					ID:       2,
+					PageType: "external",
+					URL:      "https://www.shift72.com",
+				},
+				models.Page{
+					ID:        1,
+					Slug:      "/page/1",
+					TitleSlug: "homepage-slug",
+					PageType:  "homepage",
 				},
 			},
 		},
@@ -259,4 +275,33 @@ func TestGetRouteForMissingSlug(t *testing.T) {
 	if route != "ERR(/page/999)" {
 		t.Errorf("expected ERR(/page/999) got %s", route)
 	}
+}
+
+func TestGetRouteWithIDForCuratedSlug(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextCuratedWithCustomURLPath("/page/:pageID.html")
+
+	route := pageDS.GetRouteForSlug(ctx, "/page/123")
+
+	assert.Equal(t, "/page/123.html", route)
+}
+
+func TestGetRouteWithIDForHomePageSlug(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextCuratedWithCustomURLPath("/page/:pageID.html")
+
+	route := pageDS.GetRouteForSlug(ctx, "/page/1")
+
+	assert.Equal(t, "/", route)
+}
+func TestGetRouteWithIDForExternalSlug(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextCuratedWithCustomURLPath("/page/:pageID.html")
+
+	route := pageDS.GetRouteForSlug(ctx, "/page/2")
+
+	assert.Equal(t, "https://www.shift72.com", route)
 }

@@ -3,6 +3,7 @@ package datastore
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
@@ -63,7 +64,9 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 			}
 			return o.URL
 		default:
-			return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
+			s := strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
+			s = strings.Replace(s, ":pageID", strconv.Itoa(o.ID), 1)
+			return ctx.RoutePrefix + s
 		}
 	}
 	return models.ErrDataSource
