@@ -2,13 +2,12 @@ package test
 
 import (
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
 type MockRenderer struct {
 	InitialisedCalled bool
 	RenderCalled      bool
-	Route             *models.Route
+	TemplatePath      string
 	FilePath          string
 	Data              jet.VarMap
 }
@@ -19,9 +18,9 @@ func (c *MockRenderer) Initialise() {
 }
 
 // Render - render to the console
-func (c *MockRenderer) Render(route *models.Route, filePath string, data jet.VarMap) (errCount int) {
+func (c *MockRenderer) Render(templatePath string, filePath string, data jet.VarMap) (errCount int) {
 	c.RenderCalled = true
-	c.Route = route
+	c.TemplatePath = templatePath
 	c.FilePath = filePath
 	c.Data = data
 	return

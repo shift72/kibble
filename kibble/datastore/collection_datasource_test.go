@@ -111,7 +111,7 @@ func TestRenderCollection(t *testing.T) {
 
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, renderer.FilePath, "/fr/collection/movies-to-help-with-constipation")
-	assert.Equal(t, "collection/:type.jet", renderer.Route.TemplatePath)
+	assert.Equal(t, "collection/:type.jet", renderer.TemplatePath)
 }
 
 func TestPartialRenderCollection(t *testing.T) {
@@ -127,5 +127,5 @@ func TestPartialRenderCollection(t *testing.T) {
 
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, renderer.FilePath, "/fr/partials/collection/111.html")
-	assert.Equal(t, "/collection/partial.jet", renderer.Route.TemplatePath)
+	assert.Equal(t, "/collection/partial.jet", renderer.TemplatePath)
 }

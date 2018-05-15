@@ -152,8 +152,8 @@ func TestHomepageTemplateType(t *testing.T) {
 		t.Error("Expected render to be called")
 	}
 
-	if renderer.Route.TemplatePath != "page/homepage.jet" {
-		t.Errorf("Expected render template to be '/page/item.jet' got %s\n", renderer.Route.TemplatePath)
+	if renderer.TemplatePath != "page/homepage.jet" {
+		t.Errorf("Expected render template to be '/page/item.jet' got %s\n", renderer.TemplatePath)
 	}
 
 	if renderer.FilePath != "/fr/" {
@@ -175,8 +175,8 @@ func TestCuratedTemplateType(t *testing.T) {
 		t.Error("Expected render to be called")
 	}
 
-	if renderer.Route.TemplatePath != "page/curated.jet" {
-		t.Errorf("Expected render template to be '/page/curated.jet' got %s\n", renderer.Route.TemplatePath)
+	if renderer.TemplatePath != "page/curated.jet" {
+		t.Errorf("Expected render template to be '/page/curated.jet' got %s\n", renderer.TemplatePath)
 	}
 
 	if renderer.FilePath != "/page/disney" {
@@ -319,6 +319,7 @@ func TestPartialRenderForCuratedPage(t *testing.T) {
 
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, renderer.FilePath, "/partials/page/123.html")
+	assert.Equal(t, "/page/partial.jet", renderer.TemplatePath)
 }
 
 func TestPartialRenderForHomePage(t *testing.T) {
@@ -334,6 +335,7 @@ func TestPartialRenderForHomePage(t *testing.T) {
 
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, renderer.FilePath, "/fr/partials/page/123.html")
+	assert.Equal(t, "/page/partial.jet", renderer.TemplatePath)
 }
 
 func TestPartialRenderForExternalPage(t *testing.T) {
@@ -349,4 +351,5 @@ func TestPartialRenderForExternalPage(t *testing.T) {
 
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, renderer.FilePath, "/partials/page/123.html")
+	assert.Equal(t, "/page/partial.jet", renderer.TemplatePath)
 }

@@ -4,7 +4,6 @@ import (
 	"bytes"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
 // InMemoryTemplateRenderer - render template in memory
@@ -20,7 +19,7 @@ func (c *InMemoryTemplateRenderer) Initialise() {
 }
 
 // Render - render the pages to memory
-func (c *InMemoryTemplateRenderer) Render(route *models.Route, filePath string, data jet.VarMap) (errCount int) {
+func (c *InMemoryTemplateRenderer) Render(templatePath string, filePath string, data jet.VarMap) (errCount int) {
 
 	c.Result = InMemoryResult{
 		buffer:   bytes.NewBufferString(""),

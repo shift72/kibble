@@ -8,7 +8,6 @@ import (
 
 	"github.com/CloudyKit/jet"
 	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // FilmDataSource - single film datasource
@@ -29,12 +28,18 @@ func (ds *FilmDataSource) GetEntityType() reflect.Type {
 func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
+	data.Set("site", ctx.Site)
 
 	for _, f := range ctx.Site.Films {
-		filePath := ds.GetRouteForEntity(ctx, &f)
 		data.Set("film", transformFilm(f))
-		data.Set("site", ctx.Site)
+
+		filePath := ds.GetRouteForEntity(ctx, &f)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
+
+		if ctx.Route.HasPartial() {
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, &f)
+			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
+		}
 	}
 
 	return
@@ -44,30 +49,32 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.Film)
 	if ok {
-		return ds.GetRouteForSlug(ctx, o.Slug)
+		s := strings.Replace(ctx.Route.URLPath, ":filmID", strconv.Itoa(o.ID), 1)
+		s = strings.Replace(s, ":slug", o.TitleSlug, 1)
+		return ctx.RoutePrefix + s
+	}
+	return models.ErrDataSource
+}
+
+// GetPartialRouteForEntity - get the partial route
+func (ds *FilmDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+	o, ok := entity.(*models.Film)
+	if ok {
+		s := strings.Replace(ctx.Route.PartialURLPath, ":filmID", strconv.Itoa(o.ID), 1)
+		s = strings.Replace(s, ":slug", o.TitleSlug, 1)
+		return ctx.RoutePrefix + s
 	}
 	return models.ErrDataSource
 }
 
 // GetRouteForSlug - get the route
 func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
-	filmID, ok := utils.ParseIntFromSlug(slug, 2)
+	film, ok := ctx.Site.Films.FindFilmBySlug(slug)
 	if !ok {
 		return fmt.Sprintf("ERR(%s)", slug)
 	}
 
-	// supports having /:filmID in a path and /:slug
-	if strings.Contains(ctx.Route.URLPath, ":filmID") {
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":filmID", strconv.Itoa(filmID), 1)
-	} else if strings.Contains(ctx.Route.URLPath, ":slug") {
-		film, ok := ctx.Site.Films.FindFilmByID(filmID)
-		if !ok {
-			return fmt.Sprintf("ERR(%s)", slug)
-		}
-
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", film.TitleSlug, 1)
-	}
-	return models.ErrDataSource
+	return ds.GetRouteForEntity(ctx, film)
 }
 
 // IsSlugMatch - checks if the slug is a match

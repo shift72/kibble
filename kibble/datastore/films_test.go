@@ -252,3 +252,11 @@ func TestTransLanguage(t *testing.T) {
 		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
 	}
 }
+
+func TestRenderFilm(t *testing.T) {
+
+}
+
+func TestRenderPartialFilm(t *testing.T) {
+
+}
