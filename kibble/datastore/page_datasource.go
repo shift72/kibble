@@ -37,16 +37,14 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 		// render page endpoints first
 		// don't render external pages
 		if p.PageType != "external" {
-			route := ctx.Route.Clone()
-			route.TemplatePath = strings.Replace(ctx.Route.TemplatePath, ":type", p.PageType, 1)
-			errCount += renderer.Render(route, ds.GetRouteForEntity(ctx, &p), data)
+			templatePath := strings.Replace(ctx.Route.TemplatePath, ":type", p.PageType, 1)
+			errCount += renderer.Render(templatePath, ds.GetRouteForEntity(ctx, &p), data)
 		}
 
 		// now partial end points
 		if ctx.Route.HasPartial() {
-			route := ctx.Route.Clone()
-			route.TemplatePath = strings.Replace(ctx.Route.PartialTemplatePath, ":type", p.PageType, 1)
-			errCount += renderer.Render(route, ds.GetPartialRouteForEntity(ctx, &p), data)
+			templatePath := strings.Replace(ctx.Route.PartialTemplatePath, ":type", p.PageType, 1)
+			errCount += renderer.Render(templatePath, ds.GetPartialRouteForEntity(ctx, &p), data)
 		}
 
 	}

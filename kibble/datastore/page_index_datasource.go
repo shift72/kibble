@@ -76,7 +76,7 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 			vars.Set("pages", clonedPages)
 			vars.Set("pagination", ctx.Route.Pagination)
 			vars.Set("site", ctx.Site)
-			errCount += renderer.Render(ctx.Route, ctx.RoutePrefix+path, vars)
+			errCount += renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+path, vars)
 		}
 	} else {
 
@@ -95,7 +95,7 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 		vars.Set("pages", clonedPages)
 		vars.Set("pagination", ctx.Route.Pagination)
 		vars.Set("site", ctx.Site)
-		errCount += renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
+		errCount += renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 	}
 
 	return

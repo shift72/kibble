@@ -35,13 +35,11 @@ func (ds *CollectionDataSource) Iterator(ctx models.RenderContext, renderer mode
 		data.Set("collection", c)
 
 		filePath := ds.GetRouteForEntity(ctx, &p)
-		errCount += renderer.Render(ctx.Route, filePath, data)
+		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
 
 		if ctx.Route.HasPartial() {
-			route := ctx.Route.Clone()
-			route.TemplatePath = ctx.Route.PartialTemplatePath
 			partialFilePath := ds.GetPartialRouteForEntity(ctx, &p)
-			errCount += renderer.Render(route, partialFilePath, data)
+			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
 		}
 	}
 

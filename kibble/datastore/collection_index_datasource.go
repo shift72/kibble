@@ -31,7 +31,7 @@ func (ds *CollectionIndexDataSource) Iterator(ctx models.RenderContext, renderer
 	vars := make(jet.VarMap)
 	vars.Set("collections", clonedCollections)
 	vars.Set("site", ctx.Site)
-	return renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
+	return renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 }
 
 // GetRouteForEntity - get the route

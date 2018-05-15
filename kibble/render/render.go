@@ -116,13 +116,9 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 			outputFilePath := path.Join(ctx.RoutePrefix, strings.Replace(relativeFilePath, ".jet", "", 1))
 
-			route := &models.Route{
-				TemplatePath: relativeFilePath,
-			}
-
 			data := jet.VarMap{}
 			data.Set("site", site)
-			errCount += renderer.Render(route, outputFilePath, data)
+			errCount += renderer.Render(relativeFilePath, outputFilePath, data)
 		}
 		renderFilesSW.Completed()
 

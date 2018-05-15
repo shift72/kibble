@@ -34,7 +34,7 @@ func (ds *TVShowDataSource) Iterator(ctx models.RenderContext, renderer models.R
 
 		data.Set("tvshow", transformTVShow(f))
 		data.Set("site", ctx.Site)
-		errCount += renderer.Render(ctx.Route, filePath, data)
+		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
 	}
 
 	return
