@@ -3,6 +3,7 @@ package datastore
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
@@ -27,16 +28,21 @@ func (ds *BundleDataSource) GetEntityType() reflect.Type {
 func (ds *BundleDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
+	data.Set("site", ctx.Site)
 
 	for _, p := range ctx.Site.Bundles {
-
-		filePath := ds.GetRouteForEntity(ctx, &p)
-
 		c := transformBundle(p)
-
 		data.Set("bundle", c)
-		data.Set("site", ctx.Site)
-		errCount += renderer.Render(ctx.Route, filePath, data)
+
+		// normal bundle pages
+		filePath := ds.GetRouteForEntity(ctx, &p)
+		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
+
+		// bundle partials
+		if ctx.Route.HasPartial() {
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, &p)
+			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
+		}
 	}
 	return
 }
@@ -45,7 +51,20 @@ func (ds *BundleDataSource) Iterator(ctx models.RenderContext, renderer models.R
 func (ds *BundleDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.Bundle)
 	if ok {
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
+		s := strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
+		s = strings.Replace(s, ":bundleID", strconv.Itoa(o.ID), 1)
+		return ctx.RoutePrefix + s
+	}
+	return models.ErrDataSource
+}
+
+// GetPartialRouteForEntity - get the partial route
+func (ds *BundleDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+	o, ok := entity.(*models.Bundle)
+	if ok {
+		s := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.TitleSlug, 1)
+		s = strings.Replace(s, ":bundleID", strconv.Itoa(o.ID), 1)
+		return ctx.RoutePrefix + s
 	}
 	return models.ErrDataSource
 }

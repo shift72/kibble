@@ -31,7 +31,7 @@ func (ds *TVSeasonIndexDataSource) Iterator(ctx models.RenderContext, renderer m
 	vars := make(jet.VarMap)
 	vars.Set("tvseasons", cloned)
 	vars.Set("site", ctx.Site)
-	return renderer.Render(ctx.Route, ctx.RoutePrefix+ctx.Route.URLPath, vars)
+	return renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 }
 
 // GetRouteForEntity - get the route

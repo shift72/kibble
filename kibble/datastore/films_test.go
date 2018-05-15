@@ -8,8 +8,32 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/test"
 	"github.com/nicksnyder/go-i18n/i18n"
+	"github.com/stretchr/testify/assert"
 )
 
+func createTestFilm() (models.RenderContext, *models.Route) {
+	r := &models.Route{
+		URLPath:      "/film/:filmID/:slug",
+		TemplatePath: "film/item.jet",
+		DataSource:   "Film",
+	}
+
+	ctx := models.RenderContext{
+		Route:       r,
+		RoutePrefix: "",
+		Site: &models.Site{
+			Films: models.FilmCollection{
+				models.Film{
+					ID:        123,
+					Slug:      "/film/123",
+					TitleSlug: "the-big-lebowski",
+				},
+			},
+		},
+	}
+
+	return ctx, r
+}
 func TestApplyContentTransforms(t *testing.T) {
 	var s = `# header`
 
@@ -42,27 +66,8 @@ func TestFilmDataStore(t *testing.T) {
 	view := jet.NewHTMLSet("../templates/")
 	view.AddGlobal("version", "v1.1.145")
 
+	ctx, _ := createTestFilm()
 	renderer1 := &test.InMemoryRenderer{View: view}
-
-	r := &models.Route{
-		URLPath:      "/film/:filmID",
-		TemplatePath: "film/item.jet",
-		DataSource:   "Film",
-	}
-
-	ctx := models.RenderContext{
-		Route:       r,
-		RoutePrefix: "",
-		Site: &models.Site{
-			Films: models.FilmCollection{
-				models.Film{
-					ID:        123,
-					Slug:      "/film/123",
-					TitleSlug: "the-big-lebowski",
-				},
-			},
-		},
-	}
 
 	var fds FilmDataSource
 	fds.Iterator(ctx, renderer1)
@@ -251,4 +256,31 @@ func TestTransLanguage(t *testing.T) {
 	if renderer.Result.Output() != "MSG settings_title" {
 		t.Errorf("Unexpected output. `%s`", renderer.Result.Output())
 	}
+}
+
+func TestRenderFilm(t *testing.T) {
+	ctx, _ := createTestFilm()
+	renderer := &test.MockRenderer{}
+
+	var ds FilmDataSource
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, "/film/123/the-big-lebowski", renderer.FilePath)
+	assert.Equal(t, "film/item.jet", renderer.TemplatePath)
+}
+
+func TestRenderPartialFilm(t *testing.T) {
+	ctx, r := createTestFilm()
+	r.PartialTemplatePath = "/film/partial.jet"
+	r.PartialURLPath = "/partials/film/:filmID.html"
+
+	renderer := &test.MockRenderer{}
+
+	var ds FilmDataSource
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, "/partials/film/123.html", renderer.FilePath)
+	assert.Equal(t, "/film/partial.jet", renderer.TemplatePath)
 }

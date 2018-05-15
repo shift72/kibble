@@ -3,6 +3,8 @@ package datastore
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/test"
 )
@@ -32,11 +34,14 @@ func createTestContextHomepage() (models.RenderContext, *models.Route) {
 
 	return ctx, r
 }
-
 func createTestContextCurated() (models.RenderContext, *models.Route) {
+	return createTestContextCuratedWithCustomURLPath("/page/:slug")
+}
+
+func createTestContextCuratedWithCustomURLPath(urlPath string) (models.RenderContext, *models.Route) {
 
 	r := &models.Route{
-		URLPath:      "/page/:slug",
+		URLPath:      urlPath,
 		TemplatePath: "page/:type.jet",
 		DataSource:   "Page",
 	}
@@ -46,6 +51,17 @@ func createTestContextCurated() (models.RenderContext, *models.Route) {
 		RoutePrefix: "",
 		Site: &models.Site{
 			Pages: models.Pages{
+				models.Page{
+					ID:       2,
+					PageType: "external",
+					URL:      "https://www.shift72.com",
+				},
+				models.Page{
+					ID:        1,
+					Slug:      "/page/1",
+					TitleSlug: "homepage-slug",
+					PageType:  "homepage",
+				},
 				models.Page{
 					ID:        123,
 					Slug:      "/page/123",
@@ -136,8 +152,8 @@ func TestHomepageTemplateType(t *testing.T) {
 		t.Error("Expected render to be called")
 	}
 
-	if renderer.Route.TemplatePath != "page/homepage.jet" {
-		t.Errorf("Expected render template to be '/page/item.jet' got %s\n", renderer.Route.TemplatePath)
+	if renderer.TemplatePath != "page/homepage.jet" {
+		t.Errorf("Expected render template to be '/page/item.jet' got %s\n", renderer.TemplatePath)
 	}
 
 	if renderer.FilePath != "/fr/" {
@@ -159,8 +175,8 @@ func TestCuratedTemplateType(t *testing.T) {
 		t.Error("Expected render to be called")
 	}
 
-	if renderer.Route.TemplatePath != "page/curated.jet" {
-		t.Errorf("Expected render template to be '/page/curated.jet' got %s\n", renderer.Route.TemplatePath)
+	if renderer.TemplatePath != "page/curated.jet" {
+		t.Errorf("Expected render template to be '/page/curated.jet' got %s\n", renderer.TemplatePath)
 	}
 
 	if renderer.FilePath != "/page/disney" {
@@ -259,4 +275,81 @@ func TestGetRouteForMissingSlug(t *testing.T) {
 	if route != "ERR(/page/999)" {
 		t.Errorf("expected ERR(/page/999) got %s", route)
 	}
+}
+
+func TestGetRouteWithIDForCuratedSlug(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextCuratedWithCustomURLPath("/page/:pageID.html")
+
+	route := pageDS.GetRouteForSlug(ctx, "/page/123")
+
+	assert.Equal(t, "/page/123.html", route)
+}
+
+func TestGetRouteWithIDForHomePageSlug(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextCuratedWithCustomURLPath("/page/:pageID.html")
+
+	route := pageDS.GetRouteForSlug(ctx, "/page/1")
+
+	assert.Equal(t, "/", route)
+}
+func TestGetRouteWithIDForExternalSlug(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextCuratedWithCustomURLPath("/page/:pageID.html")
+
+	route := pageDS.GetRouteForSlug(ctx, "/page/2")
+
+	assert.Equal(t, "https://www.shift72.com", route)
+}
+
+func TestPartialRenderForCuratedPage(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextCurated()
+	ctx.Route.PartialTemplatePath = "/page/partial.jet"
+	ctx.Route.PartialURLPath = "/partials/page/:pageID.html"
+
+	renderer := &test.MockRenderer{}
+
+	pageDS.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/partials/page/123.html")
+	assert.Equal(t, "/page/partial.jet", renderer.TemplatePath)
+}
+
+func TestPartialRenderForHomePage(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx, _ := createTestContextHomepage()
+	ctx.Route.PartialTemplatePath = "/page/partial.jet"
+	ctx.Route.PartialURLPath = "/partials/page/:pageID.html"
+
+	renderer := &test.MockRenderer{}
+
+	pageDS.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/fr/partials/page/123.html")
+	assert.Equal(t, "/page/partial.jet", renderer.TemplatePath)
+}
+
+func TestPartialRenderForExternalPage(t *testing.T) {
+	var pageDS PageDataSource
+
+	ctx := createTestContextExternalOnly()
+	ctx.Route.PartialTemplatePath = "/page/partial.jet"
+	ctx.Route.PartialURLPath = "/partials/page/:pageID.html"
+
+	renderer := &test.MockRenderer{}
+
+	pageDS.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/partials/page/123.html")
+	assert.Equal(t, "/page/partial.jet", renderer.TemplatePath)
 }

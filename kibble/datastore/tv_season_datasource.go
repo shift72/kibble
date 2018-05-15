@@ -28,13 +28,18 @@ func (ds *TVSeasonDataSource) GetEntityType() reflect.Type {
 func (ds *TVSeasonDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
+	data.Set("site", ctx.Site)
 
 	for _, f := range ctx.Site.TVSeasons {
-		filePath := ds.GetRouteForEntity(ctx, &f)
-
 		data.Set("tvseason", transformTVSeason(f))
-		data.Set("site", ctx.Site)
-		errCount += renderer.Render(ctx.Route, filePath, data)
+
+		filePath := ds.GetRouteForEntity(ctx, &f)
+		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
+
+		if ctx.Route.HasPartial() {
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, &f)
+			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
+		}
 	}
 
 	return
@@ -44,7 +49,22 @@ func (ds *TVSeasonDataSource) Iterator(ctx models.RenderContext, renderer models
 func (ds *TVSeasonDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.TVSeason)
 	if ok {
-		return ds.GetRouteForSlug(ctx, o.Slug)
+		s := strings.Replace(ctx.Route.URLPath, ":slug", o.ShowInfo.TitleSlug, 1)
+		s = strings.Replace(s, ":seasonNumber", strconv.Itoa(o.SeasonNumber), 1)
+		s = strings.Replace(s, ":showID", strconv.Itoa(o.ShowInfo.ID), 1)
+		return ctx.RoutePrefix + s
+	}
+	return models.ErrDataSource
+}
+
+// GetPartialRouteForEntity - get the partial route
+func (ds *TVSeasonDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+	o, ok := entity.(*models.TVSeason)
+	if ok {
+		s := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.ShowInfo.TitleSlug, 1)
+		s = strings.Replace(s, ":seasonNumber", strconv.Itoa(o.SeasonNumber), 1)
+		s = strings.Replace(s, ":showID", strconv.Itoa(o.ShowInfo.ID), 1)
+		return ctx.RoutePrefix + s
 	}
 	return models.ErrDataSource
 }
@@ -52,19 +72,12 @@ func (ds *TVSeasonDataSource) GetRouteForEntity(ctx models.RenderContext, entity
 // GetRouteForSlug - get the route
 func (ds *TVSeasonDataSource) GetRouteForSlug(ctx models.RenderContext, slug string) string {
 
-	// supports having tv/:slug/season/:seasonNumber
-	if strings.Contains(ctx.Route.URLPath, ":slug") {
-		tvSeason, found := ctx.Site.TVSeasons.FindTVSeasonBySlug(slug)
-		if !found {
-			return fmt.Sprintf("ERR(%s)", slug)
-		}
-
-		s := strings.Replace(ctx.Route.URLPath, ":slug", tvSeason.ShowInfo.TitleSlug, 1)
-		s = strings.Replace(s, ":seasonNumber", strconv.Itoa(tvSeason.SeasonNumber), 1)
-
-		return ctx.RoutePrefix + s
+	// supports having tv/:slug/season/:seasonNumber, or any params: :showID, seasonNumber, or :slug
+	tvSeason, found := ctx.Site.TVSeasons.FindTVSeasonBySlug(slug)
+	if found {
+		return ds.GetRouteForEntity(ctx, tvSeason)
 	}
-	return models.ErrDataSource
+	return fmt.Sprintf("ERR(%s)", slug)
 }
 
 // IsSlugMatch - checks if the slug is a match

@@ -3,6 +3,7 @@ package datastore
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/CloudyKit/jet"
@@ -27,16 +28,19 @@ func (ds *CollectionDataSource) GetEntityType() reflect.Type {
 func (ds *CollectionDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
+	data.Set("site", ctx.Site)
 
 	for _, p := range ctx.Site.Collections {
+		c := transformCollection(p)
+		data.Set("collection", c)
 
 		filePath := ds.GetRouteForEntity(ctx, &p)
+		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
 
-		c := transformCollection(p)
-
-		data.Set("collection", c)
-		data.Set("site", ctx.Site)
-		errCount += renderer.Render(ctx.Route, filePath, data)
+		if ctx.Route.HasPartial() {
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, &p)
+			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
+		}
 	}
 
 	return
@@ -47,7 +51,28 @@ func (ds *CollectionDataSource) GetRouteForEntity(ctx models.RenderContext, enti
 
 	o, ok := entity.(*models.Collection)
 	if ok {
-		return ctx.RoutePrefix + strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
+		url := ctx.Route.URLPath
+		if strings.Contains(url, ":collectionID") {
+			url = strings.Replace(url, ":collectionID", strconv.Itoa(o.ID), 1)
+		}
+
+		if strings.Contains(url, ":slug") {
+			url = strings.Replace(url, ":slug", o.TitleSlug, 1)
+		}
+
+		return ctx.RoutePrefix + url
+	}
+	return models.ErrDataSource
+}
+
+// GetPartialRouteForEntity - get the partial route
+func (ds *CollectionDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+
+	o, ok := entity.(*models.Collection)
+	if ok {
+		url := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.TitleSlug, 1)
+		url = strings.Replace(url, ":collectionID", strconv.Itoa(o.ID), 1)
+		return ctx.RoutePrefix + url
 	}
 	return models.ErrDataSource
 }

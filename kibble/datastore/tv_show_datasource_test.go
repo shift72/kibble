@@ -6,13 +6,18 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/test"
 )
 
 func createTestTVShow() (models.RenderContext, *models.Route) {
+	return createTestTVShowWithCustomURLPath("/tv/:slug")
+}
+
+func createTestTVShowWithCustomURLPath(urlPath string) (models.RenderContext, *models.Route) {
 
 	r := &models.Route{
-		URLPath:      "/tv/:slug",
-		TemplatePath: "tv/:type.jet",
+		URLPath:      urlPath,
+		TemplatePath: "tv/item.jet",
 		DataSource:   "TVShow",
 	}
 
@@ -69,4 +74,44 @@ func TestTVShowGetRouteForInvalidSlug(t *testing.T) {
 	route := TVShowDS.GetRouteForSlug(ctx, "/tv/a")
 
 	assert.Equal(t, "ERR(/tv/a)", route)
+}
+
+func TestTVShowGetRouteWithIDForSlug(t *testing.T) {
+	var TVShowDS TVShowDataSource
+
+	ctx, _ := createTestTVShowWithCustomURLPath("/tv/:showID.html")
+
+	route := TVShowDS.GetRouteForSlug(ctx, "/tv/3")
+
+	assert.Equal(t, "/fr/tv/3.html", route)
+}
+
+func TestRenderTVShow(t *testing.T) {
+	var ds TVShowDataSource
+
+	renderer := &test.MockRenderer{}
+
+	ctx, _ := createTestTVShow()
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, "/fr/tv/breaking-bad", renderer.FilePath)
+	assert.Equal(t, "tv/item.jet", renderer.TemplatePath)
+}
+
+func TestPartialRenderTVShow(t *testing.T) {
+	var ds TVShowDataSource
+
+	renderer := &test.MockRenderer{}
+
+	ctx, r := createTestTVShow()
+	r.PartialTemplatePath = "/tv/partial.jet"
+	r.PartialURLPath = "/partials/tv/:showID.html"
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, "/fr/partials/tv/3.html", renderer.FilePath)
+	assert.Equal(t, "/tv/partial.jet", renderer.TemplatePath)
 }

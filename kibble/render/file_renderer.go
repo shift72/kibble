@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
@@ -44,7 +43,7 @@ func (c FileRenderer) Initialise() {
 }
 
 // Render - render to a file
-func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarMap) int {
+func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarMap) int {
 	errorCount := 0
 	defer func() {
 		if r := recover(); r != nil {
@@ -61,7 +60,7 @@ func (c FileRenderer) Render(route *models.Route, filePath string, data jet.VarM
 	log.Debugf("FilePath: %s", fullPath)
 
 	w := bytes.NewBufferString("")
-	t, err := c.view.GetTemplate(route.TemplatePath)
+	t, err := c.view.GetTemplate(templatePath)
 	if err != nil {
 		errorCount++
 		log.Errorf("Template load error: %s", err)

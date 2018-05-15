@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
 // InMemoryRenderer - render to memory for testing
@@ -64,7 +63,7 @@ func (c *InMemoryRenderer) Initialise() {
 }
 
 // Render - render the pages to memory
-func (c *InMemoryRenderer) Render(route *models.Route, filePath string, data jet.VarMap) (errCount int) {
+func (c *InMemoryRenderer) Render(templatePath string, filePath string, data jet.VarMap) (errCount int) {
 
 	if c.Results == nil {
 		c.Results = make([]InMemoryResult, 1, 10)
@@ -77,7 +76,7 @@ func (c *InMemoryRenderer) Render(route *models.Route, filePath string, data jet
 
 	c.Results = append(c.Results, result)
 
-	t, err := c.View.GetTemplate(route.TemplatePath)
+	t, err := c.View.GetTemplate(templatePath)
 	if err != nil {
 		errCount++
 		result.err = err

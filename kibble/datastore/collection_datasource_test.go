@@ -3,13 +3,20 @@ package datastore
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/test"
 )
 
 func createTestCollection() (models.RenderContext, *models.Route) {
+	return createTestCollectionWithCustomURLPath("/collection/:slug")
+}
+
+func createTestCollectionWithCustomURLPath(urlPath string) (models.RenderContext, *models.Route) {
 
 	r := &models.Route{
-		URLPath:      "/collection/:slug",
+		URLPath:      urlPath,
 		TemplatePath: "collection/:type.jet",
 		DataSource:   "Collection",
 	}
@@ -23,6 +30,11 @@ func createTestCollection() (models.RenderContext, *models.Route) {
 					ID:        123,
 					Slug:      "/collection/123",
 					TitleSlug: "all-the-best-films",
+				},
+				models.Collection{
+					ID:        111,
+					Slug:      "/collection/111",
+					TitleSlug: "movies-to-help-with-constipation",
 				},
 			},
 		},
@@ -77,4 +89,43 @@ func TestCollectionGetRouteForInvalidSlug(t *testing.T) {
 	if route != "ERR(/collection/a)" {
 		t.Errorf("expected ERR(/collection/a) got %s", route)
 	}
+}
+
+func TestCollectionGetRouteWithIDForSlug(t *testing.T) {
+	var collectionDS CollectionDataSource
+
+	ctx, _ := createTestCollectionWithCustomURLPath("/collection/:collectionID.html")
+
+	route := collectionDS.GetRouteForSlug(ctx, "/collection/111")
+
+	assert.Equal(t, "/fr/collection/111.html", route)
+}
+
+func TestRenderCollection(t *testing.T) {
+	var ds CollectionDataSource
+
+	ctx, _ := createTestCollection()
+	renderer := &test.MockRenderer{}
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/fr/collection/movies-to-help-with-constipation")
+	assert.Equal(t, "collection/:type.jet", renderer.TemplatePath)
+}
+
+func TestPartialRenderCollection(t *testing.T) {
+	var ds CollectionDataSource
+
+	ctx, _ := createTestCollection()
+	ctx.Route.PartialTemplatePath = "/collection/partial.jet"
+	ctx.Route.PartialURLPath = "/partials/collection/:collectionID.html"
+
+	renderer := &test.MockRenderer{}
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, renderer.FilePath, "/fr/partials/collection/111.html")
+	assert.Equal(t, "/collection/partial.jet", renderer.TemplatePath)
 }
