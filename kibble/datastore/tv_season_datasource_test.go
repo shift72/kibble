@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/test"
 )
 
 func createTestTVSeason() (models.RenderContext, *models.Route) {
@@ -16,7 +17,7 @@ func createTestTVSeasonWithCustomURLPath(urlPath string) (models.RenderContext, 
 
 	r := &models.Route{
 		URLPath:      urlPath,
-		TemplatePath: "tv/:type.jet",
+		TemplatePath: "season/item.jet",
 		DataSource:   "TVSeason",
 	}
 
@@ -85,4 +86,34 @@ func TestTVSeasonGetRouteWithShowIDForSlug(t *testing.T) {
 	route := tvSeasonDS.GetRouteForSlug(ctx, "/tv/123/season/2")
 
 	assert.Equal(t, "/fr/tv/123/season/2.html", route)
+}
+
+func TestRenderTVSeason(t *testing.T) {
+	var ds TVSeasonDataSource
+
+	renderer := &test.MockRenderer{}
+
+	ctx, _ := createTestTVSeason()
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, "/fr/tv/breaking-bad/season/2", renderer.FilePath)
+	assert.Equal(t, "season/item.jet", renderer.TemplatePath)
+}
+
+func TestPartialRenderTVSeason(t *testing.T) {
+	var ds TVSeasonDataSource
+
+	renderer := &test.MockRenderer{}
+
+	ctx, r := createTestTVSeason()
+	r.PartialTemplatePath = "/season/partial.jet"
+	r.PartialURLPath = "/partials/tv/:showID/season/:seasonNumber.html"
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+	assert.Equal(t, "/fr/partials/tv/123/season/2.html", renderer.FilePath)
+	assert.Equal(t, "/season/partial.jet", renderer.TemplatePath)
 }
