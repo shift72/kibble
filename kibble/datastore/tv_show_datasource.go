@@ -28,13 +28,18 @@ func (ds *TVShowDataSource) GetEntityType() reflect.Type {
 func (ds *TVShowDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
+	data.Set("site", ctx.Site)
 
 	for _, f := range ctx.Site.TVShows {
-		filePath := ds.GetRouteForEntity(ctx, &f)
-
 		data.Set("tvshow", transformTVShow(f))
-		data.Set("site", ctx.Site)
+
+		filePath := ds.GetRouteForEntity(ctx, &f)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
+
+		if ctx.Route.HasPartial() {
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, &f)
+			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
+		}
 	}
 
 	return
@@ -43,8 +48,22 @@ func (ds *TVShowDataSource) Iterator(ctx models.RenderContext, renderer models.R
 // GetRouteForEntity - get the route
 func (ds *TVShowDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
 	o, ok := entity.(*models.TVShow)
+	log.Critical("%s", ok)
 	if ok {
-		return ds.GetRouteForSlug(ctx, o.Slug)
+		s := strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
+		s = strings.Replace(s, ":showID", strconv.Itoa(o.ID), 1)
+		return ctx.RoutePrefix + s
+	}
+	return models.ErrDataSource
+}
+
+// GetPartialRouteForEntity - get the partial route
+func (ds *TVShowDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
+	o, ok := entity.(*models.TVShow)
+	if ok {
+		s := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.TitleSlug, 1)
+		s = strings.Replace(s, ":showID", strconv.Itoa(o.ID), 1)
+		return ctx.RoutePrefix + s
 	}
 	return models.ErrDataSource
 }
@@ -54,14 +73,10 @@ func (ds *TVShowDataSource) GetRouteForSlug(ctx models.RenderContext, slug strin
 
 	// supports any params: :slug, :showID
 	tvShow, found := ctx.Site.TVShows.FindTVShowBySlug(slug)
-	if !found {
-		return fmt.Sprintf("ERR(%s)", slug)
+	if found {
+		return ds.GetRouteForEntity(ctx, tvShow)
 	}
-
-	s := strings.Replace(ctx.Route.URLPath, ":slug", tvShow.TitleSlug, 1)
-	s = strings.Replace(s, ":showID", strconv.Itoa(tvShow.ID), 1)
-
-	return ctx.RoutePrefix + s
+	return fmt.Sprintf("ERR(%s)", slug)
 }
 
 // IsSlugMatch - checks if the slug is a match
