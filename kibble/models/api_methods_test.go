@@ -66,7 +66,7 @@ func TestRuntimeFormat_ExpectRuntime(t *testing.T) {
 
 func TestRuntimeFormat_ExpectTranslation(t *testing.T) {
 
-	i18n.MustLoadTranslationFile("../en_US.all.json")
+	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
 
 	T, _ := i18n.Tfunc("en-US")
 

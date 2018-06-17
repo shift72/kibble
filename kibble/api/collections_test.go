@@ -39,7 +39,7 @@ func TestCollectionToSeoMap(t *testing.T) {
 	model := apiCollection.mapToModel(serviceConfig, itemIndex)
 
 	assert.Equal(t, "Film On Demand", model.Seo.SiteName, "collection site name")
-	assert.Equal(t, "SHIFT72 , Collection One,  VOD", model.Seo.Title, "collection title")
+	assert.Equal(t, "SHIFT72 , Collection One , VOD", model.Seo.Title, "collection title")
 	assert.Equal(t, "SHIFT72, VOD, key key key", model.Seo.Keywords, "bundle keywords")
 	assert.Equal(t, "Collection description", model.Seo.Description, "collection description")
 	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")

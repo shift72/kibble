@@ -26,8 +26,8 @@ func commonServiceConfig() models.ServiceConfig {
 		"image_root_path":       "https://s3-bla-bla",
 		"portrait_poster_path":  "/posters-and-backdrops/282x422",
 		"landscape_poster_path": "/posters-and-backdrops/380x210",
-		"seo_title_prefix":      "SHIFT72 ",
-		"seo_title_suffix":      " VOD",
+		"seo_title_prefix":      "SHIFT72 ,",
+		"seo_title_suffix":      ", VOD",
 		"seo_site_keywords":     "SHIFT72, VOD",
 		"seo_site_name":         "Film On Demand",
 	}
@@ -51,7 +51,7 @@ func TestBundleToSeoMap(t *testing.T) {
 	model := apiBundle.mapToModel(serviceConfig, itemIndex)
 
 	assert.Equal(t, "Film On Demand", model.Seo.SiteName, "bundle site name")
-	assert.Equal(t, "SHIFT72 , Bundle One,  VOD", model.Seo.Title, "bundle title")
+	assert.Equal(t, "SHIFT72 , Bundle One , VOD", model.Seo.Title, "bundle title")
 	assert.Equal(t, "SHIFT72, VOD, key key key", model.Seo.Keywords, "bundle keywords")
 	assert.Equal(t, "Bundle description", model.Seo.Description, "bundle description")
 	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")

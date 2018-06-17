@@ -37,7 +37,7 @@ func TestPageToSeoMap(t *testing.T) {
 	model := apiPage.mapToModel(serviceConfig, itemIndex)
 
 	assert.Equal(t, "Film On Demand", model.Seo.SiteName, "site name")
-	assert.Equal(t, "SHIFT72 , Page One,  VOD", model.Seo.Title, "page title")
+	assert.Equal(t, "SHIFT72 , Page One , VOD", model.Seo.Title, "page title")
 	assert.Equal(t, "SHIFT72, VOD, key key key", model.Seo.Keywords, "keywords")
 	assert.Equal(t, "https://s3-bla-bla/portrait", model.Seo.Image, "the default seo image is portrait")
 }

@@ -21,7 +21,7 @@ import (
 )
 
 var cfg = &Config{
-	SiteRootPath: "..",
+	SiteRootPath: "../sample_site",
 }
 
 func TestEmptyContent(t *testing.T) {
