@@ -88,6 +88,9 @@ type Summary struct {
 // Execute - start a sync
 func Execute(config Config) (*Summary, error) {
 
+	log.Debugf("bucket: %s", config.Bucket)
+	log.Debugf("bucketRootPath: %s", config.BucketRootPath)
+
 	s3Store, err := NewS3Store(config)
 	if err != nil {
 		return nil, err
