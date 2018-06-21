@@ -110,6 +110,10 @@ var syncCmd = &cobra.Command{
 			syncCfg.BucketRootPath = syncCfg.BucketRootPath + "/"
 		}
 
+		if strings.HasPrefix(syncCfg.BucketRootPath, "production/") {
+			syncCfg.BucketRootPath = strings.Replace(syncCfg.BucketRootPath, "production/", "prod/", 1)
+		}
+
 		return nil
 	},
 }
