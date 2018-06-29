@@ -45,15 +45,17 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	}
 
 	site := &models.Site{
-		SiteConfig:  cfg,
-		Config:      config,
-		Toggles:     toggles,
-		Languages:   sortLanguages(cfg),
-		Navigation:  navigation,
-		Pages:       pages,
-		Films:       make(models.FilmCollection, 0),
+		SiteConfig: cfg,
+		Config:     config,
+		Toggles:    toggles,
+		Languages:  sortLanguages(cfg),
+		Navigation: navigation,
+
 		Bundles:     make(models.BundleCollection, 0),
 		Collections: make(models.CollectionCollection, 0),
+		Films:       make(models.FilmCollection, 0),
+		Pages:       pages,
+		Plans:       make(models.PlanCollection, 0),
 		Taxonomies:  make(models.Taxonomies),
 		TVShows:     make(models.TVShowCollection, 0),
 		TVSeasons:   make(models.TVSeasonCollection, 0),
@@ -70,6 +72,11 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	}
 
 	err = LoadAllBundles(cfg, site, itemIndex)
+	if err != nil {
+		return nil, err
+	}
+
+	err = LoadAllPlans(cfg, site, itemIndex)
 	if err != nil {
 		return nil, err
 	}

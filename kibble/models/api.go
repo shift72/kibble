@@ -34,6 +34,7 @@ type Site struct {
 	TVSeasons   TVSeasonCollection
 	Bundles     BundleCollection
 	Collections CollectionCollection
+	Plans       PlanCollection
 	Taxonomies  Taxonomies
 }
 

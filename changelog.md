@@ -1,5 +1,9 @@
 # Change log
 
+## 0.9.0
+
+  Add support for plans - accessible via the Site
+
 ## 0.7.1
 
   Improve change detection speed
