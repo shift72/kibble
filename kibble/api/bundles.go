@@ -57,10 +57,10 @@ func (b BundleV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex model
 		PromoURL:      b.PromoURL,
 		PublishedDate: b.PublishedDate,
 		Images: models.ImageSet{
-			Portrait:   b.PortraitImage,
-			Landscape:  b.LandscapeImage,
-			Carousel:   b.CarouselImage,
-			Background: b.BgImage,
+			Portrait:   serviceConfig.ForceAbsoluteImagePath(b.PortraitImage),
+			Landscape:  serviceConfig.ForceAbsoluteImagePath(b.LandscapeImage),
+			Carousel:   serviceConfig.ForceAbsoluteImagePath(b.CarouselImage),
+			Background: serviceConfig.ForceAbsoluteImagePath(b.BgImage),
 		},
 		Seo: models.Seo{
 			SiteName:    serviceConfig.GetSiteName(),

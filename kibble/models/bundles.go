@@ -65,5 +65,6 @@ func (bundle Bundle) GetGenericItem() GenericItem {
 		Seo:       bundle.Seo,
 		Images:    bundle.Images,
 		InnerItem: bundle,
+		Slug:      bundle.Slug,
 	}
 }
