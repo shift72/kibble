@@ -205,8 +205,8 @@ type TVShow struct {
 	Studio           []string
 	Title            string
 	TitleSlug        string
-	AvailableSeasons []string
-	Seasons          TVSeasonCollection
+	AvailableSeasons []string           `json:"-"`
+	Seasons          TVSeasonCollection `json:"-"`
 	Images           ImageSet
 }
 
