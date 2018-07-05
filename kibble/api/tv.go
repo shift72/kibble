@@ -98,8 +98,6 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 		err = json.Unmarshal(details.Seasons[i], &seasonV2)
 		if err == nil {
 			season := seasonV2.mapToModel(site.Config, itemIndex)
-			site.TVSeasons = append(site.TVSeasons, season)
-			itemIndex.Set(season.Slug, season.GetGenericItem())
 
 			// merge the tv show information collected by the tvShowSummary and the season meta object
 			if tvShowID, ok := utils.ParseIntFromSlug(season.Slug, 2); ok {
@@ -109,6 +107,9 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 					itemIndex.Set(season.ShowInfo.Slug, season.ShowInfo.GetGenericItem())
 				}
 			}
+
+			site.TVSeasons = append(site.TVSeasons, season)
+			itemIndex.Set(season.Slug, season.GetGenericItem())
 		}
 	}
 
