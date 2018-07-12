@@ -1,5 +1,9 @@
 # Change log
 
+## 0.9.1
+
+ Fix support for ints in i18n template function.
+
 ## 0.9.0
 
   Add support for plans - accessible via the Site
