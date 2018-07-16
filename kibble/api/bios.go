@@ -19,6 +19,7 @@ import (
 	"fmt"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // LoadBios - load the bios request
@@ -71,10 +72,11 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	}
 
 	page.Seo = models.Seo{
-		SiteName: serviceConfig.GetSiteName(),
-		Title:    serviceConfig.GetSEOTitle(p.SeoTitle, page.Title),
-		Keywords: serviceConfig.GetKeywords(p.SeoKeywords),
-		Image:    serviceConfig.SelectDefaultImageType(page.Images.Landscape, page.Images.Portrait),
+		SiteName:    serviceConfig.GetSiteName(),
+		Title:       serviceConfig.GetSEOTitle(p.SeoTitle, page.Title),
+		Keywords:    serviceConfig.GetKeywords(p.SeoKeywords),
+		Description: utils.Coalesce(p.SeoDescription, p.Content),
+		Image:       serviceConfig.SelectDefaultImageType(page.Images.Landscape, page.Images.Portrait),
 	}
 
 	for _, pf := range p.PageFeatures {
