@@ -42,7 +42,9 @@ func TestBundleToSeoMap(t *testing.T) {
 	apiBundle := BundleV1{
 		Title:          "Bundle One",
 		Description:    "Bundle description",
+		SeoTitle:       "Bundle Bundle Bundle",
 		SeoKeywords:    "key key key",
+		SeoDescription: "One Bundle to rule them all",
 		PortraitImage:  "portrait",
 		LandscapeImage: "landscape",
 		PromoURL:       "https://video",
@@ -51,9 +53,9 @@ func TestBundleToSeoMap(t *testing.T) {
 	model := apiBundle.mapToModel(serviceConfig, itemIndex)
 
 	assert.Equal(t, "Film On Demand", model.Seo.SiteName, "bundle site name")
-	assert.Equal(t, "SHIFT72 , Bundle One , VOD", model.Seo.Title, "bundle title")
+	assert.Equal(t, "SHIFT72 , Bundle Bundle Bundle , VOD", model.Seo.Title, "bundle title")
 	assert.Equal(t, "SHIFT72, VOD, key key key", model.Seo.Keywords, "bundle keywords")
-	assert.Equal(t, "Bundle description", model.Seo.Description, "bundle description")
+	assert.Equal(t, "One Bundle to rule them all", model.Seo.Description, "bundle description")
 	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")
 	assert.Equal(t, "https://video", model.Seo.VideoURL, "video url is mapped from the PromoURL")
 }
