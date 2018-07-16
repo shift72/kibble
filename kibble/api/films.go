@@ -21,6 +21,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+
 	"github.com/gosimple/slug"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
@@ -125,9 +127,9 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Genres:      f.Genres,
 		Seo: models.Seo{
 			SiteName:    serviceConfig.GetSiteName(),
-			Title:       serviceConfig.GetSEOTitle("", f.Title),
-			Keywords:    serviceConfig.GetKeywords(f.Keywords),
-			Description: f.Tagline,
+			Title:       serviceConfig.GetSEOTitle(f.SeoTitle, f.Title),
+			Keywords:    serviceConfig.GetKeywords(f.SeoKeywords),
+			Description: utils.Coalesce(f.SeoDescription, f.Tagline),
 			Image:       serviceConfig.SelectDefaultImageType(f.ImageUrls.Landscape, f.ImageUrls.Portrait),
 		},
 		Images: models.ImageSet{
@@ -251,7 +253,6 @@ type filmV2 struct {
 	Title       string    `json:"title"`
 	Slug        string    `json:"slug"`
 	FilmID      int       `json:"film_id"`
-	Keywords    string    `json:"keywords"`
 	ID          int       `json:"id"`
 	ImageUrls   struct {
 		Portrait       string `json:"portrait"`
@@ -263,6 +264,9 @@ type filmV2 struct {
 	} `json:"image_urls"`
 	Recommendations []string          `json:"recommendations"`
 	Subtitles       []subtitleTrackV1 `json:"subtitle_tracks"`
+	SeoTitle        string            `json:"seo_title"`
+	SeoKeywords     string            `json:"seo_keywords"`
+	SeoDescription  string            `json:"seo_description"`
 }
 
 // FilmBonus - film bonus model
