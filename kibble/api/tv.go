@@ -164,9 +164,9 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 		SeasonNumber:    seasonNumber,
 		Seo: models.Seo{
 			SiteName:    serviceConfig.GetSiteName(),
-			Title:       serviceConfig.GetSEOTitle(t.Title, fmt.Sprintf("Season %d", seasonNumber)),
-			Keywords:    "",
-			Description: t.Tagline,
+			Title:       serviceConfig.GetSEOTitle(t.SeoTitle, t.ShowInfo.Title),
+			Keywords:    serviceConfig.GetKeywords(t.SeoKeywords),
+			Description: utils.Coalesce(t.SeoDescription, t.Tagline),
 			Image:       serviceConfig.SelectDefaultImageType(t.ImageUrls.Landscape, t.ImageUrls.Portrait),
 		},
 		Images: models.ImageSet{
@@ -343,6 +343,9 @@ type tvSeasonV2 struct {
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
 	Recommendations []string `json:"recommendations"`
+	SeoTitle        string   `json:"seo_title"`
+	SeoKeywords     string   `json:"seo_keywords"`
+	SeoDescription  string   `json:"seo_description"`
 }
 
 type tvSeasonShowMultipleResponseV2 struct {
