@@ -184,6 +184,17 @@ func (bonus FilmBonus) GetGenericItem() GenericItem {
 	}
 }
 
+// GetGenericItem returns a generic item for the specific episode
+func (episode TVEpisode) GetGenericItem() GenericItem {
+	return GenericItem{
+		Title:     episode.Title,
+		Slug:      episode.Slug,
+		Images:    episode.Images,
+		ItemType:  "episode",
+		InnerItem: episode,
+	}
+}
+
 // GetTitle - returns the title in the current language
 // expect to be called as item.GetTitle(i18n) where i18n is the translation function
 // for the current language
