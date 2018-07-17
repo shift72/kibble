@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -216,7 +217,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 
 	// episodes
 	for _, t := range t.Episodes {
-		season.Episodes = append(season.Episodes, t.mapToModel())
+		season.Episodes = append(season.Episodes, t.mapToModel(season))
 	}
 
 	return season
@@ -244,9 +245,10 @@ func (t tvShowV2) mapToModel() *models.TVShow {
 	return &show
 }
 
-func (t tvEpisodeV2) mapToModel() models.TVEpisode {
+func (t tvEpisodeV2) mapToModel(season models.TVSeason) models.TVEpisode {
 
 	episode := models.TVEpisode{
+		Slug:          season.Slug + "/episode/" + strconv.Itoa(t.EpisodeNumber),
 		Title:         t.Title,
 		EpisodeNumber: t.EpisodeNumber,
 		Overview:      t.Overview,

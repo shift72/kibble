@@ -93,3 +93,34 @@ func TestSeasonToSeoMap(t *testing.T) {
 	assert.Equal(t, "One Season to rule them all", model.Seo.Description, "Season description")
 	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")
 }
+
+func TestTVEpisodeSlugPopulations(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:           "/tv/1/season/1",
+		Title:          "Season One",
+		Overview:       "Season overview",
+		SeoTitle:       "Season Season Season",
+		SeoKeywords:    "key key key",
+		SeoDescription: "One Season to rule them all",
+		ShowInfo: tvShowV2{
+			Title: "Show One",
+		},
+		Episodes: []tvEpisodeV2{{
+			EpisodeNumber: 1,
+			Title:         "First Episode",
+		}, {
+			EpisodeNumber: 2,
+			Title:         "Second Episode",
+		}},
+	}
+
+	model := apiSeason.mapToModel(serviceConfig, itemIndex)
+	assert.Equal(t, "/tv/1/season/1/episode/1", model.Episodes[0].Slug, "first episode slug")
+	assert.Equal(t, "/tv/1/season/1/episode/2", model.Episodes[1].Slug, "second episode slug")
+
+}
