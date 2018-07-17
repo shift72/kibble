@@ -1,5 +1,13 @@
 # Change log
 
+## 0.9.2
+
+Fix SEO support, based on changes made to:
+* `/services/meta/v2/bios`
+* `/services/meta/v1/bundles/`
+* `/services/meta/v2/film/:ids/show_multiple`
+* `/services/meta/v2/tv/seasons/show_multiple`
+
 ## 0.9.1
 
  Fix support for ints in i18n template function.
