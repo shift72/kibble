@@ -29,6 +29,8 @@ func TestPageToSeoMap(t *testing.T) {
 
 	apiPage := pageV1{
 		Title:          "Page One",
+		SeoTitle:       "Special Page One",
+		SeoDescription: "Page One is so special it hurts",
 		SeoKeywords:    "key key key",
 		PortraitImage:  "/portrait",
 		LandscapeImage: "/landscape",
@@ -37,9 +39,10 @@ func TestPageToSeoMap(t *testing.T) {
 	model := apiPage.mapToModel(serviceConfig, itemIndex)
 
 	assert.Equal(t, "Film On Demand", model.Seo.SiteName, "site name")
-	assert.Equal(t, "SHIFT72 , Page One , VOD", model.Seo.Title, "page title")
+	assert.Equal(t, "SHIFT72 , Special Page One , VOD", model.Seo.Title, "page title")
 	assert.Equal(t, "SHIFT72, VOD, key key key", model.Seo.Keywords, "keywords")
 	assert.Equal(t, "https://s3-bla-bla/portrait", model.Seo.Image, "the default seo image is portrait")
+	assert.Equal(t, "Page One is so special it hurts", model.Seo.Description, "seo description")
 }
 
 func TestPagehasAbsoluteImagePaths(t *testing.T) {

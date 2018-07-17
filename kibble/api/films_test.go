@@ -97,6 +97,9 @@ func TestFilmApiToModel(t *testing.T) {
 				Classification: "classification",
 			},
 		}},
+		SeoTitle:       "Film One Meta Title",
+		SeoKeywords:    "Film One Meta Keywords",
+		SeoDescription: "Film One Meta Description",
 	}
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
@@ -105,9 +108,9 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, "/film/52", model.Slug, "slug")
 	assert.Equal(t, "https://cdn/trailer.mp4", model.Trailers[0].URL, "trailer")
 
-	assert.Equal(t, "SHIFT72 , Film One , VOD", model.Seo.Title, "seo.title")
-	assert.Equal(t, "Tag line", model.Seo.Description, "seo.description")
-	assert.Equal(t, "SHIFT72, VOD", model.Seo.Keywords, "seo.keywords")
+	assert.Equal(t, "SHIFT72 , Film One Meta Title , VOD", model.Seo.Title, "seo.title")
+	assert.Equal(t, "Film One Meta Description", model.Seo.Description, "seo.description")
+	assert.Equal(t, "SHIFT72, VOD, Film One Meta Keywords", model.Seo.Keywords, "seo.keywords")
 	assert.Equal(t, "", model.Seo.Image, "seo.image")
 	assert.Equal(t, "https://cdn/trailer.mp4", model.Seo.VideoURL, "seo.videourl")
 

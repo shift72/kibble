@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLoadAll(t *testing.T) {
@@ -63,4 +64,32 @@ func TestLoadTVSeasons(t *testing.T) {
 
 	fmt.Printf("here shows %d ", len(site.TVShows))
 
+}
+func TestSeasonToSeoMap(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:           "/tv/1/season/1",
+		Title:          "Season One",
+		Overview:       "Season overview",
+		SeoTitle:       "Season Season Season",
+		SeoKeywords:    "key key key",
+		SeoDescription: "One Season to rule them all",
+		ShowInfo: tvShowV2{
+			Title: "Show One",
+		},
+	}
+
+	apiSeason.ImageUrls.Portrait = "portrait"
+
+	model := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, "Film On Demand", model.Seo.SiteName, "Season site name")
+	assert.Equal(t, "SHIFT72 , Season Season Season , VOD", model.Seo.Title, "Season title")
+	assert.Equal(t, "SHIFT72, VOD, key key key", model.Seo.Keywords, "Season keywords")
+	assert.Equal(t, "One Season to rule them all", model.Seo.Description, "Season description")
+	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")
 }
