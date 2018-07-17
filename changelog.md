@@ -1,5 +1,8 @@
 # Change log
 
+## 0.9.3
+Add slug to TV Episode
+
 ## 0.9.2
 
 Fix SEO support, based on changes made to:
