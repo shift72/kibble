@@ -80,7 +80,7 @@ func (c *InMemoryRenderer) Initialise() {
 func (c *InMemoryRenderer) Render(templatePath string, filePath string, data jet.VarMap) (errCount int) {
 
 	if c.Results == nil {
-		c.Results = make([]InMemoryResult, 1, 10)
+		c.Results = make([]InMemoryResult, 0, 10)
 	}
 
 	result := InMemoryResult{

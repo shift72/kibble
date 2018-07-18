@@ -1,0 +1,10 @@
+{{ range site.Plans }}
+TestName:{{.Name | stringify}}
+TestDescription:{{.Description}}
+TestInterval:{{.Interval | stringify}}
+IntervalCount:{{.IntervalCount | stringify}}
+TrialPeriodDays:{{.TrialPeriodDays | stringify}}
+{{ if .Interval }}
+IntervalOptionalCheck
+{{ end}}
+{{ end }}
