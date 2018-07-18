@@ -53,18 +53,29 @@ func LoadAllPlans(cfg *models.Config, site *models.Site, itemIndex models.ItemIn
 }
 
 func (p PlansV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Plan {
-	return models.Plan{
+	m := models.Plan{
 		ID:              p.ID,
 		Slug:            fmt.Sprintf("/plan/%d", p.ID),
 		NameSlug:        slug.Make(p.Name),
 		Name:            p.Name,
+		Interval:        "",
+		IntervalCount:   0,
+		TrialPeriodDays: 0,
 		Description:     p.Description,
-		Interval:        p.Interval,
-		IntervalCount:   p.IntervalCount,
-		TrialPeriodDays: p.TrialPeriodDays,
 		CreatedAt:       p.CreatedAt,
 		UpdatedAt:       p.UpdatedAt,
 	}
+
+	if p.Interval != nil {
+		m.Interval = *p.Interval
+	}
+	if p.IntervalCount != nil {
+		m.IntervalCount = *p.IntervalCount
+	}
+	if p.TrialPeriodDays != nil {
+		m.TrialPeriodDays = *p.TrialPeriodDays
+	}
+	return m
 }
 
 // PlansV1 - model

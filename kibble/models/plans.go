@@ -26,9 +26,9 @@ type Plan struct {
 	Name            string
 	NameSlug        string
 	Description     string
-	Interval        *string
-	IntervalCount   *int
-	TrialPeriodDays *int
+	Interval        string
+	IntervalCount   int
+	TrialPeriodDays int
 	Page            *Page
 	CreatedAt       time.Time
 	UpdatedAt       time.Time

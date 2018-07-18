@@ -1,9 +1,10 @@
 {{ range site.Plans }}
-TestName:{{.Name | stringify}}
+TestName:{{.Name}}
 TestDescription:{{.Description}}
-TestInterval:{{.Interval | stringify}}
-IntervalCount:{{.IntervalCount | stringify}}
-TrialPeriodDays:{{.TrialPeriodDays | stringify}}
+TestInterval:{{.Interval}}
+IntervalCount:{{.IntervalCount}}
+TrialPeriodDays:{{.TrialPeriodDays}}
+TrialPeriodDays-i18n:{{i18n("plans_trial_period_offer", .TrialPeriodDays)}}
 {{ if .Interval }}
 IntervalOptionalCheck
 {{ end}}

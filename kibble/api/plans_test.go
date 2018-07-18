@@ -38,7 +38,7 @@ func TestPlansMapping(t *testing.T) {
 	assert.Equal(t, "Bronze Plan", model.Name)
 	assert.Equal(t, "bronze-plan", model.NameSlug)
 	assert.Equal(t, "Plan description", model.Description)
-	assert.Nil(t, model.Interval)
+	assert.Equal(t, "", model.Interval)
 }
 
 func TestPlansMappingWithOptionalSvodFields(t *testing.T) {
@@ -65,7 +65,7 @@ func TestPlansMappingWithOptionalSvodFields(t *testing.T) {
 	assert.Equal(t, "Bronze Plan", model.Name)
 	assert.Equal(t, "bronze-plan", model.NameSlug)
 	assert.Equal(t, "Plan description", model.Description)
-	assert.Equal(t, &interval, model.Interval)
-	assert.Equal(t, &intervalCount, model.IntervalCount)
-	assert.Equal(t, &trialPeriodDays, model.TrialPeriodDays)
+	assert.Equal(t, "week", model.Interval)
+	assert.Equal(t, 4, model.IntervalCount)
+	assert.Equal(t, 7, model.TrialPeriodDays)
 }

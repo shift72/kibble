@@ -94,22 +94,6 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 		return ctx.Site.Toggles[key]
 	})
 
-	// resolve pointers to strings
-	view.AddGlobalFunc("stringify", func(a jet.Arguments) reflect.Value {
-		a.RequireNumOfArguments("stringify", 1, 1)
-
-		if a.Get(0).Kind() == reflect.Ptr {
-			if a.Get(0).IsNil() {
-				return reflect.ValueOf("")
-			}
-			return reflect.ValueOf(fmt.Sprint(a.Get(0).Elem()))
-		}
-
-		buffer := bytes.NewBuffer(nil)
-		fmt.Fprint(buffer, a.Get(0))
-		return reflect.ValueOf(buffer.Bytes())
-	})
-
 	return view
 }
 
