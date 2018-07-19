@@ -1,17 +1,19 @@
 # Change log
 
 ## 0.9.4
+
 Add GetTitle to TvSeason
 Support localising Tv Season Title
 Removed pointers to optional Plan information
 
-
 ## 0.9.3
+
 Add slug to TV Episode
 
 ## 0.9.2
 
 Fix SEO support, based on changes made to:
+
 * `/services/meta/v2/bios`
 * `/services/meta/v1/bundles/`
 * `/services/meta/v2/film/:ids/show_multiple`
