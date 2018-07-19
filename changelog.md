@@ -1,5 +1,11 @@
 # Change log
 
+## 0.9.4
+Add GetTitle to TvSeason
+Support localising Tv Season Title
+Removed pointers to optional Plan information
+
+
 ## 0.9.3
 Add slug to TV Episode
 
