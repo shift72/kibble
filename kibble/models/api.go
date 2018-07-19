@@ -224,8 +224,9 @@ type TVEpisode struct {
 
 // TVSeason -
 type TVSeason struct {
-	Slug            string
-	SeasonNumber    int
+	Slug         string
+	SeasonNumber int
+	//TODO: consider removing this
 	Title           string
 	Tagline         string
 	Overview        string

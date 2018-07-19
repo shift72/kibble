@@ -76,3 +76,25 @@ func TestRuntimeFormat_ExpectTranslation(t *testing.T) {
 
 	assert.Equal(t, "0m", Runtime(0).Localise(T), "runtime 0")
 }
+
+func TestTVSeason_ExpectTranslation(t *testing.T) {
+
+	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
+
+	T, _ := i18n.Tfunc("en-US")
+
+	tvSeason := &TVSeason{
+		SeasonNumber: 2,
+		ShowInfo: &TVShow{
+			ID:        123,
+			Title:     "Breaking Bad",
+			TitleSlug: "breaking-bad",
+		},
+		Slug: "/tv/123/season/2",
+	}
+
+	item := tvSeason.GetGenericItem()
+
+	assert.Equal(t, "Breaking Bad - Season Alt - 2", item.GetTitle(T), "GetTitle")
+
+}

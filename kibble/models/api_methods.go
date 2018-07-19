@@ -195,6 +195,14 @@ func (episode TVEpisode) GetGenericItem() GenericItem {
 	}
 }
 
+// GetTitle return the localised version of the season title
+func (season TVSeason) GetTitle(T i18n.TranslateFunc) string {
+	return T("tvseason", map[string]interface{}{
+		"ShowInfo": *season.ShowInfo,
+		"Season":   season,
+	})
+}
+
 // GetTitle - returns the title in the current language
 // expect to be called as item.GetTitle(i18n) where i18n is the translation function
 // for the current language
@@ -202,10 +210,7 @@ func (i *GenericItem) GetTitle(T i18n.TranslateFunc) string {
 	switch i.ItemType {
 	case "tvseason":
 		if s, ok := i.InnerItem.(TVSeason); ok {
-			return T(i.ItemType, map[string]interface{}{
-				"ShowInfo": s.ShowInfo,
-				"Season":   s,
-			})
+			return s.GetTitle(T)
 		}
 	}
 	return i.Title
