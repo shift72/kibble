@@ -21,5 +21,16 @@
     {
         "id": "runtime_minutes_only",
         "translation": "{{.Minutes}}m"
+    },
+    {
+        "id": "plans_trial_period_offer",
+        "translation": {
+            "one": "Try your free trial period of {{.Count}} day now!",
+            "other": "Try your free trial period of {{.Count}} days now!"
+        }   
+    },
+    { 
+        "id": "tvseason",
+        "translation":  "{{.ShowInfo.Title}} - Season Alt - {{.Season.SeasonNumber}}" 
     }
 ]

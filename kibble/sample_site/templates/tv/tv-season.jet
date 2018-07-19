@@ -1,0 +1,4 @@
+ 
+Title: {{tvseason.GetTitle(i18n) }}
+Generic Item Title: {{ item.GetTitle(i18n) }}
+

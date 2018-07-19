@@ -71,9 +71,10 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 			       Count field must be an integer type (int, int8, int16, int32, int64) or a float formatted as a string (e.g. "123.45").
 		*/
 		if len(args) == 1 {
-			argType := reflect.TypeOf(args[0]).Name()
+			argType := reflect.TypeOf(args[0])
+			argTypeName := argType.String()
 
-			if argType == "string" || strings.Contains(argType, "int") || argType == "map[string]interface {}" {
+			if argTypeName == "string" || strings.Contains(argTypeName, "int") || argTypeName == "map[string]interface {}" {
 				return trans(translationID, args[0])
 			}
 
