@@ -61,6 +61,7 @@ func (p PlansV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models
 		Interval:        "",
 		IntervalCount:   0,
 		TrialPeriodDays: 0,
+		PortraitImage:   p.PortraitImage,
 		Description:     p.Description,
 		CreatedAt:       p.CreatedAt,
 		UpdatedAt:       p.UpdatedAt,
@@ -90,4 +91,5 @@ type PlansV1 struct {
 	Interval        *string   `json:"interval"`
 	IntervalCount   *int      `json:"interval_count"`
 	TrialPeriodDays *int      `json:"trial_period_days"`
+	PortraitImage   string    `json:"portrait_image"`
 }

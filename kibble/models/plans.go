@@ -30,6 +30,7 @@ type Plan struct {
 	IntervalCount   int
 	TrialPeriodDays int
 	Page            *Page
+	PortraitImage   string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 }
