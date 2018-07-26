@@ -61,7 +61,7 @@ func (p PlansV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models
 		Interval:        "",
 		IntervalCount:   0,
 		TrialPeriodDays: 0,
-		PortraitImage:   p.PortraitImage,
+		PortraitImage:   serviceConfig.ForceAbsoluteImagePath(p.PortraitImage),
 		Description:     p.Description,
 		CreatedAt:       p.CreatedAt,
 		UpdatedAt:       p.UpdatedAt,

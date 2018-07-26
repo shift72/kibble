@@ -1,5 +1,9 @@
 # Change log
 
+## 0.9.6
+
+Append base url to plans
+
 ## 0.9.5
 
 Add Portrait Image to Plans
