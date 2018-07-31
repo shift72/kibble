@@ -186,7 +186,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 
 	// add bonuses - supports linking to bonus entries (supported??)
 	for _, bonus := range f.Bonuses {
-		b := bonus.mapToModel2(film.Slug, serviceConfig, itemIndex)
+		b := bonus.mapToModel2(film, serviceConfig, itemIndex)
 		film.Bonuses = append(film.Bonuses, b)
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}
@@ -194,21 +194,21 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	return film
 }
 
-func (fb filmBonusV2) mapToModel2(filmSlug string, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.FilmBonus {
+func (fb filmBonusV2) mapToModel2(film models.Film, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.FilmBonus {
 
 	b := models.FilmBonus{
-		Slug:     fmt.Sprintf("%s/bonus/%d", filmSlug, fb.Number),
+		Slug:     fmt.Sprintf("%s/bonus/%d", film.Slug, fb.Number),
 		Number:   fb.Number,
 		Title:    fb.Title,
 		Runtime:  models.Runtime(fb.Runtime),
 		Overview: fb.Overview,
 		Images: models.ImageSet{
-			Portrait:       fb.ImageUrls.Portrait,
-			Landscape:      fb.ImageUrls.Landscape,
-			Header:         fb.ImageUrls.Header,
-			Carousel:       fb.ImageUrls.Carousel,
-			Background:     fb.ImageUrls.Bg,
-			Classification: fb.ImageUrls.Classification,
+			Portrait:       utils.Coalesce(fb.ImageUrls.Portrait, film.Images.Portrait),
+			Landscape:      utils.Coalesce(fb.ImageUrls.Landscape, film.Images.Landscape),
+			Header:         utils.Coalesce(fb.ImageUrls.Header, film.Images.Header),
+			Carousel:       utils.Coalesce(fb.ImageUrls.Carousel, film.Images.Carousel),
+			Background:     utils.Coalesce(fb.ImageUrls.Bg, film.Images.Background),
+			Classification: utils.Coalesce(fb.ImageUrls.Classification, film.Images.Classification),
 		},
 	}
 
