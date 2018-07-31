@@ -254,12 +254,12 @@ func (t tvEpisodeV2) mapToModel(season models.TVSeason) models.TVEpisode {
 		Overview:      t.Overview,
 		Runtime:       models.Runtime(t.Runtime),
 		Images: models.ImageSet{
-			Portrait:       t.ImageUrls.Portrait,
-			Landscape:      t.ImageUrls.Landscape,
-			Header:         t.ImageUrls.Header,
-			Carousel:       t.ImageUrls.Carousel,
-			Background:     t.ImageUrls.Bg,
-			Classification: t.ImageUrls.Classification,
+			Portrait:       utils.Coalesce(t.ImageUrls.Portrait, season.Images.Portrait),
+			Landscape:      utils.Coalesce(t.ImageUrls.Landscape, season.Images.Landscape),
+			Header:         utils.Coalesce(t.ImageUrls.Header, season.Images.Header),
+			Carousel:       utils.Coalesce(t.ImageUrls.Carousel, season.Images.Carousel),
+			Background:     utils.Coalesce(t.ImageUrls.Bg, season.Images.Background),
+			Classification: utils.Coalesce(t.ImageUrls.Classification, season.Images.Classification),
 		},
 		Subtitles: make([]models.SubtitleTrack, 0),
 	}
