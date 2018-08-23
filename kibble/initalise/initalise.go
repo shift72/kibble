@@ -95,9 +95,11 @@ func NewSite(force bool) {
 
 	log.Notice("Setup complete!\n")
 	log.Notice("Next steps:")
-	log.Notice(" 1. update kibble.json with the url of your site")
-	log.Notice(" 2. initalise git and push to your repository")
+	log.Notice(" 1. npm install")
+	log.Notice(" 2. npm start")
+	log.Notice(" ---")
+	log.Notice(" 3. update kibble.json with the url of your site")
+	log.Notice(" 4. initalise git and push to your repository")
 	log.Notice("    `git init`")
 	log.Notice("    `git remote add origin https://github.com/user/repo.git`")
-	log.Notice(" 3. you can now run `kibble render --watch` to see your site")
 }

@@ -1,5 +1,13 @@
 # Change log
 
+## 0.9.8
+
+Updates to the post install instructions
+
+## 0.9.7
+
+Season image fallbacks
+
 ## 0.9.6
 
 Append base url to plans
