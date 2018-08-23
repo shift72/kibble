@@ -49,7 +49,7 @@ Kibble is released to 3 places
 
   1. github - mostly historical purposes, intention is to make this open source
   2. SHIFT72 Platform - this is where the platform will pull the kibble release from
-  3. NPM - to support downloading and installation via npm and the node js environment
+  3. NPM - to support installation for third parties via npm and the node js environment
 
 ``` bash
 
