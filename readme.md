@@ -43,6 +43,36 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
 
 ```
 
+## Releasing new versions
+
+Kibble is released to 3 places
+
+  1. github - mostly historical purposes, intention is to make this open source
+  2. SHIFT72 Platform - this is where the platform will pull the kibble release from
+  3. NPM - to support downloading and installation via npm and the node js environment
+
+``` bash
+
+# a. update npm package version
+#    kibble-npm/package.json
+
+# b. ensure that the release is tagged correctly
+git tag 0.9.6 master
+git push origin 0.9.6
+
+# c. build and release to locations 1 and 2
+goreleaser --rm-dist
+
+# d. release to location 3
+cd kibble-npm
+npm publish
+
+# e. register new build in uber admin
+
+# f. update any sample templates with the new kibble version
+
+```
+
 ## Supports
 
 * model
