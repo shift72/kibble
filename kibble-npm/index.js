@@ -3,13 +3,14 @@ var path = require("path");
 
 var packageInfo = require(path.join(__dirname, "package.json"));
 var version = packageInfo.version;
-var root = "https://github.com/indiereign/shift72-kibble/releases/download";
+var root = "https://s3-ap-southeast-2.amazonaws.com/shift72-sites/s72-web/kibble/" + version;
 
 module.exports = binwrap({
+  dirname: __dirname,
   binaries: ["kibble"],
   urls: {
-    "darwin-x64": root + "/v" + version + "/kibble_" + version + "_darwin_amd64.tar.gz",
-    "linux-x64": root + "/v" + version + "/kibble_" + version + "_linux_amd64.tar.gz",
-    "win32-x64": root + "/v" + version + "/kibble_" + version + "_windows_amd64.tar.gz"
+    "darwin-x64": root + "/shift72-kibble_" + version + "_macOS_64-bit.zip",
+    "linux-x64":  root + "/shift72-kibble_" + version + "_Tux_64-bit.tar.gz",
+    "win32-x64":  root + "/shift72-kibble_" + version + "_windows_64-bit.zip"
   }
 });

@@ -1,3 +1,8 @@
 VERSION=$(git describe --tags)
-echo "uploading - $VERSION"
-aws s3 cp ./dist/linuxamd64/kibble s3://shift72-sites/builder/$VERSION/kibble --profile shift72a
+if [ -z $VERSION ]; then
+  echo "error: tagged version not found"
+  exit 1
+fi
+
+echo "uploading linux only version - $VERSION"
+aws s3 cp ./dist/linux_amd64/kibble s3://shift72-sites/builder/$VERSION/kibble --profile shift72a
