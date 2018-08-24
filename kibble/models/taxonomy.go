@@ -44,15 +44,6 @@ type OrderedEntry struct {
 // OrderedEntries - array of entires
 type OrderedEntries []OrderedEntry
 
-// // OrderedItem - array of items, with a specific rank
-// type OrderedItem struct {
-// 	Rank int
-// 	Item GenericItem
-// }
-//
-// // OrderedItems - array of orderItem
-// type OrderedItems []OrderedItem
-
 // PopulateTaxonomyWithFilms - select the taxonomy and the film attribute
 func (s Site) PopulateTaxonomyWithFilms(taxonomy string, finder func(*Film) []string) {
 

@@ -14,7 +14,10 @@
 
 package models
 
-import "errors"
+import (
+	"errors"
+	"reflect"
+)
 
 var (
 	// ErrDataSource is returned when no datasource could be found
@@ -24,6 +27,17 @@ var (
 )
 
 var store map[string]DataSource
+
+// DataSource provides a set of data for querying and iterating over
+type DataSource interface {
+	GetName() string
+	GetEntityType() reflect.Type
+	Iterator(ctx RenderContext, renderer Renderer) (errorCount int)
+	IsSlugMatch(slug string) bool
+	GetRouteForEntity(ctx RenderContext, entity interface{}) string
+	GetRouteForSlug(ctx RenderContext, slug string) string
+	//TODO: ValidateRoute - check that the route contains valid tokens
+}
 
 // AddDataSource - register a datasource
 func AddDataSource(ds DataSource) {

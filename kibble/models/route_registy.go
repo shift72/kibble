@@ -34,6 +34,15 @@ type Route struct {
 	Pagination          Pagination   `json:"-"`
 }
 
+// Pagination describes a single page of results
+type Pagination struct {
+	Index       int
+	Size        int
+	Total       int
+	PreviousURL string
+	NextURL     string
+}
+
 // Clone - create a copy of the route
 func (r *Route) Clone() *Route {
 	return &Route{
