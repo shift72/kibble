@@ -64,7 +64,7 @@ func NewSite(force bool) {
 	for selectedID == 0 {
 		log.Noticef("Select a value in the range (1-%d): ", results.TotalCount)
 		rawID, _ := reader.ReadString('\n')
-		parsedID, err := strconv.Atoi(strings.Trim(rawID, "\n"))
+		parsedID, err := strconv.Atoi(strings.Trim(rawID, "\r\n"))
 		if err != nil || parsedID < 1 || parsedID > results.TotalCount {
 			log.Error("invalid, try again")
 		} else {

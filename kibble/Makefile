@@ -20,6 +20,9 @@ all: test darwin
 darwin:
 	GOOS=darwin GOARCH=${GOARCH} $(GOINSTALL) -ldflags '${LDFLAGS}' 
 
+windows:
+	GOOS=windows GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}' -o ${BINARY}-windows-${GOARCH}.exe .
+
 test: 
 	$(GOTEST) -cover ./...
 

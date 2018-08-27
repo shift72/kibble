@@ -23,7 +23,6 @@ import (
 
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -198,11 +197,7 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 		// wait for the channel to be rendered
 		<-rendered
 
-		cmd := exec.Command("open", url)
-		err := cmd.Start()
-		if err != nil {
-			log.Error("Watcher: ", err)
-		}
+		utils.LaunchBrowser(url)
 	}()
 
 	// useful to trigger one new reload

@@ -1,5 +1,10 @@
 # Change log
 
+## 0.9.10
+
+Windows fixes for template selection
+Windows fixes for launching the browser
+
 ## 0.9.9
 
 Updates to console messaging
