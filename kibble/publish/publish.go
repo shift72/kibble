@@ -23,12 +23,18 @@ import (
 	"strings"
 
 	"github.com/indiereign/shift72-kibble/kibble/api"
+	"github.com/indiereign/shift72-kibble/kibble/config"
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // Execute the publish process by
 func Execute(sourcePath string, buildPath string, cfg *models.Config, zipOnly bool) error {
+
+	err := config.CheckVersion(cfg)
+	if err != nil {
+		return err
+	}
 
 	target := path.Join(buildPath, "kibble-nibble.zip")
 
@@ -38,7 +44,7 @@ func Execute(sourcePath string, buildPath string, cfg *models.Config, zipOnly bo
 
 	ignoredPaths := utils.NewFileIgnorer(sourcePath, ignorePatterns)
 
-	err := createArchive(target, sourcePath, ignoredPaths)
+	err = createArchive(target, sourcePath, ignoredPaths)
 	if err != nil {
 		return err
 	}

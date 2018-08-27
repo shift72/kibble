@@ -163,12 +163,14 @@ func (live *LiveReload) Handler(w http.ResponseWriter, req *http.Request) {
 // StartLiveReload - start the process to watch the files and wait for a reload
 func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 
+	url := fmt.Sprintf("http://localhost:%d/", port)
+
 	rendered := make(chan bool)
 
 	// wait for changes
 	changesChannel := make(chan bool)
 	go func() {
-		log.Info("Starting live reload")
+		log.Info("Starting live reload - %s", url)
 
 		for range changesChannel {
 			now := time.Now()
@@ -196,7 +198,7 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 		// wait for the channel to be rendered
 		<-rendered
 
-		cmd := exec.Command("open", fmt.Sprintf("http://localhost:%d/", port))
+		cmd := exec.Command("open", url)
 		err := cmd.Start()
 		if err != nil {
 			log.Error("Watcher: ", err)

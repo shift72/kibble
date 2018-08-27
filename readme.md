@@ -118,8 +118,7 @@ npm publish
 * sync
   * upload - done
   * return errors via summary
-
-## TODO
-
 * download
   * build and release on github
+  * deploy via npm
+  * 

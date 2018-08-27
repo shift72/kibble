@@ -16,6 +16,7 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
 	"path"
@@ -76,10 +77,11 @@ func SaveConfig(cfg *models.Config) {
 
 // CheckVersion is responsible for displaying an warning message if the version of kibble is newer than
 // the version the template was built with
-func CheckVersion(cfg *models.Config) {
+func CheckVersion(cfg *models.Config) error {
 
 	if cfg.BuilderVersion == "" {
-		return
+		log.Warning("No builderVersion specified.")
+		return errors.New("No builderVersion specified")
 	}
 
 	bwv, err := goversion.NewVersion(cfg.BuilderVersion)
@@ -89,8 +91,16 @@ func CheckVersion(cfg *models.Config) {
 	}
 
 	if bwv.GreaterThan(currentVersion) {
-		log.Warning("this template was built with a newer version of kibble, some templates possibly will not work")
+		log.Warning("This template currently targets version %s, but you are running an older version %s.", cfg.BuilderVersion, currentVersion)
+		log.Warning("Some features may not work, it is recommended that you update your version of kibble via npm.")
+		return errors.New("Miss matched builderVersion")
+	} else if bwv.LessThan(currentVersion) {
+		log.Warning("This template currently targets version %s, but you are running an newer version %s.", cfg.BuilderVersion, currentVersion)
+		log.Warning("It is recommended that you update the builderVersion in the kibble.json and test throughly before publishing.")
+		return errors.New("Miss matched builderVersion")
 	}
+
+	return nil
 }
 
 // UpdateBuilderVersion updates the build with version with the current version and saves the config

@@ -1,5 +1,10 @@
 # Change log
 
+## 0.9.9
+
+Updates to console messaging
+Check builderVersion before publishing
+
 ## 0.9.8
 
 Updates to the post install instructions
