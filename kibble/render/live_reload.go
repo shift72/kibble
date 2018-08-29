@@ -83,7 +83,7 @@ type WrapperResponseWriter struct {
 
 // NewWrapperResponseWriter - create a new response writer
 func NewWrapperResponseWriter(w http.ResponseWriter) *WrapperResponseWriter {
-	return &WrapperResponseWriter{ResponseWriter: w}
+	return &WrapperResponseWriter{ResponseWriter: w, status: 200}
 }
 
 // Status - get the status

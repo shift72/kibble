@@ -1,5 +1,9 @@
 # Change log
 
+## 0.9.11
+
+Fix intermittent live reload bug when no status code is set
+
 ## 0.9.10
 
 Windows fixes for template selection
