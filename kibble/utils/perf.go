@@ -40,7 +40,7 @@ func NewStopwatchLevel(msg string, level logging.Level) *Stopwatch {
 
 // NewStopwatchf - start a stop watch with formatting
 func NewStopwatchf(msg string, a ...interface{}) *Stopwatch {
-	return &Stopwatch{msg: fmt.Sprintf(msg, a), start: time.Now(), level: logging.DEBUG}
+	return &Stopwatch{msg: fmt.Sprintf(msg, a...), start: time.Now(), level: logging.DEBUG}
 }
 
 // Completed - stops the stop watch
