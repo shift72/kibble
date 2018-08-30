@@ -26,22 +26,20 @@ import (
 )
 
 // NewSite - create a new site
-func NewSite(force bool) {
+func NewSite() {
 
 	// set the log format for interactiveness
 	utils.ConfigureInteractiveLogging(utils.ConvertToLoggingLevel(false))
 
-	if !force {
-		r, err := ioutil.ReadDir(".")
-		if err != nil {
-			log.Error("Checking directory", err)
-			os.Exit(1)
-		}
+	r, err := ioutil.ReadDir(".")
+	if err != nil {
+		log.Error("Checking directory", err)
+		os.Exit(1)
+	}
 
-		if len(r) > 0 {
-			log.Error("Aborted: the current directory is not empty. Use --force to skip this check")
-			os.Exit(1)
-		}
+	if len(r) > 0 {
+		log.Error("Aborted: the current directory is not empty.")
+		os.Exit(1)
 	}
 
 	// find template to clone
@@ -73,33 +71,33 @@ func NewSite(force bool) {
 	}
 
 	cloneURL := results.Items[selectedID-1].CloneURL
-	log.Notice("\nCloning from %s\n", cloneURL)
 
-	// clone does not include the git files (windows check?)
-	// ideally should not include the git files
-	cmd := exec.Command("git", "clone", "--depth=1", cloneURL, ".")
-	err = cmd.Start()
-	if err != nil {
-		log.Error("git clone failed", err)
-		os.Exit(1)
-	}
-	cmd.Wait()
+	// clone repo
+	logCommand("git", "clone", "--depth=1", cloneURL, ".")
+	// rename origin to upstream
+	logCommand("git", "remote", "rename", "origin", "upstream")
 
-	// remove origin
-	cmd = exec.Command("git", "remote", "remove", "origin")
-	err = cmd.Start()
-	if err != nil {
-		log.Error("git clone failed", err)
-		os.Exit(1)
-	}
-
-	log.Notice("Setup complete!\n")
+	log.Notice("\nSetup complete!!!!\n")
 	log.Notice("Next steps:")
 	log.Notice(" 1. npm install")
 	log.Notice(" 2. npm start")
-	log.Notice(" ---")
+	log.Notice(" --- ")
 	log.Notice(" 3. update kibble.json with the url of your site")
-	log.Notice(" 4. initalise git and push to your repository")
-	log.Notice("    `git init`")
+	log.Notice(" 4. add a remote to your repository")
 	log.Notice("    `git remote add origin https://github.com/user/repo.git`")
+}
+
+func logCommand(name string, arg ...string) {
+	log.Noticef("running `%s %s`", name, strings.Join(arg, " "))
+	cmd := exec.Command(name, arg...)
+	err := cmd.Start()
+	if err != nil {
+		log.Errorf("error `%s %s` returned %s", name, strings.Join(arg, " "), err)
+		os.Exit(1)
+	}
+	err = cmd.Wait()
+	if err != nil {
+		log.Errorf("error `%s %s` returned %s", name, strings.Join(arg, " "), err)
+		os.Exit(1)
+	}
 }

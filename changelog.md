@@ -1,5 +1,10 @@
 # Change log
 
+## 0.10.0
+
+Add upstream remote to cloned repository
+Removed --force option from init
+
 ## 0.9.11
 
 Fix intermittent live reload bug when no status code is set

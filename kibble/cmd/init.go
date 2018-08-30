@@ -19,19 +19,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var force = false
-
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initalise a new site",
 	Long:  `Configures a new site from an existing templates.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		initalise.NewSite(force)
+		initalise.NewSite()
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(initCmd)
-	initCmd.Flags().BoolVar(&force, "force", false, "Force initalising in non empty directory")
 }
