@@ -43,6 +43,18 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
 
 ```
 
+## Building with go 1.11
+
+Modules is the new package management.
+
+```bash
+
+brew update go
+export GO111MODULE=on
+# go will now use the go.mod file to ensure that the packages are correct
+
+```
+
 ## Releasing new versions
 
 Kibble is released to 3 places
