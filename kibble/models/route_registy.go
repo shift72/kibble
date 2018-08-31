@@ -155,8 +155,15 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 		} else {
 			fmt.Printf("Unable to find the datasource %s. Check routes registered in site.json\n", route.DataSource)
 			errorsFound = true
-
 		}
+
+		// validate the route
+		err := ValidateRouteWithDatasource(route.URLPath, route.ResolvedDataSouce)
+		if err != nil {
+			fmt.Printf("Invalid route %s. %s\n", route.Name, err)
+			errorsFound = true
+		}
+
 		routeRegistry.routes[i] = &route
 	}
 

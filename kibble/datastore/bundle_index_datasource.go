@@ -67,3 +67,8 @@ func transformBundle(f models.Bundle) *models.Bundle {
 	f.Description = models.ApplyContentTransforms(f.Description)
 	return &f
 }
+
+// GetRouteArguments returns the available route arguments
+func (ds *BundleIndexDataSource) GetRouteArguments() []models.RouteArgument {
+	return indexArgs
+}

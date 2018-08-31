@@ -121,4 +121,3 @@ npm publish
 * download
   * build and release on github
   * deploy via npm
-  * 

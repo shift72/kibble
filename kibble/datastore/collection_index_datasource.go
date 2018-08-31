@@ -67,3 +67,8 @@ func transformCollection(f models.Collection) *models.Collection {
 	f.Description = models.ApplyContentTransforms(f.Description)
 	return &f
 }
+
+// GetRouteArguments returns the available route arguments
+func (ds *CollectionIndexDataSource) GetRouteArguments() []models.RouteArgument {
+	return indexArgs
+}

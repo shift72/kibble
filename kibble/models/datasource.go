@@ -16,7 +16,9 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
+	"strings"
 )
 
 var (
@@ -36,7 +38,7 @@ type DataSource interface {
 	IsSlugMatch(slug string) bool
 	GetRouteForEntity(ctx RenderContext, entity interface{}) string
 	GetRouteForSlug(ctx RenderContext, slug string) string
-	//TODO: ValidateRoute - check that the route contains valid tokens
+	GetRouteArguments() []RouteArgument
 }
 
 // AddDataSource - register a datasource
@@ -52,4 +54,64 @@ func AddDataSource(ds DataSource) {
 // FindDataSource - find the data source by name
 func FindDataSource(name string) DataSource {
 	return store[name]
+}
+
+// RouteArgument represents an argument that a route can have
+type RouteArgument struct {
+	Name        string
+	Description string
+	GetValue    func(obj interface{}) string
+}
+
+// ReplaceURLArgumentsWithEntityValues replaces expected arguments with
+func ReplaceURLArgumentsWithEntityValues(routePrefix string, urlPath string, args []RouteArgument, entity interface{}) string {
+
+	for i := 0; i < len(args); i++ {
+		value := args[i].GetValue(entity)
+		if value == ErrDataSource {
+			return value
+		}
+
+		urlPath = strings.Replace(urlPath, args[i].Name, args[i].GetValue(entity), 1)
+	}
+
+	return routePrefix + urlPath
+}
+
+// ValidateRouteWithDatasource will check the urlPath is valid for a data source
+func ValidateRouteWithDatasource(urlPath string, ds DataSource) error {
+
+	parts := strings.FieldsFunc(urlPath, urlSplit)
+
+	for i := range parts {
+		if strings.HasPrefix(parts[i], ":") {
+			found := false
+			for _, a := range ds.GetRouteArguments() {
+				if parts[i] == a.Name {
+					found = true
+				}
+			}
+
+			if !found {
+				return fmt.Errorf("Path contains invalid replacement arguments %s. %s", urlPath, validArguments(ds))
+			}
+		}
+	}
+	return nil
+}
+
+func urlSplit(r rune) bool {
+	return r == '/' || r == '.'
+}
+
+func validArguments(ds DataSource) string {
+	validArgs := ""
+	for _, a := range ds.GetRouteArguments() {
+		if validArgs == "" {
+			validArgs = a.Name
+		} else {
+			validArgs = validArgs + "," + a.Name
+		}
+	}
+	return "Valid arguments are (" + validArgs + ")"
 }

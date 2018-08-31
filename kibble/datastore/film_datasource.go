@@ -24,13 +24,42 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
+var filmArgs = []models.RouteArgument{
+	models.RouteArgument{
+		Name:        ":filmID",
+		Description: "ID of the collection",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.Film); ok {
+				return strconv.Itoa(o.ID)
+			}
+			return ""
+		},
+	},
+	models.RouteArgument{
+		Name:        ":slug",
+		Description: "Slug of the collection",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.Film); ok {
+				return o.TitleSlug
+			}
+			return ""
+		},
+	},
+}
+
 // FilmDataSource - single film datasource
 // Supports slugs in the /film/:filmID and /film/:title_slug
-type FilmDataSource struct{}
+type FilmDataSource struct {
+}
 
 // GetName - name of the datasource
 func (ds *FilmDataSource) GetName() string {
 	return "Film"
+}
+
+// GetRouteArguments returns the available route arguments
+func (ds *FilmDataSource) GetRouteArguments() []models.RouteArgument {
+	return filmArgs
 }
 
 // GetEntityType - Get the entity type
@@ -61,24 +90,12 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 
 // GetRouteForEntity - get the route
 func (ds *FilmDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	o, ok := entity.(*models.Film)
-	if ok {
-		s := strings.Replace(ctx.Route.URLPath, ":filmID", strconv.Itoa(o.ID), 1)
-		s = strings.Replace(s, ":slug", o.TitleSlug, 1)
-		return ctx.RoutePrefix + s
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.URLPath, filmArgs, entity)
 }
 
 // GetPartialRouteForEntity - get the partial route
 func (ds *FilmDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	o, ok := entity.(*models.Film)
-	if ok {
-		s := strings.Replace(ctx.Route.PartialURLPath, ":filmID", strconv.Itoa(o.ID), 1)
-		s = strings.Replace(s, ":slug", o.TitleSlug, 1)
-		return ctx.RoutePrefix + s
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.PartialURLPath, filmArgs, entity)
 }
 
 // GetRouteForSlug - get the route
@@ -94,4 +111,9 @@ func (ds *FilmDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 // IsSlugMatch - checks if the slug is a match
 func (ds *FilmDataSource) IsSlugMatch(slug string) bool {
 	return strings.HasPrefix(slug, "/film/")
+}
+
+// IsValid checks for any validation errors
+func (ds *FilmDataSource) IsValid(route *models.Route) error {
+	return nil
 }

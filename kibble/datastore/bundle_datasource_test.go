@@ -77,3 +77,14 @@ func TestPartialRenderForBundle(t *testing.T) {
 	assert.Equal(t, "/partials/bundle/111.html", renderer.FilePath)
 	assert.Equal(t, "/bundle/partial.jet", renderer.TemplatePath)
 }
+
+func TestIsValid(t *testing.T) {
+	var ds BundleDataSource
+	assert.NoError(t, models.ValidateRouteWithDatasource("/bundle/:bundleID/:slug", &ds))
+}
+func TestIsNotValid(t *testing.T) {
+	var ds BundleDataSource
+	assert.EqualError(t,
+		models.ValidateRouteWithDatasource("/bundle/:bunID/:slug", &ds),
+		"Path contains invalid replacement arguments /bundle/:bunID/:slug. Valid arguments are (:bundleID,:slug)")
+}

@@ -25,12 +25,41 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
+var collectionArgs = []models.RouteArgument{
+	models.RouteArgument{
+		Name:        ":collectionID",
+		Description: "ID of the collection",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.Collection); ok {
+				return strconv.Itoa(o.ID)
+			}
+			return models.ErrDataSource
+		},
+	},
+	models.RouteArgument{
+		Name:        ":slug",
+		Description: "Slug of the collection",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.Collection); ok {
+				return o.TitleSlug
+			}
+			return models.ErrDataSource
+		},
+	},
+}
+
 // CollectionDataSource - single Collection datasource
-type CollectionDataSource struct{}
+type CollectionDataSource struct {
+}
 
 // GetName - name of the datasource
 func (ds *CollectionDataSource) GetName() string {
 	return "Collection"
+}
+
+// GetRouteArguments returns the available route arguments
+func (ds *CollectionDataSource) GetRouteArguments() []models.RouteArgument {
+	return collectionArgs
 }
 
 // GetEntityType - Get the entity type
@@ -62,33 +91,12 @@ func (ds *CollectionDataSource) Iterator(ctx models.RenderContext, renderer mode
 
 // GetRouteForEntity - get the route
 func (ds *CollectionDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-
-	o, ok := entity.(*models.Collection)
-	if ok {
-		url := ctx.Route.URLPath
-		if strings.Contains(url, ":collectionID") {
-			url = strings.Replace(url, ":collectionID", strconv.Itoa(o.ID), 1)
-		}
-
-		if strings.Contains(url, ":slug") {
-			url = strings.Replace(url, ":slug", o.TitleSlug, 1)
-		}
-
-		return ctx.RoutePrefix + url
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.URLPath, collectionArgs, entity)
 }
 
 // GetPartialRouteForEntity - get the partial route
 func (ds *CollectionDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-
-	o, ok := entity.(*models.Collection)
-	if ok {
-		url := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.TitleSlug, 1)
-		url = strings.Replace(url, ":collectionID", strconv.Itoa(o.ID), 1)
-		return ctx.RoutePrefix + url
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.PartialURLPath, collectionArgs, entity)
 }
 
 // GetRouteForSlug - get the route
@@ -108,4 +116,9 @@ func (ds *CollectionDataSource) GetRouteForSlug(ctx models.RenderContext, slug s
 func (ds *CollectionDataSource) IsSlugMatch(slug string) bool {
 	return strings.HasPrefix(slug, "/feature/") ||
 		strings.HasPrefix(slug, "/collection/")
+}
+
+// IsValid checks for any validation errors
+func (ds *CollectionDataSource) IsValid(route *models.Route) error {
+	return nil
 }

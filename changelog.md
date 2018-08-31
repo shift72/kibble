@@ -1,5 +1,9 @@
 # Change log
 
+## 0.10.1
+
+Added route validation
+
 ## 0.10.0
 
 Add upstream remote to cloned repository

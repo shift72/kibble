@@ -67,3 +67,8 @@ func transformTVSeason(f models.TVSeason) *models.TVSeason {
 	f.Overview = models.ApplyContentTransforms(f.Overview)
 	return &f
 }
+
+// GetRouteArguments returns the available route arguments
+func (ds *TVSeasonIndexDataSource) GetRouteArguments() []models.RouteArgument {
+	return indexArgs
+}

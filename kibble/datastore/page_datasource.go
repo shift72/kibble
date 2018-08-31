@@ -25,12 +25,41 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
+var pageArgs = []models.RouteArgument{
+	models.RouteArgument{
+		Name:        ":pageID",
+		Description: "ID of the page",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.Page); ok {
+				return strconv.Itoa(o.ID)
+			}
+			return ""
+		},
+	},
+	models.RouteArgument{
+		Name:        ":slug",
+		Description: "Slug of the page",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.Page); ok {
+				return o.TitleSlug
+			}
+			return ""
+		},
+	},
+}
+
 // PageDataSource - single Page datasource
-type PageDataSource struct{}
+type PageDataSource struct {
+}
 
 // GetName - name of the datasource
 func (ds *PageDataSource) GetName() string {
 	return "Page"
+}
+
+// GetRouteArguments returns the available route arguments
+func (ds *PageDataSource) GetRouteArguments() []models.RouteArgument {
+	return pageArgs
 }
 
 // GetEntityType - Get the entity type
@@ -84,9 +113,7 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 			}
 			return o.URL
 		default:
-			s := strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
-			s = strings.Replace(s, ":pageID", strconv.Itoa(o.ID), 1)
-			return ctx.RoutePrefix + s
+			return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.URLPath, pageArgs, entity)
 		}
 	}
 	return models.ErrDataSource
@@ -94,13 +121,7 @@ func (ds *PageDataSource) GetRouteForEntity(ctx models.RenderContext, entity int
 
 // GetPartialRouteForEntity - get the partial route
 func (ds *PageDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	o, ok := entity.(*models.Page)
-	if ok {
-		s := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.TitleSlug, 1)
-		s = strings.Replace(s, ":pageID", strconv.Itoa(o.ID), 1)
-		return ctx.RoutePrefix + s
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.PartialURLPath, pageArgs, entity)
 }
 
 // GetRouteForSlug - get the route
@@ -123,4 +144,9 @@ func (ds *PageDataSource) GetRouteForSlug(ctx models.RenderContext, slug string)
 // IsSlugMatch - checks if the slug is a match
 func (ds *PageDataSource) IsSlugMatch(slug string) bool {
 	return strings.HasPrefix(slug, "/page/")
+}
+
+// IsValid checks for any validation errors
+func (ds *PageDataSource) IsValid(route *models.Route) error {
+	return nil
 }

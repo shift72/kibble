@@ -25,12 +25,41 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
+var bundleArgs = []models.RouteArgument{
+	models.RouteArgument{
+		Name:        ":bundleID",
+		Description: "ID of the bundle",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.Bundle); ok {
+				return strconv.Itoa(o.ID)
+			}
+			return ""
+		},
+	},
+	models.RouteArgument{
+		Name:        ":slug",
+		Description: "Slug of the bundle",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.Bundle); ok {
+				return o.TitleSlug
+			}
+			return ""
+		},
+	},
+}
+
 // BundleDataSource - single Bundle datasource
-type BundleDataSource struct{}
+type BundleDataSource struct {
+}
 
 // GetName - name of the datasource
 func (ds *BundleDataSource) GetName() string {
 	return "Bundle"
+}
+
+// GetRouteArguments returns the available route arguments
+func (ds *BundleDataSource) GetRouteArguments() []models.RouteArgument {
+	return bundleArgs
 }
 
 // GetEntityType - Get the entity type
@@ -63,24 +92,12 @@ func (ds *BundleDataSource) Iterator(ctx models.RenderContext, renderer models.R
 
 // GetRouteForEntity - get the route
 func (ds *BundleDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	o, ok := entity.(*models.Bundle)
-	if ok {
-		s := strings.Replace(ctx.Route.URLPath, ":slug", o.TitleSlug, 1)
-		s = strings.Replace(s, ":bundleID", strconv.Itoa(o.ID), 1)
-		return ctx.RoutePrefix + s
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.URLPath, bundleArgs, entity)
 }
 
 // GetPartialRouteForEntity - get the partial route
 func (ds *BundleDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	o, ok := entity.(*models.Bundle)
-	if ok {
-		s := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.TitleSlug, 1)
-		s = strings.Replace(s, ":bundleID", strconv.Itoa(o.ID), 1)
-		return ctx.RoutePrefix + s
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.PartialURLPath, bundleArgs, entity)
 }
 
 // GetRouteForSlug - get the route

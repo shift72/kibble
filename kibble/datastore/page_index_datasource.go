@@ -24,12 +24,27 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
+var indexArgs = []models.RouteArgument{
+	models.RouteArgument{
+		Name:        ":index",
+		Description: "Index of the page",
+		GetValue: func(entity interface{}) string {
+			return ""
+		},
+	},
+}
+
 // PageIndexDataSource - a list of all Pages
 type PageIndexDataSource struct{}
 
 // GetName - returns the name of the datasource
 func (ds *PageIndexDataSource) GetName() string {
 	return "PageIndex"
+}
+
+// GetRouteArguments returns the available route arguments
+func (ds *PageIndexDataSource) GetRouteArguments() []models.RouteArgument {
+	return indexArgs
 }
 
 // GetEntityType - Get the entity type

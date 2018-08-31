@@ -24,13 +24,52 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/models"
 )
 
+var tvSeasonArgs = []models.RouteArgument{
+	models.RouteArgument{
+		Name:        ":showID",
+		Description: "ID of the show",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.TVSeason); ok {
+				return strconv.Itoa(o.ShowInfo.ID)
+			}
+			return ""
+		},
+	},
+	models.RouteArgument{
+		Name:        ":seasonNumber",
+		Description: "Season Number",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.TVSeason); ok {
+				return strconv.Itoa(o.SeasonNumber)
+			}
+			return ""
+		},
+	},
+	models.RouteArgument{
+		Name:        ":slug",
+		Description: "Slug of the of the show",
+		GetValue: func(entity interface{}) string {
+			if o, ok := entity.(*models.TVSeason); ok {
+				return o.ShowInfo.TitleSlug
+			}
+			return ""
+		},
+	},
+}
+
 // TVSeasonDataSource - single tv season datasource
 // Supports slugs in the /tv/:tvID/season/:seasonID and /tv/:title_slug
-type TVSeasonDataSource struct{}
+type TVSeasonDataSource struct {
+}
 
 // GetName - name of the datasource
 func (ds *TVSeasonDataSource) GetName() string {
 	return "TVSeason"
+}
+
+// GetRouteArguments returns the available route arguments
+func (ds *TVSeasonDataSource) GetRouteArguments() []models.RouteArgument {
+	return tvSeasonArgs
 }
 
 // GetEntityType - Get the entity type
@@ -61,26 +100,12 @@ func (ds *TVSeasonDataSource) Iterator(ctx models.RenderContext, renderer models
 
 // GetRouteForEntity - get the route
 func (ds *TVSeasonDataSource) GetRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	o, ok := entity.(*models.TVSeason)
-	if ok {
-		s := strings.Replace(ctx.Route.URLPath, ":slug", o.ShowInfo.TitleSlug, 1)
-		s = strings.Replace(s, ":seasonNumber", strconv.Itoa(o.SeasonNumber), 1)
-		s = strings.Replace(s, ":showID", strconv.Itoa(o.ShowInfo.ID), 1)
-		return ctx.RoutePrefix + s
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.URLPath, tvSeasonArgs, entity)
 }
 
 // GetPartialRouteForEntity - get the partial route
 func (ds *TVSeasonDataSource) GetPartialRouteForEntity(ctx models.RenderContext, entity interface{}) string {
-	o, ok := entity.(*models.TVSeason)
-	if ok {
-		s := strings.Replace(ctx.Route.PartialURLPath, ":slug", o.ShowInfo.TitleSlug, 1)
-		s = strings.Replace(s, ":seasonNumber", strconv.Itoa(o.SeasonNumber), 1)
-		s = strings.Replace(s, ":showID", strconv.Itoa(o.ShowInfo.ID), 1)
-		return ctx.RoutePrefix + s
-	}
-	return models.ErrDataSource
+	return models.ReplaceURLArgumentsWithEntityValues(ctx.RoutePrefix, ctx.Route.PartialURLPath, tvSeasonArgs, entity)
 }
 
 // GetRouteForSlug - get the route
@@ -97,4 +122,9 @@ func (ds *TVSeasonDataSource) GetRouteForSlug(ctx models.RenderContext, slug str
 // IsSlugMatch - checks if the slug is a match
 func (ds *TVSeasonDataSource) IsSlugMatch(slug string) bool {
 	return strings.HasPrefix(slug, "/tv/") && strings.Contains(slug, "/season/")
+}
+
+// IsValid checks for any validation errors
+func (ds *TVSeasonDataSource) IsValid(route *models.Route) error {
+	return nil
 }

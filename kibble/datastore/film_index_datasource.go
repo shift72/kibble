@@ -74,3 +74,8 @@ func transformFilm(f models.Film) *models.Film {
 	}
 	return &f
 }
+
+// GetRouteArguments returns the available route arguments
+func (ds *FilmIndexDataSource) GetRouteArguments() []models.RouteArgument {
+	return indexArgs
+}
