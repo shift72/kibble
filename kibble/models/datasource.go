@@ -56,6 +56,11 @@ func FindDataSource(name string) DataSource {
 	return store[name]
 }
 
+// GetDataSources returns all registered data sources
+func GetDataSources() map[string]DataSource {
+	return store
+}
+
 // RouteArgument represents an argument that a route can have
 type RouteArgument struct {
 	Name        string
