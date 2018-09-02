@@ -62,7 +62,7 @@ func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarM
 	defer func() {
 		if r := recover(); r != nil {
 			errorCount++
-			log.Errorf("Error. Recovered from %s", r)
+			log.Errorf("Error. Recovered from %s in %s", r, templatePath)
 		}
 	}()
 
@@ -77,7 +77,7 @@ func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarM
 	t, err := c.view.GetTemplate(templatePath)
 	if err != nil {
 		errorCount++
-		log.Errorf("Template load error: %s", err)
+		log.Errorf("Template load error: %s in %s", err, templatePath)
 		return errorCount
 	}
 
@@ -87,7 +87,7 @@ func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarM
 		w.WriteString("<pre>")
 		w.WriteString(err.Error())
 		w.WriteString("</pre>")
-		log.Errorf("Template execute error: %s", err)
+		log.Errorf("Template execute error: %s in %s", err, templatePath)
 		return errorCount
 	}
 
@@ -102,7 +102,7 @@ func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarM
 	err = ioutil.WriteFile(fullPath, w.Bytes(), 0777)
 	if err != nil {
 		errorCount++
-		log.Errorf("File write: %s", err)
+		log.Errorf("File write: %s attempting %s", err, fullPath)
 	}
 
 	return errorCount
