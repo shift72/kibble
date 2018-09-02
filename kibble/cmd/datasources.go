@@ -43,7 +43,7 @@ var datasourcesCmd = &cobra.Command{
 			v := ds[n]
 			fmt.Printf("%s\n", v.GetName())
 			for _, a := range v.GetRouteArguments() {
-				fmt.Printf("  %s \t\t- %s\n", a.Name, a.Description)
+				fmt.Printf("  %s \t %s\n", a.Name, a.Description)
 			}
 		}
 	},
