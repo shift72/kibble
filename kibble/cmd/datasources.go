@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
 	"github.com/spf13/cobra"
@@ -29,10 +30,20 @@ var datasourcesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Available datasources for use in routes (kibble.json)")
 
-		for _, v := range models.GetDataSources() {
-			fmt.Printf("DataSource: %s\n", v.GetName())
+		ds := models.GetDataSources()
+
+		// sort by key
+		names := make([]string, 0, len(ds))
+		for name := range ds {
+			names = append(names, name)
+		}
+		sort.Strings(names)
+
+		for _, n := range names {
+			v := ds[n]
+			fmt.Printf("%s\n", v.GetName())
 			for _, a := range v.GetRouteArguments() {
-				fmt.Printf("  arg: %s - %s\n", a.Name, a.Description)
+				fmt.Printf("  %s \t\t- %s\n", a.Name, a.Description)
 			}
 		}
 	},
