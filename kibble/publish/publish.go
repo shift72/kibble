@@ -31,7 +31,12 @@ import (
 // Execute the publish process by
 func Execute(sourcePath string, buildPath string, cfg *models.Config, zipOnly bool) error {
 
-	err := config.CheckVersion(cfg)
+	err := Validate(sourcePath, cfg)
+	if err != nil {
+		return err
+	}
+
+	err = config.CheckVersion(cfg)
 	if err != nil {
 		return err
 	}
