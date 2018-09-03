@@ -32,27 +32,27 @@ var templateTagRegex = regexp.MustCompile("(?U:{{.+}})+")
 var shortCodeView *jet.Set
 
 // CreateTemplateView - create a template view
-func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx RenderContext, templatePath string) *jet.Set {
+func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx *RenderContext, templatePath string) *jet.Set {
 	view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", version.Version)
 	view.AddGlobal("lang", ctx.Language)
 	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
-		return routeRegistry.GetRouteForEntity(ctx, entity, "")
+		return routeRegistry.GetRouteForEntity(*ctx, entity, "")
 	})
 	view.AddGlobal("routeToWithName", func(entity interface{}, routeName string) string {
-		return routeRegistry.GetRouteForEntity(ctx, entity, routeName)
+		return routeRegistry.GetRouteForEntity(*ctx, entity, routeName)
 	})
 	view.AddGlobal("routeToSlug", func(slug string) string {
-		return routeRegistry.GetRouteForSlug(ctx, slug, "")
+		return routeRegistry.GetRouteForSlug(*ctx, slug, "")
 	})
 	view.AddGlobal("canonicalRouteToSlug", func(slug string) string {
 		// override the route prefix
-		ctxClone := ctx
+		ctxClone := *ctx
 		ctxClone.RoutePrefix = ""
 		return routeRegistry.GetRouteForSlug(ctxClone, slug, "")
 	})
 	view.AddGlobal("routeToSlugWithName", func(slug string, routeName string) string {
-		return routeRegistry.GetRouteForSlug(ctx, slug, routeName)
+		return routeRegistry.GetRouteForSlug(*ctx, slug, routeName)
 	})
 	view.AddGlobal("i18n", func(translationID string, args ...interface{}) string {
 
@@ -71,8 +71,15 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 			       Count field must be an integer type (int, int8, int16, int32, int64) or a float formatted as a string (e.g. "123.45").
 		*/
 		if len(args) == 1 {
+
 			argType := reflect.TypeOf(args[0])
 			argTypeName := argType.String()
+
+			if argTypeName == "string" {
+				if f, ok := args[0].(string); ok && len(f) == 0 {
+					log.Warningf("WARN: found empty string parameter while translating \"%s\". Set a default or ensure the argument is not empty in %s", translationID, ctx.Route.TemplatePath)
+				}
+			}
 
 			if argTypeName == "string" || strings.Contains(argTypeName, "int") || argTypeName == "map[string]interface {}" {
 				return trans(translationID, args[0])
@@ -87,8 +94,20 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 		return trans(translationID)
 	})
 
-	view.AddGlobal("config", func(key string) string {
-		return ctx.Site.Config[key]
+	view.AddGlobal("config", func(key string, args ...string) string {
+		if s, ok := ctx.Site.Config[key]; ok {
+			return s
+		}
+
+		if len(args) > 0 {
+			return args[0]
+		}
+
+		return ""
+	})
+
+	view.AddGlobal("configInt", func(key string, args ...int) int {
+		return ctx.Site.Config.GetInt(key, args...)
 	})
 
 	view.AddGlobal("isEnabled", func(key string) bool {

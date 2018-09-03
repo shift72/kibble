@@ -53,7 +53,7 @@ func TestRenderingShowSlug(t *testing.T) {
 
 	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
 
-	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), ctx, "./templates")
+	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
 
 	tem, _ := view.LoadTemplate("", "{{ routeToSlug(site.TVShows[0].Slug) }}")
 

@@ -117,10 +117,17 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 
 		// set the template view
-		renderer.view = models.CreateTemplateView(routeRegistry, T, ctx, sourcePath)
+		renderer.view = models.CreateTemplateView(routeRegistry, T, &ctx, sourcePath)
 
 		// render static files
 		files, _ := filepath.Glob(filepath.Join(sourcePath, "*.jet"))
+
+		// set the route on the render context for static template
+		ctx.Route = &models.Route{
+			Name:         "static",
+			URLPath:      "",
+			TemplatePath: "",
+		}
 
 		renderFilesSW := utils.NewStopwatch("  render files")
 		for _, f := range files {
@@ -128,16 +135,20 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			// be removing the `sourcePath` from the start of it.
 			relativeFilePath := strings.Replace(f, sourcePath, "", 1)
 
-			outputFilePath := path.Join(ctx.RoutePrefix, strings.Replace(relativeFilePath, ".jet", "", 1))
+			// update the route, per file render
+			ctx.Route.TemplatePath = relativeFilePath
+			ctx.Route.URLPath = path.Join(ctx.RoutePrefix, strings.Replace(relativeFilePath, ".jet", "", 1))
 
 			data := jet.VarMap{}
 			data.Set("site", site)
-			errCount += renderer.Render(relativeFilePath, outputFilePath, data)
+			errCount += renderer.Render(relativeFilePath, ctx.Route.URLPath, data)
 		}
 		renderFilesSW.Completed()
 
 		for _, route := range routeRegistry.GetAll() {
 			renderRouteSW := utils.NewStopwatchf("    render route %s", route.Name)
+
+			// set the route on the render context for datasources
 			ctx.Route = route
 			if route.ResolvedDataSouce != nil {
 				errCount += route.ResolvedDataSouce.Iterator(ctx, renderer)

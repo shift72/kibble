@@ -17,6 +17,7 @@ package test
 import (
 	"bytes"
 	"fmt"
+	"testing"
 
 	"github.com/CloudyKit/jet"
 )
@@ -54,10 +55,10 @@ func (c *InMemoryRenderer) ErrorCount() int {
 }
 
 // DumpErrors - print the errors
-func (c *InMemoryRenderer) DumpErrors() {
+func (c *InMemoryRenderer) DumpErrors(t *testing.T) {
 	for _, r := range c.Results {
 		if r.err != nil {
-			fmt.Printf("Error found on %s - %s\n", r.filePath, r.err)
+			t.Errorf("Error found on %s - %s\n", r.filePath, r.err)
 		}
 	}
 }
@@ -94,11 +95,13 @@ func (c *InMemoryRenderer) Render(templatePath string, filePath string, data jet
 	if err != nil {
 		errCount++
 		result.err = err
+		fmt.Printf("error e: %s", err)
 		return
 	}
 
 	if err = t.Execute(result.buffer, data, nil); err != nil {
 		errCount++
+		fmt.Printf("error t: %s", err)
 		result.err = err
 	}
 

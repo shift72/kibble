@@ -17,7 +17,7 @@ func TestSitePlans(t *testing.T) {
 	T, _ := i18n.Tfunc("en-US")
 
 	ctx := models.RenderContext{}
-	view := models.CreateTemplateView(nil, T, ctx, "../sample_site/templates/")
+	view := models.CreateTemplateView(nil, T, &ctx, "../sample_site/templates/")
 
 	renderer1 := &test.InMemoryRenderer{View: view}
 
@@ -49,7 +49,7 @@ func TestSitePlansWithSubscriptionDetails(t *testing.T) {
 	T, _ := i18n.Tfunc("en-US")
 
 	ctx := models.RenderContext{}
-	view := models.CreateTemplateView(nil, T, ctx, "../sample_site/templates/")
+	view := models.CreateTemplateView(nil, T, &ctx, "../sample_site/templates/")
 	view.AddGlobal("version", "v1.1.145")
 
 	renderer1 := &test.InMemoryRenderer{View: view}

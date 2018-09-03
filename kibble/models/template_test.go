@@ -90,19 +90,44 @@ func TestEvilContent(t *testing.T) {
 		ApplyContentTransforms("JS attempt:<script src=\"https://blah.com/evil.js\" ></script>"))
 }
 
-func setupViewRenderer() *test.InMemoryRenderer {
+func setupViewRenderer(site *Site) *test.InMemoryRenderer {
 	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
 	T, _ := i18n.Tfunc("en-US")
 
-	ctx := RenderContext{}
-	view := CreateTemplateView(nil, T, ctx, "../sample_site/templates/")
+	ctx := RenderContext{Site: site}
+	view := CreateTemplateView(nil, T, &ctx, "../sample_site/templates/")
 
 	return &test.InMemoryRenderer{View: view}
 }
 
-func TestSitePlans(t *testing.T) {
+func TestConfig(t *testing.T) {
 
-	renderer1 := setupViewRenderer()
+	site := &Site{
+		Config: ServiceConfig{
+			"device_user_limit": "3",
+		},
+	}
+
+	data := jet.VarMap{}
+	data.Set("site", site)
+
+	renderer1 := setupViewRenderer(site)
+	errCount := renderer1.Render("./config.jet", "output.txt", data)
+
+	renderer1.DumpErrors(t)
+	renderer1.DumpResults()
+	assert.Equal(t, 0, errCount)
+
+	assert.Contains(t, renderer1.Results[0].Output(), "config conditional: 3")
+	assert.Contains(t, renderer1.Results[0].Output(), "config direct: 3")
+	assert.Contains(t, renderer1.Results[0].Output(), "config direct with cast: 3")
+	assert.Contains(t, renderer1.Results[0].Output(), "config func default: 11")
+	assert.Contains(t, renderer1.Results[0].Output(), "config func: 3")
+	assert.Contains(t, renderer1.Results[0].Output(), "config func with cast: 3")
+	assert.Contains(t, renderer1.Results[0].Output(), "config with default: 10")
+}
+
+func TestSitePlans(t *testing.T) {
 
 	site := &Site{
 		Plans: PlanCollection{
@@ -117,6 +142,8 @@ func TestSitePlans(t *testing.T) {
 
 	data := jet.VarMap{}
 	data.Set("site", site)
+
+	renderer1 := setupViewRenderer(site)
 	renderer1.Render("./plans.jet", "output.txt", data)
 
 	assert.Contains(t, renderer1.Results[0].Output(), "TestName:Gold")
@@ -127,8 +154,6 @@ func TestSitePlans(t *testing.T) {
 }
 
 func TestSitePlansWithSubscriptionDetails(t *testing.T) {
-
-	renderer1 := setupViewRenderer()
 
 	site := &Site{
 		Plans: PlanCollection{
@@ -146,6 +171,8 @@ func TestSitePlansWithSubscriptionDetails(t *testing.T) {
 
 	data := jet.VarMap{}
 	data.Set("site", site)
+
+	renderer1 := setupViewRenderer(site)
 	renderer1.Render("./plans.jet", "output.txt", data)
 
 	assert.Contains(t, renderer1.Results[0].Output(), "TestName:Gold")
@@ -160,7 +187,7 @@ func TestSitePlansWithSubscriptionDetails(t *testing.T) {
 
 func TestTVSeasonWithLocalisableTitle(t *testing.T) {
 
-	renderer1 := setupViewRenderer()
+	site := &Site{}
 
 	tvSeason := &TVSeason{
 		SeasonNumber: 2,
@@ -177,6 +204,8 @@ func TestTVSeasonWithLocalisableTitle(t *testing.T) {
 	data := jet.VarMap{}
 	data.Set("tvseason", tvSeason)
 	data.Set("item", &item)
+
+	renderer1 := setupViewRenderer(site)
 	renderer1.Render("./tv/tv-season.jet", "output.txt", data)
 
 	renderer1.DumpResults()
