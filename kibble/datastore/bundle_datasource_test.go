@@ -86,5 +86,5 @@ func TestIsNotValid(t *testing.T) {
 	var ds BundleDataSource
 	assert.EqualError(t,
 		models.ValidateRouteWithDatasource("/bundle/:bunID/:slug", &ds),
-		"Path contains invalid replacement arguments /bundle/:bunID/:slug. Valid arguments are (:bundleID,:slug)")
+		"Path (/bundle/:bunID/:slug) contains invalid replacement arguments. Valid arguments are (:bundleID,:slug)")
 }

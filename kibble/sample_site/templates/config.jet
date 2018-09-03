@@ -1,0 +1,8 @@
+config conditional: {{ if i, ok := site.Config["device_user_limit"]; ok }}{{ i }}{{ end }}
+config direct: {{ site.Config["device_user_limit"] }}
+config direct with cast: {{ site.Config.GetInt("device_user_limit") }}
+config func: {{ config("device_user_limit") }}
+config func default: {{ config("user_limit", "11") }}
+config func with cast: {{ configInt("device_user_limit") }}
+config func with if: {{ if configInt("device_user_limit", 3) > 2 }}more than 2{{ end }}
+config with default: {{ configInt("user_limit", 10) }}

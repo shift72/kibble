@@ -1,5 +1,14 @@
 # Change log
 
+## 0.10.2
+
+Added support for config and configInt with defaults
+Error logging includes file paths where possible
+Added warning for i18n translations when a empty string is passed as a parameter
+Validates datasource routes for valid replacement arguments
+Validates templates for required and expected paths before publishing
+Added command `kibble datasources` to print available datasources and paths
+
 ## 0.10.1
 
 Added route validation

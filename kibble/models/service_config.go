@@ -14,7 +14,11 @@
 
 package models
 
-import "github.com/indiereign/shift72-kibble/kibble/utils"
+import (
+	"strconv"
+
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+)
 
 // ServiceConfig -
 type ServiceConfig map[string]string
@@ -52,4 +56,23 @@ func (cfg ServiceConfig) GetSiteName() string {
 // GetKeywords - get the keywords, appending any passed keywords
 func (cfg ServiceConfig) GetKeywords(keywords string) string {
 	return utils.Join(", ", cfg["seo_site_keywords"], keywords)
+}
+
+// GetInt - get the key and cast
+func (cfg ServiceConfig) GetInt(key string, defaultArgs ...int) int {
+
+	d := 0
+	if len(defaultArgs) > 0 {
+		d = defaultArgs[0]
+	}
+
+	s, ok := cfg[key]
+	if ok {
+		i, err := strconv.Atoi(s)
+		if err != nil {
+			return d
+		}
+		return i
+	}
+	return d
 }

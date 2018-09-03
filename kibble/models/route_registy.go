@@ -64,6 +64,15 @@ func (r *Route) HasPartial() bool {
 	return len(r.PartialURLPath) > 0 && len(r.PartialTemplatePath) > 0
 }
 
+func (r *Route) validate() error {
+	err := ValidateRouteWithDatasource(r.URLPath, r.ResolvedDataSouce)
+	if err != nil {
+		return err
+	}
+
+	return ValidateRouteWithDatasource(r.PartialURLPath, r.ResolvedDataSouce)
+}
+
 // RouteRegistry - stores a list of routes
 type RouteRegistry struct {
 	routes []*Route
@@ -157,10 +166,9 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 			errorsFound = true
 		}
 
-		// validate the route
-		err := ValidateRouteWithDatasource(route.URLPath, route.ResolvedDataSouce)
+		err := route.validate()
 		if err != nil {
-			fmt.Printf("Invalid route %s. %s\n", route.Name, err)
+			fmt.Printf("Invalid route \"%s\". %s\n", route.Name, err)
 			errorsFound = true
 		}
 

@@ -98,7 +98,7 @@ func ValidateRouteWithDatasource(urlPath string, ds DataSource) error {
 			}
 
 			if !found {
-				return fmt.Errorf("Path contains invalid replacement arguments %s. %s", urlPath, validArguments(ds))
+				return fmt.Errorf("Path (%s) contains invalid replacement arguments. %s", urlPath, validArguments(ds))
 			}
 		}
 	}
@@ -106,7 +106,7 @@ func ValidateRouteWithDatasource(urlPath string, ds DataSource) error {
 }
 
 func urlSplit(r rune) bool {
-	return r == '/' || r == '.'
+	return r == '/' || r == '.' || r == '-'
 }
 
 func validArguments(ds DataSource) string {
