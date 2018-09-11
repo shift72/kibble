@@ -81,7 +81,7 @@ func TestFilmApiToModel(t *testing.T) {
 			Path:     "/subtitles/film/49/bonus/1/it/caption-18.vtt",
 		}},
 		Recommendations: []string{"/film/1", "/film/2"},
-		Bonuses: []filmBonusV2{{
+		Bonuses: []bonusContentV2{{
 			Number: 1,
 			Title:  "Behind the scenes",
 			ImageUrls: struct {
@@ -125,47 +125,4 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 
 	assert.Equal(t, 1, len(model.Subtitles), "expect the subtitles to be 1")
-}
-
-func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {
-
-	itemIndex := make(models.ItemIndex)
-
-	serviceConfig := commonServiceConfig()
-
-	apiFilm := filmV2{
-		ID:      123,
-		Title:   "Film One",
-		Slug:    "/film/52",
-		Tagline: "Tag line",
-		Runtime: 123,
-		Bonuses: []filmBonusV2{{
-			Number: 1,
-			Title:  "Behind the scenes",
-		}},
-		ImageUrls: struct {
-			Portrait       string `json:"portrait"`
-			Landscape      string `json:"landscape"`
-			Header         string `json:"header"`
-			Carousel       string `json:"carousel"`
-			Bg             string `json:"bg"`
-			Classification string `json:"classification"`
-		}{
-			Portrait:       "film-portrait.jpeg",
-			Landscape:      "film-landscape.jpeg",
-			Header:         "film-header.jpeg",
-			Carousel:       "film-carousel.jpeg",
-			Bg:             "film-background.jpeg",
-			Classification: "film-classification.jpeg",
-		},
-	}
-
-	model := apiFilm.mapToModel(serviceConfig, itemIndex)
-
-	assert.Equal(t, "film-portrait.jpeg", model.Bonuses[0].Images.Portrait)
-	assert.Equal(t, "film-landscape.jpeg", model.Bonuses[0].Images.Landscape)
-	assert.Equal(t, "film-header.jpeg", model.Bonuses[0].Images.Header)
-	assert.Equal(t, "film-carousel.jpeg", model.Bonuses[0].Images.Carousel)
-	assert.Equal(t, "film-background.jpeg", model.Bonuses[0].Images.Background)
-	assert.Equal(t, "film-classification.jpeg", model.Bonuses[0].Images.Classification)
 }
