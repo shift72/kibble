@@ -186,43 +186,12 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 
 	// add bonuses - supports linking to bonus entries (supported??)
 	for _, bonus := range f.Bonuses {
-		b := bonus.mapToModel2(film, serviceConfig, itemIndex)
+		b := bonus.mapToModel2(film.Slug, film.Images)
 		film.Bonuses = append(film.Bonuses, b)
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}
 
 	return film
-}
-
-func (fb filmBonusV2) mapToModel2(film models.Film, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.FilmBonus {
-
-	b := models.FilmBonus{
-		Slug:     fmt.Sprintf("%s/bonus/%d", film.Slug, fb.Number),
-		Number:   fb.Number,
-		Title:    fb.Title,
-		Runtime:  models.Runtime(fb.Runtime),
-		Overview: fb.Overview,
-		Images: models.ImageSet{
-			Portrait:       utils.Coalesce(fb.ImageUrls.Portrait, film.Images.Portrait),
-			Landscape:      utils.Coalesce(fb.ImageUrls.Landscape, film.Images.Landscape),
-			Header:         utils.Coalesce(fb.ImageUrls.Header, film.Images.Header),
-			Carousel:       utils.Coalesce(fb.ImageUrls.Carousel, film.Images.Carousel),
-			Background:     utils.Coalesce(fb.ImageUrls.Bg, film.Images.Background),
-			Classification: utils.Coalesce(fb.ImageUrls.Classification, film.Images.Classification),
-		},
-	}
-
-	for _, t := range fb.Subtitles {
-		b.Subtitles = append(b.Subtitles, models.SubtitleTrack{
-			Language: t.Language,
-			Name:     t.Name,
-			Type:     t.Type,
-			Path:     t.Path,
-		})
-	}
-
-	return b
-
 }
 
 // Film - all of the film bits
@@ -231,7 +200,7 @@ type filmV2 struct {
 		URL  string `json:"url"`
 		Type string `json:"type"`
 	} `json:"trailers,omitempty"`
-	Bonuses []filmBonusV2 `json:"bonuses"`
+	Bonuses []bonusContentV2 `json:"bonuses"`
 	Cast    []struct {
 		Name      string `json:"name"`
 		Character string `json:"character"`
@@ -267,23 +236,6 @@ type filmV2 struct {
 	SeoTitle        string            `json:"seo_title"`
 	SeoKeywords     string            `json:"seo_keywords"`
 	SeoDescription  string            `json:"seo_description"`
-}
-
-// FilmBonus - film bonus model
-type filmBonusV2 struct {
-	Number    int     `json:"number"`
-	Title     string  `json:"title"`
-	Overview  string  `json:"description"`
-	Runtime   float64 `json:"runtime"`
-	ImageUrls struct {
-		Portrait       string `json:"portrait"`
-		Landscape      string `json:"landscape"`
-		Header         string `json:"header"`
-		Carousel       string `json:"carousel"`
-		Bg             string `json:"bg"`
-		Classification string `json:"classification"`
-	} `json:"image_urls"`
-	Subtitles []subtitleTrackV1 `json:"subtitle_tracks"`
 }
 
 type subtitleTrackV1 struct {
