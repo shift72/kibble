@@ -114,3 +114,22 @@ func TestBonusContentImagesUseSeasonImagesAsFallback(t *testing.T) {
 	assert.Equal(t, "season-background.jpeg", model.Bonuses[0].Images.Background)
 	assert.Equal(t, "season-classification.jpeg", model.Bonuses[0].Images.Classification)
 }
+
+func TestBonusContentCustomFields(t *testing.T) {
+
+	apiBonus := bonusContentV2{
+		CustomFields: map[string]interface{}{
+			"facebook_url": "https://www.facebook.com/custompage",
+			"some_key":     1,
+			"another_key":  false,
+		},
+	}
+
+	model := apiBonus.mapToModel2("/film/1", models.ImageSet{})
+
+	assert.Equal(t, 1, model.CustomFields["some_key"])
+	assert.Equal(t, "https://www.facebook.com/custompage", model.CustomFields["facebook_url"])
+	assert.Equal(t, false, model.CustomFields["another_key"])
+	assert.Equal(t, nil, model.CustomFields["where is it"])
+
+}
