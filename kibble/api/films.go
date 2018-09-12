@@ -191,6 +191,9 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}
 
+	// custom fields
+	film.CustomFields = f.CustomFields
+
 	return film
 }
 
@@ -262,11 +265,12 @@ type filmV2 struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	Recommendations []string          `json:"recommendations"`
-	Subtitles       []subtitleTrackV1 `json:"subtitle_tracks"`
-	SeoTitle        string            `json:"seo_title"`
-	SeoKeywords     string            `json:"seo_keywords"`
-	SeoDescription  string            `json:"seo_description"`
+	Recommendations []string               `json:"recommendations"`
+	Subtitles       []subtitleTrackV1      `json:"subtitle_tracks"`
+	SeoTitle        string                 `json:"seo_title"`
+	SeoKeywords     string                 `json:"seo_keywords"`
+	SeoDescription  string                 `json:"seo_description"`
+	CustomFields    map[string]interface{} `json:"custom"`
 }
 
 // FilmBonus - film bonus model

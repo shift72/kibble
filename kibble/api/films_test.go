@@ -169,3 +169,29 @@ func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {
 	assert.Equal(t, "film-background.jpeg", model.Bonuses[0].Images.Background)
 	assert.Equal(t, "film-classification.jpeg", model.Bonuses[0].Images.Classification)
 }
+
+func TestFilmCustomFields(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := filmV2{
+		ID:    123,
+		Title: "Film One",
+		Slug:  "/film/52",
+		CustomFields: map[string]interface{}{
+			"facebook_url": "https://www.facebook.com/custompage",
+			"some_key":     1,
+			"another_key":  false,
+		},
+	}
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 1, model.CustomFields["some_key"])
+	assert.Equal(t, "https://www.facebook.com/custompage", model.CustomFields["facebook_url"])
+	assert.Equal(t, false, model.CustomFields["another_key"])
+	assert.Equal(t, nil, model.CustomFields["where is it"])
+
+}
