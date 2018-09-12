@@ -221,6 +221,13 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 		season.Episodes = append(season.Episodes, t.mapToModel(season))
 	}
 
+	// add bonuses - supports linking to bonus entries (supported??)
+	for _, bonus := range t.Bonuses {
+		b := bonus.mapToModel2(season.Slug, season.Images)
+		season.Bonuses = append(season.Bonuses, b)
+		itemIndex.Set(b.Slug, b.GetGenericItem())
+	}
+
 	return season
 }
 
@@ -323,7 +330,8 @@ type tvSeasonV2 struct {
 		URL  string `json:"url"`
 		Type string `json:"type"`
 	} `json:"trailers"`
-	Episodes []tvEpisodeV2 `json:"episodes"`
+	Episodes []tvEpisodeV2    `json:"episodes"`
+	Bonuses  []bonusContentV2 `json:"bonuses"`
 	Cast     []struct {
 		Name      string `json:"name"`
 		Character string `json:"character"`

@@ -217,3 +217,43 @@ func TestEpisodeCustomFieldSupport(t *testing.T) {
 
 	assert.Equal(t, nil, model.CustomFields["hello?"])
 }
+
+func TestBonusContentModelBinding(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:     "/tv/12/season/4",
+		Title:    "Season Fourth",
+		Overview: "Season overview",
+		ShowInfo: tvShowV2{
+			Title: "Show Twelth",
+		},
+		Bonuses: []bonusContentV2{{
+			Number: 1,
+			Title:  "Behind the scenes",
+			ImageUrls: struct {
+				Portrait       string `json:"portrait"`
+				Landscape      string `json:"landscape"`
+				Header         string `json:"header"`
+				Carousel       string `json:"carousel"`
+				Bg             string `json:"bg"`
+				Classification string `json:"classification"`
+			}{
+				Portrait:       "portrait",
+				Landscape:      "landscape",
+				Classification: "classification",
+			},
+		}},
+	}
+
+	model := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 1, len(model.Bonuses), "expect 1 bonus")
+	assert.Equal(t, "/tv/12/season/4/bonus/1", model.Bonuses[0].Slug, "bonus.slug")
+
+	assert.Equal(t, "portrait", model.Bonuses[0].Images.Portrait)
+	assert.Equal(t, "landscape", model.Bonuses[0].Images.Landscape)
+}
+

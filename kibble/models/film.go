@@ -23,7 +23,7 @@ type Film struct {
 	Title           string
 	TitleSlug       string
 	Trailers        []Trailer
-	Bonuses         FilmBonusCollection
+	Bonuses         BonusContentCollection
 	Cast            []CastMember
 	Crew            []CrewMember
 	Studio          []string
@@ -39,20 +39,6 @@ type Film struct {
 	Recommendations []GenericItem
 	Subtitles       []SubtitleTrack
 	CustomFields    CustomFields
-}
-
-// FilmBonusCollection - all films
-type FilmBonusCollection []FilmBonus
-
-// FilmBonus - film bonus model
-type FilmBonus struct {
-	Slug      string
-	Number    int
-	Title     string
-	Images    ImageSet
-	Subtitles []SubtitleTrack
-	Runtime   Runtime
-	Overview  string
 }
 
 // FilmCollection - all films
@@ -86,16 +72,5 @@ func (film Film) GetGenericItem() GenericItem {
 		Images:    film.Images,
 		ItemType:  "film",
 		InnerItem: film,
-	}
-}
-
-// GetGenericItem - returns a generic item based on the film bonus
-func (bonus FilmBonus) GetGenericItem() GenericItem {
-	return GenericItem{
-		Title:     bonus.Title,
-		Slug:      bonus.Slug,
-		Images:    bonus.Images,
-		ItemType:  "bonus",
-		InnerItem: bonus,
 	}
 }

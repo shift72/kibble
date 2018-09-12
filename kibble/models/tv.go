@@ -66,6 +66,7 @@ type TVSeason struct {
 	Images          ImageSet
 	Trailers        []Trailer
 	Episodes        []TVEpisode
+	Bonuses         BonusContentCollection
 	Cast            []CastMember
 	Crew            []CrewMember
 	Recommendations []GenericItem
