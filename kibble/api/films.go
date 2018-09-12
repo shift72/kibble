@@ -144,6 +144,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Trailers:        make([]models.Trailer, 0),
 		Cast:            make([]models.CastMember, 0),
 		Crew:            make([]models.CrewMember, 0),
+		CustomFields:    f.CustomFields,
 	}
 
 	for _, t := range f.Subtitles {
@@ -190,9 +191,6 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		film.Bonuses = append(film.Bonuses, b)
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}
-
-	// custom fields
-	film.CustomFields = f.CustomFields
 
 	return film
 }

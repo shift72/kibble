@@ -165,3 +165,55 @@ func TestEpisodeImageFallback(t *testing.T) {
 	assert.Equal(t, "season-background.jpeg", model.Episodes[0].Images.Background)
 	assert.Equal(t, "season-classification.jpeg", model.Episodes[0].Images.Classification)
 }
+
+func TestSeasonCustomFieldSupport(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:  "/tv/1/season/1",
+		Title: "Season One",
+		CustomFields: map[string]interface{}{
+			"facebook_url": "https://www.facebook.com/custompage",
+			"some_key":     1,
+			"another_key":  false,
+		},
+	}
+
+	model := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 1, model.CustomFields["some_key"])
+	assert.Equal(t, "https://www.facebook.com/custompage", model.CustomFields["facebook_url"])
+	assert.Equal(t, false, model.CustomFields["another_key"])
+	assert.Equal(t, nil, model.CustomFields["where is it"])
+}
+
+func TestEpisodeCustomFieldSupport(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:  "/tv/1/season/1",
+		Title: "Season One",
+		Episodes: []tvEpisodeV2{{
+			EpisodeNumber: 1,
+			Title:         "First Episode",
+			CustomFields: map[string]interface{}{
+				"facebook_url": "https://www.facebook.com/custompage",
+				"some_key":     1,
+				"another_key":  false,
+			},
+		}},
+	}
+
+	model := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 1, model.Episodes[0].CustomFields["some_key"])
+	assert.Equal(t, "https://www.facebook.com/custompage", model.Episodes[0].CustomFields["facebook_url"])
+	assert.Equal(t, false, model.Episodes[0].CustomFields["another_key"])
+	assert.Equal(t, nil, model.Episodes[0].CustomFields["where is it"])
+
+	assert.Equal(t, nil, model.CustomFields["hello?"])
+}
