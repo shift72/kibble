@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.4
+Added type specific Get* methods for CustomFields
+
 ## 0.10.3
 Added support for Bonus Content on TV Seasons
 Added support via `map[string]interface{}` for Custom Fields (`custom` property) to Films, TV Season, Episodes, and Bonus Content.
