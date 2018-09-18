@@ -104,3 +104,6 @@ type SubtitleTrack struct {
 	Type     string
 	Path     string
 }
+
+// CustomFields are key-value pairs that can be aded to a film, season, bonus, or episode
+type CustomFields map[string]interface{}

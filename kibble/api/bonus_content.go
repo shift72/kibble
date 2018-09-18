@@ -21,7 +21,8 @@ type bonusContentV2 struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	Subtitles []subtitleTrackV1 `json:"subtitle_tracks"`
+	Subtitles    []subtitleTrackV1      `json:"subtitle_tracks"`
+	CustomFields map[string]interface{} `json:"custom"`
 }
 
 func (bcv2 bonusContentV2) mapToModel2(parentSlug string, parentImages models.ImageSet) models.BonusContent {
@@ -40,6 +41,7 @@ func (bcv2 bonusContentV2) mapToModel2(parentSlug string, parentImages models.Im
 			Background:     utils.Coalesce(bcv2.ImageUrls.Bg, parentImages.Background),
 			Classification: utils.Coalesce(bcv2.ImageUrls.Classification, parentImages.Classification),
 		},
+		CustomFields: bcv2.CustomFields,
 	}
 
 	for _, t := range bcv2.Subtitles {

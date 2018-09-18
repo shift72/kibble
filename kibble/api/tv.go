@@ -184,6 +184,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 		Trailers:        make([]models.Trailer, 0),
 		Cast:            make([]models.CastMember, 0),
 		Crew:            make([]models.CrewMember, 0),
+		CustomFields:    t.CustomFields,
 	}
 
 	// map trailers
@@ -268,7 +269,8 @@ func (t tvEpisodeV2) mapToModel(season models.TVSeason) models.TVEpisode {
 			Background:     utils.Coalesce(t.ImageUrls.Bg, season.Images.Background),
 			Classification: utils.Coalesce(t.ImageUrls.Classification, season.Images.Classification),
 		},
-		Subtitles: make([]models.SubtitleTrack, 0),
+		Subtitles:    make([]models.SubtitleTrack, 0),
+		CustomFields: t.CustomFields,
 	}
 
 	for _, st := range t.SubtitleTracks {
@@ -304,6 +306,7 @@ type tvEpisodeV2 struct {
 		Type     string `json:"type"`
 		Path     string `json:"path"`
 	} `json:"subtitle_tracks"`
+	CustomFields map[string]interface{} `json:"custom"`
 }
 
 type tvShowV2 struct {
@@ -352,10 +355,11 @@ type tvSeasonV2 struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	Recommendations []string `json:"recommendations"`
-	SeoTitle        string   `json:"seo_title"`
-	SeoKeywords     string   `json:"seo_keywords"`
-	SeoDescription  string   `json:"seo_description"`
+	Recommendations []string               `json:"recommendations"`
+	SeoTitle        string                 `json:"seo_title"`
+	SeoKeywords     string                 `json:"seo_keywords"`
+	SeoDescription  string                 `json:"seo_description"`
+	CustomFields    map[string]interface{} `json:"custom"`
 }
 
 type tvSeasonShowMultipleResponseV2 struct {

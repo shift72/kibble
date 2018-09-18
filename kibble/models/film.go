@@ -38,6 +38,7 @@ type Film struct {
 	Images          ImageSet
 	Recommendations []GenericItem
 	Subtitles       []SubtitleTrack
+	CustomFields    CustomFields
 }
 
 // FilmCollection - all films

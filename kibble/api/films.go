@@ -144,6 +144,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Trailers:        make([]models.Trailer, 0),
 		Cast:            make([]models.CastMember, 0),
 		Crew:            make([]models.CrewMember, 0),
+		CustomFields:    f.CustomFields,
 	}
 
 	for _, t := range f.Subtitles {
@@ -231,11 +232,12 @@ type filmV2 struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	Recommendations []string          `json:"recommendations"`
-	Subtitles       []subtitleTrackV1 `json:"subtitle_tracks"`
-	SeoTitle        string            `json:"seo_title"`
-	SeoKeywords     string            `json:"seo_keywords"`
-	SeoDescription  string            `json:"seo_description"`
+	Recommendations []string               `json:"recommendations"`
+	Subtitles       []subtitleTrackV1      `json:"subtitle_tracks"`
+	SeoTitle        string                 `json:"seo_title"`
+	SeoKeywords     string                 `json:"seo_keywords"`
+	SeoDescription  string                 `json:"seo_description"`
+	CustomFields    map[string]interface{} `json:"custom"`
 }
 
 type subtitleTrackV1 struct {

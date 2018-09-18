@@ -49,6 +49,7 @@ type TVEpisode struct {
 	Runtime       Runtime
 	Images        ImageSet
 	Subtitles     []SubtitleTrack
+	CustomFields  CustomFields
 }
 
 // TVSeason -
@@ -69,6 +70,7 @@ type TVSeason struct {
 	Cast            []CastMember
 	Crew            []CrewMember
 	Recommendations []GenericItem
+	CustomFields    CustomFields
 }
 
 // TVShowCollection -

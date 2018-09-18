@@ -125,4 +125,32 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 
 	assert.Equal(t, 1, len(model.Subtitles), "expect the subtitles to be 1")
+
+	assert.Equal(t, nil, model.CustomFields["hello?"])
+}
+
+func TestFilmCustomFields(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := filmV2{
+		ID:    123,
+		Title: "Film One",
+		Slug:  "/film/52",
+		CustomFields: map[string]interface{}{
+			"facebook_url": "https://www.facebook.com/custompage",
+			"some_key":     1,
+			"another_key":  false,
+		},
+	}
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 1, model.CustomFields["some_key"])
+	assert.Equal(t, "https://www.facebook.com/custompage", model.CustomFields["facebook_url"])
+	assert.Equal(t, false, model.CustomFields["another_key"])
+	assert.Equal(t, nil, model.CustomFields["where is it"])
+
 }

@@ -70,5 +70,5 @@
   name = "golang.org/x/crypto"
 
 [[constraint]]
-  name = "gopkg.in/fsnotify.v1"
-  version = "1.4.2"
+  name = "gopkg.in/fsnotify/fsnotify.v1"
+  version = "1.4.7"
