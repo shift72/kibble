@@ -1,5 +1,9 @@
 # Change log
 
+## 0.10.3
+Added support for Bonus Content on TV Seasons
+Added support via `map[string]interface{}` for Custom Fields (`custom` property) to Films, TV Season, Episodes, and Bonus Content.
+
 ## 0.10.2
 
 Added support for config and configInt with defaults
