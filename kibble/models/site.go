@@ -107,3 +107,36 @@ type SubtitleTrack struct {
 
 // CustomFields are key-value pairs that can be aded to a film, season, bonus, or episode
 type CustomFields map[string]interface{}
+
+// GetString returns the custom field in string format
+func (fields CustomFields) GetString(fieldKey string, defaultValue string) string {
+	if value, ok := fields[fieldKey]; ok {
+		if castValue, ok := value.(string); ok {
+			return castValue
+		}
+	}
+
+	return defaultValue
+}
+
+// GetBool returns the custom field in bool format
+func (fields CustomFields) GetBool(fieldKey string, defaultValue bool) bool {
+	if value, ok := fields[fieldKey]; ok {
+		if castValue, ok := value.(bool); ok {
+			return castValue
+		}
+	}
+
+	return defaultValue
+}
+
+// GetNumber returns the custom field in float64 format
+func (fields CustomFields) GetNumber(fieldKey string, defaultValue float64) float64 {
+	if value, ok := fields[fieldKey]; ok {
+		if castValue, ok := value.(float64); ok {
+			return castValue
+		}
+	}
+
+	return defaultValue
+}
