@@ -5,7 +5,6 @@ kibble/.kibble
 kibble/vendor
 kibble/dist
 kibble-npm/node_modules
-kibble-npm/bin
 s72-kibble-*
 kibble-windows-amd64.exe
 .vs
