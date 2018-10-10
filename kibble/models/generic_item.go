@@ -40,3 +40,14 @@ func (i *GenericItem) GetTitle(T i18n.TranslateFunc) string {
 	}
 	return i.Title
 }
+
+// GetTranslatedTitle returns an i18n version of a GenericItem title using the specified key as the template
+func (i GenericItem) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) string {
+	switch i.ItemType {
+	case "tvseason":
+		if s, ok := i.InnerItem.(TVSeason); ok {
+			return s.GetTranslatedTitle(T, i18nKey)
+		}
+	}
+	return i.Title
+}

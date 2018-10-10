@@ -149,3 +149,15 @@ func (season TVSeason) GetTitle(T i18n.TranslateFunc) string {
 		"Season":   season,
 	})
 }
+
+// GetTranslatedTitle returns an i18n version of a season title using the specified key as the template
+func (season TVSeason) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) string {
+	if i18nKey == "" {
+		i18nKey = "tvseason"
+	}
+
+	return T(i18nKey, map[string]interface{}{
+		"ShowInfo": *season.ShowInfo,
+		"Season":   season,
+	})
+}
