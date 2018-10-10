@@ -106,7 +106,7 @@ func TestPageToPageFeatures(t *testing.T) {
 	assert.Equal(t, "/page/123", model.Slug, "slug")
 
 	// page features
-	assert.Equal(t, "/page-feature/120", model.PageCollections[0].Slug)
+	assert.Equal(t, "/collection/120", model.PageCollections[0].Slug)
 	assert.Equal(t, "/page-feature/blam", model.PageCollections[0].TitleSlug)
 
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")

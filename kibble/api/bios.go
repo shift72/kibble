@@ -92,7 +92,7 @@ func (pf pageFeatureV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex
 		Layout:      pf.Layout,
 		ItemsPerRow: pf.ItemsPerRow,
 		ItemLayout:  pf.ItemLayout,
-		Slug:        fmt.Sprintf("/page-feature/%d", pf.FeatureID),
+		Slug:        fmt.Sprintf("/collection/%d", pf.FeatureID),
 		TitleSlug:   pf.Slug,
 		DisplayName: pf.DisplayName,
 		Items:       itemIndex.MapToUnresolvedItems(pf.Items),
