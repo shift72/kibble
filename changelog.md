@@ -1,5 +1,15 @@
 # Change log
 
+## 0.10.7
+Changed live reload script to not rely on `If-Modified-Since` header, which seems to have issues in IE.
+Added render option (`--serve`) to just serve site without a live reload script to ease testing (and not choke in IE).
+
+## 0.10.6
+Added a new GenericItem.GetTranslatedTitle function which allows specifying a i18n key
+
+## 0.10.5
+Vesion bump for a npm fix
+
 ## 0.10.4
 Added type specific Get* methods for CustomFields
 

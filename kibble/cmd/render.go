@@ -23,6 +23,7 @@ import (
 
 var port int32
 var watch bool
+var serve bool
 
 // renderCmd represents the render command
 var renderCmd = &cobra.Command{
@@ -33,11 +34,11 @@ var renderCmd = &cobra.Command{
 Kibble is used to build and develop custom sites to run on the SHIFT72 platform.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		if watch {
+		if watch || serve {
 			log := utils.ConfigureWatchedLogging(utils.ConvertToLoggingLevel(verbose))
 			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 			config.CheckVersion(cfg)
-			render.Watch(cfg.SourcePath(), cfg.BuildPath(), cfg, port, log)
+			render.Watch(cfg.SourcePath(), cfg.BuildPath(), cfg, port, log, watch)
 		} else {
 			utils.ConfigureStandardLogging(utils.ConvertToLoggingLevel(verbose))
 			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
@@ -51,4 +52,5 @@ func init() {
 	RootCmd.AddCommand(renderCmd)
 	renderCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
 	renderCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
+	renderCmd.Flags().BoolVar(&serve, "serve", false, "Serve the site, but dont watch for changes")
 }

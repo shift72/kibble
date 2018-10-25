@@ -33,12 +33,13 @@ import (
 var staticFolder = "static"
 
 // Watch -
-func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, logReader utils.LogReader) {
+func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, logReader utils.LogReader, reloadBrowserOnChange bool) {
 
 	liveReload := LiveReload{
-		logReader:  logReader,
-		sourcePath: sourcePath,
-		config:     cfg.LiveReload,
+		logReader:                 logReader,
+		sourcePath:                sourcePath,
+		config:                    cfg.LiveReload,
+		reloadBrowserOnFileChange: reloadBrowserOnChange,
 	}
 
 	liveReload.StartLiveReload(port, func() {
@@ -51,7 +52,10 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 
 	// server
 	mux := http.NewServeMux()
-	mux.HandleFunc("/kibble/live_reload", liveReload.Handler)
+	if reloadBrowserOnChange {
+		mux.HandleFunc("/kibble/live_reload", liveReload.Handler)
+	}
+
 	mux.Handle("/",
 		proxy.GetMiddleware(
 			liveReload.GetMiddleware(

@@ -34,19 +34,24 @@ import (
 var embed = `
 <script>
 (function(){
-	var etag = '';
+	var etag = ''; // IE 11 can't handle the 'If-Modified-Since' header
   function checkForChanges() {
-    xhttp = new XMLHttpRequest();
+    var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
 			if (this.readyState == this.HEADERS_RECEIVED) {
-        etag = this.getResponseHeader("Etag");
-      }
-      if (this.readyState == 4 && this.status == 200) {
-        location.reload(true);
+				if (!etag){
+					etag = this.getResponseHeader("Etag");
+					return;
+				}
+
+				var tag = this.getResponseHeader("Etag");
+				if (tag !== etag){
+					location.reload(true);
+				}
+				etag = tag;
       }
     };
     xhttp.open("GET", "/kibble/live_reload", true);
-		xhttp.setRequestHeader("If-Modified-Since", etag);
     xhttp.send();
     setTimeout(checkForChanges, 3000);
   }
@@ -65,10 +70,11 @@ var ignorePaths = []string{
 
 // LiveReload -
 type LiveReload struct {
-	lastModified time.Time
-	logReader    utils.LogReader
-	sourcePath   string
-	config       models.LiveReloadConfig
+	lastModified              time.Time
+	logReader                 utils.LogReader
+	sourcePath                string
+	config                    models.LiveReloadConfig
+	reloadBrowserOnFileChange bool
 }
 
 // WrapperResponseWriter - wraps request
@@ -136,7 +142,10 @@ func (live *LiveReload) GetMiddleware(next http.Handler) http.Handler {
 
 			if ww.Status() == 200 {
 				ww.PrefixWithLogs(live.logReader.Logs())
-				ww.Write([]byte(embed))
+
+				if live.reloadBrowserOnFileChange {
+					ww.Write([]byte(embed))
+				}
 			}
 		}
 
@@ -146,6 +155,10 @@ func (live *LiveReload) GetMiddleware(next http.Handler) http.Handler {
 
 // Handler - handle the live reload
 func (live *LiveReload) Handler(w http.ResponseWriter, req *http.Request) {
+	if !live.reloadBrowserOnFileChange {
+		return
+	}
+
 	matchEtag := req.Header.Get("If-Modified-Since")
 
 	w.Header().Set("Cache-Control", "no-cache")
@@ -169,7 +182,11 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 	// wait for changes
 	changesChannel := make(chan bool)
 	go func() {
-		log.Info("Starting live reload - %s", url)
+		if live.reloadBrowserOnFileChange {
+			log.Info("Starting live reload - %s", url)
+		} else {
+			log.Info("Starting web server - %s", url)
+		}
 
 		for range changesChannel {
 			now := time.Now()
