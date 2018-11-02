@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-	"time"
 
 	"github.com/indiereign/shift72-kibble/kibble/utils"
 
@@ -120,7 +119,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		TitleSlug:   slug.Make(f.Title),
 		Overview:    f.Overview,
 		Tagline:     f.Tagline,
-		ReleaseDate: f.ReleaseDate,
+		ReleaseDate: utils.ParseTimeFromString(f.ReleaseDate),
 		Runtime:     models.Runtime(f.Runtime),
 		Countries:   f.Countries,
 		Languages:   f.Languages,
@@ -213,17 +212,17 @@ type filmV2 struct {
 	Studio []struct {
 		Name string `json:"name"`
 	} `json:"studio"`
-	Overview    string    `json:"overview"`
-	Tagline     string    `json:"tagline"`
-	ReleaseDate time.Time `json:"release_date"`
-	Runtime     float64   `json:"runtime"`
-	Countries   []string  `json:"countries"`
-	Languages   []string  `json:"languages"`
-	Genres      []string  `json:"genres"`
-	Title       string    `json:"title"`
-	Slug        string    `json:"slug"`
-	FilmID      int       `json:"film_id"`
-	ID          int       `json:"id"`
+	Overview    string   `json:"overview"`
+	Tagline     string   `json:"tagline"`
+	ReleaseDate string   `json:"release_date,omitempty"`
+	Runtime     float64  `json:"runtime"`
+	Countries   []string `json:"countries"`
+	Languages   []string `json:"languages"`
+	Genres      []string `json:"genres"`
+	Title       string   `json:"title"`
+	Slug        string   `json:"slug"`
+	FilmID      int      `json:"film_id"`
+	ID          int      `json:"id"`
 	ImageUrls   struct {
 		Portrait       string `json:"portrait"`
 		Landscape      string `json:"landscape"`
