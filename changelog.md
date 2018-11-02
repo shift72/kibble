@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.8
+Support season and film release_date that is a string in json, that fails to parse to a `time.Time`.
+
 ## 0.10.7
 Changed live reload script to not rely on `If-Modified-Since` header, which seems to have issues in IE.
 Added render option (`--serve`) to just serve site without a live reload script to ease testing (and not choke in IE).
