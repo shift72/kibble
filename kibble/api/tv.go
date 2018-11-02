@@ -111,6 +111,8 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 
 			site.TVSeasons = append(site.TVSeasons, season)
 			itemIndex.Set(season.Slug, season.GetGenericItem())
+		} else {
+			log.Info("Failed marshalling season %s %s", details.Seasons[i], err)
 		}
 	}
 
@@ -240,7 +242,7 @@ func (t tvShowV2) mapToModel() *models.TVShow {
 		Overview:         t.Overview,
 		Countries:        t.Countries,
 		Languages:        t.Languages,
-		ReleaseDate:      t.ReleaseDate,
+		ReleaseDate:      utils.ParseTimeFromString(t.ReleaseDate),
 		Tagline:          t.Tagline,
 		Studio:           make([]string, 0),
 		AvailableSeasons: t.AvailableSeasons,
@@ -315,7 +317,7 @@ type tvShowV2 struct {
 	Overview    string        `json:"overview"`
 	Countries   []string      `json:"countries"`
 	Languages   []string      `json:"languages"`
-	ReleaseDate time.Time     `json:"release_date"`
+	ReleaseDate string        `json:"release_date,omitempty"`
 	Tagline     string        `json:"tagline"`
 	Subtitles   string        `json:"subtitles"`
 	Studio      []struct {

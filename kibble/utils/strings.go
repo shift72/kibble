@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -81,4 +82,15 @@ func ParseIntFromString(data string) int {
 		return 0
 	}
 	return c
+}
+
+// ParseTimeFromString attempts to parse the string value into a time.Time struct
+func ParseTimeFromString(str string) time.Time {
+	var t time.Time
+	if str == "" {
+		return t
+	}
+
+	t, _ = time.Parse(time.RFC3339, str)
+	return t
 }
