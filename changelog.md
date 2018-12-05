@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.9
+Support Episode and ShowInfo Overviews being transformed for a season when its rendered.
+
 ## 0.10.8
 Support season and film release_date that is a string in json, that fails to parse to a `time.Time`.
 
