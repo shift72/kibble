@@ -42,12 +42,19 @@ func createTestTVSeasonWithCustomURLPath(urlPath string) (models.RenderContext, 
 			TVSeasons: models.TVSeasonCollection{
 				models.TVSeason{
 					SeasonNumber: 2,
+					Overview:     "# Season Title",
 					ShowInfo: &models.TVShow{
 						ID:        123,
 						Title:     "Breaking Bad",
 						TitleSlug: "breaking-bad",
+						Overview:  "# Show Title",
 					},
 					Slug: "/tv/123/season/2",
+					Episodes: []models.TVEpisode{
+						models.TVEpisode{
+							Overview: "# Episode Title",
+						},
+					},
 				},
 			},
 		},
@@ -130,4 +137,22 @@ func TestPartialRenderTVSeason(t *testing.T) {
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, "/fr/partials/tv/123/season/2.html", renderer.FilePath)
 	assert.Equal(t, "/season/partial.jet", renderer.TemplatePath)
+}
+
+func TestContentTransforms(t *testing.T) {
+	var ds TVSeasonDataSource
+
+	renderer := &test.MockRenderer{}
+
+	ctx, _ := createTestTVSeason()
+
+	ds.Iterator(ctx, renderer)
+
+	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+
+	season, _ := renderer.Data["tvseason"].Elem().Interface().(models.TVSeason)
+
+	assert.Equal(t, season.Overview, "<h1>Season Title</h1>\n")
+	assert.Equal(t, season.ShowInfo.Overview, "<h1>Show Title</h1>\n")
+	assert.Equal(t, season.Episodes[0].Overview, "<h1>Episode Title</h1>\n")
 }
