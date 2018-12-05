@@ -66,7 +66,7 @@ func (ds *TVSeasonIndexDataSource) IsSlugMatch(slug string) bool {
 func transformTVSeason(f models.TVSeason) *models.TVSeason {
 	f.Overview = models.ApplyContentTransforms(f.Overview)
 
-	if (f.ShowInfo != nil){
+	if f.ShowInfo != nil {
 		f.ShowInfo.Overview = models.ApplyContentTransforms(f.ShowInfo.Overview)
 	}
 
