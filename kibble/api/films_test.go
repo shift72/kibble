@@ -41,12 +41,7 @@ func TestLoadFilms(t *testing.T) {
 	}
 }
 
-func TestFilmApiToModel(t *testing.T) {
-
-	itemIndex := make(models.ItemIndex)
-
-	serviceConfig := commonServiceConfig()
-
+func GetFilm() filmV2 {
 	apiFilm := filmV2{
 		ID:      123,
 		Title:   "Film One",
@@ -101,6 +96,16 @@ func TestFilmApiToModel(t *testing.T) {
 		SeoKeywords:    "Film One Meta Keywords",
 		SeoDescription: "Film One Meta Description",
 	}
+	return apiFilm
+}
+
+func TestFilmApiToModel(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := GetFilm()
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
 
@@ -127,6 +132,37 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 1, len(model.Subtitles), "expect the subtitles to be 1")
 
 	assert.Equal(t, nil, model.CustomFields["hello?"])
+}
+
+func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := GetFilm()
+	imageURL := "image.jpeg"
+	apiFilm.ImageUrls.Portrait = imageURL
+	apiFilm.ImageUrls.Landscape = imageURL
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, model.Seo.Image, imageURL, "should be equal")
+}
+
+func TestFilmApiToModelWithSeoImage(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := GetFilm()
+	imageURL := "seo_image.jpeg"
+	apiFilm.ImageUrls.Seo = imageURL
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, model.Seo.Image, imageURL, "should be equal")
 }
 
 func TestFilmCustomFields(t *testing.T) {

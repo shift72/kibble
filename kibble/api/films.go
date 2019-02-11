@@ -138,6 +138,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 			Carousel:       f.ImageUrls.Carousel,
 			Background:     f.ImageUrls.Bg,
 			Classification: f.ImageUrls.Classification,
+			Seo:            f.ImageUrls.Seo,
 		},
 		Recommendations: itemIndex.MapToUnresolvedItems(f.Recommendations),
 		Trailers:        make([]models.Trailer, 0),
@@ -191,6 +192,11 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}
 
+	// if seo image is available, use it
+	if len(film.Images.Seo) > 0 {
+		film.Seo.Image = film.Images.Seo
+	}
+
 	return film
 }
 
@@ -230,6 +236,7 @@ type filmV2 struct {
 		Carousel       string `json:"carousel"`
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
+		Seo            string `json:"seo"`
 	} `json:"image_urls"`
 	Recommendations []string               `json:"recommendations"`
 	Subtitles       []subtitleTrackV1      `json:"subtitle_tracks"`
