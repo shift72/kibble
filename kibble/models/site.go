@@ -50,6 +50,7 @@ type ImageSet struct {
 	Portrait       string
 	Header         string
 	Classification string
+	Seo            string
 }
 
 // Seo - common seo settings

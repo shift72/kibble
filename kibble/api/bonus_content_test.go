@@ -51,6 +51,7 @@ func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {
 			Carousel       string `json:"carousel"`
 			Bg             string `json:"bg"`
 			Classification string `json:"classification"`
+			Seo            string `json:"seo"`
 		}{
 			Portrait:       "film-portrait.jpeg",
 			Landscape:      "film-landscape.jpeg",
@@ -58,6 +59,7 @@ func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {
 			Carousel:       "film-carousel.jpeg",
 			Bg:             "film-background.jpeg",
 			Classification: "film-classification.jpeg",
+			Seo:            "film-seo.jpeg",
 		},
 	}
 
@@ -95,6 +97,7 @@ func TestBonusContentImagesUseSeasonImagesAsFallback(t *testing.T) {
 			Carousel       string `json:"carousel"`
 			Bg             string `json:"bg"`
 			Classification string `json:"classification"`
+			Seo            string `json:"seo"`
 		}{
 			Portrait:       "season-portrait.jpeg",
 			Landscape:      "season-landscape.jpeg",
@@ -102,6 +105,7 @@ func TestBonusContentImagesUseSeasonImagesAsFallback(t *testing.T) {
 			Carousel:       "season-carousel.jpeg",
 			Bg:             "season-background.jpeg",
 			Classification: "season-classification.jpeg",
+			Seo:            "season-seo.jpeg",
 		},
 	}
 

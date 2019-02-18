@@ -179,6 +179,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 			Carousel:       t.ImageUrls.Carousel,
 			Background:     t.ImageUrls.Bg,
 			Classification: t.ImageUrls.Classification,
+			Seo:            t.ImageUrls.Seo,
 		},
 		ShowInfo:        t.ShowInfo.mapToModel(),
 		Episodes:        make([]models.TVEpisode, 0),
@@ -228,6 +229,11 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 		b := bonus.mapToModel2(season.Slug, season.Images)
 		season.Bonuses = append(season.Bonuses, b)
 		itemIndex.Set(b.Slug, b.GetGenericItem())
+	}
+
+	// if seo image is available, use it
+	if len(season.Images.Seo) > 0 {
+		season.Seo.Image = season.Images.Seo
 	}
 
 	return season
@@ -356,6 +362,7 @@ type tvSeasonV2 struct {
 		Carousel       string `json:"carousel"`
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
+		Seo            string `json:"seo"`
 	} `json:"image_urls"`
 	Recommendations []string               `json:"recommendations"`
 	SeoTitle        string                 `json:"seo_title"`

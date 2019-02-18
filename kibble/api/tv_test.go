@@ -94,6 +94,32 @@ func TestSeasonToSeoMap(t *testing.T) {
 	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")
 }
 
+func TestSeasonToSeoMapWithSeoImage(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:           "/tv/1/season/1",
+		Title:          "Season One",
+		Overview:       "Season overview",
+		SeoTitle:       "Season Season Season",
+		SeoKeywords:    "key key key",
+		SeoDescription: "One Season to rule them all",
+		ShowInfo: tvShowV2{
+			Title: "Show One",
+		},
+	}
+
+	imageURL := "seo_image.jpeg"
+	apiSeason.ImageUrls.Seo = imageURL
+
+	model := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, model.Seo.Image, imageURL, "should be equal")
+}
+
 func TestTVEpisodeSlugPopulations(t *testing.T) {
 
 	itemIndex := make(models.ItemIndex)
@@ -140,6 +166,7 @@ func TestEpisodeImageFallback(t *testing.T) {
 			Carousel       string `json:"carousel"`
 			Bg             string `json:"bg"`
 			Classification string `json:"classification"`
+			Seo            string `json:"seo"`
 		}{
 			Portrait:       "season-portrait.jpeg",
 			Landscape:      "season-landscape.jpeg",
@@ -147,6 +174,7 @@ func TestEpisodeImageFallback(t *testing.T) {
 			Carousel:       "season-carousel.jpeg",
 			Bg:             "season-background.jpeg",
 			Classification: "season-classification.jpeg",
+			Seo:            "season-seo.jpeg",
 		},
 		ShowInfo: tvShowV2{
 			Title: "Show One",
@@ -256,4 +284,3 @@ func TestBonusContentModelBinding(t *testing.T) {
 	assert.Equal(t, "portrait", model.Bonuses[0].Images.Portrait)
 	assert.Equal(t, "landscape", model.Bonuses[0].Images.Landscape)
 }
-
