@@ -50,6 +50,7 @@ type TVEpisode struct {
 	Images        ImageSet
 	Subtitles     []SubtitleTrack
 	CustomFields  CustomFields
+	Season        TVSeason
 }
 
 // TVSeason -

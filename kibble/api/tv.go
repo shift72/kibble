@@ -221,7 +221,9 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 
 	// episodes
 	for _, t := range t.Episodes {
-		season.Episodes = append(season.Episodes, t.mapToModel(season))
+		e := t.mapToModel(season)
+		season.Episodes = append(season.Episodes, e)
+		itemIndex.Set(e.Slug, e.GetGenericItem())
 	}
 
 	// add bonuses - supports linking to bonus entries (supported??)
@@ -279,6 +281,7 @@ func (t tvEpisodeV2) mapToModel(season models.TVSeason) models.TVEpisode {
 		},
 		Subtitles:    make([]models.SubtitleTrack, 0),
 		CustomFields: t.CustomFields,
+		Season:       season,
 	}
 
 	for _, st := range t.SubtitleTracks {

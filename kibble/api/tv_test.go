@@ -284,3 +284,30 @@ func TestBonusContentModelBinding(t *testing.T) {
 	assert.Equal(t, "portrait", model.Bonuses[0].Images.Portrait)
 	assert.Equal(t, "landscape", model.Bonuses[0].Images.Landscape)
 }
+
+func TestEpisodesAreAddedToItemIndex(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:  "/tv/1/season/1",
+		Title: "Season One",
+		Episodes: []tvEpisodeV2{{
+			EpisodeNumber: 1,
+			Title:         "First Episode",
+		}, {
+			EpisodeNumber: 2,
+			Title:         "Twoth Episode",
+		}},
+	}
+
+	apiSeason.mapToModel(serviceConfig, itemIndex)
+	first := itemIndex.Get("/tv/1/season/1/episode/1")
+	assert.NotEqual(t, models.Empty, first)
+	assert.Equal(t, "First Episode", first.Title)
+
+	second := itemIndex.Get("/tv/1/season/1/episode/2")
+	assert.NotEqual(t, models.Empty, second)
+	assert.Equal(t, "Twoth Episode", second.Title)
+}
