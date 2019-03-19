@@ -138,7 +138,7 @@ func (episode TVEpisode) GetGenericItem() GenericItem {
 		Title:     episode.Title,
 		Slug:      episode.Slug,
 		Images:    episode.Images,
-		ItemType:  "episode",
+		ItemType:  "tvepisode",
 		InnerItem: episode,
 	}
 }
@@ -160,5 +160,27 @@ func (season TVSeason) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) 
 	return T(i18nKey, map[string]interface{}{
 		"ShowInfo": *season.ShowInfo,
 		"Season":   season,
+	})
+}
+
+// GetTitle return the localised version of the episode title
+func (episode TVEpisode) GetTitle(T i18n.TranslateFunc) string {
+	return T("tvepisode", map[string]interface{}{
+		"ShowInfo": *episode.Season.ShowInfo,
+		"Season":   episode.Season,
+		"Episode":  episode,
+	})
+}
+
+// GetTranslatedTitle returns an i18n version of an episode title using the specified key as the template
+func (episode TVEpisode) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) string {
+	if i18nKey == "" {
+		i18nKey = "tvepisode"
+	}
+
+	return T(i18nKey, map[string]interface{}{
+		"ShowInfo": *episode.Season.ShowInfo,
+		"Season":   episode.Season,
+		"Episode":  episode,
 	})
 }

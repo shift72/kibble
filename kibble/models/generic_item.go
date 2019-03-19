@@ -37,6 +37,10 @@ func (i *GenericItem) GetTitle(T i18n.TranslateFunc) string {
 		if s, ok := i.InnerItem.(TVSeason); ok {
 			return s.GetTitle(T)
 		}
+	case "tvepisode":
+		if e, ok := i.InnerItem.(TVEpisode); ok {
+			return e.GetTitle(T)
+		}
 	}
 	return i.Title
 }
@@ -47,6 +51,10 @@ func (i GenericItem) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) st
 	case "tvseason":
 		if s, ok := i.InnerItem.(TVSeason); ok {
 			return s.GetTranslatedTitle(T, i18nKey)
+		}
+	case "tvepisode":
+		if e, ok := i.InnerItem.(TVEpisode); ok {
+			return e.GetTranslatedTitle(T, i18nKey)
 		}
 	}
 	return i.Title

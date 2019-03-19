@@ -36,5 +36,13 @@
     {
         "id": "season_custom_title",
         "translation":  "{{.ShowInfo.Title}} Ceasar N {{.Season.SeasonNumber}}"
+    },
+    {
+        "id": "tvepisode",
+        "translation":  "{{.ShowInfo.Title}} - S{{.Season.SeasonNumber}}E{{.Episode.EpisodeNumber}} - {{.Episode.Title}}"
+    },
+    {
+        "id": "tvepisode_custom_title",
+        "translation":  "{{.ShowInfo.Title}} - Season {{.Season.SeasonNumber}} Episode {{.Episode.EpisodeNumber}}: {{.Episode.Title}}"
     }
 ]
