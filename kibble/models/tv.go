@@ -44,6 +44,7 @@ type TVShow struct {
 type TVEpisode struct {
 	Title         string
 	Slug          string
+	TitleSlug     string
 	EpisodeNumber int
 	Overview      string
 	Runtime       Runtime

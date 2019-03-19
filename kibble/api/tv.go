@@ -268,6 +268,7 @@ func (t tvEpisodeV2) mapToModel(season models.TVSeason) models.TVEpisode {
 	episode := models.TVEpisode{
 		Slug:          season.Slug + "/episode/" + strconv.Itoa(t.EpisodeNumber),
 		Title:         t.Title,
+		TitleSlug:     slug.Make(t.Title),
 		EpisodeNumber: t.EpisodeNumber,
 		Overview:      t.Overview,
 		Runtime:       models.Runtime(t.Runtime),

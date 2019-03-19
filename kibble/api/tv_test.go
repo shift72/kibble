@@ -311,3 +311,25 @@ func TestEpisodesAreAddedToItemIndex(t *testing.T) {
 	assert.NotEqual(t, models.Empty, second)
 	assert.Equal(t, "Twoth Episode", second.Title)
 }
+
+func TestEpisodeHasATitleSlug(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:  "/tv/1/season/1",
+		Title: "Season One",
+		Episodes: []tvEpisodeV2{{
+			EpisodeNumber: 1,
+			Title:         "First Episode",
+		}, {
+			EpisodeNumber: 2,
+			Title:         "Twoth Episode",
+		}},
+	}
+
+	item := apiSeason.mapToModel(serviceConfig, itemIndex)
+	assert.Equal(t, "first-episode", item.Episodes[0].TitleSlug)
+	assert.Equal(t, "twoth-episode", item.Episodes[1].TitleSlug)
+}

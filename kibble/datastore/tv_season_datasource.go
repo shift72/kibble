@@ -47,7 +47,7 @@ var tvSeasonArgs = []models.RouteArgument{
 	},
 	models.RouteArgument{
 		Name:        ":slug",
-		Description: "Slug of the of the show",
+		Description: "Title slug of the show",
 		GetValue: func(entity interface{}) string {
 			if o, ok := entity.(*models.TVSeason); ok {
 				return o.ShowInfo.TitleSlug
