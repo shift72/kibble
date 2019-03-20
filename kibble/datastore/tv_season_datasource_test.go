@@ -75,8 +75,9 @@ func TestTVSeasonGetRouteForSlug(t *testing.T) {
 
 func TestTVSeasonIsSlugMatch(t *testing.T) {
 	var tvSeasonDS TVSeasonDataSource
-	assert.True(t, tvSeasonDS.IsSlugMatch("/tv/123/season/3"))
-	assert.False(t, tvSeasonDS.IsSlugMatch("/tv/123"))
+	assert.True(t, tvSeasonDS.IsSlugMatch("/tv/123/season/3"), "season slug")
+	assert.False(t, tvSeasonDS.IsSlugMatch("/tv/123"), "show slug")
+	assert.False(t, tvSeasonDS.IsSlugMatch("/tv/1/season/1/episode/13"), "episode slug")
 }
 
 func TestTVSeasonGetRouteForMissingSlug(t *testing.T) {
