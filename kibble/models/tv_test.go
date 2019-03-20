@@ -83,7 +83,7 @@ func TestTVEpisodeGetTitle(t *testing.T) {
 			EpisodeNumber: 1,
 		}},
 	}
-	tvSeason.Episodes[0].Season = *tvSeason
+	tvSeason.Episodes[0].Season = tvSeason
 	item := tvSeason.Episodes[0].GetGenericItem()
 
 	assert.Equal(t, "Breaking Bad - S2E1 - First Episode", item.GetTitle(T))
@@ -109,7 +109,7 @@ func TestTVEpsiodeGetTranslatedTitle(t *testing.T) {
 			EpisodeNumber: 1,
 		}},
 	}
-	tvSeason.Episodes[0].Season = *tvSeason
+	tvSeason.Episodes[0].Season = tvSeason
 	item := tvSeason.Episodes[0].GetGenericItem()
 
 	assert.Equal(t, "Breaking Bad - Season 2 Episode 1: First Episode", item.GetTranslatedTitle(T, "tvepisode_custom_title"))

@@ -51,7 +51,7 @@ type TVEpisode struct {
 	Images        ImageSet
 	Subtitles     []SubtitleTrack
 	CustomFields  CustomFields
-	Season        TVSeason
+	Season        *TVSeason
 }
 
 // TVSeason -
@@ -81,6 +81,9 @@ type TVShowCollection []TVShow
 // TVSeasonCollection -
 type TVSeasonCollection []TVSeason
 
+// TVEpisodeCollection is an array of episodes
+type TVEpisodeCollection []TVEpisode
+
 // FindTVShowByID - find tv show by id
 func (shows TVShowCollection) FindTVShowByID(showID int) (*TVShow, bool) {
 	for i := range shows {
@@ -106,6 +109,16 @@ func (tvSeasons TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, 
 	for _, p := range tvSeasons {
 		if p.Slug == slug {
 			return &p, true
+		}
+	}
+	return nil, false
+}
+
+// FindTVEpisodeBySlug returns an episode based on the specified slug
+func (episodes TVEpisodeCollection) FindTVEpisodeBySlug(slug string) (*TVEpisode, bool) {
+	for _, e := range episodes {
+		if e.Slug == slug {
+			return &e, true
 		}
 	}
 	return nil, false
@@ -168,7 +181,7 @@ func (season TVSeason) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) 
 func (episode TVEpisode) GetTitle(T i18n.TranslateFunc) string {
 	return T("tvepisode", map[string]interface{}{
 		"ShowInfo": *episode.Season.ShowInfo,
-		"Season":   episode.Season,
+		"Season":   *episode.Season,
 		"Episode":  episode,
 	})
 }
@@ -181,7 +194,7 @@ func (episode TVEpisode) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string
 
 	return T(i18nKey, map[string]interface{}{
 		"ShowInfo": *episode.Season.ShowInfo,
-		"Season":   episode.Season,
+		"Season":   *episode.Season,
 		"Episode":  episode,
 	})
 }
