@@ -28,6 +28,7 @@ type Site struct {
 	Films       FilmCollection
 	TVShows     TVShowCollection
 	TVSeasons   TVSeasonCollection
+	TVEpisodes  TVEpisodeCollection
 	Bundles     BundleCollection
 	Collections CollectionCollection
 	Plans       PlanCollection

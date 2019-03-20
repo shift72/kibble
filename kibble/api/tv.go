@@ -101,12 +101,19 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 			season := seasonV2.mapToModel(site.Config, itemIndex)
 
 			// merge the tv show information collected by the tvShowSummary and the season meta object
+			// before this stage the season.ShowInfo does not have an ID field (its not returned from the api)
 			if tvShowID, ok := utils.ParseIntFromSlug(season.Slug, 2); ok {
 				if show, ok := site.TVShows.FindTVShowByID(tvShowID); ok {
 					season.ShowInfo = mergeTVShow(show, season.ShowInfo)
-
 					itemIndex.Set(season.ShowInfo.Slug, season.ShowInfo.GetGenericItem())
 				}
+			}
+
+			// add any episodes into the global episode list
+			// because the api does not return the show id, we need to re add the season here as the references somehow change
+			for _, episode := range season.Episodes {
+				episode.Season = &season
+				site.TVEpisodes = append(site.TVEpisodes, episode)
 			}
 
 			site.TVSeasons = append(site.TVSeasons, season)
@@ -221,7 +228,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 
 	// episodes
 	for _, t := range t.Episodes {
-		e := t.mapToModel(season)
+		e := t.mapToModel(&season)
 		season.Episodes = append(season.Episodes, e)
 		itemIndex.Set(e.Slug, e.GetGenericItem())
 	}
@@ -263,7 +270,7 @@ func (t tvShowV2) mapToModel() *models.TVShow {
 	return &show
 }
 
-func (t tvEpisodeV2) mapToModel(season models.TVSeason) models.TVEpisode {
+func (t tvEpisodeV2) mapToModel(season *models.TVSeason) models.TVEpisode {
 
 	episode := models.TVEpisode{
 		Slug:          season.Slug + "/episode/" + strconv.Itoa(t.EpisodeNumber),

@@ -15,7 +15,6 @@
 package api
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
@@ -58,12 +57,11 @@ func TestLoadTVSeasons(t *testing.T) {
 		t.Error(err)
 	}
 
-	if len(itemIndex) == 0 {
-		t.Error("Expected some values to be loaded")
-	}
-
-	fmt.Printf("here shows %d ", len(site.TVShows))
-
+	assert.True(t, len(itemIndex) > 0, "itemIndex")
+	//ensure episodes are added to the correct index properly
+	assert.True(t, len(site.TVEpisodes) > 0, "site.TVEpisodes")
+	assert.NotNil(t, site.TVEpisodes[0].Season, "First episodes Season")
+	assert.NotNil(t, site.TVEpisodes[0].Season.ShowInfo, "First episodes seasons ShowInfo")
 }
 func TestSeasonToSeoMap(t *testing.T) {
 
