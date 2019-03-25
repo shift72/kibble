@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.11
+Added support for standalone episode templates (full item and partial)
+
 ## 0.10.10
 Added support for an SEO specific image.
 
