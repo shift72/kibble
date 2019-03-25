@@ -47,7 +47,7 @@ var tvSeasonArgs = []models.RouteArgument{
 	},
 	models.RouteArgument{
 		Name:        ":slug",
-		Description: "Slug of the of the show",
+		Description: "Title slug of the show",
 		GetValue: func(entity interface{}) string {
 			if o, ok := entity.(*models.TVSeason); ok {
 				return o.ShowInfo.TitleSlug
@@ -77,7 +77,7 @@ func (ds *TVSeasonDataSource) GetEntityType() reflect.Type {
 	return reflect.TypeOf(&models.TVSeason{})
 }
 
-// Iterator - loop over each film
+// Iterator - loop over each season
 func (ds *TVSeasonDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	data := make(jet.VarMap)
@@ -121,7 +121,7 @@ func (ds *TVSeasonDataSource) GetRouteForSlug(ctx models.RenderContext, slug str
 
 // IsSlugMatch - checks if the slug is a match
 func (ds *TVSeasonDataSource) IsSlugMatch(slug string) bool {
-	return strings.HasPrefix(slug, "/tv/") && strings.Contains(slug, "/season/")
+	return strings.HasPrefix(slug, "/tv/") && strings.Contains(slug, "/season/") && !strings.Contains(slug, "/episode/")
 }
 
 // IsValid checks for any validation errors

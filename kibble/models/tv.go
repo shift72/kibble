@@ -44,12 +44,14 @@ type TVShow struct {
 type TVEpisode struct {
 	Title         string
 	Slug          string
+	TitleSlug     string
 	EpisodeNumber int
 	Overview      string
 	Runtime       Runtime
 	Images        ImageSet
 	Subtitles     []SubtitleTrack
 	CustomFields  CustomFields
+	Season        *TVSeason
 }
 
 // TVSeason -
@@ -79,6 +81,9 @@ type TVShowCollection []TVShow
 // TVSeasonCollection -
 type TVSeasonCollection []TVSeason
 
+// TVEpisodeCollection is an array of episodes
+type TVEpisodeCollection []TVEpisode
+
 // FindTVShowByID - find tv show by id
 func (shows TVShowCollection) FindTVShowByID(showID int) (*TVShow, bool) {
 	for i := range shows {
@@ -104,6 +109,16 @@ func (tvSeasons TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, 
 	for _, p := range tvSeasons {
 		if p.Slug == slug {
 			return &p, true
+		}
+	}
+	return nil, false
+}
+
+// FindTVEpisodeBySlug returns an episode based on the specified slug
+func (episodes TVEpisodeCollection) FindTVEpisodeBySlug(slug string) (*TVEpisode, bool) {
+	for _, e := range episodes {
+		if e.Slug == slug {
+			return &e, true
 		}
 	}
 	return nil, false
@@ -137,7 +152,7 @@ func (episode TVEpisode) GetGenericItem() GenericItem {
 		Title:     episode.Title,
 		Slug:      episode.Slug,
 		Images:    episode.Images,
-		ItemType:  "episode",
+		ItemType:  "tvepisode",
 		InnerItem: episode,
 	}
 }
@@ -159,5 +174,27 @@ func (season TVSeason) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) 
 	return T(i18nKey, map[string]interface{}{
 		"ShowInfo": *season.ShowInfo,
 		"Season":   season,
+	})
+}
+
+// GetTitle return the localised version of the episode title
+func (episode TVEpisode) GetTitle(T i18n.TranslateFunc) string {
+	return T("tvepisode", map[string]interface{}{
+		"ShowInfo": *episode.Season.ShowInfo,
+		"Season":   *episode.Season,
+		"Episode":  episode,
+	})
+}
+
+// GetTranslatedTitle returns an i18n version of an episode title using the specified key as the template
+func (episode TVEpisode) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) string {
+	if i18nKey == "" {
+		i18nKey = "tvepisode"
+	}
+
+	return T(i18nKey, map[string]interface{}{
+		"ShowInfo": *episode.Season.ShowInfo,
+		"Season":   *episode.Season,
+		"Episode":  episode,
 	})
 }

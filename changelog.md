@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.10
+Added support for an SEO specific image.
+
 ## 0.10.9
 Support Episode and ShowInfo Overviews being transformed for a season when its rendered.
 
