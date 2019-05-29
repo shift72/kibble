@@ -42,7 +42,7 @@ func NewProxy(target string, patterns []string) *Prox {
 
 	res := make([]*regexp.Regexp, len(patterns))
 	for i := 0; i < len(patterns); i++ {
-		res[i] = regexp.MustCompile(patterns[i])
+		res[i] = regexp.MustCompile("(?i)" + patterns[i])
 	}
 
 	return &Prox{
@@ -65,12 +65,13 @@ func (p *Prox) GetMiddleware(next http.Handler) http.Handler {
 }
 
 func (p *Prox) shouldProxy(requestURI string) bool {
-	if strings.HasPrefix(requestURI, "/services") {
+	uri := strings.ToLower(requestURI)
+	if strings.HasPrefix(uri, "/services") {
 		return true
 	}
 
 	for i := 0; i < len(p.patterns); i++ {
-		if p.patterns[i] != nil && p.patterns[i].MatchString(requestURI) {
+		if p.patterns[i] != nil && p.patterns[i].MatchString(uri) {
 			return true
 		}
 	}
