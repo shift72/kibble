@@ -22,6 +22,7 @@ type Config struct {
 	SkipLogin       bool              `json:"-"`
 	SiteRootPath    string            `json:"siteRootPath"`
 	LiveReload      LiveReloadConfig  `json:"liveReload"`
+	ProxyPatterns   []string          `json:"proxy"`
 }
 
 // LiveReloadConfig - configuration options for the live_reloader

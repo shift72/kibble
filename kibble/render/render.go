@@ -48,7 +48,7 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 		Render(sourcePath, buildPath, cfg)
 	})
 
-	proxy := NewProxy(cfg.SiteURL)
+	proxy := NewProxy(cfg.SiteURL, cfg.ProxyPatterns)
 
 	// server
 	mux := http.NewServeMux()
