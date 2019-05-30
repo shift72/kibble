@@ -18,6 +18,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -26,11 +27,12 @@ type Prox struct {
 	// target url of reverse proxy
 	target *url.URL
 	// instance of Go ReverseProxy thatwill do the job for us
-	proxy *httputil.ReverseProxy
+	proxy    *httputil.ReverseProxy
+	patterns []*regexp.Regexp
 }
 
 // NewProxy - create a proxy that will rewrite the scheme and host
-func NewProxy(target string) *Prox {
+func NewProxy(target string, patterns []string) *Prox {
 	url, _ := url.Parse(target)
 	director := func(req *http.Request) {
 		req.URL.Scheme = url.Scheme
@@ -38,17 +40,41 @@ func NewProxy(target string) *Prox {
 		req.Host = url.Host
 	}
 
-	return &Prox{target: url, proxy: &httputil.ReverseProxy{Director: director}}
+	res := make([]*regexp.Regexp, len(patterns))
+	for i := 0; i < len(patterns); i++ {
+		res[i] = regexp.MustCompile("(?i)" + patterns[i])
+	}
+
+	return &Prox{
+		target:   url,
+		proxy:    &httputil.ReverseProxy{Director: director},
+		patterns: res,
+	}
 }
 
 // GetMiddleware - add the proxuy middleware
 func (p *Prox) GetMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasPrefix(r.RequestURI, "/services") {
+		if p.shouldProxy(r.RequestURI) {
 			w.Header().Add("X-GoProxy", "GoProxy")
 			p.proxy.ServeHTTP(w, r)
 		} else {
 			next.ServeHTTP(w, r)
 		}
 	})
+}
+
+func (p *Prox) shouldProxy(requestURI string) bool {
+	uri := strings.ToLower(requestURI)
+	if strings.HasPrefix(uri, "/services") {
+		return true
+	}
+
+	for i := 0; i < len(p.patterns); i++ {
+		if p.patterns[i] != nil && p.patterns[i].MatchString(uri) {
+			return true
+		}
+	}
+
+	return false
 }
