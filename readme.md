@@ -56,11 +56,12 @@ Kibble is released to 3 places
 # a. update npm package version
 #    kibble-npm/package.json
 
-# b. ensure that the release is tagged correctly
+# b. ensure that the release is tagged correctly. Miss the prepended 'v' as this will mess S3 up.
 git tag 0.9.6 master
 git push origin 0.9.6
 
 # c. build and release to locations 1 and 2
+cd kibble
 goreleaser --rm-dist
 
 # d. release to location 3
