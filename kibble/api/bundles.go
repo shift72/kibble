@@ -70,9 +70,11 @@ func (b BundleV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex model
 			Image:       serviceConfig.SelectDefaultImageType(b.LandscapeImage, b.PortraitImage),
 			VideoURL:    b.PromoURL,
 		},
-		Items:     itemIndex.MapToUnresolvedItems(b.Items),
-		CreatedAt: b.CreatedAt,
-		UpdatedAt: b.UpdatedAt,
+		Items:       itemIndex.MapToUnresolvedItems(b.Items),
+		CreatedAt:   b.CreatedAt,
+		UpdatedAt:   b.UpdatedAt,
+		Description: b.Description,
+		Tagline:     b.Tagline,
 	}
 }
 

@@ -92,6 +92,7 @@ func TestBundlesApiToModel(t *testing.T) {
 		LandscapeImage: "landscape",
 		PromoURL:       "https://video",
 		Items:          []string{"/film/1", "/film/2"},
+		Tagline:        "this is my tagline",
 	}
 
 	model := apiBundle.mapToModel(serviceConfig, itemIndex)
@@ -105,4 +106,7 @@ func TestBundlesApiToModel(t *testing.T) {
 	assert.Equal(t, nil, model.Items[0].InnerItem, "expect inner item to be nil")
 
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
+
+	assert.Equal(t, "this is my tagline", model.Tagline, "expect tagline")
+	assert.Equal(t, "Bundle description", model.Description, "expect description")
 }
