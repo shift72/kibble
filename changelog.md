@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.13
+Import taglines and descriptions from bundles
+
 ## 0.10.12
 Added support for design-time proxy routes. This allows a designer to set up patterns that will be managed by the reverse proxy instead of the static file matching. This allows the Player to be used locally (kind of).
 
