@@ -145,10 +145,11 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Cast:            make([]models.CastMember, 0),
 		Crew:            make([]models.CrewMember, 0),
 		CustomFields:    f.CustomFields,
+		Subtitles:       f.Subtitles,
 	}
 
-	for _, t := range f.Subtitles {
-		film.Subtitles = append(film.Subtitles, models.SubtitleTrack{
+	for _, t := range f.SubtitleTracks {
+		film.SubtitleTracks = append(film.SubtitleTracks, models.SubtitleTrack{
 			Language: t.Language,
 			Name:     t.Name,
 			Type:     t.Type,
@@ -239,7 +240,8 @@ type filmV2 struct {
 		Seo            string `json:"seo"`
 	} `json:"image_urls"`
 	Recommendations []string               `json:"recommendations"`
-	Subtitles       []subtitleTrackV1      `json:"subtitle_tracks"`
+	Subtitles       string                 `json:"subtitles"`
+	SubtitleTracks  []subtitleTrackV1      `json:"subtitle_tracks"`
 	SeoTitle        string                 `json:"seo_title"`
 	SeoKeywords     string                 `json:"seo_keywords"`
 	SeoDescription  string                 `json:"seo_description"`

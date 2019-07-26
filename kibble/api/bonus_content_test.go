@@ -9,7 +9,7 @@ import (
 
 func TestBonusContentSubtitlesModelSupport(t *testing.T) {
 	apiBonus := bonusContentV2{
-		Subtitles: []subtitleTrackV1{{
+		SubtitleTracks: []subtitleTrackV1{{
 			Language: "it",
 			Name:     "Italian",
 			Type:     "caption",
@@ -21,11 +21,11 @@ func TestBonusContentSubtitlesModelSupport(t *testing.T) {
 		Portrait: "film-portrait",
 	})
 
-	assert.Equal(t, 1, len(model.Subtitles), "expect the subtitles to be 1")
-	assert.Equal(t, "it", model.Subtitles[0].Language)
-	assert.Equal(t, "Italian", model.Subtitles[0].Name)
-	assert.Equal(t, "caption", model.Subtitles[0].Type)
-	assert.Equal(t, "/subtitles/film/49/bonus/1/it/caption-18.vtt", model.Subtitles[0].Path)
+	assert.Equal(t, 1, len(model.SubtitleTracks), "expect the subtitles to be 1")
+	assert.Equal(t, "it", model.SubtitleTracks[0].Language)
+	assert.Equal(t, "Italian", model.SubtitleTracks[0].Name)
+	assert.Equal(t, "caption", model.SubtitleTracks[0].Type)
+	assert.Equal(t, "/subtitles/film/49/bonus/1/it/caption-18.vtt", model.SubtitleTracks[0].Path)
 }
 
 func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {

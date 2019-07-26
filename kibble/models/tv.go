@@ -42,16 +42,16 @@ type TVShow struct {
 
 // TVEpisode -
 type TVEpisode struct {
-	Title         string
-	Slug          string
-	TitleSlug     string
-	EpisodeNumber int
-	Overview      string
-	Runtime       Runtime
-	Images        ImageSet
-	Subtitles     []SubtitleTrack
-	CustomFields  CustomFields
-	Season        *TVSeason
+	Title          string
+	Slug           string
+	TitleSlug      string
+	EpisodeNumber  int
+	Overview       string
+	Runtime        Runtime
+	Images         ImageSet
+	SubtitleTracks []SubtitleTrack
+	CustomFields   CustomFields
+	Season         *TVSeason
 }
 
 // TVSeason -

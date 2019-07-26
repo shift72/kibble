@@ -69,7 +69,8 @@ func GetFilm() filmV2 {
 			Name: "Peter Jackson",
 			Job:  "Director",
 		}},
-		Subtitles: []subtitleTrackV1{{
+		Subtitles: "Japanese",
+		SubtitleTracks: []subtitleTrackV1{{
 			Language: "it",
 			Name:     "Italian",
 			Type:     "caption",
@@ -129,7 +130,8 @@ func TestFilmApiToModel(t *testing.T) {
 
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 
-	assert.Equal(t, 1, len(model.Subtitles), "expect the subtitles to be 1")
+	assert.Equal(t, "Japanese", model.Subtitles)
+	assert.Equal(t, 1, len(model.SubtitleTracks), "expect the subtitles to be 1")
 
 	assert.Equal(t, nil, model.CustomFields["hello?"])
 }

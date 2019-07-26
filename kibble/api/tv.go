@@ -287,13 +287,13 @@ func (t tvEpisodeV2) mapToModel(season *models.TVSeason) models.TVEpisode {
 			Background:     utils.Coalesce(t.ImageUrls.Bg, season.Images.Background),
 			Classification: utils.Coalesce(t.ImageUrls.Classification, season.Images.Classification),
 		},
-		Subtitles:    make([]models.SubtitleTrack, 0),
-		CustomFields: t.CustomFields,
-		Season:       season,
+		SubtitleTracks: make([]models.SubtitleTrack, 0),
+		CustomFields:   t.CustomFields,
+		Season:         season,
 	}
 
 	for _, st := range t.SubtitleTracks {
-		episode.Subtitles = append(episode.Subtitles, models.SubtitleTrack{
+		episode.SubtitleTracks = append(episode.SubtitleTracks, models.SubtitleTrack{
 			Language: st.Language,
 			Name:     st.Name,
 			Type:     st.Type,

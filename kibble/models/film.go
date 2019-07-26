@@ -37,7 +37,8 @@ type Film struct {
 	Seo             Seo
 	Images          ImageSet
 	Recommendations []GenericItem
-	Subtitles       []SubtitleTrack
+	Subtitles       string
+	SubtitleTracks  []SubtitleTrack
 	CustomFields    CustomFields
 }
 
