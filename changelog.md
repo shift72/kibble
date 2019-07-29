@@ -1,5 +1,9 @@
 # Change log
 
+## 0.10.14
+Move field Subtitles to field SubtitleTracks. Add new field Subtitles which captures the likes of hard-coded subtitles.
+Add new function `GetSubtitles()` for tv episodes, films and bonus content. Populate this with a unique list of `SubtitleTracks.Name` and `Subtitles` values.
+
 ## 0.10.13
 Import taglines and descriptions from bundles
 
