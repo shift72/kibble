@@ -134,6 +134,10 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 1, len(model.SubtitleTracks), "expect the subtitles to be 1")
 
 	assert.Equal(t, nil, model.CustomFields["hello?"])
+
+	assert.Equal(t, 2, len(model.GetSubtitles()), "expect merged list of subtitles")
+	assert.Contains(t, model.GetSubtitles(), "Italian")
+	assert.Contains(t, model.GetSubtitles(), "Japanese")
 }
 
 func TestFilmApiToModelWithoutSeoImage(t *testing.T) {

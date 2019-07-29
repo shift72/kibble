@@ -14,7 +14,9 @@
 
 package models
 
-import "time"
+import (
+	"time"
+)
 
 // Film - all of the film bits
 type Film struct {
@@ -74,4 +76,14 @@ func (film Film) GetGenericItem() GenericItem {
 		ItemType:  "film",
 		InnerItem: film,
 	}
+}
+
+// GetSubtitles - translate the Subtitle field and SubtitleTracks list into a StringCollection
+func (film Film) GetSubtitles() StringCollection {
+	var result StringCollection
+	result = append(result, film.Subtitles)
+	for _, s := range film.SubtitleTracks {
+		result = append(result, s.Name)
+	}
+	return result
 }

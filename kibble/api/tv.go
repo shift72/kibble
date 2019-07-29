@@ -319,13 +319,8 @@ type tvEpisodeV2 struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	SubtitleTracks []struct {
-		Language string `json:"language"`
-		Name     string `json:"language_name"`
-		Type     string `json:"type"`
-		Path     string `json:"path"`
-	} `json:"subtitle_tracks"`
-	CustomFields map[string]interface{} `json:"custom"`
+	SubtitleTracks []subtitleTrackV1      `json:"subtitle_tracks"`
+	CustomFields   map[string]interface{} `json:"custom"`
 }
 
 type tvShowV2 struct {

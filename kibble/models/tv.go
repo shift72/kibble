@@ -198,3 +198,12 @@ func (episode TVEpisode) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string
 		"Episode":  episode,
 	})
 }
+
+// GetSubtitles - translate the SubtitleTracks list into a StringCollection
+func (episode TVEpisode) GetSubtitles() StringCollection {
+	var result StringCollection
+	for _, s := range episode.SubtitleTracks {
+		result = append(result, s.Name)
+	}
+	return result
+}

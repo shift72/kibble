@@ -25,3 +25,12 @@ func (bonus BonusContent) GetGenericItem() GenericItem {
 		InnerItem: bonus,
 	}
 }
+
+// GetSubtitles - translate the SubtitleTracks list into StringCollection
+func (bonus BonusContent) GetSubtitles() StringCollection {
+	var result StringCollection
+	for _, s := range bonus.SubtitleTracks {
+		result = append(result, s.Name)
+	}
+	return result
+}
