@@ -69,7 +69,7 @@ func GetFilm() filmV2 {
 			Name: "Peter Jackson",
 			Job:  "Director",
 		}},
-		Subtitles: "Japanese",
+		Subtitles: []string{"Japanese"},
 		SubtitleTracks: []subtitleTrackV1{{
 			Language: "it",
 			Name:     "Italian",
@@ -110,7 +110,6 @@ func TestFilmApiToModel(t *testing.T) {
 	itemIndex := make(models.ItemIndex)
 
 	serviceConfig := commonServiceConfig()
-
 	apiFilm := GetFilm()
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
@@ -135,7 +134,7 @@ func TestFilmApiToModel(t *testing.T) {
 
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 
-	assert.Equal(t, "Japanese", model.Subtitles)
+	assert.Equal(t, 1, len(model.Subtitles), "expect hard-coded subs to be 1")
 	assert.Equal(t, 2, len(model.SubtitleTracks), "expect the subtitles to be 2")
 
 	assert.Equal(t, nil, model.CustomFields["hello?"])
@@ -199,5 +198,23 @@ func TestFilmCustomFields(t *testing.T) {
 	assert.Equal(t, "https://www.facebook.com/custompage", model.CustomFields["facebook_url"])
 	assert.Equal(t, false, model.CustomFields["another_key"])
 	assert.Equal(t, nil, model.CustomFields["where is it"])
+}
 
+func TestFilmSubtitlesAsArray(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := filmV2{
+		ID:        123,
+		Title:     "Film One",
+		Slug:      "/film/52",
+		Subtitles: []string{"French", "Italian", "French"},
+	}
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 2, len(model.GetSubtitles()))
+	assert.Contains(t, model.GetSubtitles(), "French")
+	assert.Contains(t, model.GetSubtitles(), "Italian")
 }
