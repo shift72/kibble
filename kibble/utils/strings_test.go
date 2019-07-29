@@ -45,3 +45,9 @@ func TestParseIntFromString(t *testing.T) {
 	assert.Equal(t, 103, ParseIntFromString("103.123"), "test 4")
 	assert.Equal(t, 103, ParseIntFromString(" 103.123"), "test 5")
 }
+
+func TestAppendUnique(t *testing.T) {
+	list := []string{"b", "c"}
+	assert.Equal(t, 3, len(AppendUnique("a", list)), "Appended")
+	assert.Equal(t, 2, len(AppendUnique("b", list)), "Not appended")
+}

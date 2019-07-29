@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
@@ -42,16 +43,16 @@ type TVShow struct {
 
 // TVEpisode -
 type TVEpisode struct {
-	Title         string
-	Slug          string
-	TitleSlug     string
-	EpisodeNumber int
-	Overview      string
-	Runtime       Runtime
-	Images        ImageSet
-	Subtitles     []SubtitleTrack
-	CustomFields  CustomFields
-	Season        *TVSeason
+	Title          string
+	Slug           string
+	TitleSlug      string
+	EpisodeNumber  int
+	Overview       string
+	Runtime        Runtime
+	Images         ImageSet
+	SubtitleTracks []SubtitleTrack
+	CustomFields   CustomFields
+	Season         *TVSeason
 }
 
 // TVSeason -
@@ -197,4 +198,13 @@ func (episode TVEpisode) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string
 		"Season":   *episode.Season,
 		"Episode":  episode,
 	})
+}
+
+// GetSubtitles - translate the SubtitleTracks list into a StringCollection
+func (episode TVEpisode) GetSubtitles() StringCollection {
+	var result StringCollection
+	for _, s := range episode.SubtitleTracks {
+		result = utils.AppendUnique(s.Name, result)
+	}
+	return result
 }

@@ -331,3 +331,56 @@ func TestEpisodeHasATitleSlug(t *testing.T) {
 	assert.Equal(t, "first-episode", item.Episodes[0].TitleSlug)
 	assert.Equal(t, "twoth-episode", item.Episodes[1].TitleSlug)
 }
+
+func TestEpisodeSubtitles(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:  "/tv/1/season/3",
+		Title: "Season Three",
+		Episodes: []tvEpisodeV2{{
+			SubtitleTracks: []subtitleTrackV1{{
+				Language: "it",
+				Name:     "Italian",
+				Type:     "caption",
+				Path:     "/subtitles/film/49/bonus/1/it/caption-18.vtt",
+			}, {
+				Language: "es",
+				Name:     "Spanish",
+				Type:     "caption",
+				Path:     "/subtitles/film/49/bonus/1/es/caption-18.vtt",
+			}, {
+				Language: "it",
+				Name:     "Italian",
+				Type:     "caption",
+				Path:     "/subtitles/film/49/bonus/1/it/caption-19.vtt",
+			}},
+		}},
+	}
+
+	item := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 2, len(item.Episodes[0].GetSubtitles()))
+	assert.Contains(t, item.Episodes[0].GetSubtitles(), "Italian")
+	assert.Contains(t, item.Episodes[0].GetSubtitles(), "Spanish")
+}
+
+func TestEpisodeSubtitlesNil(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:  "/tv/1/season/3",
+		Title: "Season Three",
+		Episodes: []tvEpisodeV2{{
+			SubtitleTracks: nil,
+		}},
+	}
+
+	item := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 0, len(item.Episodes[0].GetSubtitles()))
+}

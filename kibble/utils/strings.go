@@ -94,3 +94,13 @@ func ParseTimeFromString(str string) time.Time {
 	t, _ = time.Parse(time.RFC3339, str)
 	return t
 }
+
+// Append to list if not already present (to ensure uniqueness)
+func AppendUnique(item string, list []string) []string {
+	for _, x := range list {
+		if x == item {
+			return list
+		}
+	}
+	return append(list, item)
+}

@@ -21,8 +21,8 @@ type bonusContentV2 struct {
 		Bg             string `json:"bg"`
 		Classification string `json:"classification"`
 	} `json:"image_urls"`
-	Subtitles    []subtitleTrackV1      `json:"subtitle_tracks"`
-	CustomFields map[string]interface{} `json:"custom"`
+	SubtitleTracks []subtitleTrackV1      `json:"subtitle_tracks"`
+	CustomFields   map[string]interface{} `json:"custom"`
 }
 
 func (bcv2 bonusContentV2) mapToModel2(parentSlug string, parentImages models.ImageSet) models.BonusContent {
@@ -44,8 +44,8 @@ func (bcv2 bonusContentV2) mapToModel2(parentSlug string, parentImages models.Im
 		CustomFields: bcv2.CustomFields,
 	}
 
-	for _, t := range bcv2.Subtitles {
-		b.Subtitles = append(b.Subtitles, models.SubtitleTrack{
+	for _, t := range bcv2.SubtitleTracks {
+		b.SubtitleTracks = append(b.SubtitleTracks, models.SubtitleTrack{
 			Language: t.Language,
 			Name:     t.Name,
 			Type:     t.Type,

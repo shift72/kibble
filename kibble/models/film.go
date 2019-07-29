@@ -14,7 +14,11 @@
 
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+)
 
 // Film - all of the film bits
 type Film struct {
@@ -37,7 +41,8 @@ type Film struct {
 	Seo             Seo
 	Images          ImageSet
 	Recommendations []GenericItem
-	Subtitles       []SubtitleTrack
+	Subtitles       string
+	SubtitleTracks  []SubtitleTrack
 	CustomFields    CustomFields
 }
 
@@ -73,4 +78,14 @@ func (film Film) GetGenericItem() GenericItem {
 		ItemType:  "film",
 		InnerItem: film,
 	}
+}
+
+// GetSubtitles - translate the Subtitle field and SubtitleTracks list into a StringCollection
+func (film Film) GetSubtitles() StringCollection {
+	var result StringCollection
+	result = append(result, film.Subtitles)
+	for _, s := range film.SubtitleTracks {
+		result = utils.AppendUnique(s.Name, result)
+	}
+	return result
 }

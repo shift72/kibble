@@ -69,11 +69,17 @@ func GetFilm() filmV2 {
 			Name: "Peter Jackson",
 			Job:  "Director",
 		}},
-		Subtitles: []subtitleTrackV1{{
+		Subtitles: "Japanese",
+		SubtitleTracks: []subtitleTrackV1{{
 			Language: "it",
 			Name:     "Italian",
 			Type:     "caption",
 			Path:     "/subtitles/film/49/bonus/1/it/caption-18.vtt",
+		}, {
+			Language: "it",
+			Name:     "Italian",
+			Type:     "caption",
+			Path:     "/subtitles/film/49/bonus/1/it/caption-19.vtt",
 		}},
 		Recommendations: []string{"/film/1", "/film/2"},
 		Bonuses: []bonusContentV2{{
@@ -129,9 +135,14 @@ func TestFilmApiToModel(t *testing.T) {
 
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 
-	assert.Equal(t, 1, len(model.Subtitles), "expect the subtitles to be 1")
+	assert.Equal(t, "Japanese", model.Subtitles)
+	assert.Equal(t, 2, len(model.SubtitleTracks), "expect the subtitles to be 2")
 
 	assert.Equal(t, nil, model.CustomFields["hello?"])
+
+	assert.Equal(t, 2, len(model.GetSubtitles()), "expect merged list of subtitles")
+	assert.Contains(t, model.GetSubtitles(), "Italian")
+	assert.Contains(t, model.GetSubtitles(), "Japanese")
 }
 
 func TestFilmApiToModelWithoutSeoImage(t *testing.T) {

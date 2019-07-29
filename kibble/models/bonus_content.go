@@ -1,18 +1,22 @@
 package models
 
+import (
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+)
+
 // BonusContentCollection - all bonus content for a film or season
 type BonusContentCollection []BonusContent
 
 // BonusContent - bonus content model
 type BonusContent struct {
-	Slug         string
-	Number       int
-	Title        string
-	Images       ImageSet
-	Subtitles    []SubtitleTrack
-	Runtime      Runtime
-	Overview     string
-	CustomFields CustomFields
+	Slug           string
+	Number         int
+	Title          string
+	Images         ImageSet
+	SubtitleTracks []SubtitleTrack
+	Runtime        Runtime
+	Overview       string
+	CustomFields   CustomFields
 }
 
 // GetGenericItem - returns a generic item based on the film bonus
@@ -24,4 +28,13 @@ func (bonus BonusContent) GetGenericItem() GenericItem {
 		ItemType:  "bonus",
 		InnerItem: bonus,
 	}
+}
+
+// GetSubtitles - translate the SubtitleTracks list into StringCollection
+func (bonus BonusContent) GetSubtitles() StringCollection {
+	var result StringCollection
+	for _, s := range bonus.SubtitleTracks {
+		result = utils.AppendUnique(s.Name, result)
+	}
+	return result
 }
