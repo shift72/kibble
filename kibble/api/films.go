@@ -240,7 +240,7 @@ type filmV2 struct {
 		Seo            string `json:"seo"`
 	} `json:"image_urls"`
 	Recommendations []string               `json:"recommendations"`
-	Subtitles       string                 `json:"subtitles"`
+	Subtitles       []string               `json:"subtitles"`
 	SubtitleTracks  []subtitleTrackV1      `json:"subtitle_tracks"`
 	SeoTitle        string                 `json:"seo_title"`
 	SeoKeywords     string                 `json:"seo_keywords"`
