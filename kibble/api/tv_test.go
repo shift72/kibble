@@ -351,6 +351,11 @@ func TestEpisodeSubtitles(t *testing.T) {
 				Name:     "Spanish",
 				Type:     "caption",
 				Path:     "/subtitles/film/49/bonus/1/es/caption-18.vtt",
+			}, {
+				Language: "it",
+				Name:     "Italian",
+				Type:     "caption",
+				Path:     "/subtitles/film/49/bonus/1/it/caption-19.vtt",
 			}},
 		}},
 	}

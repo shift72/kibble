@@ -1,5 +1,9 @@
 package models
 
+import (
+	"github.com/indiereign/shift72-kibble/kibble/utils"
+)
+
 // BonusContentCollection - all bonus content for a film or season
 type BonusContentCollection []BonusContent
 
@@ -30,7 +34,7 @@ func (bonus BonusContent) GetGenericItem() GenericItem {
 func (bonus BonusContent) GetSubtitles() StringCollection {
 	var result StringCollection
 	for _, s := range bonus.SubtitleTracks {
-		result = append(result, s.Name)
+		result = utils.AppendUnique(s.Name, result)
 	}
 	return result
 }

@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
@@ -203,7 +204,7 @@ func (episode TVEpisode) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string
 func (episode TVEpisode) GetSubtitles() StringCollection {
 	var result StringCollection
 	for _, s := range episode.SubtitleTracks {
-		result = append(result, s.Name)
+		result = utils.AppendUnique(s.Name, result)
 	}
 	return result
 }

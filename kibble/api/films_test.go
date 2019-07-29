@@ -75,6 +75,11 @@ func GetFilm() filmV2 {
 			Name:     "Italian",
 			Type:     "caption",
 			Path:     "/subtitles/film/49/bonus/1/it/caption-18.vtt",
+		}, {
+			Language: "it",
+			Name:     "Italian",
+			Type:     "caption",
+			Path:     "/subtitles/film/49/bonus/1/it/caption-19.vtt",
 		}},
 		Recommendations: []string{"/film/1", "/film/2"},
 		Bonuses: []bonusContentV2{{
@@ -131,7 +136,7 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 
 	assert.Equal(t, "Japanese", model.Subtitles)
-	assert.Equal(t, 1, len(model.SubtitleTracks), "expect the subtitles to be 1")
+	assert.Equal(t, 2, len(model.SubtitleTracks), "expect the subtitles to be 2")
 
 	assert.Equal(t, nil, model.CustomFields["hello?"])
 

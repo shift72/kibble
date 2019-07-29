@@ -14,6 +14,11 @@ func TestBonusContentSubtitlesModelSupport(t *testing.T) {
 			Name:     "Italian",
 			Type:     "caption",
 			Path:     "/subtitles/film/49/bonus/1/it/caption-18.vtt",
+		}, {
+			Language: "it",
+			Name:     "Italian",
+			Type:     "caption",
+			Path:     "/subtitles/film/49/bonus/1/it/caption-19.vtt",
 		}},
 	}
 
@@ -21,7 +26,7 @@ func TestBonusContentSubtitlesModelSupport(t *testing.T) {
 		Portrait: "film-portrait",
 	})
 
-	assert.Equal(t, 1, len(model.SubtitleTracks), "expect the subtitles to be 1")
+	assert.Equal(t, 2, len(model.SubtitleTracks), "expect the subtitles to be 1")
 	assert.Equal(t, "it", model.SubtitleTracks[0].Language)
 	assert.Equal(t, "Italian", model.SubtitleTracks[0].Name)
 	assert.Equal(t, "caption", model.SubtitleTracks[0].Type)

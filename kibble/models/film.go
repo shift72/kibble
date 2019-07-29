@@ -16,6 +16,8 @@ package models
 
 import (
 	"time"
+
+	"github.com/indiereign/shift72-kibble/kibble/utils"
 )
 
 // Film - all of the film bits
@@ -83,7 +85,7 @@ func (film Film) GetSubtitles() StringCollection {
 	var result StringCollection
 	result = append(result, film.Subtitles)
 	for _, s := range film.SubtitleTracks {
-		result = append(result, s.Name)
+		result = utils.AppendUnique(s.Name, result)
 	}
 	return result
 }
