@@ -44,6 +44,7 @@ type Film struct {
 	Subtitles       []string
 	SubtitleTracks  []SubtitleTrack
 	CustomFields    CustomFields
+	Classifications []Classification
 }
 
 // FilmCollection - all films
@@ -90,4 +91,15 @@ func (film Film) GetSubtitles() StringCollection {
 		result = utils.AppendUnique(s.Name, result)
 	}
 	return result
+}
+
+// GetClassificationByCode - iterate through Classifications and look for matching one
+func (film Film) GetClassificationByCode(code string) *Classification {
+	for _, c := range film.Classifications {
+		if c.Country == code {
+			return &c
+		}
+	}
+
+	return nil
 }

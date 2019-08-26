@@ -148,6 +148,14 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Subtitles:       f.Subtitles,
 	}
 
+	for key, value := range f.Classifications {
+		film.Classifications = append(film.Classifications, models.Classification{
+			Country:     key,
+			Label:       value.Label,
+			Description: value.Description,
+		})
+	}
+
 	for _, t := range f.SubtitleTracks {
 		film.SubtitleTracks = append(film.SubtitleTracks, models.SubtitleTrack{
 			Language: t.Language,
@@ -239,13 +247,14 @@ type filmV2 struct {
 		Classification string `json:"classification"`
 		Seo            string `json:"seo"`
 	} `json:"image_urls"`
-	Recommendations []string               `json:"recommendations"`
-	Subtitles       []string               `json:"subtitles"`
-	SubtitleTracks  []subtitleTrackV1      `json:"subtitle_tracks"`
-	SeoTitle        string                 `json:"seo_title"`
-	SeoKeywords     string                 `json:"seo_keywords"`
-	SeoDescription  string                 `json:"seo_description"`
-	CustomFields    map[string]interface{} `json:"custom"`
+	Recommendations []string                    `json:"recommendations"`
+	Subtitles       []string                    `json:"subtitles"`
+	SubtitleTracks  []subtitleTrackV1           `json:"subtitle_tracks"`
+	Classifications map[string]classificationV1 `json:"classifications"`
+	SeoTitle        string                      `json:"seo_title"`
+	SeoKeywords     string                      `json:"seo_keywords"`
+	SeoDescription  string                      `json:"seo_description"`
+	CustomFields    map[string]interface{}      `json:"custom"`
 }
 
 type subtitleTrackV1 struct {
@@ -253,4 +262,9 @@ type subtitleTrackV1 struct {
 	Name     string `json:"language_name"`
 	Type     string `json:"type"`
 	Path     string `json:"path"`
+}
+
+type classificationV1 struct {
+	Label       string `json:"label"`
+	Description string `json:"description"`
 }
