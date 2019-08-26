@@ -159,6 +159,18 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Nil(t, model.GetClassificationByCode("ru"))
 }
 
+func TestFilmApiToModelWithoutClassifications(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+	serviceConfig := commonServiceConfig()
+	apiFilm := GetFilm()
+	apiFilm.Classifications = nil
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Nil(t, model.GetClassificationByCode("nz"))
+	assert.Nil(t, model.GetClassificationByCode("ru"))
+}
+
 func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
 
 	itemIndex := make(models.ItemIndex)
