@@ -109,7 +109,7 @@ type SubtitleTrack struct {
 
 // Classification -
 type Classification struct {
-	Country     string
+	CountryCode string
 	Label       string
 	Description string
 }

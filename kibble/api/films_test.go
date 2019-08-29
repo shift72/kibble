@@ -153,10 +153,7 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Contains(t, model.GetSubtitles(), "Italian")
 	assert.Contains(t, model.GetSubtitles(), "Japanese")
 
-	assert.Contains(t, model.GetClassificationByCode("nz").Label, "NZ Label")
-	assert.Contains(t, model.GetClassificationByCode("nz").Description, "NZ Description")
-
-	assert.Nil(t, model.GetClassificationByCode("ru"))
+	assert.Equal(t, 2, len(model.Classifications))
 }
 
 func TestFilmApiToModelWithoutClassifications(t *testing.T) {
@@ -167,8 +164,7 @@ func TestFilmApiToModelWithoutClassifications(t *testing.T) {
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
 
-	assert.Nil(t, model.GetClassificationByCode("nz"))
-	assert.Nil(t, model.GetClassificationByCode("ru"))
+	assert.Equal(t, 0, len(model.Classifications))
 }
 
 func TestFilmApiToModelWithoutSeoImage(t *testing.T) {

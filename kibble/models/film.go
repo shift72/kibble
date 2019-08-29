@@ -92,14 +92,3 @@ func (film Film) GetSubtitles() StringCollection {
 	}
 	return result
 }
-
-// GetClassificationByCode - iterate through Classifications and look for matching one
-func (film Film) GetClassificationByCode(code string) *Classification {
-	for _, c := range film.Classifications {
-		if c.Country == code {
-			return &c
-		}
-	}
-
-	return nil
-}
