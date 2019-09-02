@@ -98,6 +98,16 @@ func GetFilm() filmV2 {
 				Classification: "classification",
 			},
 		}},
+		Classifications: map[string]classificationV1{
+			"au": {
+				Label:       "Australian Label",
+				Description: "Australian Description",
+			},
+			"nz": {
+				Label:       "NZ Label",
+				Description: "NZ Description",
+			},
+		},
 		SeoTitle:       "Film One Meta Title",
 		SeoKeywords:    "Film One Meta Keywords",
 		SeoDescription: "Film One Meta Description",
@@ -142,6 +152,19 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 2, len(model.GetSubtitles()), "expect merged list of subtitles")
 	assert.Contains(t, model.GetSubtitles(), "Italian")
 	assert.Contains(t, model.GetSubtitles(), "Japanese")
+
+	assert.Equal(t, 2, len(model.Classifications))
+}
+
+func TestFilmApiToModelWithoutClassifications(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+	serviceConfig := commonServiceConfig()
+	apiFilm := GetFilm()
+	apiFilm.Classifications = nil
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 0, len(model.Classifications))
 }
 
 func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
