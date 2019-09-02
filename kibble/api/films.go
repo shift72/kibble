@@ -150,7 +150,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 
 	for key, value := range f.Classifications {
 		film.Classifications = append(film.Classifications, models.Classification{
-			Country:     key,
+			CountryCode: key,
 			Label:       value.Label,
 			Description: value.Description,
 		})
