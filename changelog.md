@@ -1,5 +1,9 @@
 # Change log
 
+## 0.10.16
+Added support for Classification records
+Added field Classifications in film model, an array of Classification records.
+
 ## 0.10.15
 Field `Subtitles` in film model is now an array. `GetSubtitles()` iterates through this and `SubtitleTracks`.
 
