@@ -26,6 +26,12 @@ type PageCollection struct {
 	Items       []GenericItem
 }
 
+// PageTranslation - a page with a language
+type PageTranslation struct {
+	Language string
+	Page     Page
+}
+
 // Page - page structure
 type Page struct {
 	ID              int
@@ -37,6 +43,8 @@ type Page struct {
 	Seo             Seo
 	Images          ImageSet
 	PageCollections []PageCollection
+	Translations    []PageTranslation
+	AvailableI18n   []string
 	PageType        string
 	URL             string
 }

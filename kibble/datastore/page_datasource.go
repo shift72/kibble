@@ -70,10 +70,29 @@ func (ds *PageDataSource) GetEntityType() reflect.Type {
 // Iterator - loop over each Page
 func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
+	lang := ""
+	if !ctx.Language.IsDefault {
+		lang = ctx.Language.Code
+	}
+
 	data := make(jet.VarMap)
 	data.Set("site", ctx.Site)
 
 	for _, p := range ctx.Site.Pages {
+
+		availableI18n := make([]string, 0)
+
+		if len(p.Translations) > 0 && lang != "" {
+			for _, translation := range p.Translations {
+				if translation.Language == lang {
+					p = translation.Page
+					availableI18n = append(p.AvailableI18n, translation.Language)
+				}
+			}
+		}
+		availableI18n = append(availableI18n, ctx.Site.SiteConfig.DefaultLanguage)
+
+		p.AvailableI18n = availableI18n
 
 		data.Set("page", transformPage(p))
 
@@ -89,7 +108,6 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 			templatePath := strings.Replace(ctx.Route.PartialTemplatePath, ":type", p.PageType, 1)
 			errCount += renderer.Render(templatePath, ds.GetPartialRouteForEntity(ctx, &p), data)
 		}
-
 	}
 
 	return

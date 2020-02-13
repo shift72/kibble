@@ -69,6 +69,8 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 			Header:     serviceConfig.ForceAbsoluteImagePath(p.HeaderImage),
 		},
 		PageCollections: make([]models.PageCollection, 0),
+		Translations:    make([]models.PageTranslation, 0),
+		AvailableI18n:   make([]string, 0),
 	}
 
 	page.Seo = models.Seo{
@@ -81,6 +83,11 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 
 	for _, pf := range p.PageFeatures {
 		page.PageCollections = append(page.PageCollections, pf.mapToModel(serviceConfig, itemIndex))
+	}
+
+	for _, translation := range p.Translations {
+		t := translation.mapToModel(serviceConfig, itemIndex, page)
+		page.Translations = append(page.Translations, t)
 	}
 
 	return page
@@ -99,6 +106,28 @@ func (pf pageFeatureV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex
 	}
 }
 
+// Merge with parent page so essential-but-not translatable fields are captured
+func (t pageTranslationV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex, page models.Page) models.PageTranslation {
+	translation := models.PageTranslation{
+		Language: t.Language,
+		Page:     page,
+	}
+
+	if len(t.Title) > 0 {
+		translation.Page.Title = t.Title
+	}
+
+	if len(t.Tagline) > 0 {
+		translation.Page.Tagline = t.Tagline
+	}
+
+	if len(t.Content) > 0 {
+		translation.Page.Content = t.Content
+	}
+
+	return translation
+}
+
 type biosV1 struct {
 	Navigation models.Navigation `json:"navigation"`
 	Pages      []pageV1          `json:"pages"`
@@ -114,22 +143,30 @@ type pageFeatureV1 struct {
 	Items       []string `json:"items"`
 }
 
+type pageTranslationV1 struct {
+	Language string `json:"language"`
+	Title    string `json:"title"`
+	Tagline  string `json:"tagline"`
+	Content  string `json:"content"`
+}
+
 type pageV1 struct {
-	CarouselImage  string          `json:"carousel_image"`
-	Content        string          `json:"content"`
-	HeaderImage    string          `json:"header_image"`
-	ID             int             `json:"id"`
-	LandscapeImage string          `json:"landscape_image"`
-	PageFeatures   []pageFeatureV1 `json:"page_features"`
-	PageType       string          `json:"page_type"`
-	PortraitImage  string          `json:"portrait_image"`
-	SeoDescription string          `json:"seo_description"`
-	SeoKeywords    string          `json:"seo_keywords"`
-	SeoTitle       string          `json:"seo_title"`
-	Slug           string          `json:"slug"`
-	Tagline        string          `json:"tagline"`
-	Title          string          `json:"title"`
-	URL            string          `json:"url"`
+	CarouselImage  string              `json:"carousel_image"`
+	Content        string              `json:"content"`
+	HeaderImage    string              `json:"header_image"`
+	ID             int                 `json:"id"`
+	LandscapeImage string              `json:"landscape_image"`
+	PageFeatures   []pageFeatureV1     `json:"page_features"`
+	PageType       string              `json:"page_type"`
+	PortraitImage  string              `json:"portrait_image"`
+	SeoDescription string              `json:"seo_description"`
+	SeoKeywords    string              `json:"seo_keywords"`
+	SeoTitle       string              `json:"seo_title"`
+	Slug           string              `json:"slug"`
+	Tagline        string              `json:"tagline"`
+	Title          string              `json:"title"`
+	URL            string              `json:"url"`
+	Translations   []pageTranslationV1 `json:"i18n"`
 }
 
 type filmSummary struct {
