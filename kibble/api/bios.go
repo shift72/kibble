@@ -125,6 +125,18 @@ func (t pageTranslationV1) mapToModel(serviceConfig models.ServiceConfig, itemIn
 		translation.Page.Content = t.Content
 	}
 
+	if len(t.SeoTitle) > 0 {
+		translation.Page.Seo.Title = serviceConfig.GetSEOTitle(t.SeoTitle, translation.Page.Title)
+	}
+
+	if len(t.SeoKeywords) > 0 {
+		translation.Page.Seo.Keywords = serviceConfig.GetKeywords(t.SeoKeywords)
+	}
+
+	if len(t.SeoDescription) > 0 {
+		translation.Page.Seo.Description = utils.Coalesce(t.SeoDescription, t.Content)
+	}
+
 	return translation
 }
 
@@ -144,10 +156,13 @@ type pageFeatureV1 struct {
 }
 
 type pageTranslationV1 struct {
-	Language string `json:"language"`
-	Title    string `json:"title"`
-	Tagline  string `json:"tagline"`
-	Content  string `json:"content"`
+	Language       string `json:"language"`
+	Title          string `json:"title"`
+	Tagline        string `json:"tagline"`
+	Content        string `json:"content"`
+	SeoTitle       string `json:"seo_title"`
+	SeoKeywords    string `json:"seo_keywords"`
+	SeoDescription string `json:"seo_description"`
 }
 
 type pageV1 struct {

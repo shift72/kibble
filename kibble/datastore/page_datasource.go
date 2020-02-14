@@ -77,23 +77,29 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 
 	data := make(jet.VarMap)
 	data.Set("site", ctx.Site)
+	data.Set("currentLanguage", lang)
 
 	for _, p := range ctx.Site.Pages {
 
 		availableI18n := make([]string, 0)
+		availableI18n = append(availableI18n, ctx.Site.SiteConfig.DefaultLanguage)
 
-		if len(p.Translations) > 0 && lang != "" {
+		// Convert (e.g) '/fr/page/about-us' to '/page/about-us' so we can keep track of the original URLs
+		defaultURLPath := strings.Replace(ds.GetRouteForEntity(ctx, &p), "/"+lang+"/", "/", 1)
+		data.Set("defaultUrlPath", defaultURLPath)
+
+		// Check there's a translation for this language and use that if possible
+		if len(p.Translations) > 0 {
 			for _, translation := range p.Translations {
-				if translation.Language == lang {
+				availableI18n = append(availableI18n, translation.Language)
+				if lang != "" && translation.Language == lang {
 					p = translation.Page
-					availableI18n = append(p.AvailableI18n, translation.Language)
+
 				}
 			}
 		}
-		availableI18n = append(availableI18n, ctx.Site.SiteConfig.DefaultLanguage)
 
 		p.AvailableI18n = availableI18n
-
 		data.Set("page", transformPage(p))
 
 		// render page endpoints first
