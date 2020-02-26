@@ -137,6 +137,22 @@ func (t pageTranslationV1) mapToModel(serviceConfig models.ServiceConfig, itemIn
 		translation.Page.Seo.Description = utils.Coalesce(t.SeoDescription, t.Content)
 	}
 
+	if len(t.PortraitImage) > 0 {
+		translation.Page.Images.Portrait = serviceConfig.ForceAbsoluteImagePath(t.PortraitImage)
+	}
+
+	if len(t.HeaderImage) > 0 {
+		translation.Page.Images.Header = serviceConfig.ForceAbsoluteImagePath(t.HeaderImage)
+	}
+
+	if len(t.CarouselImage) > 0 {
+		translation.Page.Images.Carousel = serviceConfig.ForceAbsoluteImagePath(t.CarouselImage)
+	}
+
+	if len(t.LandscapeImage) > 0 {
+		translation.Page.Images.Landscape = serviceConfig.ForceAbsoluteImagePath(t.LandscapeImage)
+	}
+
 	return translation
 }
 
@@ -163,6 +179,10 @@ type pageTranslationV1 struct {
 	SeoTitle       string `json:"seo_title"`
 	SeoKeywords    string `json:"seo_keywords"`
 	SeoDescription string `json:"seo_description"`
+	HeaderImage    string `json:"header_image"`
+	CarouselImage  string `json:"carousel_image"`
+	LandscapeImage string `json:"landscape_image"`
+	PortraitImage  string `json:"portrait_image"`
 }
 
 type pageV1 struct {
