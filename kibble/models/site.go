@@ -72,7 +72,14 @@ type NavigationItem struct {
 		Slug        string `json:"slug"`
 		ExternalURL string `json:"url"`
 	} `json:"link"`
-	Items []NavigationItem `json:"items"`
+	Translations map[string]NavigationTranslation `json:"i18n"`
+	Items        []NavigationItem                 `json:"items"`
+}
+
+// NavigationTranslation - translations for menu items
+type NavigationTranslation struct {
+	Label       string `json:"label"`
+	ExternalURL string `json:"url"`
 }
 
 // Navigation - header and footer

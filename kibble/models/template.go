@@ -54,6 +54,22 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 	view.AddGlobal("routeToSlugWithName", func(slug string, routeName string) string {
 		return routeRegistry.GetRouteForSlug(*ctx, slug, routeName)
 	})
+
+	view.AddGlobal("translateNavigationItem", func(item NavigationItem) NavigationItem {
+		for language, translation := range item.Translations {
+			if language == ctx.Language.Code {
+				if translation.Label != "" {
+					item.Label = translation.Label
+				}
+				if translation.ExternalURL != "" {
+					item.Link.ExternalURL = translation.ExternalURL
+				}
+			}
+		}
+
+		return item
+	})
+
 	view.AddGlobal("i18n", func(translationID string, args ...interface{}) string {
 
 		// jet will pass in numeric args as float64
