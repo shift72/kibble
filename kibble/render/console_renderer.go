@@ -19,7 +19,7 @@ import (
 	"fmt"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 )
 
 // ConsoleRenderer - designed to render to the console for testing

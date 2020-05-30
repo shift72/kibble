@@ -17,7 +17,7 @@ package models
 import (
 	"strconv"
 
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/utils"
 )
 
 // ServiceConfig -

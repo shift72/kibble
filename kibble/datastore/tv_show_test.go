@@ -17,8 +17,8 @@ package datastore
 import (
 	"testing"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/test"
+	"kibble/models"
+	"kibble/test"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 

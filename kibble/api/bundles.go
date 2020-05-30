@@ -20,8 +20,8 @@ import (
 	"time"
 
 	"github.com/gosimple/slug"
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/models"
+	"kibble/utils"
 )
 
 // LoadAllBundles - load all bundles

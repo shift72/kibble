@@ -22,8 +22,8 @@ import (
 	"path"
 
 	goversion "github.com/hashicorp/go-version"
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	version "github.com/indiereign/shift72-kibble/kibble/version"
+	"kibble/models"
+	version "kibble/version"
 )
 
 var (

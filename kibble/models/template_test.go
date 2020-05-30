@@ -18,7 +18,7 @@ import (
 	"testing"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/test"
+	"kibble/test"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
 )

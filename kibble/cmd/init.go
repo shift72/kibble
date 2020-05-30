@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"github.com/indiereign/shift72-kibble/kibble/initalise"
+	"kibble/initalise"
 	"github.com/spf13/cobra"
 )
 

@@ -17,7 +17,7 @@ package models
 import (
 	"time"
 
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/utils"
 )
 
 // Film - all of the film bits

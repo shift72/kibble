@@ -18,8 +18,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/models"
+	"kibble/utils"
 
 	"net/http"
 	"os"

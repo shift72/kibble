@@ -25,9 +25,7 @@ def: To chop or grind coarsely
 
 ## Installation
 
-* Requires go 1.8.1 (cgo fix needed)
-* Install dep ```go get -u github.com/golang/dep/...```
-* Install dependencies ```dep ensure -update```. This might not work, so try ```dep ensure -v github.com/fsnotify/fsnotify@^1.4.2``` in case of errors.
+* Requires go 1.13.0 (go mod) 
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 

@@ -17,7 +17,7 @@ package api
 import (
 	"testing"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 )
 
 func TestLoadConfig(t *testing.T) {

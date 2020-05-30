@@ -17,7 +17,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/indiereign/shift72-kibble/kibble/version"
+	"kibble/version"
 	"github.com/spf13/cobra"
 )
 

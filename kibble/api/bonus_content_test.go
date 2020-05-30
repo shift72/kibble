@@ -3,7 +3,7 @@ package api
 import (
 	"testing"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 	"github.com/stretchr/testify/assert"
 )
 
