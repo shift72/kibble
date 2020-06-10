@@ -18,8 +18,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/models"
+	"kibble/utils"
 )
 
 // LoadAllCollections - load all collections

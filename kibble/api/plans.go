@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/gosimple/slug"
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 )
 
 // LoadAllPlans - loads all active plans

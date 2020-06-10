@@ -19,8 +19,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/test"
+	"kibble/models"
+	"kibble/test"
 )
 
 func createTestContextHomepage() (models.RenderContext, *models.Route) {

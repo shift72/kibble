@@ -20,10 +20,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/indiereign/shift72-kibble/kibble/config"
-	"github.com/indiereign/shift72-kibble/kibble/render"
-	"github.com/indiereign/shift72-kibble/kibble/sync"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/config"
+	"kibble/render"
+	"kibble/sync"
+	"kibble/utils"
 	logging "github.com/op/go-logging"
 	"github.com/spf13/cobra"
 )

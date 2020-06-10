@@ -23,9 +23,9 @@ import (
 	"strings"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/api"
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/api"
+	"kibble/models"
+	"kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
 	logging "github.com/op/go-logging"
 )

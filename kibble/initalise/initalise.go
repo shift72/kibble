@@ -22,7 +22,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/utils"
 )
 
 // NewSite - create a new site

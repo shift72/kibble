@@ -31,8 +31,8 @@ import (
 
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
-	"github.com/indiereign/shift72-kibble/kibble/config"
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/config"
+	"kibble/models"
 	"github.com/pkg/errors"
 
 	"golang.org/x/crypto/ssh/terminal"

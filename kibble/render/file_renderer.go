@@ -23,7 +23,7 @@ import (
 	"strings"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/utils"
 )
 
 // FileRenderer - designed to render to the file system for testing

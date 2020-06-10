@@ -15,9 +15,9 @@
 package cmd
 
 import (
-	"github.com/indiereign/shift72-kibble/kibble/config"
-	"github.com/indiereign/shift72-kibble/kibble/render"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/config"
+	"kibble/render"
+	"kibble/utils"
 	"github.com/spf13/cobra"
 )
 

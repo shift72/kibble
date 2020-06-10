@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/utils"
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 

@@ -15,7 +15,7 @@
 package datastore
 
 import (
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 )
 
 // Init -

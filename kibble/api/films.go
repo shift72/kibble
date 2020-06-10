@@ -20,10 +20,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/utils"
 
 	"github.com/gosimple/slug"
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 )
 
 // loadFilmSummary - load the bios request

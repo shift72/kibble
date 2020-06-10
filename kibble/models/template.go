@@ -22,7 +22,7 @@ import (
 	"strings"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/version"
+	"kibble/version"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/russross/blackfriday"

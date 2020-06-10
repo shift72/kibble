@@ -21,7 +21,7 @@ import (
 	"strings"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 )
 
 var tvSeasonArgs = []models.RouteArgument{

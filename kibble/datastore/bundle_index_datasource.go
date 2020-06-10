@@ -18,7 +18,7 @@ import (
 	"reflect"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 )
 
 // BundleIndexDataSource - a list of all bundles
