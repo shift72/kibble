@@ -25,7 +25,7 @@ import (
 	"github.com/indiereign/shift72-kibble/kibble/version"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nicksnyder/go-i18n/i18n"
-	"github.com/russross/blackfriday"
+	"gopkg.in/russross/blackfriday.v2"
 )
 
 var templateTagRegex = regexp.MustCompile("(?U:{{.+}})+")
@@ -133,23 +133,27 @@ func insertTemplates(data string) string {
 
 	matches := templateTagRegex.FindAllStringSubmatchIndex(data, -1)
 
+	cleaner := bluemonday.UGCPolicy()
+	cleaner.AddTargetBlankToFullyQualifiedLinks(true)
+	cleaner.AllowAttrs("target").OnElements("a")
+
 	c := len(matches)
 	if c > 0 {
 		p = ""
 		for i := 0; i < c; i++ {
 			if i == 0 {
-				p = p + bluemonday.UGCPolicy().Sanitize(data[:matches[i][0]]) +
+				p = p + cleaner.Sanitize(data[:matches[i][0]]) +
 					processTemplateTag(data[matches[i][0]:matches[i][1]])
 			}
 			if i == c-1 {
-				p = p + bluemonday.UGCPolicy().Sanitize(data[matches[i][1]:])
+				p = p + cleaner.Sanitize(data[matches[i][1]:])
 			} else {
-				p = p + bluemonday.UGCPolicy().Sanitize(data[matches[i][1]:matches[i+1][0]]) +
+				p = p + cleaner.Sanitize(data[matches[i][1]:matches[i+1][0]]) +
 					processTemplateTag(data[matches[i+1][0]:matches[i+1][1]])
 			}
 		}
 	} else {
-		p = bluemonday.UGCPolicy().Sanitize(data)
+		p = cleaner.Sanitize(data)
 	}
 
 	return p
