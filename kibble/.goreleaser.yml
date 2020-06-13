@@ -10,7 +10,8 @@ builds:
     hooks:
       post: sh ./deploy_aws.sh {{.Version}}
 
-archive:
+archives:
+- id: main
   format: tar.gz
   replacements:
     amd64: 64-bit
@@ -23,7 +24,7 @@ archive:
       format: zip
     - goos: darwin
       format: zip
-    
+
 changelog:
   filters:
     exclude:
@@ -36,10 +37,9 @@ release:
     owner: indiereign
     name: shift72-kibble
 
-s3:
+blobs:
   -
+    provider: s3
     bucket: shift72-sites
     region: ap-southeast-2
     folder: "s72-web/kibble/{{.Version}}"
-    profile: shift72a
-    acl: public-read
