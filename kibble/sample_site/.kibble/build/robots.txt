@@ -1,4 +1,0 @@
-# robotstxt.org
-User-agent: *
-Allow: /
-Sitemap: https://store.shift72.com/sitemap.txt
