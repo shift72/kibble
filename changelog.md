@@ -1,5 +1,9 @@
 # Change log
 
+## 0.10.17
+Added support for markdown content allowing `<a />` tags to include `target="_blank"`.
+Add support for markdown content to auto add `target="_blank"` to fully qualified links on `<a />` tags.
+
 ## 0.10.16
 Added support for Classification records
 Added field Classifications in film model, an array of Classification records.
