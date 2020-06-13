@@ -1,0 +1,15 @@
+HTTP/2.0 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Auth-Token
+Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE
+Access-Control-Expose-Headers: S72-Ownership,S72-Rental-Duration,S72-Start,S72-End,S72-Time,S72-RentalWindowTriggered
+Cache-Control: no-cache
+Content-Type: application/json
+Date: Sat, 13 Jun 2020 20:45:38 GMT
+Expires: Sat, 13 Jun 2020 20:45:37 GMT
+Server: nginx
+Vary: Accept-Encoding
+X-Nginx-Cached: BYPASS
+X-Resolved: /services/shopping/configuration
+
+{"feature_transactional":"true","stripe_pk":"pk_test_9DCLR1qAafimUicEZNNXLawu","sd":"true","paypal_env":"sandbox","licensors":"true","perform_cc_country_check":"false","payment_proxy_detection":"false","admin_show_stripe_options":"true"}

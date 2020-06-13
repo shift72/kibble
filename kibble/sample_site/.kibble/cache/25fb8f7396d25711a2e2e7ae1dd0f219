@@ -1,0 +1,15 @@
+HTTP/2.0 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Auth-Token
+Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE
+Access-Control-Expose-Headers: S72-Ownership,S72-Rental-Duration,S72-Start,S72-End,S72-Time,S72-RentalWindowTriggered
+Cache-Control: no-cache
+Content-Type: application/json
+Date: Sat, 13 Jun 2020 20:45:38 GMT
+Expires: Sat, 13 Jun 2020 20:45:37 GMT
+Server: nginx
+Vary: Accept-Encoding
+X-Nginx-Cached: BYPASS
+X-Resolved: /services/shopping/feature_toggles
+
+{"refund_disabled":false,"admin_credits":true,"shopping_wizard":true,"admin_journal":true,"credits":true,"revenue_splits_extra_details":true,"tax_settings":true,"saved_cards":true}

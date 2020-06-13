@@ -1,4 +1,4 @@
-{{extends "application.jet"}}
+{{extends "../application.jet"}}
 {{block body()}}
   <div>
     <h2>{{film.Title}} - </h2>
@@ -21,13 +21,6 @@
     {{ range film.Recommendations }}
       <div>
         {{ . | json | raw }}
-      </div>
-    {{ end }}
-
-    <div>Resolved Recommendations: {{ len(film.ResolvedRecommendations)}} </div>
-    {{ range film.ResolvedRecommendations }}
-      <div>
-        {{ .ItemType  }}  {{ .Title  }}
       </div>
     {{ end }}
 

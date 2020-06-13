@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <h2>Paramètres</h2>
+    <p>settings_description</p>
+
+    <script>
+      // list the sites config and toggles
+      var cfg = {"additional_genres":"hello","admin_allow_publish_override":"true","admin_image_root_path":"https://s3-ap-southeast-2.amazonaws.com/s72-client-2-assets/staging","admin_meta_custom_fields":"true","admin_nav_section_default_reporting":"Refunds","admin_show_available_to_date":"true","admin_show_stripe_options":"true","airplay":"true","base_download_url":"https://indiereign02-a.akamaihd.net","base_url":"https://indiereign02-a.akamaihd.net","bg_image_path":"/posters-and-backdrops/1600x1100","carousel":"v2","carousel_image_path":"/posters-and-backdrops/1600x600","chromecast":"true","classification_image_path":"/posters-and-backdrops/170x70","concurrent_content_access_limit":"1","concurrent_streams_limit":"2","default_image_type":"portrait","detail_page":"v2","device_activation_enabled":"true","device_user_limit":"8","disable_dashboard_content_schedule":"false","disable_dashboard_orphans":"false","disallow_blocked_content":"We notice you are using an Ad Blocker. Without the support of our partners we would not be able to bring you the festival. So please consider turning off your Ad Blocker and watching a few messages. Thank you for supporting us and our partners and enjoy the festival.","encoding_profile_hd":"nzfcadaptive","episodes_in_collections":"true","feature_ads":"true","feature_transactional":"true","geo_check_on_play":"true","google_analytics_id":"UA-52801023-14","header_image_path":"/posters-and-backdrops/1200x422","heartbeat_freq":"30","heartbeat_tolerance":"2","hls_manifest_service":"false","image_root_path":"https://dhtm9e8kk4phk.cloudfront.net/staging","ingestion_manager_version":"3","landscape_poster_path":"/posters-and-backdrops/585x330","licensors":"true","media_item_caption":"true","media_item_caption_genres_count":"3","mp4_fallback":"true","payment_proxy_detection":"false","paypal_env":"sandbox","perform_cc_country_check":"false","playback_show_shift_logo":"https://www.shift72.com","playback_show_user_overlay":"true","player_allow_mobile_drm_content":"true","player_resume":"true","portrait_poster_path":"/posters-and-backdrops/282x422","rental_playback_duration_minutes":"1440","rental_redeem_period":"8","required_dob_and_gender":"true","sd":"true","search_disabled":"false","season_name":"Series","seo_image_path":"/posters-and-backdrops/1200x628","seo_site_keywords":"Shift72, Demo, On Demand, KeywordsInnit,","seo_site_name":"Site Name","seo_title_prefix":"Prefix |","seo_title_suffix":"| Suffix","signup_dob_and_gender":"true","signup_email_optin":"true","stripe_pk":"pk_test_9DCLR1qAafimUicEZNNXLawu","telemetry_freq":"20","terms-and-conditions-url":"http://www.1112.net/lastpage.html","upload":"true","user_analytics":"true","wishlist_enabled":"true"};
+      var toggles = {"admin_add_external_pages":true,"admin_add_report_streams":true,"admin_add_report_time_watched":true,"admin_bg_image":true,"admin_bundles":true,"admin_carousel_image":true,"admin_cookie_consent":true,"admin_credits":true,"admin_delete_meta":true,"admin_invite_admins":true,"admin_journal":true,"admin_page_images":true,"admin_recommendation_collections":true,"admin_report_activity":true,"admin_report_credits":true,"admin_report_engagement":true,"admin_report_ingestions":true,"admin_report_streamers":true,"admin_seo_image":true,"admin_tags_editable":true,"admin_user_delete":true,"admin_user_devices":true,"classifications_enabled":true,"credits":true,"disable_sitemap":true,"frontend_cookie_consent":true,"kibble":true,"refund_disabled":false,"revenue_splits_extra_details":true,"saved_cards":true,"shopping_wizard":true,"show_user_stream_quality":true,"simple-mde-editor":true,"tax_settings":true,"tv_bonus_content":true,"user_invite":true};
+    </script>
+
+    <div style="color:blue">
+    --- 0.0.0
+    
+  <div>
+    <h2>Pumpkin - </h2>
+    This content will be yielded in the layout above......your_unread_email_count
+    <div>Film: Pumpkin</div>
+    <div>Film ID: 384</div>
+    <div>Path: /fr/film/pumpkin</div>
+    <div>Synopsis: <p>The tagline is the description that appears in the carousel. This is also used as the default description for SEO unless it’s overwritten in the Custom SEO sectionThe tagline is the description that appears in the carousel. This is also used as the default description for SEO unless it’s overwritten in the Custom SEO sectionThe tagline is the description that appears in the carousel. This is also used as the default description for SEO unless it’s overwritten in the Custom SEO section</p>
+</div>
+    <div>Canonical: /film/pumpkin</div>
+
+    <div>Bonuses: 0 </div>
+    
+
+    <div>Recommendations: 2 </div>
+    
+      <div>
+        {"InnerItem":{"ID":140,"Slug":"/film/140","Title":"4K Film MarkDown","TitleSlug":"4k-film-markdown","Trailers":[{"URL":"https://shift72c.akamaized.net/9a27c21d-bcac-4e30-aa0d-c38aff56d952/4k_film_trailer_kb.mp4","Type":"Full"}],"Bonuses":null,"Cast":[{"Name":"Peter","Character":""},{"Name":"John","Character":""},{"Name":"Gaël","Character":"Character One"}],"Crew":[{"Name":"Aimée fdsa","Job":"Director"},{"Name":"Anaïs c","Job":"Author"}],"Studio":null,"Overview":"pumpkin\n\n4K film test synopsis goes here\n\n**Bold**\n_italic_\n### Heading\n\nnavigator\n[Link](http://google.com)\n![Image](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/PM5544_with_non-PAL_signals.png/384px-PM5544_with_non-PAL_signals.png \"enter image title here\")\n\n\n- list 1\n- list 1 a\n- list 1 b\n\n\n\n1. list 2\n1. list 2a\n1. list 2b\n","Tagline":"4K film test tagline..","ReleaseDate":"2014-04-01T00:00:00Z","Runtime":93,"Countries":["New Zealand"],"Languages":["English"],"Genres":["Action"],"Seo":{"SiteName":"Site Name","Title":"Prefix | seo 4k title | Suffix","Description":"seo description","Keywords":"Shift72, Demo, On Demand, KeywordsInnit,, seo keywords","Image":"https://dhtm9e8kk4phk.cloudfront.net/staging/posters-and-backdrops/282x422/film/140/index.jpg","VideoURL":"https://shift72c.akamaized.net/9a27c21d-bcac-4e30-aa0d-c38aff56d952/4k_film_trailer_kb.mp4"},"Images":{"Background":"","Carousel":"https://dhtm9e8kk4phk.cloudfront.net/staging/posters-and-backdrops/1600x600/film/140/index.jpg","Landscape":"https://dhtm9e8kk4phk.cloudfront.net/staging/posters-and-backdrops/585x330/film/140/index.jpg","Portrait":"https://dhtm9e8kk4phk.cloudfront.net/staging/posters-and-backdrops/282x422/film/140/index.jpg","Header":"","Classification":"","Seo":""},"Recommendations":[],"Subtitles":[],"SubtitleTracks":null,"CustomFields":null,"Classifications":null},"ItemType":"film","Slug":"/film/140","Title":"4K Film MarkDown","Images":{"Background":"","Carousel":"https://dhtm9e8kk4phk.cloudfront.net/staging/posters-and-backdrops/1600x600/film/140/index.jpg","Landscape":"https://dhtm9e8kk4phk.cloudfront.net/staging/posters-and-backdrops/585x330/film/140/index.jpg","Portrait":"https://dhtm9e8kk4phk.cloudfront.net/staging/posters-and-backdrops/282x422/film/140/index.jpg","Header":"","Classification":"","Seo":""},"Seo":{"SiteName":"","Title":"","Description":"","Keywords":"","Image":"","VideoURL":""}}
+      </div>
+    
+      <div>
+        
+      </div>
+    
+
+  </div>
+
+    ---
+    </div>
+
+    <p>
+       
+<ul>
+<!-- navigation structure : not fully recursive yet -->
+<!-- isset(.["non_existant_key"]) ? "key does exist" : "key does not exist" -->
+
+  <li><a href="!Error. Route not found for slug: and route name &#39;&#39;">YOYO</a>
+  
+    <li><a href="!Error. Route not found for slug:/page/98 and route name &#39;&#39;">A - Ka</a></li>
+  
+  </li>
+
+  <li><a href="!Error. Route not found for slug:/page/15 and route name &#39;&#39;">Privacy Policy</a>
+  
+  </li>
+
+  <li><a href="!Error. Route not found for slug:/page/934 and route name &#39;&#39;">Cookie Policy</a>
+  
+  </li>
+
+  <li><a href="!Error. Route not found for slug:/page/98 and route name &#39;&#39;">A - K</a>
+  
+  </li>
+
+  <li><a href="!Error. Route not found for slug: and route name &#39;&#39;">SHIFT</a>
+  
+    <li><a href="http://shift72.com">A</a></li>
+  
+    <li><a href="!Error. Route not found for slug:/page/195 and route name &#39;&#39;">Content</a></li>
+  
+    <li><a href="!Error. Route not found for slug:/page/194 and route name &#39;&#39;">Curate</a></li>
+  
+  </li>
+
+  <li><a href="/#!/credits">Credits</a>
+  
+  </li>
+
+  <li><a href="!Error. Route not found for slug:/page/69 and route name &#39;&#39;">Disney</a>
+  
+  </li>
+
+  <li><a href="https://staging-store.shift72.com/#!/browse/bundle/10">Bundle</a>
+  
+  </li>
+
+  <li><a href="!Error. Route not found for slug:/page/771 and route name &#39;&#39;">Sliders for dayz</a>
+  
+  </li>
+
+  <li><a href="!Error. Route not found for slug:/feature/76 and route name &#39;&#39;">Disneya</a>
+  
+  </li>
+
+</ul>
+
+    </p>
+
+  </body>
+</html>

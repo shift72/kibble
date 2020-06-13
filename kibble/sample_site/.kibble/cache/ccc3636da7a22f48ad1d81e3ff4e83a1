@@ -1,0 +1,15 @@
+HTTP/2.0 200 OK
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Auth-Token
+Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE
+Access-Control-Expose-Headers: S72-Ownership,S72-Rental-Duration,S72-Start,S72-End,S72-Time,S72-RentalWindowTriggered
+Cache-Control: no-cache
+Content-Type: application/json
+Date: Sat, 13 Jun 2020 20:45:38 GMT
+Expires: Sat, 13 Jun 2020 20:45:37 GMT
+Server: nginx
+Vary: Accept-Encoding
+X-Nginx-Cached: BYPASS
+X-Resolved: /services/content/configuration
+
+{"base_download_url":"https://indiereign02-a.akamaihd.net","base_url":"https://indiereign02-a.akamaihd.net","rental_redeem_period":"8","telemetry_freq":"20","chromecast":"true","feature_ads":"true","upload":"true","playback_show_user_overlay":"true","playback_show_shift_logo":"https://www.shift72.com","encoding_profile_hd":"nzfcadaptive","ingestion_manager_version":"3","concurrent_streams_limit":"2","heartbeat_freq":"30","concurrent_content_access_limit":"1","rental_playback_duration_minutes":"1440","mp4_fallback":"true","terms-and-conditions-url":"http://www.1112.net/lastpage.html","hls_manifest_service":"false","airplay":"true","player_resume":"true","player_allow_mobile_drm_content":"true","device_user_limit":"8","heartbeat_tolerance":"2","disable_dashboard_content_schedule":"false","admin_show_available_to_date":"true","geo_check_on_play":"true","disallow_blocked_content":"We notice you are using an Ad Blocker. Without the support of our partners we would not be able to bring you the festival. So please consider turning off your Ad Blocker and watching a few messages. Thank you for supporting us and our partners and enjoy the festival."}

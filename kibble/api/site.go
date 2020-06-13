@@ -15,6 +15,7 @@
 package api
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/indiereign/shift72-kibble/kibble/models"
@@ -103,6 +104,9 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 
 	initAPI.Completed()
 
+	makeTitleSlugsUnique(&site.Films)
+	// makeTitleSlugsUnique(site.TVSeasons)
+
 	site.LinkItems(itemIndex)
 
 	site.PopulateTaxonomyWithFilms("year", models.GetYear)
@@ -138,4 +142,37 @@ func sortLanguages(cfg *models.Config) []models.Language {
 		})
 	}
 	return result
+}
+
+func makeTitleSlugsUnique(films *models.FilmCollection) {
+	groups := make(map[string][]models.Film, 0)
+
+	// create a grouping of slugs to films first
+	for _, f := range *films {
+		if groups[f.TitleSlug] == nil {
+			groups[f.TitleSlug] = []models.Film{f}
+		} else {
+			groups[f.TitleSlug] = append(groups[f.TitleSlug], f)
+		}
+	}
+
+	// if any groups are larger than 1 then make them unique
+	for _, group := range groups {
+		if len(group) == 1 {
+			continue
+		}
+
+		// sort them by id, so the first film isnt changed
+		sort.Slice(group, func(i int, j int) bool {
+			return group[i].ID < group[j].ID
+		})
+
+		// append i + 1 to end of slug
+		for i, film := range group {
+			if i == 0 {
+				continue
+			}
+			film.TitleSlug = fmt.Sprintf("%s-%d", film.TitleSlug, i+1)
+		}
+	}
 }
