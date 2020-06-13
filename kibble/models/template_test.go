@@ -90,6 +90,27 @@ func TestEvilContent(t *testing.T) {
 		ApplyContentTransforms("JS attempt:<script src=\"https://blah.com/evil.js\" ></script>"))
 }
 
+func TestExternalLinksOpenInNewWindow(t *testing.T) {
+	ConfigureShortcodeTemplatePath(cfg)
+	// AddTargetBlankToFullyQualifiedLinks
+	assert.Equal(t,
+		"<p><a href=\"https://www.google.com\" rel=\"nofollow noopener\" target=\"_blank\">Out</a></p>\n",
+		ApplyContentTransforms("<a href=\"https://www.google.com\">Out</a>"),
+	)
+
+	// do nothing to relative links
+	assert.Equal(t,
+		"<p><a href=\"/page.html\" rel=\"nofollow\">page</a></p>\n",
+		ApplyContentTransforms("<a href=\"/page.html\">page</a>"),
+	)
+
+	// allow target attributes on <a /> tags
+	assert.Equal(t,
+		"<p><a href=\"/page.html\" target=\"_blank\" rel=\"nofollow noopener\">page</a></p>\n",
+		ApplyContentTransforms("<a href=\"/page.html\" target=\"_blank\">page</a>"),
+	)
+}
+
 func setupViewRenderer(site *Site) *test.InMemoryRenderer {
 	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
 	T, _ := i18n.Tfunc("en-US")
