@@ -25,7 +25,7 @@ def: To chop or grind coarsely
 
 ## Installation
 
-* Requires go 1.13.0 (go mod) 
+* Requires go 1.13.0 (go mod)
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 
@@ -60,7 +60,7 @@ git push origin 0.9.6
 
 # c. build and release to locations 1 and 2
 cd kibble
-goreleaser --rm-dist
+AWS_PROFILE=shift72a goreleaser --rm-dist
 
 # d. release to location 3
 cd kibble-npm
