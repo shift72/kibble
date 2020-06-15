@@ -18,7 +18,7 @@ LDFLAGS = -s -w -X kibble/version.Version=${VERSION}
 all: test darwin
 
 darwin:
-	GOOS=darwin GOARCH=${GOARCH} $(GOINSTALL) -ldflags '${LDFLAGS}' 
+	GOOS=darwin GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}'
 
 linux:
 	GOOS=linux GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}' -o ${BINARY} .
@@ -26,9 +26,9 @@ linux:
 windows:
 	GOOS=windows GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}' -o ${BINARY}-windows-${GOARCH}.exe .
 
-test: 
+test:
 	$(GOTEST) -cover ./...
 
-clean: 
+clean:
 	$(GOCLEAN)
 
