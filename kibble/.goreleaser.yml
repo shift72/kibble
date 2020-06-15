@@ -6,7 +6,7 @@ builds:
       - linux
     goarch:
       - amd64
-    ldflags: -s -w -X github.com/indiereign/shift72-kibble/kibble/version.Version={{.Version}}
+    ldflags: -s -w -X kibble/version.Version={{.Version}}
     hooks:
       post: sh ./deploy_aws.sh {{.Version}}
 

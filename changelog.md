@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.19
+Fix goreleaser config for building version correctly.
+
 ## 0.10.18
 Making sure version of kibble is set before publish.
 
