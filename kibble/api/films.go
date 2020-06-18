@@ -22,8 +22,9 @@ import (
 
 	"kibble/utils"
 
-	"github.com/gosimple/slug"
 	"kibble/models"
+
+	"github.com/gosimple/slug"
 )
 
 // loadFilmSummary - load the bios request
@@ -146,6 +147,10 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Crew:            make([]models.CrewMember, 0),
 		CustomFields:    f.CustomFields,
 		Subtitles:       f.Subtitles,
+	}
+
+	for _, s := range f.Studio {
+		film.Studio = append(film.Studio, s.Name)
 	}
 
 	for key, value := range f.Classifications {
