@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"kibble/models"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -98,6 +99,13 @@ func GetFilm() filmV2 {
 				Classification: "classification",
 			},
 		}},
+		Studio: []struct {
+			Name string `json:"name"`
+		}{{
+			Name: "Studio ABC",
+		}, {
+			Name: "Studio XYZ",
+		}},
 		Classifications: map[string]classificationV1{
 			"au": {
 				Label:       "Australian Label",
@@ -154,6 +162,7 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Contains(t, model.GetSubtitles(), "Japanese")
 
 	assert.Equal(t, 2, len(model.Classifications))
+	assert.Equal(t, 2, len(model.Studio))
 }
 
 func TestFilmApiToModelWithoutClassifications(t *testing.T) {
