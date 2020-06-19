@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.20
+Added support for `Studio` in the film model as a string array.
+
 ## 0.10.19
 Fix goreleaser config for building version correctly.
 
