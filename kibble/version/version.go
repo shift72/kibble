@@ -16,5 +16,5 @@ package version
 
 var (
 	// Version of kibble
-	Version = "0.10.20"
+	Version = "0.0.0"
 )
