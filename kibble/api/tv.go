@@ -22,9 +22,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gosimple/slug"
 	"kibble/models"
 	"kibble/utils"
+
+	"github.com/gosimple/slug"
 )
 
 // loadAllTVShows - loads all tv shows
@@ -245,6 +246,15 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 		season.Seo.Image = season.Images.Seo
 	}
 
+	// classifications
+	for key, value := range t.Classifications {
+		season.Classifications = append(season.Classifications, models.Classification{
+			CountryCode: key,
+			Label:       value.Label,
+			Description: value.Description,
+		})
+	}
+
 	return season
 }
 
@@ -370,11 +380,12 @@ type tvSeasonV2 struct {
 		Classification string `json:"classification"`
 		Seo            string `json:"seo"`
 	} `json:"image_urls"`
-	Recommendations []string               `json:"recommendations"`
-	SeoTitle        string                 `json:"seo_title"`
-	SeoKeywords     string                 `json:"seo_keywords"`
-	SeoDescription  string                 `json:"seo_description"`
-	CustomFields    map[string]interface{} `json:"custom"`
+	Recommendations []string                    `json:"recommendations"`
+	SeoTitle        string                      `json:"seo_title"`
+	SeoKeywords     string                      `json:"seo_keywords"`
+	SeoDescription  string                      `json:"seo_description"`
+	CustomFields    map[string]interface{}      `json:"custom"`
+	Classifications map[string]classificationV1 `json:"classifications"`
 }
 
 type tvSeasonShowMultipleResponseV2 struct {

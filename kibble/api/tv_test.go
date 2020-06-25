@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"kibble/models"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -213,6 +214,49 @@ func TestSeasonCustomFieldSupport(t *testing.T) {
 	assert.Equal(t, "https://www.facebook.com/custompage", model.CustomFields["facebook_url"])
 	assert.Equal(t, false, model.CustomFields["another_key"])
 	assert.Equal(t, nil, model.CustomFields["where is it"])
+}
+
+func TestSeasonClassifications(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:  "/tv/1/season/1",
+		Title: "Season One",
+		Classifications: map[string]classificationV1{
+			"au": {
+				Label:       "Australian Label",
+				Description: "Australian Description",
+			},
+			"nz": {
+				Label:       "NZ Label",
+				Description: "NZ Description",
+			},
+		},
+	}
+
+	model := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 2, len(model.Classifications))
+
+	assert.Equal(t, "au", model.Classifications[0].CountryCode)
+	assert.Equal(t, "nz", model.Classifications[1].CountryCode)
+}
+
+func TestSeasonWithoutClassifications(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		Slug:  "/tv/1/season/1",
+		Title: "Season One",
+	}
+
+	model := apiSeason.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 0, len(model.Classifications))
 }
 
 func TestEpisodeCustomFieldSupport(t *testing.T) {
