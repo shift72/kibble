@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.21
+Added support for Classifications in tv seasons model
+
 ## 0.10.20
 Added support for `Studio` in the film model as a string array.
 
