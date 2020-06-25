@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"kibble/utils"
+
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
@@ -74,6 +75,7 @@ type TVSeason struct {
 	Crew            []CrewMember
 	Recommendations []GenericItem
 	CustomFields    CustomFields
+	Classifications []Classification
 }
 
 // TVShowCollection -
