@@ -17,9 +17,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/indiereign/shift72-kibble/kibble/config"
-	"github.com/indiereign/shift72-kibble/kibble/publish"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/config"
+	"kibble/publish"
+	"kibble/utils"
 	"github.com/spf13/cobra"
 )
 

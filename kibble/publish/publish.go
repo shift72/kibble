@@ -22,10 +22,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/indiereign/shift72-kibble/kibble/api"
-	"github.com/indiereign/shift72-kibble/kibble/config"
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/api"
+	"kibble/config"
+	"kibble/models"
+	"kibble/utils"
 )
 
 // Execute the publish process by

@@ -28,9 +28,9 @@ import (
 
 	"github.com/op/go-logging"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/render"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/models"
+	"kibble/render"
+	"kibble/utils"
 )
 
 const (

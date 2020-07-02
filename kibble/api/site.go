@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/models"
+	"kibble/utils"
 	logging "github.com/op/go-logging"
 )
 

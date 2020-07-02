@@ -5,4 +5,4 @@ if [ -z $VERSION ]; then
 fi
 
 echo "uploading linux only version - $VERSION"
-aws s3 cp ./dist/linux_amd64/kibble s3://shift72-sites/builder/$VERSION/kibble --profile shift72a
+aws s3 cp ./dist/shift72-kibble_linux_amd64/kibble s3://shift72-sites/builder/$VERSION/kibble --profile shift72a

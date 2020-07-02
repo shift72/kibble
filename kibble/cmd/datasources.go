@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 	"github.com/spf13/cobra"
 )
 

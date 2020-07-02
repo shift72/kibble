@@ -11,21 +11,24 @@ GOARCH = amd64
 VERSION=$(shell git describe --abbrev=0 --tags)
 
 # Setup the -ldflags option for go build here, interpolate the variable values
-LDFLAGS = -s -w -X github.com/indiereign/shift72-kibble/kibble/version.Version=${VERSION}
+LDFLAGS = -s -w -X kibble/version.Version=${VERSION}
 
 .PHONY: clean test
 
 all: test darwin
 
 darwin:
-	GOOS=darwin GOARCH=${GOARCH} $(GOINSTALL) -ldflags '${LDFLAGS}' 
+	GOOS=darwin GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}'
+
+linux:
+	GOOS=linux GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}' -o ${BINARY} .
 
 windows:
 	GOOS=windows GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}' -o ${BINARY}-windows-${GOARCH}.exe .
 
-test: 
+test:
 	$(GOTEST) -cover ./...
 
-clean: 
+clean:
 	$(GOCLEAN)
 

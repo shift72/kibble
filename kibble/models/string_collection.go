@@ -14,7 +14,7 @@
 
 package models
 
-import "github.com/indiereign/shift72-kibble/kibble/utils"
+import "kibble/utils"
 
 // StringCollection - Allows us to add methods to []string for easing UI array usage
 type StringCollection []string

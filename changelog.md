@@ -1,5 +1,21 @@
 # Change log
 
+## 0.10.21
+Added support for Classifications in tv seasons model
+
+## 0.10.20
+Added support for `Studio` in the film model as a string array.
+
+## 0.10.19
+Fix goreleaser config for building version correctly.
+
+## 0.10.18
+Making sure version of kibble is set before publish.
+
+## 0.10.17
+Added support for markdown content allowing `<a />` tags to include `target="_blank"`.
+Add support for markdown content to auto add `target="_blank"` to fully qualified links on `<a />` tags.
+
 ## 0.10.16
 Added support for Classification records
 Added field Classifications in film model, an array of Classification records.

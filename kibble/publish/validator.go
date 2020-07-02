@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/indiereign/shift72-kibble/kibble/models"
+	"kibble/models"
 )
 
 type descriptivePath struct {

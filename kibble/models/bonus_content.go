@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/indiereign/shift72-kibble/kibble/utils"
+	"kibble/utils"
 )
 
 // BonusContentCollection - all bonus content for a film or season

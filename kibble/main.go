@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/indiereign/shift72-kibble/kibble/cmd"
-	"github.com/indiereign/shift72-kibble/kibble/datastore"
+	"kibble/cmd"
+	"kibble/datastore"
 )
 
 func main() {

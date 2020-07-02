@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/CloudyKit/jet"
-	"github.com/indiereign/shift72-kibble/kibble/models"
-	"github.com/indiereign/shift72-kibble/kibble/test"
+	"kibble/models"
+	"kibble/test"
 )
 
 func TestSitePlans(t *testing.T) {
