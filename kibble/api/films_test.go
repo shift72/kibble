@@ -15,9 +15,7 @@
 package api
 
 import (
-	"fmt"
 	"testing"
-	"time"
 
 	"kibble/models"
 
@@ -297,12 +295,7 @@ func TestUniqueFilmTitlesTheNewestGetsTheLargestIndex(t *testing.T) {
 		},
 	}
 
-	start := time.Now()
-
 	collection.MakeTitleSlugsUnique()
-
-	elapsed := time.Since(start)
-	fmt.Printf("Binomial took %s", elapsed)
 
 	assert.Equal(t, "the-big-lebowski-3", collection[0].TitleSlug)
 	assert.Equal(t, "the-big-lebowski", collection[1].TitleSlug)
