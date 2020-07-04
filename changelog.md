@@ -1,5 +1,8 @@
 # Change log
 
+## 0.10.22
+Added support for duplicate film titles
+
 ## 0.10.21
 Added support for Classifications in tv seasons model
 
