@@ -19,6 +19,7 @@ import (
 
 	"kibble/models"
 	"kibble/utils"
+
 	logging "github.com/op/go-logging"
 )
 
@@ -102,6 +103,8 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	}
 
 	initAPI.Completed()
+
+	site.Films.MakeTitleSlugsUnique()
 
 	site.LinkItems(itemIndex)
 

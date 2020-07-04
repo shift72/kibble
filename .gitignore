@@ -2,6 +2,7 @@ kibble/kibble
 kibble/api/.tmp
 kibble/.tmp
 kibble/.kibble
+kibble/sample_site/.kibble
 kibble/vendor
 kibble/dist
 kibble-npm/node_modules

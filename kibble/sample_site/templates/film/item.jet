@@ -1,4 +1,4 @@
-{{extends "application.jet"}}
+{{extends "../application.jet"}}
 {{block body()}}
   <div>
     <h2>{{film.Title}} - </h2>
@@ -8,6 +8,9 @@
     <div>Path: {{ routeToSlug(film.Slug) }}</div>
     <div>Synopsis: {{ film.Overview | raw}}</div>
     <div>Canonical: {{ canonicalRouteToSlug(film.Slug) }}</div>
+    {{ range film.Studio }}
+      <div>Studio: {{ . }}</div>
+    {{ end}}
 
     <div>Bonuses: {{ len(film.Bonuses)}} </div>
     {{ range film.Bonuses }}
@@ -21,13 +24,6 @@
     {{ range film.Recommendations }}
       <div>
         {{ . | json | raw }}
-      </div>
-    {{ end }}
-
-    <div>Resolved Recommendations: {{ len(film.ResolvedRecommendations)}} </div>
-    {{ range film.ResolvedRecommendations }}
-      <div>
-        {{ .ItemType  }}  {{ .Title  }}
       </div>
     {{ end }}
 
