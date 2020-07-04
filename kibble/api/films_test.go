@@ -15,7 +15,9 @@
 package api
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"kibble/models"
 
@@ -42,7 +44,7 @@ func TestLoadFilms(t *testing.T) {
 	}
 }
 
-func GetFilm() filmV2 {
+func getFilm() filmV2 {
 	apiFilm := filmV2{
 		ID:      123,
 		Title:   "Film One",
@@ -128,7 +130,7 @@ func TestFilmApiToModel(t *testing.T) {
 	itemIndex := make(models.ItemIndex)
 
 	serviceConfig := commonServiceConfig()
-	apiFilm := GetFilm()
+	apiFilm := getFilm()
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
 
@@ -171,7 +173,7 @@ func TestFilmApiToModel(t *testing.T) {
 func TestFilmApiToModelWithoutClassifications(t *testing.T) {
 	itemIndex := make(models.ItemIndex)
 	serviceConfig := commonServiceConfig()
-	apiFilm := GetFilm()
+	apiFilm := getFilm()
 	apiFilm.Classifications = nil
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
@@ -185,7 +187,7 @@ func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
 
 	serviceConfig := commonServiceConfig()
 
-	apiFilm := GetFilm()
+	apiFilm := getFilm()
 	imageURL := "image.jpeg"
 	apiFilm.ImageUrls.Portrait = imageURL
 	apiFilm.ImageUrls.Landscape = imageURL
@@ -201,7 +203,7 @@ func TestFilmApiToModelWithSeoImage(t *testing.T) {
 
 	serviceConfig := commonServiceConfig()
 
-	apiFilm := GetFilm()
+	apiFilm := getFilm()
 	imageURL := "seo_image.jpeg"
 	apiFilm.ImageUrls.Seo = imageURL
 
@@ -252,4 +254,57 @@ func TestFilmSubtitlesAsArray(t *testing.T) {
 	assert.Equal(t, 2, len(model.GetSubtitles()))
 	assert.Contains(t, model.GetSubtitles(), "French")
 	assert.Contains(t, model.GetSubtitles(), "Italian")
+}
+
+func TestUniqueFilmTitles(t *testing.T) {
+
+	collection := models.FilmCollection{
+		models.Film{
+			ID:        1,
+			Slug:      "/film/1",
+			TitleSlug: "the-big-lebowski",
+		},
+		models.Film{
+			ID:        2,
+			Slug:      "/film/2",
+			TitleSlug: "the-big-lebowski",
+		},
+	}
+
+	collection.MakeTitleSlugsUnique()
+
+	assert.Equal(t, "the-big-lebowski", collection[0].TitleSlug)
+	assert.Equal(t, "the-big-lebowski-2", collection[1].TitleSlug)
+}
+
+func TestUniqueFilmTitlesTheNewestGetsTheLargestIndex(t *testing.T) {
+
+	collection := models.FilmCollection{
+		models.Film{
+			ID:        3,
+			Slug:      "/film/3",
+			TitleSlug: "the-big-lebowski",
+		},
+		models.Film{
+			ID:        1,
+			Slug:      "/film/1",
+			TitleSlug: "the-big-lebowski",
+		},
+		models.Film{
+			ID:        2,
+			Slug:      "/film/2",
+			TitleSlug: "the-big-lebowski",
+		},
+	}
+
+	start := time.Now()
+
+	collection.MakeTitleSlugsUnique()
+
+	elapsed := time.Since(start)
+	fmt.Printf("Binomial took %s", elapsed)
+
+	assert.Equal(t, "the-big-lebowski-3", collection[0].TitleSlug)
+	assert.Equal(t, "the-big-lebowski", collection[1].TitleSlug)
+	assert.Equal(t, "the-big-lebowski-2", collection[2].TitleSlug)
 }
