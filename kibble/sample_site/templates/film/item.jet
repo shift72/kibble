@@ -8,6 +8,9 @@
     <div>Path: {{ routeToSlug(film.Slug) }}</div>
     <div>Synopsis: {{ film.Overview | raw}}</div>
     <div>Canonical: {{ canonicalRouteToSlug(film.Slug) }}</div>
+    {{ range film.Studio }}
+      <div>Studio: {{ . }}</div>
+    {{ end}}
 
     <div>Bonuses: {{ len(film.Bonuses)}} </div>
     {{ range film.Bonuses }}

@@ -29,6 +29,12 @@ windows:
 test:
 	$(GOTEST) -cover ./...
 
+run-darwin: darwin
+	cd sample_site && ../kibble render
+
+run-linux: linux
+	cd sample_site && ../kibble render
+
 clean:
 	$(GOCLEAN)
 
