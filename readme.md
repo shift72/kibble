@@ -63,6 +63,10 @@ cd kibble
 AWS_PROFILE=shift72a goreleaser --rm-dist
 
 # d. release to location 3
+
+# ensure that you have a valid publishing token obtained from npmjs.org
+export NPM_CONFIG_TOKEN=...
+
 cd kibble-npm
 npm publish
 
