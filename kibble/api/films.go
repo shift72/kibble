@@ -67,6 +67,10 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 
 	sort.Strings(slugs)
 
+	if len(slugs) > 300 {
+		slugs = slugs[:300]
+	}
+
 	// convert /film/1,film/2 -> 1,2
 	ids := strings.Replace(
 		strings.Trim(strings.Join(strings.Fields(fmt.Sprint(slugs)), ","), "[]"),
