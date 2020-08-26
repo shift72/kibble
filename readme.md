@@ -67,6 +67,9 @@ AWS_PROFILE=shift72a goreleaser --rm-dist
 # ensure that you have a valid publishing token obtained from npmjs.org
 export NPM_CONFIG_TOKEN=...
 
+make the versions public - https://s3.console.aws.amazon.com/s3/buckets/shift72-sites/s72-web/kibble/
+update the npm version number
+
 cd kibble-npm
 npm publish
 

@@ -3,7 +3,7 @@ var path = require("path");
 
 var packageInfo = require(path.join(__dirname, "package.json"));
 var version = packageInfo.version;
-var root = "https://s3-ap-southeast-2.amazonaws.com/shift72-sites/s72-web/kibble/" + version;
+var root = "https://shift72-sites.s3.amazonaws.com/s72-web/kibble/" + version;
 
 module.exports = binwrap({
   dirname: __dirname,
