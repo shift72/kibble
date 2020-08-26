@@ -1,5 +1,8 @@
 # Change log
 
+## 0.11.0
+Add support for tags
+
 ## 0.10.22
 Added support for duplicate film titles
 
