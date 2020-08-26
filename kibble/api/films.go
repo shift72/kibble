@@ -129,6 +129,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Countries:   f.Countries,
 		Languages:   f.Languages,
 		Genres:      f.Genres,
+		Tags:        f.Tags,
 		Seo: models.Seo{
 			SiteName:    serviceConfig.GetSiteName(),
 			Title:       serviceConfig.GetSEOTitle(f.SeoTitle, f.Title),
@@ -243,6 +244,7 @@ type filmV2 struct {
 	Countries   []string `json:"countries"`
 	Languages   []string `json:"languages"`
 	Genres      []string `json:"genres"`
+	Tags        []string `json:"tags"`
 	Title       string   `json:"title"`
 	Slug        string   `json:"slug"`
 	FilmID      int      `json:"film_id"`

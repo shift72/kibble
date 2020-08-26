@@ -70,6 +70,7 @@ func getFilm() filmV2 {
 			Name: "Peter Jackson",
 			Job:  "Director",
 		}},
+		Tags:      []string{"one", "two"},
 		Subtitles: []string{"Japanese"},
 		SubtitleTracks: []subtitleTrackV1{{
 			Language: "it",
@@ -166,6 +167,8 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 2, len(model.Studio))
 	assert.Contains(t, model.Studio, "Studio XYZ")
 	assert.Contains(t, model.Studio, "Studio ABC")
+	assert.Contains(t, model.Tags, "one")
+	assert.Contains(t, model.Tags, "two")
 }
 
 func TestFilmApiToModelWithoutClassifications(t *testing.T) {
