@@ -132,3 +132,24 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 		}
 	}
 }
+
+// GetCrewJobs - get a list of all the unique job titles in the list of crew members
+func (film Film) GetCrewJobs() StringCollection {
+	var result StringCollection
+	for _, c := range film.Crew {
+		result = utils.AppendUnique(c.Job, result)
+	}
+	return result
+}
+
+// GetCrewMembers - get a list of all the unique people who have a particular job
+func (film Film) GetCrewMembers(job string) StringCollection {
+	var result StringCollection
+	for _, c := range film.Crew {
+		if c.Job == job {
+			result = utils.AppendUnique(c.Name, result)
+		}
+
+	}
+	return result
+}

@@ -180,6 +180,27 @@ func (season TVSeason) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) 
 	})
 }
 
+// GetCrewJobs - get a list of all the unique job titles in the list of crew members
+func (season TVSeason) GetCrewJobs() StringCollection {
+	var result StringCollection
+	for _, c := range season.Crew {
+		result = utils.AppendUnique(c.Job, result)
+	}
+	return result
+}
+
+// GetCrewMembers - get a list of all the unique people who have a particular job
+func (season TVSeason) GetCrewMembers(job string) StringCollection {
+	var result StringCollection
+	for _, c := range season.Crew {
+		if c.Job == job {
+			result = utils.AppendUnique(c.Name, result)
+		}
+
+	}
+	return result
+}
+
 // GetTitle return the localised version of the episode title
 func (episode TVEpisode) GetTitle(T i18n.TranslateFunc) string {
 	return T("tvepisode", map[string]interface{}{
