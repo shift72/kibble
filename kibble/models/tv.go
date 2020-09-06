@@ -72,7 +72,7 @@ type TVSeason struct {
 	Episodes        []TVEpisode
 	Bonuses         BonusContentCollection
 	Cast            []CastMember
-	Crew            []CrewMember
+	Crew            CrewMembers
 	Recommendations []GenericItem
 	CustomFields    CustomFields
 	Classifications []Classification

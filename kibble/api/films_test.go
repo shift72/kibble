@@ -304,3 +304,73 @@ func TestUniqueFilmTitlesTheNewestGetsTheLargestIndex(t *testing.T) {
 	assert.Equal(t, "the-big-lebowski", collection[1].TitleSlug)
 	assert.Equal(t, "the-big-lebowski-2", collection[2].TitleSlug)
 }
+
+func TestFilmCrewJobs(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := filmV2{
+		ID:    123,
+		Title: "Casino Royale (1967)",
+		Slug:  "/film/007",
+		Crew: []struct {
+			Name string `json:"name"`
+			Job  string `json:"job"`
+		}{{
+			Name: "Ken Hughes",
+			Job:  "Director",
+		}, {
+			Name: "Wolf Mankowitz",
+			Job:  "Screenwriter",
+		}, {
+			Name: "John Huston",
+			Job:  "Director",
+		}, {
+			Name: "Charles K Feldman",
+			Job:  "Producer",
+		}, {
+			Name: "Joseph McGrath",
+			Job:  "Director",
+		}, {
+			Name: "John Wilcox",
+			Job:  "Cinematographer",
+		}, {
+			Name: "Burt Bacharach",
+			Job:  "Composer",
+		}, {
+			Name: "Robert Parrish",
+			Job:  "Director",
+		}, {
+			Name: "Nicolas Roeg",
+			Job:  "Cinematographer",
+		}, {
+			Name: "Val Guest",
+			Job:  "Director",
+		}, {
+			Name: "John Wilcox",
+			Job:  "Cinematographer",
+		}},
+	}
+
+	film := apiFilm.mapToModel(serviceConfig, itemIndex)
+	jobs := film.Crew.GetJobNames()
+
+	assert.Equal(t, 5, len(jobs))
+	assert.Contains(t, jobs, "Cinematographer")
+	assert.Contains(t, jobs, "Composer")
+	assert.Contains(t, jobs, "Director")
+	assert.Contains(t, jobs, "Producer")
+	assert.Contains(t, jobs, "Screenwriter")
+
+	cinematographers := film.Crew.GetMembers("Cinematographer")
+	assert.Equal(t, 2, len(cinematographers))
+	assert.Contains(t, cinematographers, "John Wilcox")
+	assert.Contains(t, cinematographers, "Nicolas Roeg")
+
+	directors := film.Crew.GetMembers("Director")
+	assert.Equal(t, 5, len(directors))
+
+	caterers := film.Crew.GetMembers("Caterer")
+	assert.Equal(t, 0, len(caterers))
+}

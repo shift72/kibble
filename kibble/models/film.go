@@ -31,7 +31,7 @@ type Film struct {
 	Trailers        []Trailer
 	Bonuses         BonusContentCollection
 	Cast            []CastMember
-	Crew            []CrewMember
+	Crew            CrewMembers
 	Studio          []string
 	Overview        string
 	Tagline         string

@@ -428,3 +428,54 @@ func TestEpisodeSubtitlesNil(t *testing.T) {
 
 	assert.Equal(t, 0, len(item.Episodes[0].GetSubtitles()))
 }
+
+func TestTvSeasonCrewJobs(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+	serviceConfig := commonServiceConfig()
+
+	apiSeason := tvSeasonV2{
+		SeasonNum: 2,
+		Title:     "Season 2",
+		Slug:      "/tv/1/season/2",
+		Crew: []struct {
+			Name string `json:"name"`
+			Job  string `json:"job"`
+		}{{
+			Name: "Bryan Cranston",
+			Job:  "Director",
+		}, {
+			Name: "Charles Haid",
+			Job:  "Director",
+		}, {
+			Name: "Terry McDonough",
+			Job:  "Director",
+		}, {
+			Name: "John Dahl",
+			Job:  "Director",
+		}, {
+			Name: "Terry McDonough",
+			Job:  "Director",
+		}, {
+			Name: "J. Roberts",
+			Job:  "Writer",
+		}},
+	}
+
+	season := apiSeason.mapToModel(serviceConfig, itemIndex)
+	jobs := season.Crew.GetJobNames()
+
+	assert.Equal(t, 2, len(jobs))
+	assert.Contains(t, jobs, "Director")
+	assert.Contains(t, jobs, "Writer")
+
+	directors := season.Crew.GetMembers("Director")
+	assert.Equal(t, 4, len(directors))
+	assert.Contains(t, directors, "Bryan Cranston")
+	assert.Contains(t, directors, "Terry McDonough")
+	assert.Contains(t, directors, "John Dahl")
+	assert.Contains(t, directors, "Charles Haid")
+
+	cinematographers := season.Crew.GetMembers("Cinematographers")
+	assert.Equal(t, 0, len(cinematographers))
+}
