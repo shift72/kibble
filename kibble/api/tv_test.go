@@ -463,19 +463,19 @@ func TestTvSeasonCrewJobs(t *testing.T) {
 	}
 
 	season := apiSeason.mapToModel(serviceConfig, itemIndex)
-	jobs := season.GetCrewJobs()
+	jobs := season.Crew.GetJobNames()
 
 	assert.Equal(t, 2, len(jobs))
 	assert.Contains(t, jobs, "Director")
 	assert.Contains(t, jobs, "Writer")
 
-	directors := season.GetCrewMembers("Director")
+	directors := season.Crew.GetMembers("Director")
 	assert.Equal(t, 4, len(directors))
 	assert.Contains(t, directors, "Bryan Cranston")
 	assert.Contains(t, directors, "Terry McDonough")
 	assert.Contains(t, directors, "John Dahl")
 	assert.Contains(t, directors, "Charles Haid")
 
-	cinematographers := season.GetCrewMembers("Cinematographers")
+	cinematographers := season.Crew.GetMembers("Cinematographers")
 	assert.Equal(t, 0, len(cinematographers))
 }

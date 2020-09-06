@@ -354,7 +354,7 @@ func TestFilmCrewJobs(t *testing.T) {
 	}
 
 	film := apiFilm.mapToModel(serviceConfig, itemIndex)
-	jobs := film.GetCrewJobs()
+	jobs := film.Crew.GetJobNames()
 
 	assert.Equal(t, 5, len(jobs))
 	assert.Contains(t, jobs, "Cinematographer")
@@ -363,14 +363,14 @@ func TestFilmCrewJobs(t *testing.T) {
 	assert.Contains(t, jobs, "Producer")
 	assert.Contains(t, jobs, "Screenwriter")
 
-	cinematographers := film.GetCrewMembers("Cinematographer")
+	cinematographers := film.Crew.GetMembers("Cinematographer")
 	assert.Equal(t, 2, len(cinematographers))
 	assert.Contains(t, cinematographers, "John Wilcox")
 	assert.Contains(t, cinematographers, "Nicolas Roeg")
 
-	directors := film.GetCrewMembers("Director")
+	directors := film.Crew.GetMembers("Director")
 	assert.Equal(t, 5, len(directors))
 
-	caterers := film.GetCrewMembers("Caterer")
+	caterers := film.Crew.GetMembers("Caterer")
 	assert.Equal(t, 0, len(caterers))
 }

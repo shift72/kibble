@@ -93,12 +93,6 @@ type CastMember struct {
 	Character string
 }
 
-// CrewMember -
-type CrewMember struct {
-	Name string
-	Job  string
-}
-
 // SubtitleTrack -
 type SubtitleTrack struct {
 	Language string

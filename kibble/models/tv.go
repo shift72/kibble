@@ -72,7 +72,7 @@ type TVSeason struct {
 	Episodes        []TVEpisode
 	Bonuses         BonusContentCollection
 	Cast            []CastMember
-	Crew            []CrewMember
+	Crew            CrewMembers
 	Recommendations []GenericItem
 	CustomFields    CustomFields
 	Classifications []Classification
@@ -178,27 +178,6 @@ func (season TVSeason) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) 
 		"ShowInfo": *season.ShowInfo,
 		"Season":   season,
 	})
-}
-
-// GetCrewJobs - get a list of all the unique job titles in the list of crew members
-func (season TVSeason) GetCrewJobs() StringCollection {
-	var result StringCollection
-	for _, c := range season.Crew {
-		result = utils.AppendUnique(c.Job, result)
-	}
-	return result
-}
-
-// GetCrewMembers - get a list of all the unique people who have a particular job
-func (season TVSeason) GetCrewMembers(job string) StringCollection {
-	var result StringCollection
-	for _, c := range season.Crew {
-		if c.Job == job {
-			result = utils.AppendUnique(c.Name, result)
-		}
-
-	}
-	return result
 }
 
 // GetTitle return the localised version of the episode title
