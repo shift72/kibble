@@ -102,10 +102,17 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		tvs = itemIndex.FindUnresolvedSlugs("tv-season")
 	}
 
+	// find the prices for all of the items
+	err = LoadAllPrices(cfg, site, itemIndex)
+	if err != nil {
+		return nil, err
+	}
+
 	initAPI.Completed()
 
 	site.Films.MakeTitleSlugsUnique()
 
+	// item Indexes are immutable after this point
 	site.LinkItems(itemIndex)
 
 	site.PopulateTaxonomyWithFilms("year", models.GetYear)

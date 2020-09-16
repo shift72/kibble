@@ -4,6 +4,7 @@
         "en": "en_US",
         "fr": "fr_FR"
     },
+    "defaultPricingCountryCode":"nz",
     "siteUrl": "https://staging-store.shift72.com",
     "routes": [
         {

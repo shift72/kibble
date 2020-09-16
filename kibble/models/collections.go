@@ -36,20 +36,22 @@ type Collection struct {
 }
 
 // FindCollectionByID - find the page by id
-func (collections CollectionCollection) FindCollectionByID(collectionID int) (*Collection, error) {
-	for _, b := range collections {
-		if b.ID == collectionID {
-			return &b, nil
+func (collections *CollectionCollection) FindCollectionByID(collectionID int) (*Collection, error) {
+	coll := *collections
+	for i := 0; i < len(coll); i++ {
+		if coll[i].ID == collectionID {
+			return &coll[i], nil
 		}
 	}
 	return nil, ErrDataSourceMissing
 }
 
 // FindCollectionBySlug - find the collection by the slug
-func (collections CollectionCollection) FindCollectionBySlug(slug string) (*Collection, error) {
-	for _, p := range collections {
-		if p.Slug == slug || p.TitleSlug == slug {
-			return &p, nil
+func (collections *CollectionCollection) FindCollectionBySlug(slug string) (*Collection, error) {
+	coll := *collections
+	for i := 0; i < len(coll); i++ {
+		if coll[i].Slug == slug || coll[i].TitleSlug == slug {
+			return &coll[i], nil
 		}
 	}
 	return nil, ErrDataSourceMissing

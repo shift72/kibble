@@ -83,6 +83,20 @@ func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
 	}
 }
 
+// Replace a value in the index
+func (itemIndex ItemIndex) Replace(slug string, item GenericItem) {
+
+	slugType := getSlugType(slug)
+
+	index, ok := itemIndex[slugType]
+	if !ok {
+		itemIndex[slugType] = make(map[string]GenericItem)
+		index = itemIndex[slugType]
+	}
+
+	index[slug] = item
+}
+
 // Get - get the slug
 func (itemIndex ItemIndex) Get(slug string) (item GenericItem) {
 

@@ -20,6 +20,25 @@
       </div>
     {{ end }}
 
+    <div>
+      Prices
+      
+      <span>From: {{ film.Prices.GetLowestPrice() }} {{ film.Prices.Currency }}</span>
+
+      {{ if film.Prices.HasPrice("buy", "hd")}}
+      <div>Buy HD: {{ film.Prices.GetPrice("buy", "hd") }} {{ film.Prices.Currency }}</div>
+      {{ end }}
+      {{ if film.Prices.HasPrice("rent", "hd")}}
+      <div>Rent HD: {{ film.Prices.GetPrice("rent", "hd") }} {{ film.Prices.Currency }}</div>
+      {{ end }}
+      {{ if film.Prices.HasPrice("buy", "sd")}}
+      <div>Buy SD: {{ film.Prices.GetPrice("buy", "sd") }} {{ film.Prices.Currency }}</div>
+      {{ end }}
+      {{ if film.Prices.HasPrice("rent", "sd")}}
+      <div>Rent SD: {{ film.Prices.GetPrice("rent", "sd") }} {{ film.Prices.Currency }}</div>
+      {{ end }}
+    </div>
+
     <div>Recommendations: {{ len(film.Recommendations)}} </div>
     {{ range film.Recommendations }}
       <div>
