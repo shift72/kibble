@@ -1,5 +1,9 @@
 # Change log
 
+## 0.12.0
+
+Add support for pricing
+
 ## 0.11.1
 Add 2 new functions to tv season and film crews, `GetJobNames` and `GetMembers` to get a list of unique crew job names, and a list of unique names of crew members with a particular job name
 
