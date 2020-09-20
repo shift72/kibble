@@ -43,6 +43,7 @@ type Film struct {
 	Tags            StringCollection
 	Seo             Seo
 	Images          ImageSet
+	Prices          PriceInfo
 	Recommendations []GenericItem
 	Subtitles       []string
 	SubtitleTracks  []SubtitleTrack
@@ -54,20 +55,22 @@ type Film struct {
 type FilmCollection []Film
 
 // FindFilmByID - find film by id
-func (films FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
-	for _, p := range films {
-		if p.ID == filmID {
-			return &p, true
+func (films *FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
+	coll := *films
+	for i := 0; i < len(coll); i++ {
+		if coll[i].ID == filmID {
+			return &coll[i], true
 		}
 	}
 	return nil, false
 }
 
 // FindFilmBySlug - find the film by the slug
-func (films FilmCollection) FindFilmBySlug(slug string) (*Film, bool) {
-	for _, p := range films {
-		if p.Slug == slug || p.TitleSlug == slug {
-			return &p, true
+func (films *FilmCollection) FindFilmBySlug(slug string) (*Film, bool) {
+	coll := *films
+	for i := 0; i < len(coll); i++ {
+		if coll[i].Slug == slug || coll[i].TitleSlug == slug {
+			return &coll[i], true
 		}
 	}
 	return nil, false

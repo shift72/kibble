@@ -68,6 +68,7 @@ type TVSeason struct {
 	ShowInfo        *TVShow
 	Seo             Seo
 	Images          ImageSet
+	Prices          PriceInfo
 	Trailers        []Trailer
 	Episodes        []TVEpisode
 	Bonuses         BonusContentCollection
@@ -98,30 +99,33 @@ func (shows TVShowCollection) FindTVShowByID(showID int) (*TVShow, bool) {
 }
 
 // FindTVShowBySlug - find the tv show by the slug
-func (shows TVShowCollection) FindTVShowBySlug(slug string) (*TVShow, bool) {
-	for _, p := range shows {
-		if p.Slug == slug || p.TitleSlug == slug {
-			return &p, true
+func (shows *TVShowCollection) FindTVShowBySlug(slug string) (*TVShow, bool) {
+	coll := *shows
+	for i := 0; i < len(coll); i++ {
+		if coll[i].Slug == slug || coll[i].TitleSlug == slug {
+			return &coll[i], true
 		}
 	}
 	return nil, false
 }
 
 // FindTVSeasonBySlug - find the film by the slug
-func (tvSeasons TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, bool) {
-	for _, p := range tvSeasons {
-		if p.Slug == slug {
-			return &p, true
+func (tvSeasons *TVSeasonCollection) FindTVSeasonBySlug(slug string) (*TVSeason, bool) {
+	coll := *tvSeasons
+	for i := 0; i < len(coll); i++ {
+		if coll[i].Slug == slug {
+			return &coll[i], true
 		}
 	}
 	return nil, false
 }
 
 // FindTVEpisodeBySlug returns an episode based on the specified slug
-func (episodes TVEpisodeCollection) FindTVEpisodeBySlug(slug string) (*TVEpisode, bool) {
-	for _, e := range episodes {
-		if e.Slug == slug {
-			return &e, true
+func (episodes *TVEpisodeCollection) FindTVEpisodeBySlug(slug string) (*TVEpisode, bool) {
+	coll := *episodes
+	for i := 0; i < len(coll); i++ {
+		if coll[i].Slug == slug {
+			return &coll[i], true
 		}
 	}
 	return nil, false

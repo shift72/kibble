@@ -32,6 +32,7 @@ type Bundle struct {
 	Images        ImageSet
 	PromoURL      string
 	ExternalID    string
+	Prices        PriceInfo
 	Items         GenericItems
 	PublishedDate time.Time
 	CreatedAt     time.Time
@@ -39,20 +40,22 @@ type Bundle struct {
 }
 
 // FindBundleByID - find the page by id
-func (bundles BundleCollection) FindBundleByID(bundleID int) (*Bundle, error) {
-	for _, b := range bundles {
-		if b.ID == bundleID {
-			return &b, nil
+func (bundles *BundleCollection) FindBundleByID(bundleID int) (*Bundle, error) {
+	coll := *bundles
+	for i := 0; i < len(coll); i++ {
+		if coll[i].ID == bundleID {
+			return &coll[i], nil
 		}
 	}
 	return nil, ErrDataSourceMissing
 }
 
 // FindBundleBySlug - find the bundle by the slug
-func (bundles BundleCollection) FindBundleBySlug(slug string) (*Bundle, error) {
-	for _, p := range bundles {
-		if p.Slug == slug || p.TitleSlug == slug {
-			return &p, nil
+func (bundles *BundleCollection) FindBundleBySlug(slug string) (*Bundle, error) {
+	coll := *bundles
+	for i := 0; i < len(coll); i++ {
+		if coll[i].Slug == slug || coll[i].TitleSlug == slug {
+			return &coll[i], nil
 		}
 	}
 	return nil, ErrDataSourceMissing
@@ -65,6 +68,7 @@ func (bundle Bundle) GetGenericItem() GenericItem {
 		Seo:       bundle.Seo,
 		Images:    bundle.Images,
 		InnerItem: bundle,
+		ItemType:  "bundle",
 		Slug:      bundle.Slug,
 	}
 }
