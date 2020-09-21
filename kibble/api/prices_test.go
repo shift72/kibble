@@ -71,8 +71,9 @@ func TestMergePrices(t *testing.T) {
 	}
 
 	// act - load the prices
-	err := processPrices(prices, site, itemIndex)
+	count, err := processPrices(prices, site, itemIndex)
 	assert.NoError(t, err)
+	assert.Equal(t, 1, count)
 
 	// verify the film entry is updated
 	assert.Equal(t, "$3.00", site.Films[0].Prices.GetLowestPrice(), "film price was not updated")

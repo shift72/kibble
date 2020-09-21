@@ -24,6 +24,7 @@ require (
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pkg/errors v0.8.0
 	github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be // indirect
+	github.com/shopspring/decimal v1.2.0
 	github.com/shurcooL/sanitized_anchor_name v0.0.0-20170918181015-86672fcb3f95 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/cobra v0.0.0-20170929161612-e5f66de850af
