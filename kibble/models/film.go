@@ -44,6 +44,7 @@ type Film struct {
 	Seo             Seo
 	Images          ImageSet
 	Prices          PriceInfo
+	Available       Period
 	Recommendations []GenericItem
 	Subtitles       []string
 	SubtitleTracks  []SubtitleTrack
@@ -119,7 +120,7 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 			continue
 		}
 
-		// sort them by id, so the first film isnt changed
+		// sort them by id, so the first film is not changed
 		sort.Slice(group, func(i int, j int) bool {
 			return (*films)[group[i]].ID < (*films)[group[j]].ID
 		})

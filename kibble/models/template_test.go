@@ -17,8 +17,11 @@ package models
 import (
 	"testing"
 
-	"github.com/CloudyKit/jet"
 	"kibble/test"
+
+	"kibble/utils"
+
+	"github.com/CloudyKit/jet"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
 )
@@ -233,4 +236,42 @@ func TestTVSeasonWithLocalisableTitle(t *testing.T) {
 
 	assert.Contains(t, renderer1.Results[0].Output(), "Title: Breaking Bad - Season Alt - 2")
 	assert.Contains(t, renderer1.Results[0].Output(), "Generic Item Title: Breaking Bad - Season Alt - 2")
+}
+
+func TestTVSeasonWithAvailability(t *testing.T) {
+
+	site := &Site{}
+
+	from := utils.ParseTimeFromString("2021-04-01T00:00:00.000Z")
+
+	tvSeason := &TVSeason{
+		SeasonNumber: 2,
+		ShowInfo: &TVShow{
+			ID:        123,
+			Title:     "Breaking Bad",
+			TitleSlug: "breaking-bad",
+		},
+		Slug: "/tv/123/season/2",
+		Available: Period{
+			From: &from,
+			To:   nil,
+		},
+	}
+
+	item := tvSeason.GetGenericItem()
+
+	data := jet.VarMap{}
+	data.Set("tvseason", tvSeason)
+	data.Set("item", &item)
+
+	renderer1 := setupViewRenderer(site)
+	renderer1.Render("./tv/tv-season.jet", "output.txt", data)
+
+	renderer1.DumpResults()
+
+	assert.Contains(t, renderer1.Results[0].Output(), "Available From: [2021 Apr 1 00:00:00]")
+	assert.Contains(t, renderer1.Results[0].Output(), "Available From US West: [2021 Mar 31 17:00:00]")
+	assert.Contains(t, renderer1.Results[0].Output(), "Available To: []")
+
+	assert.Contains(t, renderer1.Results[0].Output(), "Available To US West: []")
 }

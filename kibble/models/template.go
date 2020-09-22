@@ -20,9 +20,11 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"time"
+
+	"kibble/version"
 
 	"github.com/CloudyKit/jet"
-	"kibble/version"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"gopkg.in/russross/blackfriday.v2"
@@ -112,6 +114,38 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 
 	view.AddGlobal("isEnabled", func(key string) bool {
 		return ctx.Site.Toggles[key]
+	})
+
+	view.AddGlobal("date", func(key *time.Time, args ...string) string {
+
+		if key == nil {
+			return ""
+		}
+
+		if len(args) == 1 {
+			return (*key).Format(args[0])
+		}
+
+		return (*key).String()
+	})
+
+	view.AddGlobal("zone", func(key *time.Time, args ...string) *time.Time {
+
+		if key == nil {
+			return key
+		}
+
+		if len(args) == 1 {
+			loc, err := time.LoadLocation(args[0])
+			if err != nil {
+				log.Errorf("unrecognised location: %s", args[0])
+				return key
+			}
+			locTime := (*key).In(loc)
+			return &locTime
+		}
+
+		return key
 	})
 
 	return view
