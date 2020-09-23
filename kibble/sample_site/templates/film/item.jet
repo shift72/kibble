@@ -40,9 +40,9 @@
       {{ end }}
     </div>
 
-   <div>
+    <div>
       Availability
-      <span>From: {{ film.Availability.From }} To: {{ film.Availability.To }}</span>
+      <span>From: {{ film.Available.From | date }} To: {{ film.Available.To | date }}</span>
     </div>
 
     <div>Recommendations: {{ len(film.Recommendations)}} </div>

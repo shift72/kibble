@@ -22,6 +22,8 @@ func LoadAllAvailabilities(cfg *models.Config, site *models.Site, itemIndex mode
 		slugs = append(slugs, k)
 	}
 
+	//NB: episode availabilities will be returned with the season
+
 	sort.Strings(slugs)
 
 	const batchSize = 300
@@ -96,6 +98,12 @@ func processAvailabilities(data availabilities, site *models.Site, itemIndex mod
 				f.Available = available
 				// replace the itemIndex
 				itemIndex.Replace(p.Slug, f.GetGenericItem())
+			}
+		case "tvepisode":
+			if f, ok := site.TVEpisodes.FindTVEpisodeBySlug(p.Slug); ok {
+				count++
+				f.Available = available
+				// episodes do not appear in the itemIndex
 			}
 		}
 	}

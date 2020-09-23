@@ -13,6 +13,15 @@
             "templatePath": "templates/film/item.jet",
             "partialTemplatePath": "templates/film/partial.jet",
             "datasource": "Film"
+        },
+        {
+            "name": "tvItem",
+            "urlPath": "/tv/:slug/:seasonNumber",
+            "templatePath": "templates/tv/detail.jet",
+            "partialUrlPath": "/partials/tv/:showID/season/:seasonNumber.html",
+            "partialTemplatePath": "templates/tv/partial.jet",
+            "datasource": "TVSeason",
+            "pageSize": 0
         }
     ]
 }

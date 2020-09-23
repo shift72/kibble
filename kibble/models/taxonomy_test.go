@@ -50,7 +50,7 @@ func TestBuildGenreTaxonomy(t *testing.T) {
 			},
 		},
 		TVSeasons: TVSeasonCollection{
-			TVSeason{
+			&TVSeason{
 				Slug: "/tv/1/season/1",
 				ShowInfo: &TVShow{
 					Genres: []string{"comedy", "drama"},

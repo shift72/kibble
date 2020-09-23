@@ -19,6 +19,7 @@ import (
 
 	"kibble/models"
 	"kibble/test"
+
 	"github.com/nicksnyder/go-i18n/i18n"
 )
 
@@ -42,7 +43,7 @@ func TestRenderingShowSlug(t *testing.T) {
 		RoutePrefix: "/fr",
 		Site: &models.Site{
 			TVShows: models.TVShowCollection{
-				models.TVShow{
+				&models.TVShow{
 					ID:        123,
 					Slug:      "/tv/123",
 					TitleSlug: "the-big-lebowski",

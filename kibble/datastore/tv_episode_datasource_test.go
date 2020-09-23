@@ -5,6 +5,7 @@ import (
 
 	"kibble/models"
 	"kibble/test"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,7 +16,7 @@ func setupTestTVEpisode(urlPath string) (models.RenderContext, *models.Route) {
 		DataSource:   "TVEpisode",
 	}
 
-	season := models.TVSeason{
+	season := &models.TVSeason{
 		SeasonNumber: 2,
 		Overview:     "# Season Title",
 		ShowInfo: &models.TVShow{
@@ -25,8 +26,8 @@ func setupTestTVEpisode(urlPath string) (models.RenderContext, *models.Route) {
 			Overview:  "# Show Title",
 		},
 		Slug: "/tv/123/season/2",
-		Episodes: []models.TVEpisode{
-			models.TVEpisode{
+		Episodes: []*models.TVEpisode{
+			&models.TVEpisode{
 				EpisodeNumber: 10,
 				Slug:          "/tv/123/season/2/episode/10",
 				Overview:      "# Episode Title",
@@ -34,7 +35,7 @@ func setupTestTVEpisode(urlPath string) (models.RenderContext, *models.Route) {
 		},
 	}
 
-	season.Episodes[0].Season = &season
+	season.Episodes[0].Season = season
 
 	ctx := models.RenderContext{
 		Route:       r,

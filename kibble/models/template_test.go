@@ -230,7 +230,7 @@ func TestTVSeasonWithLocalisableTitle(t *testing.T) {
 	data.Set("item", &item)
 
 	renderer1 := setupViewRenderer(site)
-	renderer1.Render("./tv/tv-season.jet", "output.txt", data)
+	renderer1.Render("./tv/detail.jet", "output.txt", data)
 
 	renderer1.DumpResults()
 
@@ -265,7 +265,7 @@ func TestTVSeasonWithAvailability(t *testing.T) {
 	data.Set("item", &item)
 
 	renderer1 := setupViewRenderer(site)
-	renderer1.Render("./tv/tv-season.jet", "output.txt", data)
+	renderer1.Render("./tv/detail.jet", "output.txt", data)
 
 	renderer1.DumpResults()
 
