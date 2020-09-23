@@ -238,11 +238,17 @@ func TestTVSeasonWithLocalisableTitle(t *testing.T) {
 	assert.Contains(t, renderer1.Results[0].Output(), "Generic Item Title: Breaking Bad - Season Alt - 2")
 }
 
-func TestTVSeasonWithAvailability(t *testing.T) {
+func TestAvailabilityFormatting(t *testing.T) {
 
-	site := &Site{}
+	site := &Site{
+		SiteConfig: &Config{
+			DefaultDateFormat: "2006 Jan 2",
+			DefaultTimeFormat: "3:04 PM",
+			DefaultTimeZone:   "Etc/GMT+12",
+		},
+	}
 
-	from := utils.ParseTimeFromString("2021-04-01T00:00:00.000Z")
+	from := utils.ParseTimeFromString("2021-04-01T03:02:17.000Z")
 
 	tvSeason := &TVSeason{
 		SeasonNumber: 2,
@@ -269,9 +275,11 @@ func TestTVSeasonWithAvailability(t *testing.T) {
 
 	renderer1.DumpResults()
 
-	assert.Contains(t, renderer1.Results[0].Output(), "Available From: [2021 Apr 1 00:00:00]")
-	assert.Contains(t, renderer1.Results[0].Output(), "Available From US West: [2021 Mar 31 17:00:00]")
+	assert.Contains(t, renderer1.Results[0].Output(), "Available From: [2021 Apr 1 03:02:17]")
+	assert.Contains(t, renderer1.Results[0].Output(), "Available From US West: [2021 Mar 31 20:02:17]")
+	assert.Contains(t, renderer1.Results[0].Output(), "Available From DefaultDateFormat: [2021 Mar 31]")
+	assert.Contains(t, renderer1.Results[0].Output(), "Available From DefaultTimeFormat: [3:02 PM]")
 	assert.Contains(t, renderer1.Results[0].Output(), "Available To: []")
-
 	assert.Contains(t, renderer1.Results[0].Output(), "Available To US West: []")
+
 }

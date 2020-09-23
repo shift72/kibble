@@ -35,6 +35,7 @@ var shortCodeView *jet.Set
 
 // CreateTemplateView - create a template view
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx *RenderContext, templatePath string) *jet.Set {
+
 	view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", version.Version)
 	view.AddGlobal("lang", ctx.Language)
@@ -122,11 +123,30 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 			return ""
 		}
 
-		if len(args) == 1 {
+		switch len(args) {
+		case 0:
+			return (*key).Format(ctx.Site.SiteConfig.DefaultDateFormat)
+		case 1:
 			return (*key).Format(args[0])
+		default:
+			return (*key).String()
+		}
+	})
+
+	view.AddGlobal("time", func(key *time.Time, args ...string) string {
+
+		if key == nil {
+			return ""
 		}
 
-		return (*key).String()
+		switch len(args) {
+		case 0:
+			return (*key).Format(ctx.Site.SiteConfig.DefaultTimeFormat)
+		case 1:
+			return (*key).Format(args[0])
+		default:
+			return (*key).String()
+		}
 	})
 
 	view.AddGlobal("zone", func(key *time.Time, args ...string) *time.Time {
@@ -135,17 +155,18 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 			return key
 		}
 
+		tz := ctx.Site.SiteConfig.DefaultTimeZone
 		if len(args) == 1 {
-			loc, err := time.LoadLocation(args[0])
-			if err != nil {
-				log.Errorf("unrecognised location: %s", args[0])
-				return key
-			}
-			locTime := (*key).In(loc)
-			return &locTime
+			tz = args[0]
 		}
 
-		return key
+		loc, err := time.LoadLocation(tz)
+		if err != nil {
+			log.Errorf("unrecognised location: %s", tz)
+			return key
+		}
+		locTime := (*key).In(loc)
+		return &locTime
 	})
 
 	return view
@@ -161,7 +182,7 @@ func ApplyContentTransforms(data string) string {
 	return insertTemplates(string(unsafe))
 }
 
-// insertTemplates applys any templates and sanitise the output
+// insertTemplates applies any templates and sanitises the output
 func insertTemplates(data string) string {
 	var p string
 

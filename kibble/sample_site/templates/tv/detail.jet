@@ -4,6 +4,9 @@ Generic Item Title: {{ tvseason.GetTitle(i18n) }}
 
 Available From: [{{ tvseason.Available.From | date: "2006 Jan 2 15:04:05" }}]
 Available From US West: [{{ tvseason.Available.From | zone: "America/Los_Angeles" | date: "2006 Jan 2 15:04:05" }}]
+Available From DefaultDateFormat: [{{ tvseason.Available.From | zone | date }}]
+Available From DefaultTimeFormat: [{{ tvseason.Available.From | zone | time }}]
+
 Available To: [{{ tvseason.Available.To | date: "2006 Jan 2" }}]
 Available To US West: [{{ tvseason.Available.To | zone: "America/Los_Angeles" | date: "2006 Jan 2" }}]
 
