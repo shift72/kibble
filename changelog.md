@@ -1,7 +1,9 @@
 # Change log
 
-## 0.12.0
+## 0.13.0
+Add support for availability and pricing information
 
+## 0.12.0
 Add support for pricing
 
 ## 0.11.1
