@@ -12,7 +12,7 @@ release:
 	aws s3api put-object-acl --bucket shift72-sites --key $(LINUXx64)   --acl public-read --profile shift72a
 	aws s3api put-object-acl --bucket shift72-sites --key $(WINDOWSx64) --acl public-read --profile shift72a
 	
-	cd ../kibble-npm && npm publish
+	cd kibble-npm && npm publish
 
 update_s3:
 	echo "setting acls for the released versions"
