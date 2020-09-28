@@ -20,9 +20,11 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"time"
+
+	"kibble/version"
 
 	"github.com/CloudyKit/jet"
-	"kibble/version"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"gopkg.in/russross/blackfriday.v2"
@@ -33,6 +35,7 @@ var shortCodeView *jet.Set
 
 // CreateTemplateView - create a template view
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx *RenderContext, templatePath string) *jet.Set {
+
 	view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", version.Version)
 	view.AddGlobal("lang", ctx.Language)
@@ -114,6 +117,58 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 		return ctx.Site.Toggles[key]
 	})
 
+	view.AddGlobal("date", func(key *time.Time, args ...string) string {
+
+		if key == nil {
+			return ""
+		}
+
+		switch len(args) {
+		case 0:
+			return (*key).Format(ctx.Site.SiteConfig.DefaultDateFormat)
+		case 1:
+			return (*key).Format(args[0])
+		default:
+			return (*key).String()
+		}
+	})
+
+	view.AddGlobal("time", func(key *time.Time, args ...string) string {
+
+		if key == nil {
+			return ""
+		}
+
+		switch len(args) {
+		case 0:
+			return (*key).Format(ctx.Site.SiteConfig.DefaultTimeFormat)
+		case 1:
+			return (*key).Format(args[0])
+		default:
+			return (*key).String()
+		}
+	})
+
+	view.AddGlobal("zone", func(key *time.Time, args ...string) *time.Time {
+
+		if key == nil {
+			return key
+		}
+
+		tz := ctx.Site.SiteConfig.DefaultTimeZone
+		if len(args) == 1 {
+			tz = args[0]
+		}
+
+		loc, err := time.LoadLocation(tz)
+		if err != nil {
+			log.Errorf("unrecognised location: %s", tz)
+			return key
+		}
+		locTime := (*key).In(loc)
+		return &locTime
+	})
+
 	return view
 }
 
@@ -127,7 +182,7 @@ func ApplyContentTransforms(data string) string {
 	return insertTemplates(string(unsafe))
 }
 
-// insertTemplates applys any templates and sanitise the output
+// insertTemplates applies any templates and sanitises the output
 func insertTemplates(data string) string {
 	var p string
 

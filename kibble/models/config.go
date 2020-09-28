@@ -24,6 +24,9 @@ type Config struct {
 	LiveReload                LiveReloadConfig  `json:"liveReload"`
 	ProxyPatterns             []string          `json:"proxy"`
 	DefaultPricingCountryCode string            `json:"defaultPricingCountryCode"`
+	DefaultTimeZone           string            `json:"defaultTimeZone"`
+	DefaultDateFormat         string            `json:"defaultDateFormat"`
+	DefaultTimeFormat         string            `json:"defaultTimeFormat"`
 }
 
 // LiveReloadConfig - configuration options for the live_reloader
@@ -73,7 +76,7 @@ func (cfg Config) SourcePath() string {
 		log.Fatalf("'%s' is not a directory", src)
 	}
 
-	// We shouldnt get here, maybe this method should also return an error?
+	// We shouldn't get here, maybe this method should also return an error?
 	return wd
 }
 

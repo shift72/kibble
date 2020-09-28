@@ -71,8 +71,9 @@ func TestMergePrices(t *testing.T) {
 	}
 
 	// act - load the prices
-	err := processPrices(prices, site, itemIndex)
+	count, err := processPrices(prices, site, itemIndex)
 	assert.NoError(t, err)
+	assert.Equal(t, 1, count)
 
 	// verify the film entry is updated
 	assert.Equal(t, "$3.00", site.Films[0].Prices.GetLowestPrice(), "film price was not updated")
@@ -84,7 +85,7 @@ func TestMergePrices(t *testing.T) {
 	assert.Equal(t, "$3.00", film.Prices.GetLowestPrice())
 }
 
-func TestDeserialise(t *testing.T) {
+func TestDeserializePrices(t *testing.T) {
 
 	body := `{"prices":[{"item":"/film/103","currency":"NZD","rent":{"hd":null,"hd_string":null,"sd":null,"sd_string":null},"buy":{"hd":"3.0","hd_string":"$3.00","sd":null,"sd_string":null}},{"item":"/film/104","currency":"NZD","rent":{"hd":"5.0","hd_string":"$5.00","sd":"2.0","sd_string":"$2.00"},"buy":{"hd":"3.0","hd_string":"$3.00","sd":"10.0","sd_string":"$10.00"}}],"plans":[]}`
 

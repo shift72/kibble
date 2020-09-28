@@ -40,7 +40,7 @@ func createTestTVSeasonWithCustomURLPath(urlPath string) (models.RenderContext, 
 		RoutePrefix: "/fr",
 		Site: &models.Site{
 			TVSeasons: models.TVSeasonCollection{
-				models.TVSeason{
+				&models.TVSeason{
 					SeasonNumber: 2,
 					Overview:     "# Season Title",
 					ShowInfo: &models.TVShow{
@@ -50,8 +50,8 @@ func createTestTVSeasonWithCustomURLPath(urlPath string) (models.RenderContext, 
 						Overview:  "# Show Title",
 					},
 					Slug: "/tv/123/season/2",
-					Episodes: []models.TVEpisode{
-						models.TVEpisode{
+					Episodes: []*models.TVEpisode{
+						&models.TVEpisode{
 							Overview: "# Episode Title",
 						},
 					},

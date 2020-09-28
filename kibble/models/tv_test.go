@@ -77,11 +77,12 @@ func TestTVEpisodeGetTitle(t *testing.T) {
 			TitleSlug: "breaking-bad",
 		},
 		Slug: "/tv/123/season/2",
-		Episodes: []TVEpisode{{
-			Slug:          "/tv/123/season/2/episode/1",
-			Title:         "First Episode",
-			EpisodeNumber: 1,
-		}},
+		Episodes: []*TVEpisode{
+			&TVEpisode{
+				Slug:          "/tv/123/season/2/episode/1",
+				Title:         "First Episode",
+				EpisodeNumber: 1,
+			}},
 	}
 	tvSeason.Episodes[0].Season = tvSeason
 	item := tvSeason.Episodes[0].GetGenericItem()
@@ -90,7 +91,7 @@ func TestTVEpisodeGetTitle(t *testing.T) {
 	assert.Equal(t, "Breaking Bad - S2E1 - First Episode", tvSeason.Episodes[0].GetTitle(T))
 }
 
-func TestTVEpsiodeGetTranslatedTitle(t *testing.T) {
+func TestTVEpisodeGetTranslatedTitle(t *testing.T) {
 	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
 
 	T, _ := i18n.Tfunc("en-US")
@@ -103,11 +104,12 @@ func TestTVEpsiodeGetTranslatedTitle(t *testing.T) {
 			TitleSlug: "breaking-bad",
 		},
 		Slug: "/tv/123/season/2",
-		Episodes: []TVEpisode{{
-			Slug:          "/tv/123/season/2/episode/1",
-			Title:         "First Episode",
-			EpisodeNumber: 1,
-		}},
+		Episodes: []*TVEpisode{
+			&TVEpisode{
+				Slug:          "/tv/123/season/2/episode/1",
+				Title:         "First Episode",
+				EpisodeNumber: 1,
+			}},
 	}
 	tvSeason.Episodes[0].Season = tvSeason
 	item := tvSeason.Episodes[0].GetGenericItem()
