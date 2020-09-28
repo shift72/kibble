@@ -20,8 +20,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
+
+	"github.com/CloudyKit/jet"
 )
 
 var tvShowArgs = []models.RouteArgument{
@@ -73,14 +74,16 @@ func (ds *TVShowDataSource) Iterator(ctx models.RenderContext, renderer models.R
 	data := make(jet.VarMap)
 	data.Set("site", ctx.Site)
 
-	for _, f := range ctx.Site.TVShows {
+	for i := 0; i < len(ctx.Site.TVShows); i++ {
+		f := ctx.Site.TVShows[i]
+
 		data.Set("tvshow", transformTVShow(f))
 
-		filePath := ds.GetRouteForEntity(ctx, &f)
+		filePath := ds.GetRouteForEntity(ctx, f)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
 
 		if ctx.Route.HasPartial() {
-			partialFilePath := ds.GetPartialRouteForEntity(ctx, &f)
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, f)
 			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
 		}
 	}

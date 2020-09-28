@@ -36,7 +36,13 @@
       {{ end }}
       {{ if film.Prices.HasPrice("rent", "sd")}}
       <div>Rent SD: {{ film.Prices.GetPrice("rent", "sd") }} {{ film.Prices.Currency }}</div>
+      <div>Rent SD: {{ film.Prices.GetValue("rent", "sd") }} {{ film.Prices.Currency }}</div>
       {{ end }}
+    </div>
+
+    <div>
+      Availability
+      <span>From: {{ film.Available.From | date }} To: {{ film.Available.To | date }}</span>
     </div>
 
     <div>Recommendations: {{ len(film.Recommendations)}} </div>

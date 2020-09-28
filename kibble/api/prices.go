@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"kibble/models"
 	"sort"
-	"strconv"
 	"strings"
+
+	"github.com/shopspring/decimal"
 )
 
 // LoadAllPrices will load all prices
@@ -153,16 +154,16 @@ func (qp qualityPriceV2) getPrice(ownership string) []models.Price {
 	pp := make([]models.Price, 0)
 
 	if qp.Hd != nil && qp.HdString != nil {
-		price, err := strconv.ParseFloat(*qp.Hd, 32)
+		price, err := decimal.NewFromString(*qp.Hd)
 		if err == nil {
-			pp = append(pp, models.Price{Ownership: ownership, Quality: models.HD, Price: float32(price), PriceString: *qp.HdString})
+			pp = append(pp, models.Price{Ownership: ownership, Quality: models.HD, Price: price, PriceString: *qp.HdString})
 		}
 	}
 
 	if qp.Sd != nil && qp.SdString != nil {
-		price, err := strconv.ParseFloat(*qp.Sd, 32)
+		price, err := decimal.NewFromString(*qp.Sd)
 		if err == nil {
-			pp = append(pp, models.Price{Ownership: ownership, Quality: models.SD, Price: float32(price), PriceString: *qp.SdString})
+			pp = append(pp, models.Price{Ownership: ownership, Quality: models.SD, Price: price, PriceString: *qp.SdString})
 		}
 	}
 

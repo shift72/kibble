@@ -59,7 +59,7 @@ func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex models.It
 
 	for ti := 0; ti < len(summary); ti++ {
 
-		// add tv showws
+		// add tv shows
 		site.TVShows = append(site.TVShows, summary[ti].mapToModel())
 
 		for si := 0; si < len(summary[ti].Seasons); si++ {
@@ -117,7 +117,7 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 				site.TVEpisodes = append(site.TVEpisodes, episode)
 			}
 
-			site.TVSeasons = append(site.TVSeasons, season)
+			site.TVSeasons = append(site.TVSeasons, &season)
 			itemIndex.Set(season.Slug, season.GetGenericItem())
 		} else {
 			log.Info("Failed marshalling season %s %s", details.Seasons[i], err)
@@ -128,7 +128,7 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 	for i := 0; i < len(site.TVShows); i++ {
 		for _, seasonSlug := range site.TVShows[i].AvailableSeasons {
 			if season, ok := site.TVSeasons.FindTVSeasonBySlug(seasonSlug); ok {
-				site.TVShows[i].Seasons = append(site.TVShows[i].Seasons, *season)
+				site.TVShows[i].Seasons = append(site.TVShows[i].Seasons, season)
 			}
 		}
 	}
@@ -136,8 +136,8 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 	return nil
 }
 
-func (t tvShowSummaryV3) mapToModel() models.TVShow {
-	return models.TVShow{
+func (t tvShowSummaryV3) mapToModel() *models.TVShow {
+	return &models.TVShow{
 		ID:        t.ID,
 		Slug:      t.Slug,
 		Title:     t.Title,
@@ -190,7 +190,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 			Seo:            t.ImageUrls.Seo,
 		},
 		ShowInfo:        t.ShowInfo.mapToModel(),
-		Episodes:        make([]models.TVEpisode, 0),
+		Episodes:        make([]*models.TVEpisode, 0),
 		Recommendations: itemIndex.MapToUnresolvedItems(t.Recommendations),
 		Trailers:        make([]models.Trailer, 0),
 		Cast:            make([]models.CastMember, 0),
@@ -230,7 +230,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 	// episodes
 	for _, t := range t.Episodes {
 		e := t.mapToModel(&season)
-		season.Episodes = append(season.Episodes, e)
+		season.Episodes = append(season.Episodes, &e)
 		itemIndex.Set(e.Slug, e.GetGenericItem())
 	}
 

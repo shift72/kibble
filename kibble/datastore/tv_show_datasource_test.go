@@ -40,7 +40,7 @@ func createTestTVShowWithCustomURLPath(urlPath string) (models.RenderContext, *m
 		RoutePrefix: "/fr",
 		Site: &models.Site{
 			TVShows: models.TVShowCollection{
-				models.TVShow{
+				&models.TVShow{
 					ID:        3,
 					Title:     "Breaking Bad",
 					TitleSlug: "breaking-bad",

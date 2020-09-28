@@ -17,8 +17,9 @@ package datastore
 import (
 	"reflect"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
+
+	"github.com/CloudyKit/jet"
 )
 
 // TVSeasonIndexDataSource - a list of all films
@@ -63,7 +64,7 @@ func (ds *TVSeasonIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
 }
 
-func transformTVSeason(f models.TVSeason) *models.TVSeason {
+func transformTVSeason(f *models.TVSeason) *models.TVSeason {
 	f.Overview = models.ApplyContentTransforms(f.Overview)
 
 	if f.ShowInfo != nil {
@@ -76,7 +77,7 @@ func transformTVSeason(f models.TVSeason) *models.TVSeason {
 		f.Episodes[i].Overview = ov
 	}
 
-	return &f
+	return f
 }
 
 // GetRouteArguments returns the available route arguments

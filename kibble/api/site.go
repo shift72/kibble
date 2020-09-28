@@ -108,6 +108,11 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
+	err = LoadAllAvailabilities(cfg, site, itemIndex)
+	if err != nil {
+		return nil, err
+	}
+
 	initAPI.Completed()
 
 	site.Films.MakeTitleSlugsUnique()

@@ -20,8 +20,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
+
+	"github.com/CloudyKit/jet"
 )
 
 var tvEpisodeArgs = []models.RouteArgument{
@@ -103,15 +104,17 @@ func (ds *TVEpisodeDataSource) Iterator(ctx models.RenderContext, renderer model
 	data := make(jet.VarMap)
 	data.Set("site", ctx.Site)
 
-	for _, episode := range ctx.Site.TVEpisodes {
+	for i := 0; i < len(ctx.Site.TVEpisodes); i++ {
+		episode := ctx.Site.TVEpisodes[i]
+
 		data.Set("tvepisode", transformEpisode(episode))
 		if len(ctx.Route.TemplatePath) > 0 {
-			filePath := ds.GetRouteForEntity(ctx, &episode)
+			filePath := ds.GetRouteForEntity(ctx, episode)
 			errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
 		}
 
 		if ctx.Route.HasPartial() {
-			partialFilePath := ds.GetPartialRouteForEntity(ctx, &episode)
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, episode)
 			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
 		}
 	}
@@ -151,10 +154,10 @@ func (ds *TVEpisodeDataSource) IsValid(route *models.Route) error {
 }
 
 // transformEpisode applies any content transforms to the episodes overview field
-func transformEpisode(e models.TVEpisode) *models.TVEpisode {
+func transformEpisode(e *models.TVEpisode) *models.TVEpisode {
 	ov := models.ApplyContentTransforms(e.Overview)
 	// ranges create a copy of the array, so we need to set the original object
 	e.Overview = ov
 
-	return &e
+	return e
 }

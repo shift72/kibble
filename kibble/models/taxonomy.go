@@ -79,7 +79,7 @@ func (s Site) PopulateTaxonomyWithTVSeasons(taxonomy string, finder func(*TVSeas
 	}
 
 	for _, f := range s.TVSeasons {
-		for _, key := range finder(&f) {
+		for _, key := range finder(f) {
 			// omit any empty keys
 			if key != "" {
 				_, ok := t[key]
