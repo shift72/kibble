@@ -19,7 +19,6 @@ import (
 	"io/ioutil"
 	"mime"
 	"path"
-	"strings"
 	"sync"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -83,21 +82,8 @@ func (store *S3Store) List() (FileRefCollection, error) {
 		}
 	}
 
-	err = store.svc.ListObjectsPages(&s3.ListObjectsInput{
-		Bucket: &store.config.Bucket,
-	}, func(p *s3.ListObjectsOutput, last bool) (shouldContinue bool) {
-		for _, obj := range p.Contents {
-			path := *obj.Key
-			if strings.HasPrefix(path, store.config.BucketRootPath) {
-				fileList = append(fileList, FileRef{
-					path: path[len(store.config.BucketRootPath):len(path)],
-					hash: strings.Trim(*obj.ETag, "\""),
-				})
-			}
-		}
-		return true
-	})
-
+	// if the index file doesnt exist, then this must be a new site
+	// so just return an empty list, so everything is uploaded
 	return fileList, err
 }
 
