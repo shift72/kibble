@@ -114,11 +114,11 @@ func TestExternalLinksOpenInNewWindow(t *testing.T) {
 	)
 }
 
-func setupViewRenderer(site *Site) *test.InMemoryRenderer {
+func setupViewRenderer(site *Site, language *Language) *test.InMemoryRenderer {
 	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
 	T, _ := i18n.Tfunc("en-US")
 
-	ctx := RenderContext{Site: site}
+	ctx := RenderContext{Site: site, Language: language}
 	view := CreateTemplateView(nil, T, &ctx, "../sample_site/templates/")
 
 	return &test.InMemoryRenderer{View: view}
@@ -135,7 +135,7 @@ func TestConfig(t *testing.T) {
 	data := jet.VarMap{}
 	data.Set("site", site)
 
-	renderer1 := setupViewRenderer(site)
+	renderer1 := setupViewRenderer(site, nil)
 	errCount := renderer1.Render("./config.jet", "output.txt", data)
 
 	renderer1.DumpErrors(t)
@@ -167,7 +167,7 @@ func TestSitePlans(t *testing.T) {
 	data := jet.VarMap{}
 	data.Set("site", site)
 
-	renderer1 := setupViewRenderer(site)
+	renderer1 := setupViewRenderer(site, nil)
 	renderer1.Render("./plans.jet", "output.txt", data)
 
 	assert.Contains(t, renderer1.Results[0].Output(), "TestName:Gold")
@@ -196,7 +196,7 @@ func TestSitePlansWithSubscriptionDetails(t *testing.T) {
 	data := jet.VarMap{}
 	data.Set("site", site)
 
-	renderer1 := setupViewRenderer(site)
+	renderer1 := setupViewRenderer(site, nil)
 	renderer1.Render("./plans.jet", "output.txt", data)
 
 	assert.Contains(t, renderer1.Results[0].Output(), "TestName:Gold")
@@ -212,6 +212,10 @@ func TestSitePlansWithSubscriptionDetails(t *testing.T) {
 func TestTVSeasonWithLocalisableTitle(t *testing.T) {
 
 	site := &Site{}
+	language := &Language{
+		Code:      "en",
+		IsDefault: true,
+	}
 
 	tvSeason := &TVSeason{
 		SeasonNumber: 2,
@@ -229,7 +233,7 @@ func TestTVSeasonWithLocalisableTitle(t *testing.T) {
 	data.Set("tvseason", tvSeason)
 	data.Set("item", &item)
 
-	renderer1 := setupViewRenderer(site)
+	renderer1 := setupViewRenderer(site, language)
 	renderer1.Render("./tv/detail.jet", "output.txt", data)
 
 	renderer1.DumpResults()
@@ -246,6 +250,10 @@ func TestAvailabilityFormatting(t *testing.T) {
 			DefaultTimeFormat: "3:04 PM",
 			DefaultTimeZone:   "Etc/GMT+12",
 		},
+	}
+	language := &Language{
+		Code:      "en",
+		IsDefault: true,
 	}
 
 	from := utils.ParseTimeFromString("2021-04-01T03:02:17.000Z")
@@ -270,7 +278,7 @@ func TestAvailabilityFormatting(t *testing.T) {
 	data.Set("tvseason", tvSeason)
 	data.Set("item", &item)
 
-	renderer1 := setupViewRenderer(site)
+	renderer1 := setupViewRenderer(site, language)
 	renderer1.Render("./tv/detail.jet", "output.txt", data)
 
 	renderer1.DumpResults()
@@ -282,4 +290,65 @@ func TestAvailabilityFormatting(t *testing.T) {
 	assert.Contains(t, renderer1.Results[0].Output(), "Available To: []")
 	assert.Contains(t, renderer1.Results[0].Output(), "Available To US West: []")
 
+}
+
+func TestI18nPathPrefixFormattingWithDefaultLanguage(t *testing.T) {
+	site := &Site{}
+	language := &Language{
+		Code:      "en",
+		IsDefault: true,
+	}
+
+	tvSeason := &TVSeason{
+		SeasonNumber: 2,
+		ShowInfo: &TVShow{
+			ID:        123,
+			Title:     "Breaking Bad",
+			TitleSlug: "breaking-bad",
+		},
+		Slug: "/tv/123/season/2",
+	}
+
+	item := tvSeason.GetGenericItem()
+
+	data := jet.VarMap{}
+	data.Set("tvseason", tvSeason)
+	data.Set("item", &item)
+
+	renderer1 := setupViewRenderer(site, language)
+	renderer1.Render("./tv/detail.jet", "output.txt", data)
+
+	renderer1.DumpResults()
+
+	assert.Contains(t, renderer1.Results[0].Output(), "href=\"/signup.html\"")
+}
+
+func TestI18nPathPrefixFormattingWithNonDefaultLanguage(t *testing.T) {
+	site := &Site{}
+	language := &Language{
+		Code: "fr",
+	}
+
+	tvSeason := &TVSeason{
+		SeasonNumber: 2,
+		ShowInfo: &TVShow{
+			ID:        123,
+			Title:     "Breaking Bad",
+			TitleSlug: "breaking-bad",
+		},
+		Slug: "/tv/123/season/2",
+	}
+
+	item := tvSeason.GetGenericItem()
+
+	data := jet.VarMap{}
+	data.Set("tvseason", tvSeason)
+	data.Set("item", &item)
+
+	renderer1 := setupViewRenderer(site, language)
+	renderer1.Render("./tv/detail.jet", "output.txt", data)
+
+	renderer1.DumpResults()
+
+	assert.Contains(t, renderer1.Results[0].Output(), "href=\"/fr/signup.html\"")
 }

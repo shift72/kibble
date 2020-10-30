@@ -57,6 +57,12 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 	view.AddGlobal("routeToSlugWithName", func(slug string, routeName string) string {
 		return routeRegistry.GetRouteForSlug(*ctx, slug, routeName)
 	})
+	view.AddGlobal("i18nPathPrefix", func(path string) string {
+		if ctx.Language.IsDefault {
+			return path
+		}
+		return fmt.Sprintf("/%s%s", ctx.Language.Code, path)
+	})
 	view.AddGlobal("i18n", func(translationID string, args ...interface{}) string {
 
 		// jet will pass in numeric args as float64
