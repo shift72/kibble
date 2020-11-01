@@ -57,10 +57,19 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 	view.AddGlobal("routeToSlugWithName", func(slug string, routeName string) string {
 		return routeRegistry.GetRouteForSlug(*ctx, slug, routeName)
 	})
-	view.AddGlobal("i18nPathPrefix", func(path string) string {
+	view.AddGlobal("routeToPath", func(path string) string {
 		if ctx.Language.IsDefault {
+			// doesn't matter if '/' is missing from start of path here
+			// it gets added automatically on redirect
 			return path
 		}
+		if path[0:1] != "/" {
+			// if '/' is missing from start of path when language is not default,
+			// it must be added in
+			return fmt.Sprintf("/%s/%s", ctx.Language.Code, path)
+		}
+		// if '/' is not missing from start of path when language is not default,
+		// don't add it in
 		return fmt.Sprintf("/%s%s", ctx.Language.Code, path)
 	})
 	view.AddGlobal("i18n", func(translationID string, args ...interface{}) string {

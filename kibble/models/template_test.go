@@ -323,6 +323,37 @@ func TestI18nPathPrefixFormattingWithDefaultLanguage(t *testing.T) {
 	assert.Contains(t, renderer1.Results[0].Output(), "href=\"/signup.html\"")
 }
 
+func TestI18nPathPrefixFormattingWithDefaultLanguageAndPathHasNoSlash(t *testing.T) {
+	site := &Site{}
+	language := &Language{
+		Code:      "en",
+		IsDefault: true,
+	}
+
+	tvSeason := &TVSeason{
+		SeasonNumber: 2,
+		ShowInfo: &TVShow{
+			ID:        123,
+			Title:     "Breaking Bad",
+			TitleSlug: "breaking-bad",
+		},
+		Slug: "/tv/123/season/2",
+	}
+
+	item := tvSeason.GetGenericItem()
+
+	data := jet.VarMap{}
+	data.Set("tvseason", tvSeason)
+	data.Set("item", &item)
+
+	renderer1 := setupViewRenderer(site, language)
+	renderer1.Render("./tv/detail.jet", "output.txt", data)
+
+	renderer1.DumpResults()
+
+	assert.Contains(t, renderer1.Results[0].Output(), "href=\"no-slash.html\"")
+}
+
 func TestI18nPathPrefixFormattingWithNonDefaultLanguage(t *testing.T) {
 	site := &Site{}
 	language := &Language{
@@ -351,4 +382,34 @@ func TestI18nPathPrefixFormattingWithNonDefaultLanguage(t *testing.T) {
 	renderer1.DumpResults()
 
 	assert.Contains(t, renderer1.Results[0].Output(), "href=\"/fr/signup.html\"")
+}
+
+func TestI18nPathPrefixFormattingWithNonDefaultLanguageAndPathHasNoSlash(t *testing.T) {
+	site := &Site{}
+	language := &Language{
+		Code: "fr",
+	}
+
+	tvSeason := &TVSeason{
+		SeasonNumber: 2,
+		ShowInfo: &TVShow{
+			ID:        123,
+			Title:     "Breaking Bad",
+			TitleSlug: "breaking-bad",
+		},
+		Slug: "/tv/123/season/2",
+	}
+
+	item := tvSeason.GetGenericItem()
+
+	data := jet.VarMap{}
+	data.Set("tvseason", tvSeason)
+	data.Set("item", &item)
+
+	renderer1 := setupViewRenderer(site, language)
+	renderer1.Render("./tv/detail.jet", "output.txt", data)
+
+	renderer1.DumpResults()
+
+	assert.Contains(t, renderer1.Results[0].Output(), "href=\"/fr/no-slash.html\"")
 }
