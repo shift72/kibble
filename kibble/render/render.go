@@ -172,7 +172,7 @@ func createLanguage(cfg *models.Config, lang string, locale string) *models.Lang
 	return &models.Language{
 		Code:               lang,
 		Locale:             locale,
-		IsDefault:          (lang != cfg.DefaultLanguage),
+		IsDefault:          (lang == cfg.DefaultLanguage),
 		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
 	}
 }
