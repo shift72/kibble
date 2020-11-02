@@ -66,7 +66,7 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 		if path[0:1] != "/" {
 			// if '/' is missing from start of path when language is not default,
 			// it must be added in
-			return fmt.Sprintf("/%s/%s", ctx.Language.Code, path)
+			path = "/" + path
 		}
 		// if '/' is not missing from start of path when language is not default,
 		// don't add it in
