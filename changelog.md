@@ -1,7 +1,9 @@
 # Change log
 
-## 0.15.0
+## 0.15.1
 Stop trying to read entire S3 bucket contents on first sync (due to lack of index.kibble file).
+
+## 0.15.0
 Add `routeToPath(path string)` tempalte function for prepending current langauge (if not default) to relative path.
 
 ## 0.14.0
