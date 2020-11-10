@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.2
+Don't return the 404 if we cant find index.kibble, just continue as usual.
+
 ## 0.15.1
 Stop trying to read entire S3 bucket contents on first sync (due to lack of index.kibble file).
 
