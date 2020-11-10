@@ -22,6 +22,7 @@ import (
 	"sync"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -84,6 +85,10 @@ func (store *S3Store) List() (FileRefCollection, error) {
 
 	// if the index file doesnt exist, then this must be a new site
 	// so just return an empty list, so everything is uploaded
+	if aerr, ok := err.(awserr.Error); ok && aerr.Code() == s3.ErrCodeNoSuchKey {
+		return fileList, nil
+	}
+
 	return fileList, err
 }
 
