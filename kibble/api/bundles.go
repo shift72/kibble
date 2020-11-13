@@ -67,7 +67,7 @@ func (b BundleV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex model
 			Title:       serviceConfig.GetSEOTitle(b.SeoTitle, b.Title),
 			Keywords:    serviceConfig.GetKeywords(b.SeoKeywords),
 			Description: utils.Coalesce(b.SeoDescription, b.Description),
-			Image:       serviceConfig.SelectDefaultImageType(b.LandscapeImage, b.PortraitImage),
+			Image:       serviceConfig.ForceAbsoluteImagePath(b.LandscapeImage, b.PortraitImage),
 			VideoURL:    b.PromoURL,
 		},
 		Items:       itemIndex.MapToUnresolvedItems(b.Items),
