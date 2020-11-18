@@ -68,7 +68,7 @@ func (c CollectionV4) mapToModel(serviceConfig models.ServiceConfig, itemIndex m
 			Title:       serviceConfig.GetSEOTitle(c.SeoTitle, c.Title),
 			Keywords:    serviceConfig.GetKeywords(c.SeoKeywords),
 			Description: utils.Coalesce(c.SeoDescription, c.Description),
-			Image:       serviceConfig.SelectDefaultImageType(c.LandscapeImage, c.PortraitImage),
+			Image:       serviceConfig.ForceAbsoluteImagePath(serviceConfig.SelectDefaultImageType(b.LandscapeImage, b.PortraitImage)),
 		},
 		SearchQuery: c.SearchQuery,
 		Items:       itemIndex.MapToUnresolvedItems(c.Items),
