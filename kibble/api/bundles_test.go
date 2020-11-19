@@ -56,7 +56,7 @@ func TestBundleToSeoMap(t *testing.T) {
 	assert.Equal(t, "SHIFT72 , Bundle Bundle Bundle , VOD", model.Seo.Title, "bundle title")
 	assert.Equal(t, "SHIFT72, VOD, key key key", model.Seo.Keywords, "bundle keywords")
 	assert.Equal(t, "One Bundle to rule them all", model.Seo.Description, "bundle description")
-	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")
+	assert.Equal(t, "https://s3-bla-blaportrait", model.Seo.Image, "the default seo image is portrait")
 	assert.Equal(t, "https://video", model.Seo.VideoURL, "video url is mapped from the PromoURL")
 }
 func TestBundlesToSeoDefaultImage(t *testing.T) {
