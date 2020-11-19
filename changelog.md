@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.3
+Fix the bundle absolute pathing for the default image.
+
 ## 0.15.2
 Don't return the 404 if we cant find index.kibble, just continue as usual.
 
