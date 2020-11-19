@@ -1,6 +1,6 @@
 # Change log
 
-## 0.15.3
+## 0.15.4
 Fix the bundle absolute pathing for the default image.
 
 ## 0.15.2
