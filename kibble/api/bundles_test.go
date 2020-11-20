@@ -65,6 +65,7 @@ func TestBundlesToSeoDefaultImage(t *testing.T) {
 
 	serviceConfig := models.ServiceConfig{
 		"default_image_type": "landscape",
+		"image_root_path": "https://s3-bla-bla",
 	}
 
 	apiBundle := BundleV1{
