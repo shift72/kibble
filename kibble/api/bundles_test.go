@@ -74,7 +74,7 @@ func TestBundlesToSeoDefaultImage(t *testing.T) {
 
 	model := apiBundle.mapToModel(serviceConfig, itemIndex)
 
-	assert.Equal(t, "landscape", model.Seo.Image, "the default seo image is landscape")
+	assert.Equal(t, "https://s3-bla-blalandscape", model.Seo.Image, "the default seo image is landscape")
 }
 
 func TestBundlesApiToModel(t *testing.T) {
