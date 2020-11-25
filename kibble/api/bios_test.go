@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"kibble/models"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -90,6 +91,7 @@ func TestPageToPageFeatures(t *testing.T) {
 				ItemLayout:  "landscape",
 				Slug:        "/page-feature/blam",
 				DisplayName: "New Releases",
+				Description: "All the newest films",
 				Items: []string{
 					"/film/1",
 					"/film/2",
@@ -108,6 +110,7 @@ func TestPageToPageFeatures(t *testing.T) {
 	// page features
 	assert.Equal(t, "/collection/120", model.PageCollections[0].Slug)
 	assert.Equal(t, "/page-feature/blam", model.PageCollections[0].TitleSlug)
+	assert.Equal(t, "All the newest films", model.PageCollections[0].Description)
 
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 	assert.Equal(t, 1, len(itemIndex["bundle"]), "expect the item index to include 1 bundles")

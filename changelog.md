@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.5
+Add PageCollection.Description field.
+
 ## 0.15.4
 Fix the bundle absolute pathing for the default image.
 
