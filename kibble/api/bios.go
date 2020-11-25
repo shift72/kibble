@@ -95,7 +95,6 @@ func (pf pageFeatureV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex
 		Slug:        fmt.Sprintf("/collection/%d", pf.FeatureID),
 		TitleSlug:   pf.Slug,
 		DisplayName: pf.DisplayName,
-		Description: pf.Description,
 		Items:       itemIndex.MapToUnresolvedItems(pf.Items),
 	}
 }
@@ -112,7 +111,6 @@ type pageFeatureV1 struct {
 	ItemLayout  string   `json:"item_layout"`
 	Slug        string   `json:"slug"`
 	DisplayName string   `json:"display_name"`
-	Description string   `json:"description"`
 	Items       []string `json:"items"`
 }
 

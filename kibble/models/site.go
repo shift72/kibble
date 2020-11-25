@@ -143,3 +143,15 @@ func (fields CustomFields) GetNumber(fieldKey string, defaultValue float64) floa
 
 	return defaultValue
 }
+
+// UpdatePageCollections will populate page collections with information missing from the bios call.
+func (site *Site) UpdatePageCollections() {
+	for p := 0; p < len(site.Pages); p++ {
+		for pc := 0; pc < len(site.Pages[p].PageCollections); pc++ {
+			found, _ := site.Collections.FindCollectionByID(site.Pages[p].PageCollections[pc].ID)
+			if found != nil {
+				site.Pages[p].PageCollections[pc].Description = found.Description
+			}
+		}
+	}
+}

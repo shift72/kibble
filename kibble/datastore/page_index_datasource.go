@@ -20,8 +20,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
+
+	"github.com/CloudyKit/jet"
 )
 
 var indexArgs = []models.RouteArgument{
@@ -147,5 +148,10 @@ func (ds *PageIndexDataSource) IsSlugMatch(slug string) bool {
 
 func transformPage(f models.Page) *models.Page {
 	f.Content = models.ApplyContentTransforms(f.Content)
+
+	for i := 0; i < len(f.PageCollections); i++ {
+		f.PageCollections[i].Description = models.ApplyContentTransforms(f.PageCollections[i].Description)
+	}
+
 	return &f
 }

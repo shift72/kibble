@@ -1,4 +1,4 @@
-{{extends "application.jet"}}
+{{extends "../application.jet"}}
 {{block body()}}
   <div>
     <h2>{{ page.Title }}</h2>
@@ -8,23 +8,29 @@
       <li>Slug: {{ page.Slug }}</li>
       <li>Tagline: {{ page.Tagline }}</li>
       <li>URL: {{ page.URL }}</li>
-      <li>SeoTitle: {{ page.SeoTitle }}</li>
-      <li>SeoKeywords: {{ page.SeoKeywords }}</li>
-      <li>SeoDescription: {{ page.SeoDescription }}</li>
-      <li>CarouselImage: {{ page.CarouselImage }}</li>
-      <li>HeaderImage: {{ page.HeaderImage }}</li>
-      <li>LandscapeImage: {{ page.LandscapeImage }}</li>
-      <li>PortraitImage: {{ page.PortraitImage }}</li>
+      <li>SeoTitle: {{ page.Seo.Title }}</li>
+      <li>SeoKeywords: {{ page.Seo.Keywords }}</li>
+      <li>SeoDescription: {{ page.Seo.Description }}</li>
+      <li>CarouselImage: {{ page.Images.Carousel }}</li>
+      <li>HeaderImage: {{ page.Images.Header }}</li>
+      <li>LandscapeImage: {{ page.Images.Landscape }}</li>
+      <li>PortraitImage: {{ page.Images.Portrait }}</li>
       <li>PageType: {{ page.PageType }}</li>
       <li></li>
     </ul>
 
-    <h3>Page Features</h3>
+    <h3>Page Collections</h3>
     <ul>
-      {{ range page.PageFeatures }}
-        <li>PF: {{ . | json | raw }}
+      {{ range page.PageCollections }}
+        <li>ID: {{ .ID }}</li>
+        <li>Layout: {{ .Layout }}</li>
+        <li>Slug: {{ .Slug }}</li>
+        <li>TitleSlug: {{ .TitleSlug }}</li>
+        <li>DisplayName: {{ .DisplayName }}</li>
+        <li>Description: {{ .Description | raw}}</li>
+        <li>
           <ul>
-          {{ range .ResolvedItems }}
+          {{ range .Items }}
             <li>{{ .Title }} {{ .ItemType }}
               <div>
                 {{ .Images | json }}
