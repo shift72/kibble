@@ -22,6 +22,22 @@
             "partialTemplatePath": "templates/tv/partial.jet",
             "datasource": "TVSeason",
             "pageSize": 0
-        }
+        },
+        {
+            "name": "pageItem",
+            "urlPath": "/page/:slug/",
+            "templatePath": "templates/page/item.jet",
+            "partialUrlPath": "/partials/page/:pageID.html",
+            "partialTemplatePath": "templates/page/partial.jet",
+            "datasource": "Page",
+            "pageSize": 0
+          },
+          {
+            "name": "pageIndex",
+            "urlPath": "/page/:index/",
+            "templatePath": "templates/page/index.jet",
+            "datasource": "PageIndex",
+            "pageSize": 10
+          }
     ]
 }

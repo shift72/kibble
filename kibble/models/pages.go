@@ -23,6 +23,7 @@ type PageCollection struct {
 	Slug        string
 	TitleSlug   string
 	DisplayName string
+	Description string
 	Items       []GenericItem
 }
 

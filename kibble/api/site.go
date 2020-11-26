@@ -117,6 +117,8 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 
 	site.Films.MakeTitleSlugsUnique()
 
+	site.UpdatePageCollections()
+
 	// item Indexes are immutable after this point
 	site.LinkItems(itemIndex)
 

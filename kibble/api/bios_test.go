@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"kibble/models"
+
 	"github.com/stretchr/testify/assert"
 )
 

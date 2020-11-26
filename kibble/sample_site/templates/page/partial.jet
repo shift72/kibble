@@ -1,0 +1,3 @@
+<div>
+  <h2>{{ page.Title }}</h2>
+</div>
