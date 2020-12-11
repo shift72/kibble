@@ -184,6 +184,16 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 		return &locTime
 	})
 
+	view.AddGlobal("makeSlice", func() []string {
+		s := make([]string, 0)
+		return s
+	})
+
+	view.AddGlobal("append", func(slice []string, newValue string) []string {
+		s := append(slice, newValue)
+		return s
+	})
+
 	return view
 }
 
