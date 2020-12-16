@@ -52,6 +52,24 @@ func LoadConfig(runAsAdmin bool, apiKey string, disableCache bool) *models.Confi
 		os.Exit(1)
 	}
 
+	var languagesObj map[string]map[string]string
+	err = json.Unmarshal(cfg.RawLanguages, &languagesObj)
+	if err != nil {
+		var languagesStr map[string]string
+		err = json.Unmarshal(cfg.RawLanguages, &languagesStr)
+		if err != nil {
+			log.Errorf("config file languages parsing error: %v", err)
+			os.Exit(1)
+		}
+
+		cfg.Languages = map[string]map[string]string{}
+		for k, v := range languagesStr {
+			cfg.Languages[k] = map[string]string{"code": v}
+		}
+	} else {
+		cfg.Languages = languagesObj
+	}
+
 	log.Debugf("url: %s", cfg.SiteURL)
 
 	LoadPrivateConfig(&cfg, apiKey)

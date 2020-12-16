@@ -98,7 +98,9 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	errCount := 0
 
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
-	for lang, locale := range cfg.Languages {
+	for lang, localeObj := range cfg.Languages {
+
+		locale := localeObj["code"]
 
 		ctx := models.RenderContext{
 			RoutePrefix: "",
