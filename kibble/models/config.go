@@ -1,34 +1,37 @@
 package models
 
 import (
-	"encoding/json"
 	"os"
 	"path"
 	"path/filepath"
 )
 
+type LanguageConfig struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
+}
+
 // Config - template configuration
 // NOTE: Don't use `SiteRootPath directly`, use `Config.SourcePath()` instead.
 type Config struct {
-	DefaultLanguage           string `json:"defaultLanguage"`
-	Languages                 map[string]map[string]string
-	RawLanguages              json.RawMessage  `json:"languages"`
-	Routes                    []Route          `json:"routes"`
-	SiteURL                   string           `json:"siteUrl"`
-	BuilderVersion            string           `json:"builderVersion"`
-	Version                   string           `json:"version"`
-	Name                      string           `json:"Name"`
-	Private                   PrivateConfig    `json:"-"`
-	DisableCache              bool             `json:"-"`
-	RunAsAdmin                bool             `json:"-"`
-	SkipLogin                 bool             `json:"-"`
-	SiteRootPath              string           `json:"siteRootPath"`
-	LiveReload                LiveReloadConfig `json:"liveReload"`
-	ProxyPatterns             []string         `json:"proxy"`
-	DefaultPricingCountryCode string           `json:"defaultPricingCountryCode"`
-	DefaultTimeZone           string           `json:"defaultTimeZone"`
-	DefaultDateFormat         string           `json:"defaultDateFormat"`
-	DefaultTimeFormat         string           `json:"defaultTimeFormat"`
+	DefaultLanguage           string                    `json:"defaultLanguage"`
+	Languages                 map[string]LanguageConfig `json:"-"`
+	Routes                    []Route                   `json:"routes"`
+	SiteURL                   string                    `json:"siteUrl"`
+	BuilderVersion            string                    `json:"builderVersion"`
+	Version                   string                    `json:"version"`
+	Name                      string                    `json:"Name"`
+	Private                   PrivateConfig             `json:"-"`
+	DisableCache              bool                      `json:"-"`
+	RunAsAdmin                bool                      `json:"-"`
+	SkipLogin                 bool                      `json:"-"`
+	SiteRootPath              string                    `json:"siteRootPath"`
+	LiveReload                LiveReloadConfig          `json:"liveReload"`
+	ProxyPatterns             []string                  `json:"proxy"`
+	DefaultPricingCountryCode string                    `json:"defaultPricingCountryCode"`
+	DefaultTimeZone           string                    `json:"defaultTimeZone"`
+	DefaultDateFormat         string                    `json:"defaultDateFormat"`
+	DefaultTimeFormat         string                    `json:"defaultTimeFormat"`
 }
 
 // LiveReloadConfig - configuration options for the live_reloader

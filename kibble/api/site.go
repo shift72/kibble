@@ -151,7 +151,7 @@ func sortLanguages(cfg *models.Config) []models.Language {
 	for _, k := range keys {
 		isDefault := k == cfg.DefaultLanguage
 		code := k
-		name := cfg.Languages[k]["name"]
+		name := cfg.Languages[k].Name
 		if isDefault {
 			code = ""
 		}
