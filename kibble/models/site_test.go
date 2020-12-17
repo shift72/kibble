@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -63,4 +64,34 @@ func TestUpdatePageCollectionMissing(t *testing.T) {
 	site.UpdatePageCollections()
 
 	assert.Equal(t, "", site.Pages[0].PageCollections[0].Description)
+}
+
+func TestLanguagesConvertToJSON(t *testing.T) {
+
+	site := Site{
+		Languages: []Language{
+			Language{
+				Code:               "en",
+				Name:               "English",
+				Locale:             "nz",
+				DefinitionFilePath: "/wut/wut",
+				IsDefault:          true,
+			},
+			Language{
+				Code:               "fr",
+				Name:               "French",
+				Locale:             "FR",
+				DefinitionFilePath: "/oi/oi",
+				IsDefault:          false,
+			},
+		},
+	}
+
+	languages := &site.Languages
+	b, err := json.Marshal(languages)
+	if err != nil {
+		t.Error(err)
+	}
+
+	assert.Equal(t, string(b), "[{\"code\":\"en\",\"name\":\"English\",\"locale\":\"nz\"},{\"code\":\"fr\",\"name\":\"French\",\"locale\":\"FR\"}]")
 }

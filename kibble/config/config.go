@@ -52,35 +52,44 @@ func LoadConfig(runAsAdmin bool, apiKey string, disableCache bool) *models.Confi
 		os.Exit(1)
 	}
 
-	type LanguagesConfigObjects struct {
-		Languages map[string]models.LanguageConfig `json:"languages"`
-	}
-	type LanguagesConfigStrings struct {
-		Languages map[string]string `json:"languages"`
-	}
-
-	langCfgObj := LanguagesConfigObjects{}
-	err = json.Unmarshal(file, &langCfgObj)
-	if err != nil {
-		langCfgStr := LanguagesConfigStrings{}
-		err = json.Unmarshal(file, &langCfgStr)
-		if err != nil {
-			log.Errorf("config file languages parsing error: %v", err)
-			os.Exit(1)
-		}
-		cfg.Languages = map[string]models.LanguageConfig{}
-		for k, v := range langCfgStr.Languages {
-			cfg.Languages[k] = models.LanguageConfig{Code: v}
-		}
-	} else {
-		cfg.Languages = langCfgObj.Languages
-	}
+	LoadLanguagesConfig(&cfg, file)
 
 	log.Debugf("url: %s", cfg.SiteURL)
 
 	LoadPrivateConfig(&cfg, apiKey)
 
 	return &cfg
+}
+
+type languagesConfigObjects struct {
+	Languages map[string]models.LanguageConfig `json:"languages"`
+}
+type languagesConfigStrings struct {
+	Languages map[string]string `json:"languages"`
+}
+
+func LoadLanguagesConfig(cfg *models.Config, file []byte) {
+
+	langCfgObj := languagesConfigObjects{}
+	err := json.Unmarshal(file, &langCfgObj)
+	if err != nil {
+
+		langCfgStr := languagesConfigStrings{}
+		err = json.Unmarshal(file, &langCfgStr)
+		if err != nil {
+			log.Errorf("config file languages parsing error: %v", err)
+			os.Exit(1)
+		}
+
+		cfg.Languages = map[string]models.LanguageConfig{}
+
+		for k, v := range langCfgStr.Languages {
+			cfg.Languages[k] = models.LanguageConfig{Code: v}
+		}
+
+	} else {
+		cfg.Languages = langCfgObj.Languages
+	}
 }
 
 // SaveConfig writes the configuration to disk
