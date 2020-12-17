@@ -93,5 +93,5 @@ func TestLanguagesConvertToJSON(t *testing.T) {
 		t.Error(err)
 	}
 
-	assert.Equal(t, string(b), "[{\"code\":\"en\",\"name\":\"English\",\"locale\":\"nz\"},{\"code\":\"fr\",\"name\":\"French\",\"locale\":\"FR\"}]")
+	assert.Equal(t, string(b), `[{"code":"en","name":"English","locale":"nz"},{"code":"fr","name":"French","locale":"FR"}]`)
 }
