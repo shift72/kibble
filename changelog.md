@@ -1,5 +1,9 @@
 # Change log
 
+## 0.15.6
+Add global helper functions for making/appending string slices.
+Add support for language objects (`"en": { "code": "en_AU", "name": "English" }`) in kibble.json.
+
 ## 0.15.5
 Add PageCollection.Description field.
 
