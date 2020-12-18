@@ -37,10 +37,11 @@ type Site struct {
 
 // Language - instance of a language
 type Language struct {
-	Code               string
-	Locale             string
-	DefinitionFilePath string
-	IsDefault          bool
+	Code               string `json:"code"`
+	Name               string `json:"name"`
+	Locale             string `json:"locale"`
+	DefinitionFilePath string `json:"-"`
+	IsDefault          bool   `json:"-"`
 }
 
 // ImageSet - set of images
