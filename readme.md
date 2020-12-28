@@ -49,10 +49,10 @@ Kibble is released to 3 places
   2. SHIFT72 Platform - this is where the platform will pull the kibble release from
   3. NPM - to support installation for third parties via npm and the node js environment
 
-## a. Update version numbers and change log 
+## a. Update version numbers and change log
 
 ```
-changelog
+docs/changelog.mpd
 kibble-npm/package.json
 ```
 
@@ -62,7 +62,7 @@ kibble-npm/package.json
 git commit -a -m "release nnn"
 ```
 
-## c. Tag Commit 
+## c. Tag Commit
   Ensure that the release is tagged correctly. Miss the prepended 'v' as this will mess S3 up.
 
 ```
@@ -78,7 +78,7 @@ make release
 
 ## e. register new build in uber admin
 
-Manual step, create rows for the staging and production versions 
+Manual step, create rows for the staging and production versions
   * http://localhost:10001/admin/user~builder_version
   * http://localhost:10002/admin/user~builder_version
 
