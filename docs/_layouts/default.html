@@ -25,9 +25,9 @@
       <h1 class="project-name">{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
       <h2 class="project-tagline">{{ page.description | default: site.description | default: site.github.project_tagline }}</h2>
 
-      <a href="/index" class="btn">Home</a>
-      <a href="/changelog" class="btn">Changelog</a>
-      <a href="/api" class="btn">API</a>
+      <a href="{{ '/index' | relative_url}}" class="btn">Home</a>
+      <a href="{{ '/changelog' | relative_url}}" class="btn">Changelog</a>
+      <a href="{{ '/api' | relative_url}}" class="btn">API</a>
     </header>
 
     <main id="content" class="main-content" role="main">
