@@ -2,6 +2,8 @@
 
 def: To chop or grind coarsely
 
+[Changelog](changelog.md)
+
 ```npm install -g kibble``` - installs kibble
 
 ```kibble init``` - find a template to start with
@@ -25,7 +27,7 @@ def: To chop or grind coarsely
 
 ## Installation
 
-* Requires go 1.13.0 (go mod)
+* Requires go 1.14.0 (go mod)
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 
@@ -45,14 +47,14 @@ Publish will zip all files placed in the ```/.kibble/dist``` directory
 
 Kibble is released to 3 places
 
-  1. github - mostly historical purposes, intention is to make this open source
+  1. github - mostly historical purposes
   2. SHIFT72 Platform - this is where the platform will pull the kibble release from
   3. NPM - to support installation for third parties via npm and the node js environment
 
 ## a. Update version numbers and change log
 
 ```
-docs/changelog.mpd
+changelog.mpd
 kibble-npm/package.json
 ```
 
