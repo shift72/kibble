@@ -17,17 +17,15 @@ package datastore
 import (
 	"testing"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
 	"kibble/test"
+
+	"github.com/nicksnyder/go-i18n/i18n"
 )
 
 func TestTaxonomyDataStore(t *testing.T) {
 
-	view := jet.NewHTMLSet("../templates/")
-	view.AddGlobal("version", "v1.1.145")
-
-	renderer1 := &test.InMemoryRenderer{View: view}
+	Init()
 
 	r := &models.Route{
 		URLPath:      "/film/:filmID",
@@ -48,6 +46,19 @@ func TestTaxonomyDataStore(t *testing.T) {
 			},
 		},
 	}
+
+	cfg := models.Config{
+		Routes: []models.Route{*ctx.Route},
+	}
+
+	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
+
+	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
+	T, _ := i18n.Tfunc("en-US")
+
+	view := models.CreateTemplateView(routeRegistry, T, &ctx, "../sample_site/templates/")
+
+	renderer1 := &test.InMemoryRenderer{View: view}
 
 	var fds FilmDataSource
 	fds.Iterator(ctx, renderer1)
