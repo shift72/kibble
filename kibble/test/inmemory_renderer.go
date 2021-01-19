@@ -89,21 +89,18 @@ func (c *InMemoryRenderer) Render(templatePath string, filePath string, data jet
 		filePath: filePath,
 	}
 
-	c.Results = append(c.Results, result)
-
 	t, err := c.View.GetTemplate(templatePath)
+
 	if err != nil {
 		errCount++
 		result.err = err
-		fmt.Printf("error e: %s", err)
-		return
-	}
-
-	if err = t.Execute(result.buffer, data, nil); err != nil {
+		fmt.Printf("GetTemplate() error: %s\n", err)
+	} else if err = t.Execute(result.buffer, data, nil); err != nil {
 		errCount++
-		fmt.Printf("error t: %s", err)
 		result.err = err
+		fmt.Printf("Execute() error: %s\n", err)
 	}
 
+	c.Results = append(c.Results, result)
 	return
 }
