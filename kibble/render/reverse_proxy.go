@@ -15,6 +15,7 @@
 package render
 
 import (
+	"crypto/tls"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -46,8 +47,14 @@ func NewProxy(target string, patterns []string) *Prox {
 	}
 
 	return &Prox{
-		target:   url,
-		proxy:    &httputil.ReverseProxy{Director: director},
+		target: url,
+		proxy: &httputil.ReverseProxy{Director: director,
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		},
 		patterns: res,
 	}
 }

@@ -17,6 +17,7 @@ package api
 import (
 	"bufio"
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -29,10 +30,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gregjones/httpcache"
-	"github.com/gregjones/httpcache/diskcache"
 	"kibble/config"
 	"kibble/models"
+
+	"github.com/gregjones/httpcache"
+	"github.com/gregjones/httpcache/diskcache"
 	"github.com/pkg/errors"
 
 	"golang.org/x/crypto/ssh/terminal"
@@ -83,6 +85,18 @@ func credentials(cfg *models.Config) (string, string) {
 	return strings.TrimSpace(username), strings.TrimSpace(string(bytePassword))
 }
 
+// returns a proxy client that is tolerant of TLS configuration
+func getProxyClient() *http.Client {
+	return &http.Client{
+		Timeout: 10 * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
+	}
+}
+
 // IsAdmin - check auth token is valid
 func IsAdmin(cfg *models.Config) (bool, error) {
 
@@ -98,10 +112,7 @@ func IsAdmin(cfg *models.Config) (bool, error) {
 		req.Header.Add("x-bypass-cache", "1")
 	}
 
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
-	resp, err := client.Do(req)
+	resp, err := getProxyClient().Do(req)
 	if err != nil {
 		return false, err
 	}
@@ -125,12 +136,13 @@ func Get(cfg *models.Config, url string) ([]byte, error) {
 		req.Header.Add("x-auth-token", cfg.Private.APIKey)
 	}
 
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
+	client := getProxyClient()
 
 	if !cfg.DisableCache {
-		client.Transport = httpcache.NewTransport(cache)
+		// chain the existing transport with the http cache
+		cachingTransport := httpcache.NewTransport(cache)
+		cachingTransport.Transport = client.Transport
+		client.Transport = cachingTransport
 	}
 
 	resp, err := client.Do(req)
