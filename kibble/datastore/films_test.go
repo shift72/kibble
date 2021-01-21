@@ -18,9 +18,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
 	"kibble/test"
+
+	"github.com/CloudyKit/jet"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
 )
@@ -77,10 +78,21 @@ func TestTransformFilm(t *testing.T) {
 
 func TestFilmDataStore(t *testing.T) {
 
-	view := jet.NewHTMLSet("../templates/")
-	view.AddGlobal("version", "v1.1.145")
+	Init()
 
 	ctx, _ := createTestFilm()
+
+	cfg := models.Config{
+		Routes: []models.Route{*ctx.Route},
+	}
+
+	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
+
+	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
+	T, _ := i18n.Tfunc("en-US")
+
+	view := models.CreateTemplateView(routeRegistry, T, &ctx, "../sample_site/templates/")
+
 	renderer1 := &test.InMemoryRenderer{View: view}
 
 	var fds FilmDataSource
@@ -189,6 +201,7 @@ func TestRouteToFilm(t *testing.T) {
 		TemplatePath: "film/item.jet",
 		DataSource:   "Film",
 	}
+
 	ctx := models.RenderContext{
 		Route:       r,
 		RoutePrefix: "/fr",
@@ -206,6 +219,7 @@ func TestRouteToFilm(t *testing.T) {
 	cfg := models.Config{
 		Routes: []models.Route{*r},
 	}
+
 	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
