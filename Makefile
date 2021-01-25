@@ -1,8 +1,8 @@
 VERSION    := $(shell git describe --tags)
 
-DARWINx64  := "s72-web/kibble/$(VERSION)/shift72-kibble_$(VERSION)_macOS_64-bit.zip"
-LINUXx64   := "s72-web/kibble/$(VERSION)/shift72-kibble_$(VERSION)_Tux_64-bit.tar.gz"
-WINDOWSx64 := "s72-web/kibble/$(VERSION)/shift72-kibble_$(VERSION)_windows_64-bit.zip"
+DARWINx64  := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_macOS_64-bit.zip"
+LINUXx64   := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_Tux_64-bit.tar.gz"
+WINDOWSx64 := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_windows_64-bit.zip"
 
 release:
 	cd kibble && AWS_PROFILE=shift72a goreleaser --rm-dist
