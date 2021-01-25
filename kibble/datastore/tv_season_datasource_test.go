@@ -51,8 +51,13 @@ func createTestTVSeasonWithCustomURLPath(urlPath string) (models.RenderContext, 
 					},
 					Slug: "/tv/123/season/2",
 					Episodes: []*models.TVEpisode{
-						&models.TVEpisode{
+						{
 							Overview: "# Episode Title",
+						},
+					},
+					Bonuses: models.BonusContentCollection{
+						{
+							Overview: "**Rating:** Five stars, _a blast!_",
 						},
 					},
 				},
@@ -153,7 +158,8 @@ func TestContentTransforms(t *testing.T) {
 
 	season, _ := renderer.Data["tvseason"].Elem().Interface().(models.TVSeason)
 
-	assert.Equal(t, season.Overview, "<h1>Season Title</h1>\n")
-	assert.Equal(t, season.ShowInfo.Overview, "<h1>Show Title</h1>\n")
-	assert.Equal(t, season.Episodes[0].Overview, "<h1>Episode Title</h1>\n")
+	assert.Equal(t, "<h1>Season Title</h1>\n", season.Overview)
+	assert.Equal(t, "<h1>Show Title</h1>\n", season.ShowInfo.Overview)
+	assert.Equal(t, "<h1>Episode Title</h1>\n", season.Episodes[0].Overview)
+	assert.Equal(t, "<p><strong>Rating:</strong> Five stars, <em>a blast!</em></p>\n", season.Bonuses[0].Overview)
 }

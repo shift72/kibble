@@ -77,6 +77,12 @@ func transformTVSeason(f *models.TVSeason) *models.TVSeason {
 		f.Episodes[i].Overview = ov
 	}
 
+	for i, e := range f.Bonuses {
+		ov := models.ApplyContentTransforms(e.Overview)
+		// ranges create a copy of the array, so we need to set the original object
+		f.Bonuses[i].Overview = ov
+	}
+
 	return f
 }
 
