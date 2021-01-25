@@ -34,8 +34,8 @@ changelog:
 
 release:
   github:
-    owner: indiereign
-    name: shift72-kibble
+    owner: shift72
+    name: kibble
 
 blobs:
   -
