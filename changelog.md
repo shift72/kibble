@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.11
+Fix to the release process after moving the repo.
+
 ## 0.15.10
 Fix to the release process after moving the repo.
 
