@@ -54,7 +54,7 @@ Kibble is released to 3 places
 ## a. Update version numbers and change log
 
 ```
-changelog.mpd
+changelog.md
 kibble-npm/package.json
 ```
 
