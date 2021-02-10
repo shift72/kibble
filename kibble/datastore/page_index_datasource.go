@@ -26,7 +26,7 @@ import (
 )
 
 var indexArgs = []models.RouteArgument{
-	models.RouteArgument{
+	{
 		Name:        ":index",
 		Description: "Index of the page",
 		GetValue: func(entity interface{}) string {

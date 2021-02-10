@@ -28,7 +28,7 @@ type Route struct {
 	PartialURLPath      string       `json:"partialUrlPath"`
 	PartialTemplatePath string       `json:"partialTemplatePath"`
 	DataSource          string       `json:"datasource"`
-	ResolvedDataSouce   DataSource   `json:"-"`
+	ResolvedDataSource  DataSource   `json:"-"`
 	ResolvedEntityType  reflect.Type `json:"-"`
 	PageSize            int          `json:"pageSize"`
 	Pagination          Pagination   `json:"-"`
@@ -52,7 +52,7 @@ func (r *Route) Clone() *Route {
 		PartialURLPath:      r.PartialURLPath,
 		PartialTemplatePath: r.PartialTemplatePath,
 		DataSource:          r.DataSource,
-		ResolvedDataSouce:   r.ResolvedDataSouce,
+		ResolvedDataSource:  r.ResolvedDataSource,
 		ResolvedEntityType:  r.ResolvedEntityType,
 		PageSize:            r.PageSize,
 		Pagination:          r.Pagination,
@@ -65,12 +65,12 @@ func (r *Route) HasPartial() bool {
 }
 
 func (r *Route) validate() error {
-	err := ValidateRouteWithDatasource(r.URLPath, r.ResolvedDataSouce)
+	err := ValidateRouteWithDatasource(r.URLPath, r.ResolvedDataSource)
 	if err != nil {
 		return err
 	}
 
-	return ValidateRouteWithDatasource(r.PartialURLPath, r.ResolvedDataSouce)
+	return ValidateRouteWithDatasource(r.PartialURLPath, r.ResolvedDataSource)
 }
 
 // RouteRegistry - stores a list of routes
@@ -109,7 +109,7 @@ func (r *RouteRegistry) FindByTypeAndRouteName(entityType reflect.Type, routeNam
 // FindBySlugAndRouteName - find a route given a slug and the route name(optional)
 func (r *RouteRegistry) FindBySlugAndRouteName(slug string, routeName string) *Route {
 	for _, r := range r.routes {
-		if r.ResolvedDataSouce.IsSlugMatch(slug) &&
+		if r.ResolvedDataSource.IsSlugMatch(slug) &&
 			(routeName == "" || r.Name == routeName) {
 			return r
 		}
@@ -129,7 +129,7 @@ func (r *RouteRegistry) GetRouteForEntity(ctx RenderContext, entity interface{},
 	ctx.Route = r.FindByTypeAndRouteName(reflect.TypeOf(entity), routeName)
 
 	if ctx.Route != nil {
-		return ctx.Route.ResolvedDataSouce.GetRouteForEntity(ctx, entity)
+		return ctx.Route.ResolvedDataSource.GetRouteForEntity(ctx, entity)
 	}
 
 	return fmt.Sprintf("!Error. Route not found for entity:%s and route name '%s'", reflect.TypeOf(entity).Name(), routeName)
@@ -141,7 +141,7 @@ func (r *RouteRegistry) GetRouteForSlug(ctx RenderContext, slug string, routeNam
 	ctx.Route = r.FindBySlugAndRouteName(slug, routeName)
 
 	if ctx.Route != nil {
-		return ctx.Route.ResolvedDataSouce.GetRouteForSlug(ctx, slug)
+		return ctx.Route.ResolvedDataSource.GetRouteForSlug(ctx, slug)
 	}
 
 	return fmt.Sprintf("!Error. Route not found for slug:%s and route name '%s'", slug, routeName)
@@ -158,9 +158,9 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 	for i := 0; i < len(config.Routes); i++ {
 		route := config.Routes[i]
 
-		route.ResolvedDataSouce = FindDataSource(route.DataSource)
-		if route.ResolvedDataSouce != nil {
-			route.ResolvedEntityType = route.ResolvedDataSouce.GetEntityType()
+		route.ResolvedDataSource = FindDataSource(route.DataSource)
+		if route.ResolvedDataSource != nil {
+			route.ResolvedEntityType = route.ResolvedDataSource.GetEntityType()
 		} else {
 			fmt.Printf("Unable to find the datasource %s. Check routes registered in site.json\n", route.DataSource)
 			errorsFound = true

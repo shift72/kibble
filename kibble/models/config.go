@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 )
 
+// LanguageConfig tracks the name and code of a language
 type LanguageConfig struct {
 	Code string `json:"code"`
 	Name string `json:"name"`

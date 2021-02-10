@@ -26,7 +26,7 @@ import (
 )
 
 var tvSeasonArgs = []models.RouteArgument{
-	models.RouteArgument{
+	{
 		Name:        ":showID",
 		Description: "ID of the show",
 		GetValue: func(entity interface{}) string {
@@ -36,7 +36,7 @@ var tvSeasonArgs = []models.RouteArgument{
 			return ""
 		},
 	},
-	models.RouteArgument{
+	{
 		Name:        ":seasonNumber",
 		Description: "Season Number",
 		GetValue: func(entity interface{}) string {
@@ -46,7 +46,7 @@ var tvSeasonArgs = []models.RouteArgument{
 			return ""
 		},
 	},
-	models.RouteArgument{
+	{
 		Name:        ":slug",
 		Description: "Title slug of the show",
 		GetValue: func(entity interface{}) string {

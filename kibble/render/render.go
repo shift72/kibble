@@ -156,8 +156,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 			// set the route on the render context for datasources
 			ctx.Route = route
-			if route.ResolvedDataSouce != nil {
-				errCount += route.ResolvedDataSouce.Iterator(ctx, renderer)
+			if route.ResolvedDataSource != nil {
+				errCount += route.ResolvedDataSource.Iterator(ctx, renderer)
 			}
 			renderRouteSW.Completed()
 		}

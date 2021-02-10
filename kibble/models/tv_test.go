@@ -78,7 +78,7 @@ func TestTVEpisodeGetTitle(t *testing.T) {
 		},
 		Slug: "/tv/123/season/2",
 		Episodes: []*TVEpisode{
-			&TVEpisode{
+			{
 				Slug:          "/tv/123/season/2/episode/1",
 				Title:         "First Episode",
 				EpisodeNumber: 1,
@@ -105,7 +105,7 @@ func TestTVEpisodeGetTranslatedTitle(t *testing.T) {
 		},
 		Slug: "/tv/123/season/2",
 		Episodes: []*TVEpisode{
-			&TVEpisode{
+			{
 				Slug:          "/tv/123/season/2/episode/1",
 				Title:         "First Episode",
 				EpisodeNumber: 1,
