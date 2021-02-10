@@ -123,6 +123,11 @@ func (r *RouteRegistry) GetAll() []*Route {
 	return r.routes
 }
 
+// Add - add a route
+func (r *RouteRegistry) Add(route *Route) {
+	r.routes = append(r.routes, route)
+}
+
 // GetRouteForEntity - finds the route by the name and type and creates a route from it
 func (r *RouteRegistry) GetRouteForEntity(ctx RenderContext, entity interface{}, routeName string) string {
 
@@ -174,6 +179,15 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 
 		routeRegistry.routes[i] = &route
 	}
+
+	// add a default route render static files
+	routeRegistry.Add(&Route{
+		Name:               "root",
+		URLPath:            "",
+		TemplatePath:       ".",
+		DataSource:         "FileSystem",
+		ResolvedDataSource: FindDataSource("FileSystem"),
+	})
 
 	if errorsFound {
 		os.Exit(1)
