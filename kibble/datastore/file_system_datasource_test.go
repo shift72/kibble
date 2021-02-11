@@ -81,7 +81,7 @@ func TestTemplateWithRoutePrefixType(t *testing.T) {
 	r := &models.Route{
 		Name:         "static",
 		URLPath:      "",
-		TemplatePath: "../sample_site/.well-known/",
+		TemplatePath: "../sample_site/help/",
 		DataSource:   "FileSystem",
 	}
 
@@ -94,6 +94,6 @@ func TestTemplateWithRoutePrefixType(t *testing.T) {
 	fsDS.Iterator(ctx, renderer)
 
 	assert.True(t, renderer.RenderCalled)
-	assert.Equal(t, "../sample_site/.well-known/example.jet", renderer.TemplatePath)
-	assert.Equal(t, "/fr/sample_site/.well-known/example", renderer.FilePath)
+	assert.Equal(t, "../sample_site/help/example.jet", renderer.TemplatePath)
+	assert.Equal(t, "/fr/sample_site/help/example", renderer.FilePath)
 }

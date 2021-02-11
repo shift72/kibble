@@ -27,7 +27,7 @@ import (
 
 var fileSystemArgs = []models.RouteArgument{}
 
-// FileSystemDataSource - represents a directory or .jet templates
+// FileSystemDataSource - represents a directory of .jet templates
 type FileSystemDataSource struct {
 }
 
