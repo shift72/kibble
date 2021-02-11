@@ -44,7 +44,8 @@
             "urlPath": "",
             "templatePath": ".well-known",
             "datasource": "FileSystem",
-            "pageSize": 0
+            "pageSize": 0,
+            "defaultLanguageOnly": true
           }
     ]
 }

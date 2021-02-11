@@ -32,6 +32,7 @@ type Route struct {
 	ResolvedEntityType  reflect.Type `json:"-"`
 	PageSize            int          `json:"pageSize"`
 	Pagination          Pagination   `json:"-"`
+	DefaultLanguageOnly bool         `json:"defaultLanguageOnly"`
 }
 
 // Pagination describes a single page of results
@@ -182,7 +183,7 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 
 	// add a default route render static files
 	routeRegistry.Add(&Route{
-		Name:               "root",
+		Name:               "static",
 		URLPath:            "",
 		TemplatePath:       ".",
 		DataSource:         "FileSystem",

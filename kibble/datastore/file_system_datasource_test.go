@@ -30,10 +30,11 @@ func TestRootTemplateType(t *testing.T) {
 	renderer := &test.MockRenderer{}
 
 	r := &models.Route{
-		Name:         "root",
-		URLPath:      "",
-		TemplatePath: "../sample_site/",
-		DataSource:   "FileSystem",
+		Name:                "root",
+		URLPath:             "",
+		TemplatePath:        "../sample_site/",
+		DataSource:          "FileSystem",
+		DefaultLanguageOnly: true,
 	}
 
 	ctx := models.RenderContext{
@@ -55,10 +56,11 @@ func TestRootTemplateWithRoutePrefixType(t *testing.T) {
 	renderer := &test.MockRenderer{}
 
 	r := &models.Route{
-		Name:         "root",
-		URLPath:      "",
-		TemplatePath: ".",
-		DataSource:   "FileSystem",
+		Name:                "root",
+		URLPath:             "",
+		TemplatePath:        ".",
+		DataSource:          "FileSystem",
+		DefaultLanguageOnly: true,
 	}
 
 	ctx := models.RenderContext{

@@ -49,9 +49,8 @@ func (ds *FileSystemDataSource) GetEntityType() reflect.Type {
 // Iterator - loop over each film
 func (ds *FileSystemDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
-	// special case - only render the implicit root route if this is the default language context
-	// these files will not be rendered for every language
-	if ctx.Route.Name == "root" && ctx.RoutePrefix != "" {
+	// check if we should render these static files
+	if ctx.Route.DefaultLanguageOnly && ctx.RoutePrefix != "" {
 		return
 	}
 
