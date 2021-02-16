@@ -21,6 +21,7 @@ import (
 	"kibble/test"
 
 	"github.com/nicksnyder/go-i18n/i18n"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRenderingShowSlug(t *testing.T) {
@@ -52,7 +53,8 @@ func TestRenderingShowSlug(t *testing.T) {
 		},
 	}
 
-	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
+	routeRegistry, err := models.NewRouteRegistryFromConfig(&cfg)
+	assert.NoError(t, err)
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
 

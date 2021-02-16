@@ -86,7 +86,8 @@ func TestFilmDataStore(t *testing.T) {
 		Routes: []models.Route{*ctx.Route},
 	}
 
-	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
+	routeRegistry, err := models.NewRouteRegistryFromConfig(&cfg)
+	assert.NoError(t, err)
 
 	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
 	T, _ := i18n.Tfunc("en-US")
@@ -172,7 +173,8 @@ func TestRenderingSlug(t *testing.T) {
 		},
 	}
 
-	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
+	routeRegistry, err := models.NewRouteRegistryFromConfig(&cfg)
+	assert.NoError(t, err)
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
 
@@ -220,7 +222,8 @@ func TestRouteToFilm(t *testing.T) {
 		Routes: []models.Route{*r},
 	}
 
-	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
+	routeRegistry, err := models.NewRouteRegistryFromConfig(&cfg)
+	assert.NoError(t, err)
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
 
@@ -267,7 +270,8 @@ func TestTransLanguage(t *testing.T) {
 		Routes: []models.Route{*r},
 	}
 
-	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
+	routeRegistry, err := models.NewRouteRegistryFromConfig(&cfg)
+	assert.NoError(t, err)
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
 

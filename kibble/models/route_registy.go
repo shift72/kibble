@@ -15,9 +15,11 @@
 package models
 
 import (
+	"errors"
 	"fmt"
-	"os"
+	"path"
 	"reflect"
+	"strings"
 )
 
 // Route - represents a route for rendering and
@@ -154,7 +156,7 @@ func (r *RouteRegistry) GetRouteForSlug(ctx RenderContext, slug string, routeNam
 }
 
 // NewRouteRegistryFromConfig - create a new route registry from the config
-func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
+func NewRouteRegistryFromConfig(config *Config) (*RouteRegistry, error) {
 	routeRegistry := NewRouteRegistry()
 
 	routeRegistry.routes = make([]*Route, len(config.Routes))
@@ -190,9 +192,26 @@ func NewRouteRegistryFromConfig(config *Config) *RouteRegistry {
 		ResolvedDataSource: FindDataSource("FileSystem"),
 	})
 
-	if errorsFound {
-		os.Exit(1)
+	// prefix the siteRootPath
+	for i := 0; i < len(routeRegistry.routes); i++ {
+		if routeRegistry.routes[i].DataSource == "FileSystem" {
+			routeRegistry.routes[i].TemplatePath = path.Join(config.SiteRootPath, routeRegistry.routes[i].TemplatePath)
+
+			if path.IsAbs(routeRegistry.routes[i].TemplatePath) {
+				log.Error("TemplatePath cannot be an absolute path")
+				errorsFound = true
+			}
+
+			if strings.Contains(routeRegistry.routes[i].TemplatePath, "..") {
+				log.Error("TemplatePath cannot include path traversal")
+				errorsFound = true
+			}
+		}
 	}
 
-	return routeRegistry
+	if errorsFound {
+		return nil, errors.New("An error occurred loading the route registry")
+	}
+
+	return routeRegistry, nil
 }

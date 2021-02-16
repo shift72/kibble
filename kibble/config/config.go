@@ -20,10 +20,12 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 
-	goversion "github.com/hashicorp/go-version"
 	"kibble/models"
 	version "kibble/version"
+
+	goversion "github.com/hashicorp/go-version"
 )
 
 var (
@@ -52,6 +54,16 @@ func LoadConfig(runAsAdmin bool, apiKey string, disableCache bool) *models.Confi
 		os.Exit(1)
 	}
 
+	if path.IsAbs(cfg.SiteRootPath) {
+		log.Error("SiteRootPath cannot be an absolute path")
+		os.Exit(1)
+	}
+
+	if strings.Contains(cfg.SiteRootPath, "..") {
+		log.Error("SiteRootPath cannot include path traversal")
+		os.Exit(1)
+	}
+
 	LoadLanguagesConfig(&cfg, file)
 
 	log.Debugf("url: %s", cfg.SiteURL)
@@ -68,6 +80,7 @@ type languagesConfigStrings struct {
 	Languages map[string]string `json:"languages"`
 }
 
+// LoadLanguagesConfig will load the languages into the config object
 func LoadLanguagesConfig(cfg *models.Config, file []byte) {
 
 	langCfgObj := languagesConfigObjects{}
@@ -129,7 +142,7 @@ func CheckVersion(cfg *models.Config) error {
 		return errors.New("Miss matched builderVersion")
 	} else if bwv.LessThan(currentVersion) {
 		log.Warning("This template currently targets version %s, but you are running an newer version %s.", cfg.BuilderVersion, currentVersion)
-		log.Warning("It is recommended that you update the builderVersion in the kibble.json and test throughly before publishing.")
+		log.Warning("It is recommended that you update the builderVersion in the kibble.json and test thoroughly before publishing.")
 		return errors.New("Miss matched builderVersion")
 	}
 
