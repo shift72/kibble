@@ -38,6 +38,14 @@
             "templatePath": "templates/page/index.jet",
             "datasource": "PageIndex",
             "pageSize": 10
+          },
+          {
+            "name": "root",
+            "urlPath": "",
+            "templatePath": ".well-known",
+            "datasource": "FileSystem",
+            "pageSize": 0,
+            "defaultLanguageOnly": true
           }
     ]
 }

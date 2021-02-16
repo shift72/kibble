@@ -27,7 +27,7 @@ func setupTestTVEpisode(urlPath string) (models.RenderContext, *models.Route) {
 		},
 		Slug: "/tv/123/season/2",
 		Episodes: []*models.TVEpisode{
-			&models.TVEpisode{
+			{
 				EpisodeNumber: 10,
 				Slug:          "/tv/123/season/2/episode/10",
 				Overview:      "# Episode Title",

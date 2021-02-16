@@ -20,13 +20,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
 	"kibble/utils"
+
+	"github.com/CloudyKit/jet"
 )
 
 var bundleArgs = []models.RouteArgument{
-	models.RouteArgument{
+	{
 		Name:        ":bundleID",
 		Description: "ID of the bundle",
 		GetValue: func(entity interface{}) string {
@@ -36,7 +37,7 @@ var bundleArgs = []models.RouteArgument{
 			return ""
 		},
 	},
-	models.RouteArgument{
+	{
 		Name:        ":slug",
 		Description: "Slug of the bundle",
 		GetValue: func(entity interface{}) string {

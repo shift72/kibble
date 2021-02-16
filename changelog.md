@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.12
+Add support for rendering static templates in other directories
+
 ## 0.15.11
 Fix to the release process after moving the repo.
 

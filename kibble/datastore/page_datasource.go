@@ -20,13 +20,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
 	"kibble/utils"
+
+	"github.com/CloudyKit/jet"
 )
 
 var pageArgs = []models.RouteArgument{
-	models.RouteArgument{
+	{
 		Name:        ":pageID",
 		Description: "ID of the page",
 		GetValue: func(entity interface{}) string {
@@ -36,7 +37,7 @@ var pageArgs = []models.RouteArgument{
 			return ""
 		},
 	},
-	models.RouteArgument{
+	{
 		Name:        ":slug",
 		Description: "Slug of the page",
 		GetValue: func(entity interface{}) string {

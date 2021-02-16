@@ -16,10 +16,10 @@ func TestUpdatePageCollectionDescriptions(t *testing.T) {
 				Slug:      "/film/123",
 				TitleSlug: "the-big-lebowski",
 				PageCollections: []PageCollection{
-					PageCollection{
+					{
 						ID: 11,
 					},
-					PageCollection{
+					{
 						ID: 12,
 					},
 				},
@@ -52,7 +52,7 @@ func TestUpdatePageCollectionMissing(t *testing.T) {
 				Slug:      "/film/123",
 				TitleSlug: "the-big-lebowski",
 				PageCollections: []PageCollection{
-					PageCollection{
+					{
 						ID: 11,
 					},
 				},
@@ -70,14 +70,14 @@ func TestLanguagesConvertToJSON(t *testing.T) {
 
 	site := Site{
 		Languages: []Language{
-			Language{
+			{
 				Code:               "en",
 				Name:               "English",
 				Locale:             "nz",
 				DefinitionFilePath: "/wut/wut",
 				IsDefault:          true,
 			},
-			Language{
+			{
 				Code:               "fr",
 				Name:               "French",
 				Locale:             "FR",

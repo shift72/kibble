@@ -20,12 +20,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
+
+	"github.com/CloudyKit/jet"
 )
 
 var filmArgs = []models.RouteArgument{
-	models.RouteArgument{
+	{
 		Name:        ":filmID",
 		Description: "ID of the collection",
 		GetValue: func(entity interface{}) string {
@@ -35,7 +36,7 @@ var filmArgs = []models.RouteArgument{
 			return ""
 		},
 	},
-	models.RouteArgument{
+	{
 		Name:        ":slug",
 		Description: "Slug of the collection",
 		GetValue: func(entity interface{}) string {
