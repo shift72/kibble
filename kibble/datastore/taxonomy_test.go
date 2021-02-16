@@ -21,6 +21,7 @@ import (
 	"kibble/test"
 
 	"github.com/nicksnyder/go-i18n/i18n"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTaxonomyDataStore(t *testing.T) {
@@ -51,7 +52,8 @@ func TestTaxonomyDataStore(t *testing.T) {
 		Routes: []models.Route{*ctx.Route},
 	}
 
-	routeRegistry := models.NewRouteRegistryFromConfig(&cfg)
+	routeRegistry, err := models.NewRouteRegistryFromConfig(&cfg)
+	assert.NoError(t, err)
 
 	i18n.MustLoadTranslationFile("../sample_site/en_US.all.json")
 	T, _ := i18n.Tfunc("en-US")

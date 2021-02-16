@@ -33,7 +33,7 @@ run-darwin: darwin
 	cd sample_site && ../kibble render
 
 run-linux: linux
-	cd sample_site && ../kibble render
+	cd sample_site && ../kibble render -v
 
 clean:
 	$(GOCLEAN)

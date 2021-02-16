@@ -82,7 +82,11 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		return 1
 	}
 
-	routeRegistry := models.NewRouteRegistryFromConfig(cfg)
+	routeRegistry, err := models.NewRouteRegistryFromConfig(cfg)
+	if err != nil {
+		log.Errorf("Loading site config failed: %s", err)
+		return 1
+	}
 
 	renderer := FileRenderer{
 		buildPath:  buildPath,
