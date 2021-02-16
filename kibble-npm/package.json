@@ -1,6 +1,6 @@
 {
   "name": "s72-kibble",
-  "version": "0.15.12",
+  "version": "0.15.13",
   "description": "SHIFT72 static site generator",
   "preferGlobal": false,
   "main": "index.js",

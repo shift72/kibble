@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.13
+Use siteRootPath when rendering static templates
+
 ## 0.15.12
 Add support for rendering static templates in other directories
 
