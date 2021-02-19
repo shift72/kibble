@@ -17,6 +17,7 @@ package datastore
 import (
 	"fmt"
 	"kibble/models"
+	"os"
 	"path"
 	"path/filepath"
 	"reflect"
@@ -57,10 +58,20 @@ func (ds *FileSystemDataSource) Iterator(ctx models.RenderContext, renderer mode
 	data := make(jet.VarMap)
 	data.Set("site", ctx.Site)
 
-	files, _ := filepath.Glob(filepath.Join(ctx.Route.TemplatePath, "*.jet"))
+	dirPath := filepath.Join(ctx.Site.SiteConfig.SiteRootPath, ctx.Route.TemplatePath)
+	_, err := os.Stat(dirPath)
+	if os.IsNotExist(err) {
+		log.Warningf("FileSystem data source could not find path: %s ", dirPath)
+		return
+	}
+
+	searchPath := filepath.Join(ctx.Site.SiteConfig.SiteRootPath, ctx.Route.TemplatePath, "*.jet")
+
+	files, _ := filepath.Glob(searchPath)
 	for _, f := range files {
-		filePath := path.Join(ctx.RoutePrefix, strings.Replace(f, ".jet", "", 1))
-		errCount += renderer.Render(f, filePath, data)
+		relativeFilePath := strings.Replace(f, ctx.Site.SiteConfig.SiteRootPath, "", 1)
+		urlPath := path.Join(ctx.RoutePrefix, strings.Replace(relativeFilePath, ".jet", "", 1))
+		errCount += renderer.Render(relativeFilePath, urlPath, data)
 	}
 
 	return
