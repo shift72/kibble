@@ -40,7 +40,11 @@ func TestRootTemplateType(t *testing.T) {
 	ctx := models.RenderContext{
 		Route:       r,
 		RoutePrefix: "",
-		Site:        &models.Site{},
+		Site: &models.Site{
+			SiteConfig: &models.Config{
+				SiteRootPath: "",
+			},
+		},
 	}
 	fsDS.Iterator(ctx, renderer)
 
@@ -66,7 +70,11 @@ func TestRootTemplateWithRoutePrefixType(t *testing.T) {
 	ctx := models.RenderContext{
 		Route:       r,
 		RoutePrefix: "/fr",
-		Site:        &models.Site{},
+		Site: &models.Site{
+			SiteConfig: &models.Config{
+				SiteRootPath: "",
+			},
+		},
 	}
 
 	fsDS.Iterator(ctx, renderer)
@@ -90,7 +98,11 @@ func TestTemplateWithRoutePrefixType(t *testing.T) {
 	ctx := models.RenderContext{
 		Route:       r,
 		RoutePrefix: "/fr/blah", // blah added because we have used the relative .. pathing above
-		Site:        &models.Site{},
+		Site: &models.Site{
+			SiteConfig: &models.Config{
+				SiteRootPath: "",
+			},
+		},
 	}
 
 	fsDS.Iterator(ctx, renderer)
