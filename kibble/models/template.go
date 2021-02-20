@@ -264,7 +264,7 @@ func processTemplateTag(templateTag string) string {
 	templatePath := fmt.Sprintf("%s.jet", templateName)
 	t, err := shortCodeView.GetTemplate(templatePath)
 	if err != nil {
-		log.Error("Template load error. Loading %s %s", templatePath, err)
+		log.Error("Shortcode template load error. Loading %s %s", templatePath, err)
 		return "Err"
 	}
 
@@ -272,7 +272,7 @@ func processTemplateTag(templateTag string) string {
 		w.WriteString("<pre>")
 		w.WriteString(err.Error())
 		w.WriteString("</pre>")
-		log.Errorf("Template execute error: %s", err)
+		log.Errorf("Shortcode template execute error: %s", err)
 	}
 
 	return string(w.Bytes())

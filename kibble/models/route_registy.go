@@ -17,9 +17,7 @@ package models
 import (
 	"errors"
 	"fmt"
-	"path"
 	"reflect"
-	"strings"
 )
 
 // Route - represents a route for rendering and
@@ -191,23 +189,6 @@ func NewRouteRegistryFromConfig(config *Config) (*RouteRegistry, error) {
 		DataSource:         "FileSystem",
 		ResolvedDataSource: FindDataSource("FileSystem"),
 	})
-
-	// prefix the siteRootPath
-	for i := 0; i < len(routeRegistry.routes); i++ {
-		if routeRegistry.routes[i].DataSource == "FileSystem" {
-			routeRegistry.routes[i].TemplatePath = path.Join(config.SiteRootPath, routeRegistry.routes[i].TemplatePath)
-
-			if path.IsAbs(routeRegistry.routes[i].TemplatePath) {
-				log.Error("TemplatePath cannot be an absolute path")
-				errorsFound = true
-			}
-
-			if strings.Contains(routeRegistry.routes[i].TemplatePath, "..") {
-				log.Error("TemplatePath cannot include path traversal")
-				errorsFound = true
-			}
-		}
-	}
 
 	if errorsFound {
 		return nil, errors.New("An error occurred loading the route registry")

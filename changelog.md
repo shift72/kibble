@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.14
+Further fix for siteRootPath
+
 ## 0.15.13
 Use siteRootPath when rendering static templates
 

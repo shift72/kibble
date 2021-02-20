@@ -22,8 +22,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/CloudyKit/jet"
 	"kibble/utils"
+
+	"github.com/CloudyKit/jet"
 )
 
 // FileRenderer - designed to render to the file system for testing

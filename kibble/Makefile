@@ -23,6 +23,9 @@ darwin:
 linux:
 	GOOS=linux GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}' -o ${BINARY} .
 
+linux-install:
+	GOOS=linux GOARCH=${GOARCH} $(GOINSTALL) -ldflags '${LDFLAGS}' -v .
+
 windows:
 	GOOS=windows GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}' -o ${BINARY}-windows-${GOARCH}.exe .
 
