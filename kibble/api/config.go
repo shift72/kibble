@@ -32,6 +32,7 @@ func LoadConfig(cfg *models.Config) (models.ServiceConfig, error) {
 		fmt.Sprintf("%s/services/shopping/configuration", cfg.SiteURL),
 		fmt.Sprintf("%s/services/content/configuration", cfg.SiteURL),
 		fmt.Sprintf("%s/services/meta/configuration", cfg.SiteURL),
+		fmt.Sprintf("%s/services/pricing/v1/configuration", cfg.SiteURL),
 	}
 
 	for _, p := range paths {
