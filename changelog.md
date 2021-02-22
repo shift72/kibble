@@ -1,6 +1,6 @@
 # Change log
 
-## 0.15.5
+## 0.15.15
 Load pricing configuration into Config.
 
 ## 0.15.14
