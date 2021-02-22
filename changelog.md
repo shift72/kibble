@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.5
+Load pricing configuration into Config.
+
 ## 0.15.14
 Further fix for siteRootPath
 
