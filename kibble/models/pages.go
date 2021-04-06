@@ -40,6 +40,7 @@ type Page struct {
 	PageCollections []PageCollection
 	PageType        string
 	URL             string
+	CustomFields    CustomFields
 }
 
 // Pages -
