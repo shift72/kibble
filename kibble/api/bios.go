@@ -69,6 +69,7 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 			Header:     serviceConfig.ForceAbsoluteImagePath(p.HeaderImage),
 		},
 		PageCollections: make([]models.PageCollection, 0),
+		CustomFields:    p.CustomFields,
 	}
 
 	page.Seo = models.Seo{
@@ -115,21 +116,22 @@ type pageFeatureV1 struct {
 }
 
 type pageV1 struct {
-	CarouselImage  string          `json:"carousel_image"`
-	Content        string          `json:"content"`
-	HeaderImage    string          `json:"header_image"`
-	ID             int             `json:"id"`
-	LandscapeImage string          `json:"landscape_image"`
-	PageFeatures   []pageFeatureV1 `json:"page_features"`
-	PageType       string          `json:"page_type"`
-	PortraitImage  string          `json:"portrait_image"`
-	SeoDescription string          `json:"seo_description"`
-	SeoKeywords    string          `json:"seo_keywords"`
-	SeoTitle       string          `json:"seo_title"`
-	Slug           string          `json:"slug"`
-	Tagline        string          `json:"tagline"`
-	Title          string          `json:"title"`
-	URL            string          `json:"url"`
+	CarouselImage  string                 `json:"carousel_image"`
+	Content        string                 `json:"content"`
+	HeaderImage    string                 `json:"header_image"`
+	ID             int                    `json:"id"`
+	LandscapeImage string                 `json:"landscape_image"`
+	PageFeatures   []pageFeatureV1        `json:"page_features"`
+	PageType       string                 `json:"page_type"`
+	PortraitImage  string                 `json:"portrait_image"`
+	SeoDescription string                 `json:"seo_description"`
+	SeoKeywords    string                 `json:"seo_keywords"`
+	SeoTitle       string                 `json:"seo_title"`
+	Slug           string                 `json:"slug"`
+	Tagline        string                 `json:"tagline"`
+	Title          string                 `json:"title"`
+	URL            string                 `json:"url"`
+	CustomFields   map[string]interface{} `json:"custom"`
 }
 
 type filmSummary struct {

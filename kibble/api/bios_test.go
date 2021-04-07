@@ -113,3 +113,30 @@ func TestPageToPageFeatures(t *testing.T) {
 	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
 	assert.Equal(t, 1, len(itemIndex["bundle"]), "expect the item index to include 1 bundles")
 }
+
+func TestPageCustomFields(t *testing.T) {
+
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiPage := pageV1{
+		ID:    456,
+		Title: "Page 99",
+		Slug:  "page-ninety-nine",
+		CustomFields: map[string]interface{}{
+			"wikipedia_url": "https://en.wikipedia.org/wiki/Special:Random",
+			"day":           9,
+			"month":         "June",
+			"another_key":   false,
+		},
+	}
+
+	model := apiPage.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, 9, model.CustomFields["day"])
+	assert.Equal(t, "June", model.CustomFields["month"])
+	assert.Equal(t, "https://en.wikipedia.org/wiki/Special:Random", model.CustomFields["wikipedia_url"])
+	assert.Equal(t, false, model.CustomFields["another_key"])
+	assert.Equal(t, nil, model.CustomFields["where is it"])
+}

@@ -242,7 +242,7 @@ func TestTVSeasonWithLocalisableTitle(t *testing.T) {
 	assert.Contains(t, renderer1.Results[0].Output(), "Generic Item Title: Breaking Bad - Season Alt - 2")
 }
 
-func TestAvailabilityFormatting(t *testing.T) {
+func TestAvailabilityFormattingAndCustomFields(t *testing.T) {
 
 	site := &Site{
 		SiteConfig: &Config{
@@ -270,6 +270,11 @@ func TestAvailabilityFormatting(t *testing.T) {
 			From: &from,
 			To:   nil,
 		},
+		CustomFields: map[string]interface{}{
+			"string":  "some string here",
+			"boolean": true,
+			"number":  99,
+		},
 	}
 
 	item := tvSeason.GetGenericItem()
@@ -289,6 +294,9 @@ func TestAvailabilityFormatting(t *testing.T) {
 	assert.Contains(t, renderer1.Results[0].Output(), "Available From DefaultTimeFormat: [3:02 PM]")
 	assert.Contains(t, renderer1.Results[0].Output(), "Available To: []")
 	assert.Contains(t, renderer1.Results[0].Output(), "Available To US West: []")
+
+	assert.Contains(t, renderer1.Results[0].Output(), "This is true")
+	assert.Contains(t, renderer1.Results[0].Output(), "some string here == 99")
 
 }
 
