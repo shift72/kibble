@@ -28,3 +28,8 @@ Available To US West: [{{ tvseason.Available.To | zone: "America/Los_Angeles" | 
     {{end}}
 </div>
 {{end}}
+
+{{ if isset(tvseason.CustomFields["boolean"]) }}
+    This is true
+    {{ tvseason.CustomFields["string"] }} == {{ tvseason.CustomFields["number"] }}
+{{ end }}
