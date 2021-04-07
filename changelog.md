@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.16
+Support for custom fields in Pages
+
 ## 0.15.15
 Load pricing configuration into Config.
 
