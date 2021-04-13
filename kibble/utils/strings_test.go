@@ -16,6 +16,7 @@ package utils
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -50,4 +51,18 @@ func TestAppendUnique(t *testing.T) {
 	list := []string{"b", "c"}
 	assert.Equal(t, 3, len(AppendUnique("a", list)), "Appended")
 	assert.Equal(t, 2, len(AppendUnique("b", list)), "Not appended")
+}
+
+func TestParseTimeFromString(t *testing.T) {
+	dates := []string{
+		"2021-04-01T01:03:05Z", "2021-04-01T01:03:05.000000000+00:00", "2021-04-01T01:03:05+00:00", "2021-04-01T01:03:05",
+	}
+
+	for _, d := range dates {
+		parsedDate := ParseTimeFromString(d)
+
+		assert.Equal(t, 2021, parsedDate.Year(), d)
+		assert.Equal(t, time.April, parsedDate.Month(), d)
+		assert.Equal(t, 1, parsedDate.Day(), d)
+	}
 }
