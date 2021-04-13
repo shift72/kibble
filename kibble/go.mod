@@ -8,7 +8,6 @@ require (
 	github.com/CloudyKit/jet v2.1.1+incompatible
 	github.com/araddon/dateparse v0.0.0-20210207001429-0eec95c9db7e
 	github.com/aws/aws-sdk-go v1.12.2
-	github.com/davecgh/go-spew v1.1.1
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-ini/ini v1.28.2 // indirect
 	github.com/google/btree v0.0.0-20161217183710-316fb6d3f031 // indirect
