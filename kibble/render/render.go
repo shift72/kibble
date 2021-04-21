@@ -70,7 +70,7 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 // Render - render the files
 func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	
-	fmt.Println("remoteTranslations is: ",cfg.RemoteTranslations)
+	log.Infof("remoteTranslations: %t", cfg.RemoteTranslations)
 	initSW := utils.NewStopwatch("load")
 
 	api.CheckAdminCredentials(cfg)
