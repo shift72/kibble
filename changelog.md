@@ -1,5 +1,8 @@
 # Change log
 
+## Unreleased
+Config for Custom translations- remoteTranslations
+
 ## 0.15.16
 Support for custom fields in Pages
 
