@@ -47,5 +47,6 @@
             "pageSize": 0,
             "defaultLanguageOnly": true
           }
-    ]
+    ],
+    "remoteTranslations":true
 }

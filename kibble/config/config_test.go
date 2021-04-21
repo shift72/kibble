@@ -2,9 +2,7 @@ package config
 
 import (
 	"testing"
-
 	"kibble/models"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -40,4 +38,10 @@ func TestLoadLanguagesConfigWithObjects(t *testing.T) {
 	assert.Equal(t, cfg.Languages["en"].Name, "English")
 	assert.Equal(t, cfg.Languages["it"].Code, "it_IT")
 	assert.Equal(t, cfg.Languages["it"].Name, "Italian")
+}
+
+func TestLoadConfig(t *testing.T) {
+	sitePath = "../sample_site/kibble.json"
+	cfg := LoadConfig(false, "xxx", false)
+	assert.Equal(t, true, cfg.RemoteTranslations)
 }
