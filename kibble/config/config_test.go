@@ -41,7 +41,21 @@ func TestLoadLanguagesConfigWithObjects(t *testing.T) {
 }
 
 func TestLoadConfig(t *testing.T) {
-	sitePath = "../sample_site/kibble.json"
-	cfg := LoadConfig(false, "xxx", false)
-	assert.Equal(t, true, cfg.RemoteTranslations)
+	sitePath = "./test/kibble-translations-key-true.json"
+	cfg := LoadConfig(false, "api-key", false)
+	assert.Equal(t, true, cfg.UseTranslationsApi)
+}
+
+func TestLoadConfigFalse(t *testing.T) {
+	sitePath = "./test/kibble-translations-key-false.json"
+	cfg := LoadConfig(false, "api-key", false)
+	assert.Equal(t, false, cfg.UseTranslationsApi)
+}
+
+func TestLoadConfigMissing(t *testing.T) {
+	sitePath = "./test/kibble-translations-key-missing.json"
+	cfg := LoadConfig(false, "api-key", false)
+	if(!cfg.UseTranslationsApi){
+		log.Infof("No config")
+	}
 }
