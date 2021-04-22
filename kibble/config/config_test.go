@@ -3,7 +3,6 @@ package config
 import (
 	"testing"
 	"kibble/models"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 )
 
