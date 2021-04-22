@@ -1,7 +1,7 @@
 # Change log
 
 ## Unreleased
-Config for retrieving translations from a new Languages API - `useTranslationsAPI`. This API is not yet available but adding a feature toggle in advance for development.
+Config for retrieving translations from a new Translations API - `useTranslationsAPI`. This API is not yet available but adding a feature toggle in advance for development.
 
 ## 0.15.16
 Support for custom fields in Pages
