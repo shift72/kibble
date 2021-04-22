@@ -55,7 +55,5 @@ func TestLoadConfigFalse(t *testing.T) {
 func TestLoadConfigMissing(t *testing.T) {
 	sitePath = "./test/kibble-translations-key-missing.json"
 	cfg := LoadConfig(false, "api-key", false)
-	if(!cfg.UseTranslationsApi){
-		log.Infof("No config")
-	}
+	assert.NotContains(t, "useTranslationsApi", cfg.UseTranslationsApi)
 }
