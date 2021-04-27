@@ -20,6 +20,8 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"github.com/araddon/dateparse"
 )
 
 // Join - using the separator join the strings
@@ -91,7 +93,7 @@ func ParseTimeFromString(str string) time.Time {
 		return t
 	}
 
-	t, _ = time.Parse(time.RFC3339, str)
+	t, _ = dateparse.ParseAny(str)
 	return t
 }
 
