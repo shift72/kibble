@@ -1,5 +1,8 @@
 # Change log
 
+## 0.15.17
+Support a wider range of date formats
+
 ## 0.15.16
 Support for custom fields in Pages
 
