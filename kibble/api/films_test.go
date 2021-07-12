@@ -62,6 +62,9 @@ func getFilm() filmV2 {
 		}{{
 			Name:      "James Earl Jones",
 			Character: "Darth Vadar",
+		}, {
+			Name: "	Tab Hunter	",
+			Character: "  Gwen Spacy",
 		}},
 		Crew: []struct {
 			Name string `json:"name"`
@@ -103,9 +106,9 @@ func getFilm() filmV2 {
 		Studio: []struct {
 			Name string `json:"name"`
 		}{{
-			Name: "Studio ABC",
+			Name: "	Studio ABC	",
 		}, {
-			Name: "Studio XYZ",
+			Name: "  Studio XYZ  ",
 		}},
 		Classifications: map[string]classificationV1{
 			"au": {
@@ -144,6 +147,8 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, "https://cdn/trailer.mp4", model.Seo.VideoURL, "seo.videourl")
 
 	assert.Equal(t, "Darth Vadar", model.Cast[0].Character, "cast.character")
+	assert.Equal(t, "Tab Hunter", model.Cast[1].Name, "cast.character")
+	assert.Equal(t, "Gwen Spacy", model.Cast[1].Character, "cast.character")
 	assert.Equal(t, "Peter Jackson", model.Crew[0].Name, "crew.name")
 
 	assert.Equal(t, 1, len(model.Bonuses), "expect 1 bonus")

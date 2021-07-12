@@ -155,7 +155,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	}
 
 	for _, s := range f.Studio {
-		film.Studio = append(film.Studio, s.Name)
+		film.Studio = append(film.Studio, strings.TrimSpace(s.Name))
 	}
 
 	for key, value := range f.Classifications {
@@ -191,16 +191,16 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	// cast
 	for _, t := range f.Cast {
 		film.Cast = append(film.Cast, models.CastMember{
-			Name:      t.Name,
-			Character: t.Character,
+			Name:      strings.TrimSpace(t.Name),
+			Character: strings.TrimSpace(t.Character),
 		})
 	}
 
 	// crew
 	for _, t := range f.Crew {
 		film.Crew = append(film.Crew, models.CrewMember{
-			Name: t.Name,
-			Job:  t.Job,
+			Name: strings.TrimSpace(t.Name),
+			Job:  strings.TrimSpace(t.Job),
 		})
 	}
 
