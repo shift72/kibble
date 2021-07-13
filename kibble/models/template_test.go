@@ -15,6 +15,7 @@
 package models
 
 import (
+	"fmt"
 	"testing"
 
 	"kibble/test"
@@ -420,4 +421,17 @@ func TestI18nPathPrefixFormattingWithNonDefaultLanguageAndPathHasNoSlash(t *test
 	renderer1.DumpResults()
 
 	assert.Contains(t, renderer1.Results[0].Output(), "href=\"/fr/no-slash.html\"")
+}
+
+func TestViewStringMethods(t *testing.T) {
+
+	site := &Site{
+		Config: ServiceConfig{
+			"device_user_limit": "3",
+		},
+	}
+
+	renderer := setupViewRenderer(site, nil)
+
+	fmt.Printf("%+v\n", renderer.View.stripHTML)
 }
