@@ -15,7 +15,6 @@
 package models
 
 import (
-	"fmt"
 	"testing"
 
 	"kibble/test"
@@ -298,7 +297,7 @@ func TestAvailabilityFormattingAndCustomFields(t *testing.T) {
 
 	assert.Contains(t, renderer1.Results[0].Output(), "This is true")
 	assert.Contains(t, renderer1.Results[0].Output(), "some string here == 99")
-
+	assert.Contains(t, renderer1.Results[0].Output(), "tags should be stripped")
 }
 
 func TestI18nPathPrefixFormattingWithDefaultLanguage(t *testing.T) {
@@ -421,17 +420,4 @@ func TestI18nPathPrefixFormattingWithNonDefaultLanguageAndPathHasNoSlash(t *test
 	renderer1.DumpResults()
 
 	assert.Contains(t, renderer1.Results[0].Output(), "href=\"/fr/no-slash.html\"")
-}
-
-func TestViewStringMethods(t *testing.T) {
-
-	site := &Site{
-		Config: ServiceConfig{
-			"device_user_limit": "3",
-		},
-	}
-
-	renderer := setupViewRenderer(site, nil)
-
-	fmt.Printf("%+v\n", renderer.View.stripHTML)
 }
