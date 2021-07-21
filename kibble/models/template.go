@@ -25,6 +25,7 @@ import (
 	"kibble/version"
 
 	"github.com/CloudyKit/jet"
+	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"gopkg.in/russross/blackfriday.v2"
@@ -192,6 +193,10 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 	view.AddGlobal("append", func(slice []string, newValue string) []string {
 		s := append(slice, newValue)
 		return s
+	})
+
+	view.AddGlobal("stripHTML", func(key string) string {
+		return strip.StripTags(key)
 	})
 
 	return view

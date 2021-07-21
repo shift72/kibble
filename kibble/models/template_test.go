@@ -297,7 +297,7 @@ func TestAvailabilityFormattingAndCustomFields(t *testing.T) {
 
 	assert.Contains(t, renderer1.Results[0].Output(), "This is true")
 	assert.Contains(t, renderer1.Results[0].Output(), "some string here == 99")
-
+	assert.Contains(t, renderer1.Results[0].Output(), "tags should be stripped")
 }
 
 func TestI18nPathPrefixFormattingWithDefaultLanguage(t *testing.T) {
