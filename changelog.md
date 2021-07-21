@@ -3,6 +3,7 @@
 
 ## Unreleased
 Config for retrieving translations from a new Translations API - `useTranslationsAPI`. This API is not yet available but adding a feature toggle in advance for development.
+Fix expected sitemap extension validation.
 
 ## 0.15.17
 Support a wider range of date formats

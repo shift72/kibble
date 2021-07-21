@@ -39,7 +39,7 @@ var expectedPaths = []descriptivePath{
 		purpose: "instruct robots on how to interact with the site",
 	},
 	descriptivePath{
-		path:    "sitemap.txt.jet",
+		path:    "sitemap.xml.jet",
 		purpose: "instruct search engines about the pages of interest",
 	},
 }
