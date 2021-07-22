@@ -3,7 +3,9 @@
 
 ## Unreleased
 Config for retrieving translations from a new Translations API - `useTranslationsAPI`. This API is not yet available but adding a feature toggle in advance for development.
+
 Fix expected sitemap extension validation.
+
 Add global template method stripHTML - for admin user assumption HTML in textarea is valid.
 
 ## 0.15.17
