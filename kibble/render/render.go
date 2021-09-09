@@ -69,7 +69,7 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 
 // Render - render the files
 func Render(sourcePath string, buildPath string, cfg *models.Config) int {
-	
+
 	log.Infof("UseTranslationsApi: %t", cfg.UseTranslationsApi)
 	initSW := utils.NewStopwatch("load")
 
@@ -101,6 +101,34 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	errCount := 0
 
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
+
+	if site.Toggles["translations_api"] {
+
+		// translations, err := api.LoadAllTranslations(cfg)
+		// if err != nil {
+		// 	log.Errorf("Failed to get translations: %s", err)
+		// 	return 1
+		// }
+
+		languages, err := api.LoadAllLanguages(cfg)
+		if err != nil {
+			log.Errorf("Failed to get languages: %s", err)
+			return 1
+		}
+
+		cfg.DefaultLanguage = languages.DefaultLanguage["code"]
+		for _, langObj := range languages.SupportedLanguages {
+			cfg.Languages[langObj["code"]] = models.LanguageConfig{
+				Code: langObj["code"],
+				Name: langObj["label"],
+			}
+		}
+
+		// fmt.Println(translations)
+		fmt.Println(languages)
+		fmt.Println(cfg)
+	}
+
 	for lang, localeObj := range cfg.Languages {
 
 		locale := localeObj.Code
