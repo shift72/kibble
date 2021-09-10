@@ -151,6 +151,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Cast:            make([]models.CastMember, 0),
 		Crew:            make([]models.CrewMember, 0),
 		CustomFields:    f.CustomFields,
+		Refs:            f.Refs,
 		Subtitles:       f.Subtitles,
 	}
 
@@ -266,6 +267,7 @@ type filmV2 struct {
 	SeoKeywords     string                      `json:"seo_keywords"`
 	SeoDescription  string                      `json:"seo_description"`
 	CustomFields    map[string]interface{}      `json:"custom"`
+	Refs            map[string]interface{}      `json:"refs"`
 }
 
 type subtitleTrackV1 struct {

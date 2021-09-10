@@ -49,6 +49,7 @@ type Film struct {
 	Subtitles       []string
 	SubtitleTracks  []SubtitleTrack
 	CustomFields    CustomFields
+	Refs            CustomFields
 	Classifications []Classification
 }
 

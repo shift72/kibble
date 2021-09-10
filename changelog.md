@@ -1,6 +1,7 @@
 # Change log
 
 ## Unreleased
+Add support for film info Refs json blob.
 
 ## 0.15.18
 Config for retrieving translations from a new Translations API - `useTranslationsAPI`. This API is not yet available but adding a feature toggle in advance for development.
