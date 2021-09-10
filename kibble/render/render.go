@@ -15,10 +15,13 @@
 package render
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"kibble/api"
 	"kibble/models"
@@ -102,32 +105,21 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 
-	if site.Toggles["translations_api"] {
-
-		// translations, err := api.LoadAllTranslations(cfg)
-		// if err != nil {
-		// 	log.Errorf("Failed to get translations: %s", err)
-		// 	return 1
-		// }
-
-		languages, err := api.LoadAllLanguages(cfg)
-		if err != nil {
-			log.Errorf("Failed to get languages: %s", err)
-			return 1
-		}
-
-		cfg.DefaultLanguage = languages.DefaultLanguage["code"]
-		for _, langObj := range languages.SupportedLanguages {
-			cfg.Languages[langObj["code"]] = models.LanguageConfig{
-				Code: langObj["code"],
-				Name: langObj["label"],
-			}
-		}
-
-		// fmt.Println(translations)
-		fmt.Println(languages)
-		fmt.Println(cfg)
+	err = overrideLanguages(site, cfg)
+	if err != nil {
+		return 1
 	}
+
+	fmt.Println(cfg.DefaultLanguage)
+	fmt.Println(cfg.Languages)
+
+	apiTranslations, err := obtainTranslations(site, cfg)
+	if err != nil {
+		log.Errorf("Failed to get translations: %s", err)
+		return 1
+	}
+
+	fmt.Println(apiTranslations)
 
 	for lang, localeObj := range cfg.Languages {
 
@@ -137,6 +129,20 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			RoutePrefix: "",
 			Site:        site,
 			Language:    createLanguage(cfg, lang, locale),
+		}
+
+		if apiTranslations != nil {
+			file, err := json.Marshal(apiTranslations[locale])
+			if err != nil {
+				log.Errorf("Failed to marshal translations json %s: %s", locale, err)
+				return 1
+			}
+
+			err = ioutil.WriteFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath), file, 0644)
+			if err != nil {
+				log.Errorf("Failed to write translations files: %s", err)
+				return 1
+			}
 		}
 
 		if lang != cfg.DefaultLanguage {
@@ -180,6 +186,44 @@ func createLanguage(cfg *models.Config, lang string, locale string) *models.Lang
 		Code:               lang,
 		Locale:             locale,
 		IsDefault:          (lang == cfg.DefaultLanguage),
-		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
+		DefinitionFilePath: fmt.Sprintf("%s.all.json", lang),
 	}
+}
+
+func overrideLanguages(site *models.Site, cfg *models.Config) error {
+	if site.Toggles["translations_api"] {
+
+		languages, err := api.LoadAllLanguages(cfg)
+		if err != nil {
+			log.Errorf("Failed to get languages: %s", err)
+			return err
+		}
+
+		cfg.DefaultLanguage = strings.Replace(languages.DefaultLanguage["code"], "_", "-", -1)
+
+		for _, langObj := range languages.SupportedLanguages {
+			langKey := strings.Replace(langObj["code"], "_", "-", -1)
+
+			cfg.Languages[langKey] = models.LanguageConfig{
+				Code: langObj["code"],
+				Name: langObj["label"],
+			}
+		}
+	}
+
+	return nil
+}
+
+func obtainTranslations(site *models.Site, cfg *models.Config) (api.TranslationsV1, error) {
+	if site.Toggles["translations_api"] {
+
+		translations, err := api.LoadAllTranslations(cfg)
+		if err != nil {
+			return nil, err
+		}
+
+		return translations, nil
+	}
+
+	return nil, nil
 }
