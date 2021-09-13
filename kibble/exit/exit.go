@@ -1,4 +1,5 @@
 //    Copyright 2018 SHIFT72
+//
 //    Licensed under the Apache License, Version 2.0 (the "License");
 //    you may not use this file except in compliance with the License.
 //    You may obtain a copy of the License at
@@ -11,31 +12,21 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-package api
+package exit
 
-import (
-	"encoding/json"
-	"fmt"
-	"kibble/models"
+const (
+	ok                       int = 0
+	one                          = 1
+	minusOne                     = -1
+	minusTwo                     = -2
+	FailedToLoadTranslations     = -3
 )
 
-func LoadAllTranslations(cfg *models.Config) (TranslationsV1, error) {
-
-	path := fmt.Sprintf("%s/services/users/v1/translations", cfg.SiteURL)
-
-	data, err := Get(cfg, path)
-	if err != nil {
-		return nil, err
-	}
-
-	var translations TranslationsV1
-
-	err = json.Unmarshal([]byte(data), &translations)
-	if err != nil {
-		return nil, err
-	}
-
-	return translations, nil
-}
-
-type TranslationsV1 map[string]interface{}
+// If we can be sure that changing the -1/-2 doesn't affect the surface API of exit values,
+// then using iota seems to be idiomatic. It starts from zero and auto-increments.
+// const (
+// 	ok = iota
+// 	minusOne
+// 	minusTwo
+// 	failedToLoadTranslations
+// )

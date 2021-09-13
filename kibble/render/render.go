@@ -24,6 +24,7 @@ import (
 	"strings"
 
 	"kibble/api"
+	"kibble/exit"
 	"kibble/models"
 	"kibble/utils"
 
@@ -73,7 +74,6 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 // Render - render the files
 func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
-	log.Infof("UseTranslationsApi: %t", cfg.UseTranslationsApi)
 	initSW := utils.NewStopwatch("load")
 
 	api.CheckAdminCredentials(cfg)
@@ -110,16 +110,11 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		return 1
 	}
 
-	fmt.Println(cfg.DefaultLanguage)
-	fmt.Println(cfg.Languages)
-
 	apiTranslations, err := obtainTranslations(site, cfg)
 	if err != nil {
 		log.Errorf("Failed to get translations: %s", err)
 		return 1
 	}
-
-	fmt.Println(apiTranslations)
 
 	for lang, localeObj := range cfg.Languages {
 
@@ -137,7 +132,6 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 				log.Errorf("Failed to marshal translations json %s: %s", locale, err)
 				return 1
 			}
-
 			err = ioutil.WriteFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath), file, 0644)
 			if err != nil {
 				log.Errorf("Failed to write translations files: %s", err)
@@ -145,12 +139,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			}
 		}
 
-		if lang != cfg.DefaultLanguage {
-			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
-			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
-		} else {
-			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
-		}
+		loadLanguages(lang, cfg, ctx, sourcePath)
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
 		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
@@ -199,6 +188,9 @@ func overrideLanguages(site *models.Site, cfg *models.Config) error {
 			return err
 		}
 
+		if cfg.Languages == nil {
+			cfg.Languages = make(map[string]models.LanguageConfig)
+		}
 		cfg.DefaultLanguage = strings.Replace(languages.DefaultLanguage["code"], "_", "-", -1)
 
 		for _, langObj := range languages.SupportedLanguages {
@@ -226,4 +218,20 @@ func obtainTranslations(site *models.Site, cfg *models.Config) (api.Translations
 	}
 
 	return nil, nil
+}
+
+func loadLanguages(lang string, cfg *models.Config, ctx models.RenderContext, sourcePath string) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Errorf("Failed to load translations, check the pluralities for the following key in %s", lang)
+			log.Errorf("%s", err)
+			os.Exit(exit.FailedToLoadTranslations)
+		}
+	}()
+
+	if lang != cfg.DefaultLanguage {
+		ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
+	}
+
+	i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 }
