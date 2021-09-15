@@ -34,3 +34,17 @@ type Plan struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 }
+
+func (plan *Plan) LinkPlanToPage(site *Site, PageID int) {
+
+	for i := range site.Pages {
+		page := &site.Pages[i]
+		if page.ID == PageID {
+			// link to the page if it exists
+			plan.Page = page
+
+			// Conversely, keep track of what plans a page is associated with
+			page.Plans = append(page.Plans, *plan)
+		}
+	}
+}

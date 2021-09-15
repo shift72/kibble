@@ -41,6 +41,7 @@ type Page struct {
 	PageType        string
 	URL             string
 	CustomFields    CustomFields
+	Plans           []Plan
 }
 
 // Pages -
