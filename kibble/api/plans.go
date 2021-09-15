@@ -19,8 +19,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gosimple/slug"
 	"kibble/models"
+
+	"github.com/gosimple/slug"
 )
 
 // LoadAllPlans - loads all active plans
@@ -41,9 +42,15 @@ func LoadAllPlans(cfg *models.Config, site *models.Site, itemIndex models.ItemIn
 	for _, b := range apiPlans {
 		n := b.mapToModel(site.Config, itemIndex)
 
-		// link to the page if it exists
-		if p, ok := site.Pages.FindPageByID(b.PageID); ok {
-			n.Page = p
+		for i := range site.Pages {
+			page := &site.Pages[i]
+			if page.ID == b.PageID {
+				// link to the page if it exists
+				n.Page = page
+
+				// Conversely, keep track of what plans a page is associated with
+				page.Plans = append(page.Plans, n)
+			}
 		}
 
 		site.Plans = append(site.Plans, n)
