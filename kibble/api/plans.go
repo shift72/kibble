@@ -40,20 +40,11 @@ func LoadAllPlans(cfg *models.Config, site *models.Site, itemIndex models.ItemIn
 	}
 
 	for _, b := range apiPlans {
-		n := b.mapToModel(site.Config, itemIndex)
+		plan := b.mapToModel(site.Config, itemIndex)
 
-		for i := range site.Pages {
-			page := &site.Pages[i]
-			if page.ID == b.PageID {
-				// link to the page if it exists
-				n.Page = page
+		plan.LinkPlanToPage(site, b.PageID)
 
-				// Conversely, keep track of what plans a page is associated with
-				page.Plans = append(page.Plans, n)
-			}
-		}
-
-		site.Plans = append(site.Plans, n)
+		site.Plans = append(site.Plans, plan)
 	}
 
 	return nil
