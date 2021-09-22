@@ -1,6 +1,8 @@
 # Change log
 
 ## Unreleased
+
+## 0.15.19
 Add support for film info Refs json blob.
 Add new field "Plans" to Page objects, comprising a list of associated Plans which have the current Page set as the showcase
 
