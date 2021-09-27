@@ -39,6 +39,7 @@ type Site struct {
 type Language struct {
 	Code               string `json:"code"`
 	Name               string `json:"name"`
+	// Deprecated: Use Language.Code instead.
 	Locale             string `json:"locale"`
 	DefinitionFilePath string `json:"-"`
 	IsDefault          bool   `json:"-"`

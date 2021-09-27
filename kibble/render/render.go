@@ -116,20 +116,20 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		return 1
 	}
 
-	for lang, localeObj := range cfg.Languages {
+	for languageObjKey, languageObj := range cfg.Languages {
 
-		locale := localeObj.Code
+		code := languageObj.Code
 
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
-			Language:    createLanguage(cfg, lang, locale),
+			Language:    createLanguage(cfg, languageObjKey, code),
 		}
 
 		if apiTranslations != nil {
-			file, err := json.Marshal(apiTranslations[locale])
+			file, err := json.Marshal(apiTranslations[code])
 			if err != nil {
-				log.Errorf("Failed to marshal translations json %s: %s", locale, err)
+				log.Errorf("Failed to marshal translations json %s: %s", code, err)
 				return 1
 			}
 			err = ioutil.WriteFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath), file, 0644)
@@ -139,10 +139,29 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			}
 		}
 
-		loadLanguages(lang, cfg, ctx, sourcePath)
+		if _, err := os.Stat(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath)); err == nil {
+			fmt.Println("IT EXISTS")
 
-		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
-		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
+		} else if os.IsNotExist(err) {
+			fmt.Println("IT DON'T EXISTS")
+
+		} else {
+			fmt.Println(err.Error())
+		}
+
+		// loadLanguages(languageObjKey, cfg, ctx, sourcePath)
+
+		if languageObjKey != cfg.DefaultLanguage {
+			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
+			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+		} else {
+			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+		}
+
+		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)
+
+		//Look at site translations assigned to site, volta is client 25, file en_AU.all.json is currently null
+		T, err := i18n.Tfunc(languageObj.Code, cfg.DefaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)
 			errCount++
@@ -170,17 +189,20 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	return errCount
 }
 
-func createLanguage(cfg *models.Config, lang string, locale string) *models.Language {
+func createLanguage(cfg *models.Config, languageObjKey string, code string) *models.Language {
 	return &models.Language{
-		Code:               lang,
-		Locale:             locale,
-		IsDefault:          (lang == cfg.DefaultLanguage),
-		DefinitionFilePath: fmt.Sprintf("%s.all.json", lang),
+		Code:               languageObjKey,
+		Locale:             code,
+		IsDefault:          (languageObjKey == cfg.DefaultLanguage),
+		DefinitionFilePath: fmt.Sprintf("%s.all.json", code),
 	}
 }
 
 func overrideLanguages(site *models.Site, cfg *models.Config) error {
 	if site.Toggles["translations_api"] {
+
+		cfg.DefaultLanguage = ""
+		cfg.Languages = make(map[string]models.LanguageConfig)
 
 		languages, err := api.LoadAllLanguages(cfg)
 		if err != nil {
@@ -188,17 +210,14 @@ func overrideLanguages(site *models.Site, cfg *models.Config) error {
 			return err
 		}
 
-		if cfg.Languages == nil {
-			cfg.Languages = make(map[string]models.LanguageConfig)
-		}
-		cfg.DefaultLanguage = strings.Replace(languages.DefaultLanguage["code"], "_", "-", -1)
+		cfg.DefaultLanguage = formatPathLocale(languages.DefaultLanguage.Code)
 
-		for _, langObj := range languages.SupportedLanguages {
-			langKey := strings.Replace(langObj["code"], "_", "-", -1)
+		for _, lang := range languages.SupportedLanguages {
+			langKey := formatPathLocale(lang.Code)
 
 			cfg.Languages[langKey] = models.LanguageConfig{
-				Code: langObj["code"],
-				Name: langObj["label"],
+				Code: lang.Code,
+				Name: lang.Label,
 			}
 		}
 	}
@@ -220,18 +239,23 @@ func obtainTranslations(site *models.Site, cfg *models.Config) (api.Translations
 	return nil, nil
 }
 
-func loadLanguages(lang string, cfg *models.Config, ctx models.RenderContext, sourcePath string) {
+func loadLanguages(languageObjKey string, cfg *models.Config, ctx models.RenderContext, sourcePath string) {
 	defer func() {
 		if err := recover(); err != nil {
-			log.Errorf("Failed to load translations, check the pluralities for the following key in %s", lang)
+			log.Errorf("Failed to load translations, check the pluralities for the following key in %s", languageObjKey)
 			log.Errorf("%s", err)
 			os.Exit(exit.FailedToLoadTranslations)
 		}
 	}()
 
-	if lang != cfg.DefaultLanguage {
-		ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
+	if languageObjKey != cfg.DefaultLanguage {
+		ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
 	}
 
 	i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+}
+
+func formatPathLocale(code string) string {
+	dashedCode := strings.ReplaceAll(code, "_", "-")
+	return strings.ToLower(dashedCode)
 }

@@ -40,6 +40,12 @@ func LoadAllLanguages(cfg *models.Config) (*LanguagesV1, error) {
 }
 
 type LanguagesV1 struct {
-	DefaultLanguage    map[string]string   `json:"default_language"`
-	SupportedLanguages []map[string]string `json:"supported_languages"`
+	DefaultLanguage struct {
+		Code  string `json:"code"`
+		Label string `json:"label"`
+	} `json:"default_language"`
+	SupportedLanguages []struct {
+		Code  string `json:"code"`
+		Label string `json:"label"`
+	} `json:"supported_languages"`
 }
