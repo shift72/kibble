@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.15.19
+Add support for film info Refs json blob.
+Add new field "Plans" to Page objects, comprising a list of associated Plans which have the current Page set as the showcase
+
 ## 0.15.18
 Config for retrieving translations from a new Translations API - `useTranslationsAPI`. This API is not yet available but adding a feature toggle in advance for development.
 

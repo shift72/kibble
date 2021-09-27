@@ -120,6 +120,11 @@ func getFilm() filmV2 {
 		SeoTitle:       "Film One Meta Title",
 		SeoKeywords:    "Film One Meta Keywords",
 		SeoDescription: "Film One Meta Description",
+		Refs: struct {
+			LetterboxdID string `json:"letterboxd_id"`
+		}{
+			LetterboxdID: "abc123",
+		},
 	}
 	return apiFilm
 }
@@ -157,6 +162,8 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, 2, len(model.SubtitleTracks), "expect the subtitles to be 2")
 
 	assert.Equal(t, nil, model.CustomFields["hello?"])
+
+	assert.Equal(t, model.Refs.LetterboxdID, "abc123")
 
 	assert.Equal(t, 2, len(model.GetSubtitles()), "expect merged list of subtitles")
 	assert.Contains(t, model.GetSubtitles(), "Italian")
@@ -236,6 +243,27 @@ func TestFilmCustomFields(t *testing.T) {
 	assert.Equal(t, "https://www.facebook.com/custompage", model.CustomFields["facebook_url"])
 	assert.Equal(t, false, model.CustomFields["another_key"])
 	assert.Equal(t, nil, model.CustomFields["where is it"])
+}
+
+func TestFilmRefs(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := filmV2{
+		ID:    123,
+		Title: "Film One",
+		Slug:  "/film/52",
+		Refs: struct {
+			LetterboxdID string `json:"letterboxd_id"`
+		}{
+			LetterboxdID: "wololo",
+		},
+	}
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, model.Refs.LetterboxdID, "wololo")
 }
 
 func TestFilmSubtitlesAsArray(t *testing.T) {

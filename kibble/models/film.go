@@ -49,6 +49,7 @@ type Film struct {
 	Subtitles       []string
 	SubtitleTracks  []SubtitleTrack
 	CustomFields    CustomFields
+	Refs            FilmRefs
 	Classifications []Classification
 }
 
@@ -135,4 +136,8 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 			(*films)[group[j]].TitleSlug = fmt.Sprintf("%s-%d", (*films)[group[j]].TitleSlug, j+1)
 		}
 	}
+}
+
+type FilmRefs struct {
+	LetterboxdID string `json:"letterboxd_id"`
 }
