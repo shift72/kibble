@@ -196,7 +196,7 @@ func overrideLanguages(site *models.Site, cfg *models.Config) error {
 			site.Languages = append(site.Languages, models.Language{
 				IsDefault: isDefault,
 				Code:      defaultLanguageOverride(isDefault, langCode),
-				Name:      langLabel,
+				Name:      lang.Label,
 			})
 
 			cfg.Languages[langCode] = models.LanguageConfig{
