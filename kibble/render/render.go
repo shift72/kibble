@@ -15,12 +15,10 @@
 package render
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"kibble/api"
 	"kibble/models"
@@ -95,7 +93,9 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		sourcePath: sourcePath,
 	}
 
-	err = preprocessLanguageFiles(site, cfg, sourcePath)
+	langRenderer := NewLanguageRenderer(cfg, site)
+
+	err = langRenderer.PreprocessLanguageFiles(sourcePath)
 	if err != nil {
 		return 1
 	}
@@ -103,9 +103,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	renderer.Initialise()
 
 	initSW.Completed()
-
 	errCount := 0
-
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 
 	for languageObjKey, languageObj := range cfg.Languages {
@@ -115,7 +113,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
-			Language:    formatContextLanguage(site.Toggles["translations_api"], cfg, languageObjKey, code),
+			Language:    langRenderer.FormatContextLanguage(site.Toggles["translations_api"], languageObjKey, code),
 		}
 
 		if languageObjKey != cfg.DefaultLanguage {
@@ -153,149 +151,5 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	renderSW.Completed()
 
 	return errCount
-}
 
-func createLanguage(cfg *models.Config, languageObjKey string, code string) *models.Language {
-	return &models.Language{
-		Code:               languageObjKey,
-		Locale:             code,
-		IsDefault:          (languageObjKey == cfg.DefaultLanguage),
-		DefinitionFilePath: formatLanguageFilename(code),
-	}
-}
-
-func overrideLanguages(site *models.Site, cfg *models.Config) error {
-	defaultLanguageOverride := func(isDefault bool, langCode string) string {
-		if isDefault {
-			return ""
-		}
-		return langCode
-	}
-
-	if site.Toggles["translations_api"] {
-
-		site.Languages = make([]models.Language, 0)
-
-		cfg.DefaultLanguage = ""
-		cfg.Languages = make(map[string]models.LanguageConfig)
-
-		languages, err := api.LoadAllLanguages(cfg)
-		if err != nil {
-			log.Errorf("Failed to get languages: %s", err)
-			return err
-		}
-
-		cfg.DefaultLanguage = formatPathLocale(languages.DefaultLanguage.Code)
-
-		for _, lang := range languages.SupportedLanguages {
-			langCode := formatPathLocale(lang.Code)
-			langLabel := formatPathLocale(lang.Label)
-
-			isDefault := langCode == cfg.DefaultLanguage
-
-			site.Languages = append(site.Languages, models.Language{
-				IsDefault: isDefault,
-				Code:      defaultLanguageOverride(isDefault, langCode),
-				Name:      lang.Label,
-			})
-
-			cfg.Languages[langCode] = models.LanguageConfig{
-				Code: langCode,
-				Name: langLabel,
-			}
-		}
-	}
-
-	return nil
-}
-
-func obtainTranslations(site *models.Site, cfg *models.Config) (api.TranslationsV1, error) {
-	if site.Toggles["translations_api"] {
-
-		translations, err := api.LoadAllTranslations(cfg)
-		if err != nil {
-			return nil, err
-		}
-
-		for key := range translations {
-			translations[formatPathLocale(key)] = translations[key]
-		}
-
-		return translations, nil
-	}
-
-	return nil, nil
-}
-
-func formatPathLocale(code string) string {
-	dashedCode := strings.ReplaceAll(code, "_", "-")
-	return strings.ToLower(dashedCode)
-}
-
-func writeFile(filename string, data []byte) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		log.Errorf("%s", err)
-		return err
-	}
-
-	_, err = file.Write(data)
-	if err != nil {
-		log.Errorf("%s", err)
-		file.Close()
-		return err
-	}
-
-	return file.Close()
-}
-
-func formatLanguageFilename(code string) string {
-	return fmt.Sprintf("%s.all.json", code)
-}
-
-func preprocessLanguageFiles(site *models.Site, cfg *models.Config, sourcePath string) error {
-	err := overrideLanguages(site, cfg)
-	if err != nil {
-		return err
-	}
-
-	apiTranslations, err := obtainTranslations(site, cfg)
-	if err != nil {
-		log.Errorf("Failed to get translations: %s", err)
-		return err
-	}
-
-	if apiTranslations != nil {
-		for _, languageObj := range cfg.Languages {
-
-			code := languageObj.Code
-
-			filename := formatLanguageFilename(code)
-
-			file, err := json.Marshal(apiTranslations[code])
-			if err != nil {
-				log.Errorf("Failed to marshal translations json %s: %s", code, err)
-				return err
-			}
-
-			err = writeFile(filepath.Join(sourcePath, filename), file)
-			if err != nil {
-				log.Errorf("Failed to write translations files: %s", err)
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func formatContextLanguage(translationsAPIEnabled bool, cfg *models.Config, languageObjKey string, code string) *models.Language {
-	if translationsAPIEnabled {
-		return &models.Language{
-			Code:               formatPathLocale(languageObjKey),
-			Locale:             formatPathLocale(code),
-			IsDefault:          (formatPathLocale(languageObjKey) == cfg.DefaultLanguage),
-			DefinitionFilePath: formatLanguageFilename(code),
-		}
-	}
-	return createLanguage(cfg, languageObjKey, code)
 }
