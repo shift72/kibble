@@ -94,7 +94,7 @@ type CastMember struct {
 	Character string
 }
 
-// CastMember -
+// AwardCategory -
 type AwardCategory struct {
 	Id           int
 	Title        string
