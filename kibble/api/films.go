@@ -250,24 +250,19 @@ type filmV2 struct {
 	Studio []struct {
 		Name string `json:"name"`
 	} `json:"studio"`
-	Overview        string   `json:"overview"`
-	Tagline         string   `json:"tagline"`
-	ReleaseDate     string   `json:"release_date,omitempty"`
-	Runtime         float64  `json:"runtime"`
-	Countries       []string `json:"countries"`
-	Languages       []string `json:"languages"`
-	Genres          []string `json:"genres"`
-	AwardCategories []struct {
-		Id           int    `json:"id"`
-		Title        string `json:"title"`
-		DisplayLabel string `json:"display_label"`
-	} `json:"award_categories"`
-	Tags      []string `json:"tags"`
-	Title     string   `json:"title"`
-	Slug      string   `json:"slug"`
-	FilmID    int      `json:"film_id"`
-	ID        int      `json:"id"`
-	ImageUrls struct {
+	Overview    string   `json:"overview"`
+	Tagline     string   `json:"tagline"`
+	ReleaseDate string   `json:"release_date,omitempty"`
+	Runtime     float64  `json:"runtime"`
+	Countries   []string `json:"countries"`
+	Languages   []string `json:"languages"`
+	Genres      []string `json:"genres"`
+	Tags        []string `json:"tags"`
+	Title       string   `json:"title"`
+	Slug        string   `json:"slug"`
+	FilmID      int      `json:"film_id"`
+	ID          int      `json:"id"`
+	ImageUrls   struct {
 		Portrait       string `json:"portrait"`
 		Landscape      string `json:"landscape"`
 		Header         string `json:"header"`
@@ -287,6 +282,11 @@ type filmV2 struct {
 	Refs            struct {
 		LetterboxdID string `json:"letterboxd_id"`
 	} `json:"refs"`
+	AwardCategories []struct {
+		Id           int    `json:"id"`
+		Title        string `json:"title"`
+		DisplayLabel string `json:"display_label"`
+	} `json:"award_categories"`
 }
 
 type subtitleTrackV1 struct {
