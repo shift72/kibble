@@ -118,18 +118,19 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Film {
 
 	film := models.Film{
-		ID:          f.ID,
-		Slug:        f.Slug,
-		Title:       f.Title,
-		TitleSlug:   slug.Make(f.Title),
-		Overview:    f.Overview,
-		Tagline:     f.Tagline,
-		ReleaseDate: utils.ParseTimeFromString(f.ReleaseDate),
-		Runtime:     models.Runtime(f.Runtime),
-		Countries:   f.Countries,
-		Languages:   f.Languages,
-		Genres:      f.Genres,
-		Tags:        f.Tags,
+		ID:              f.ID,
+		Slug:            f.Slug,
+		Title:           f.Title,
+		TitleSlug:       slug.Make(f.Title),
+		Overview:        f.Overview,
+		Tagline:         f.Tagline,
+		ReleaseDate:     utils.ParseTimeFromString(f.ReleaseDate),
+		Runtime:         models.Runtime(f.Runtime),
+		Countries:       f.Countries,
+		Languages:       f.Languages,
+		Genres:          f.Genres,
+		AwardCategories: make([]models.AwardCategory, 0),
+		Tags:            f.Tags,
 		Seo: models.Seo{
 			SiteName:    serviceConfig.GetSiteName(),
 			Title:       serviceConfig.GetSEOTitle(f.SeoTitle, f.Title),
@@ -199,6 +200,15 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		})
 	}
 
+	// award categories
+	for _, t := range f.AwardCategories {
+		film.AwardCategories = append(film.AwardCategories, models.AwardCategory{
+			Id:           t.Id,
+			Title:        t.Title,
+			DisplayLabel: t.DisplayLabel,
+		})
+	}
+
 	// crew
 	for _, t := range f.Crew {
 		film.Crew = append(film.Crew, models.CrewMember{
@@ -240,19 +250,24 @@ type filmV2 struct {
 	Studio []struct {
 		Name string `json:"name"`
 	} `json:"studio"`
-	Overview    string   `json:"overview"`
-	Tagline     string   `json:"tagline"`
-	ReleaseDate string   `json:"release_date,omitempty"`
-	Runtime     float64  `json:"runtime"`
-	Countries   []string `json:"countries"`
-	Languages   []string `json:"languages"`
-	Genres      []string `json:"genres"`
-	Tags        []string `json:"tags"`
-	Title       string   `json:"title"`
-	Slug        string   `json:"slug"`
-	FilmID      int      `json:"film_id"`
-	ID          int      `json:"id"`
-	ImageUrls   struct {
+	Overview        string   `json:"overview"`
+	Tagline         string   `json:"tagline"`
+	ReleaseDate     string   `json:"release_date,omitempty"`
+	Runtime         float64  `json:"runtime"`
+	Countries       []string `json:"countries"`
+	Languages       []string `json:"languages"`
+	Genres          []string `json:"genres"`
+	AwardCategories []struct {
+		Id           int    `json:"id"`
+		Title        string `json:"title"`
+		DisplayLabel string `json:"display_label"`
+	} `json:"award_categories"`
+	Tags      []string `json:"tags"`
+	Title     string   `json:"title"`
+	Slug      string   `json:"slug"`
+	FilmID    int      `json:"film_id"`
+	ID        int      `json:"id"`
+	ImageUrls struct {
 		Portrait       string `json:"portrait"`
 		Landscape      string `json:"landscape"`
 		Header         string `json:"header"`

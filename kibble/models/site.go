@@ -94,6 +94,13 @@ type CastMember struct {
 	Character string
 }
 
+// CastMember -
+type AwardCategory struct {
+	Id           int
+	Title        string
+	DisplayLabel string
+}
+
 // SubtitleTrack -
 type SubtitleTrack struct {
 	Language string

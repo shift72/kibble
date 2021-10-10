@@ -13,7 +13,7 @@ require (
 	github.com/google/btree v0.0.0-20161217183710-316fb6d3f031 // indirect
 	github.com/gosimple/slug v1.1.1
 	github.com/gregjones/httpcache v0.0.0-20170926212834-c1f8028e62ad
-	github.com/grokify/html-strip-tags-go v0.0.1
+	github.com/grokify/html-strip-tags-go v0.0.1 // indirect
 	github.com/hashicorp/go-version v0.0.0-20170914154128-fc61389e27c7
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 // indirect
