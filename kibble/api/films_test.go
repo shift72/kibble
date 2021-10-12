@@ -126,11 +126,9 @@ func getFilm() filmV2 {
 			LetterboxdID: "abc123",
 		},
 		AwardCategories: []struct {
-			Id           int    `json:"id"`
 			Title        string `json:"title"`
 			DisplayLabel string `json:"display_label"`
 		}{{
-			Id:           1,
 			Title:        "An Award",
 			DisplayLabel: "The Award 2021",
 		}},

@@ -203,7 +203,6 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	// award categories
 	for _, t := range f.AwardCategories {
 		film.AwardCategories = append(film.AwardCategories, models.AwardCategory{
-			Id:           t.Id,
 			Title:        t.Title,
 			DisplayLabel: t.DisplayLabel,
 		})
@@ -283,7 +282,6 @@ type filmV2 struct {
 		LetterboxdID string `json:"letterboxd_id"`
 	} `json:"refs"`
 	AwardCategories []struct {
-		Id           int    `json:"id"`
 		Title        string `json:"title"`
 		DisplayLabel string `json:"display_label"`
 	} `json:"award_categories"`
