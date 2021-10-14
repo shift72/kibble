@@ -27,10 +27,7 @@ import (
 
 type LanguageRenderer interface {
 	PreprocessLanguageFiles(sourcePath string) error
-	OverrideLanguages() error
 	ObtainTranslations() (api.TranslationsV1, error)
-	FormatContextLanguage(translationsAPIEnabled bool, languageObjKey string, code string) *models.Language
-	CreateLanguage(languageObjKey string, code string) *models.Language
 }
 
 type languageRenderer struct {
@@ -49,17 +46,13 @@ func NewLanguageRenderer(cfg *models.Config, site *models.Site) LanguageRenderer
 
 //Setup and Create language files based on API or local language files
 func (l *languageRenderer) PreprocessLanguageFiles(sourcePath string) error {
-	err := l.OverrideLanguages()
-	if err != nil {
-		return err
-	}
-
 	apiTranslations, err := l.ObtainTranslations()
 	if err != nil {
 		log.Errorf("Failed to get translations: %s", err)
 		return err
 	}
 
+	//Create translation filenames based on langague code
 	if apiTranslations != nil {
 		for _, languageObj := range l.cfg.Languages {
 			code := languageObj.Code
@@ -83,51 +76,12 @@ func (l *languageRenderer) PreprocessLanguageFiles(sourcePath string) error {
 	return nil
 }
 
-func (l *languageRenderer) OverrideLanguages() error {
-	if !(l.isEnabled) {
-		return nil
-	}
-
-	l.site.Languages = make([]models.Language, 0)
-
-	l.cfg.DefaultLanguage = ""
-	l.cfg.Languages = make(map[string]models.LanguageConfig)
-
-	languages, err := api.LoadAllLanguages(l.cfg)
-	if err != nil {
-		log.Errorf("Failed to get languages: %s", err)
-		return err
-	}
-
-	l.cfg.DefaultLanguage = formatPathLocale(languages.DefaultLanguage.Code)
-
-	for _, lang := range languages.SupportedLanguages {
-		langCode := formatPathLocale(lang.Code)
-		langLabel := formatPathLocale(lang.Label)
-
-		isDefault := langCode == l.cfg.DefaultLanguage
-
-		l.site.Languages = append(l.site.Languages, models.Language{
-			IsDefault: isDefault,
-			Code:      defaultLanguageOverride(isDefault, langCode),
-			// This is for selector display, will probably change after is(a)+c adds "Display Names"
-			Name: lang.Label,
-		})
-
-		l.cfg.Languages[langCode] = models.LanguageConfig{
-			Code: langCode,
-			Name: langLabel,
-		}
-	}
-
-	return nil
-}
-
 func (l *languageRenderer) ObtainTranslations() (api.TranslationsV1, error) {
 	if !(l.isEnabled) {
 		return nil, nil
 	}
 
+	//retrieve translations
 	translations, err := api.LoadAllTranslations(l.cfg)
 	if err != nil {
 		return nil, err
@@ -138,27 +92,6 @@ func (l *languageRenderer) ObtainTranslations() (api.TranslationsV1, error) {
 	}
 
 	return translations, nil
-}
-
-func (l *languageRenderer) FormatContextLanguage(translationsAPIEnabled bool, languageObjKey string, code string) *models.Language {
-	if translationsAPIEnabled {
-		return &models.Language{
-			Code:               formatPathLocale(languageObjKey),
-			Locale:             formatPathLocale(code),
-			IsDefault:          (formatPathLocale(languageObjKey) == l.cfg.DefaultLanguage),
-			DefinitionFilePath: formatLanguageFilename(code),
-		}
-	}
-	return l.CreateLanguage(languageObjKey, code)
-}
-
-func (l *languageRenderer) CreateLanguage(languageObjKey string, code string) *models.Language {
-	return &models.Language{
-		Code:               languageObjKey,
-		Locale:             code,
-		IsDefault:          (languageObjKey == l.cfg.DefaultLanguage),
-		DefinitionFilePath: formatLanguageFilename(code),
-	}
 }
 
 func formatPathLocale(code string) string {
@@ -185,11 +118,4 @@ func writeFile(filename string, data []byte) error {
 
 func formatLanguageFilename(code string) string {
 	return fmt.Sprintf("%s.all.json", code)
-}
-
-func defaultLanguageOverride(isDefault bool, langCode string) string {
-	if isDefault {
-		return ""
-	}
-	return langCode
 }

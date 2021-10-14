@@ -20,32 +20,61 @@ import (
 	"kibble/models"
 )
 
-func LoadAllLanguages(cfg *models.Config) (*LanguagesV1, error) {
+func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
+	if !site.Toggles["translations_api"] {
+		return nil
+	}
 
 	path := fmt.Sprintf("%s/services/users/v1/languages", cfg.SiteURL)
 
 	data, err := Get(cfg, path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	var languages LanguagesV1
+	var languages languagesV1
 
 	err = json.Unmarshal([]byte(data), &languages)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &languages, nil
+	site.DefaultLanguage = languages.DefaultLanguage.Code
+	site.Languages = languages.mapToModel()
+
+	return nil
 }
 
-type LanguagesV1 struct {
-	DefaultLanguage struct {
-		Code  string `json:"code"`
-		Label string `json:"label"`
-	} `json:"default_language"`
-	SupportedLanguages []struct {
-		Code  string `json:"code"`
-		Label string `json:"label"`
-	} `json:"supported_languages"`
+func (l languagesV1) mapToModel() []models.Language {
+	languages := make([]models.Language, 0)
+
+	for _, lang := range l.SupportedLanguages {
+		isDefault := lang.Code == l.DefaultLanguage.Code
+		languages = append(languages, models.Language{
+			Code:      defaultLanguageOverride(isDefault, lang.Code),
+			Name:      lang.Name,
+			Label:     lang.Label,
+			IsDefault: isDefault,
+		})
+	}
+
+	return languages
+}
+
+type languagesV1 struct {
+	DefaultLanguage    languageV1   `json:"default_language"`
+	SupportedLanguages []languageV1 `json:"supported_languages"`
+}
+
+type languageV1 struct {
+	Code  string `json:"code"`
+	Name  string `json:"display_name"`
+	Label string `json:"label"`
+}
+
+func defaultLanguageOverride(isDefault bool, langCode string) string {
+	if isDefault {
+		return ""
+	}
+	return langCode
 }

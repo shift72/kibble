@@ -93,12 +93,12 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		sourcePath: sourcePath,
 	}
 
-	langRenderer := NewLanguageRenderer(cfg, site)
+	// langRenderer := NewLanguageRenderer(cfg, site)
 
-	err = langRenderer.PreprocessLanguageFiles(sourcePath)
-	if err != nil {
-		return 1
-	}
+	// err = langRenderer.PreprocessLanguageFiles(sourcePath)
+	// if err != nil {
+	// 	return 1
+	// }
 
 	renderer.Initialise()
 
@@ -106,17 +106,28 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	errCount := 0
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 
-	for languageObjKey, languageObj := range cfg.Languages {
+	var defaultLanguage string
+	var languageConfigs map[string]models.LanguageConfig
+	if site.Toggles["translations_api"] {
+		defaultLanguage = site.DefaultLanguage
+		languageConfigs = site.LanguagesToLanguageConfigs()
+	} else {
+		defaultLanguage = cfg.DefaultLanguage
+		languageConfigs = cfg.Languages
+	}
+
+	//changed range from cfg.Langagues - > site.Languages
+	for languageObjKey, languageObj := range languageConfigs {
 
 		code := languageObj.Code
 
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
-			Language:    langRenderer.FormatContextLanguage(site.Toggles["translations_api"], languageObjKey, code),
+			Language:    createLanguage(defaultLanguage, languageObjKey, code),
 		}
 
-		if languageObjKey != cfg.DefaultLanguage {
+		if languageObjKey != defaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
 			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		} else {
@@ -125,7 +136,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)
 
-		T, err := i18n.Tfunc(languageObj.Code, cfg.DefaultLanguage)
+		T, err := i18n.Tfunc(languageObj.Code, defaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)
 			errCount++
@@ -152,4 +163,13 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 	return errCount
 
+}
+
+func createLanguage(defaultLanguage string, languageObjKey string, code string) *models.Language {
+	return &models.Language{
+		Code:               languageObjKey,
+		Locale:             code,
+		IsDefault:          (lang == defaultLanguage),
+		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
+	}
 }

@@ -63,6 +63,11 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		TVEpisodes:  make(models.TVEpisodeCollection, 0),
 	}
 
+	err = LoadAllLanguages(cfg, site)
+	if err != nil {
+		return nil, err
+	}
+
 	err = LoadAllCollections(cfg, site, itemIndex)
 	if err != nil {
 		return nil, err
