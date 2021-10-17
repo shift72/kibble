@@ -14,7 +14,9 @@
 
 package models
 
-import "time"
+import (
+	"time"
+)
 
 // PlanCollection is a list of published plans
 type PlanCollection []Plan
@@ -30,9 +32,11 @@ type Plan struct {
 	IntervalCount   int
 	TrialPeriodDays int
 	Page            *Page
+	PlanType        string
 	PortraitImage   string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	ExpiryDate      time.Time
 }
 
 func (plan *Plan) LinkPlanToPage(site *Site, PageID int) {
@@ -47,4 +51,8 @@ func (plan *Plan) LinkPlanToPage(site *Site, PageID int) {
 			page.Plans = append(page.Plans, *plan)
 		}
 	}
+}
+
+func (plan *Plan) HasExpiryDate() bool {
+	return !plan.ExpiryDate.IsZero()
 }
