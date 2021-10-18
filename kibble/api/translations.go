@@ -19,23 +19,47 @@ import (
 	"kibble/models"
 )
 
-func LoadAllTranslations(cfg *models.Config) (TranslationsV1, error) {
+func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
+	if !site.Toggles["translations_api"] {
+		return nil
+	}
 
 	path := fmt.Sprintf("%s/services/users/v1/translations", cfg.SiteURL)
 
 	data, err := Get(cfg, path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	var translations TranslationsV1
 
 	err = json.Unmarshal([]byte(data), &translations)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return translations, nil
+	for _, l := range site.Languages {
+		l.Translations = make(map[string]models.Translation)
+		for key, t := range translations[l.Code] {
+			l.Translations[key] = models.Translation{
+				Zero:  t.Zero,
+				One:   t.One,
+				Two:   t.Two,
+				Few:   t.Few,
+				Many:  t.Many,
+				Other: t.Other,
+			}
+		}
+	}
+
+	return nil
 }
 
-type TranslationsV1 map[string]interface{}
+type TranslationsV1 map[string]map[string]struct {
+	Zero  string `json:"zero"`
+	One   string `json:"one"`
+	Two   string `json:"two"`
+	Few   string `json:"few"`
+	Many  string `json:"many"`
+	Other string `json:"other"`
+}

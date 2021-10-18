@@ -23,4 +23,14 @@ type Language struct {
 	Locale             string `json:"locale"`
 	DefinitionFilePath string `json:"-"`
 	IsDefault          bool   `json:"-"`
+	Translations       map[string]Translation
+}
+
+type Translation struct {
+	Zero  string `json:"zero"`
+	One   string `json:"one"`
+	Two   string `json:"two"`
+	Few   string `json:"few"`
+	Many  string `json:"many"`
+	Other string `json:"other"`
 }

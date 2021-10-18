@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"kibble/api"
 	"kibble/models"
@@ -93,12 +94,12 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		sourcePath: sourcePath,
 	}
 
-	// langRenderer := NewLanguageRenderer(cfg, site)
+	//langRenderer := NewLanguageRenderer(cfg, site)
 
-	// err = langRenderer.PreprocessLanguageFiles(sourcePath)
-	// if err != nil {
-	// 	return 1
-	// }
+	err = WriteLanguageFiles(site, sourcePath)
+	if err != nil {
+		return 1
+	}
 
 	renderer.Initialise()
 
@@ -128,13 +129,13 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 
 		if languageObjKey != defaultLanguage {
-			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
+			ctx.RoutePrefix = fmt.Sprintf("/%s", formatPathLocale(languageObjKey))
 			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		} else {
 			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		}
 
-		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)
+		renderLangSW := utils.NewStopwatchf("  render language: %s", formatPathLocale(languageObjKey))
 
 		T, err := i18n.Tfunc(languageObj.Code, defaultLanguage)
 		if err != nil {
@@ -165,11 +166,16 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 }
 
-func createLanguage(defaultLanguage string, languageObjKey string, code string) *models.Language {
+func createLanguage(defaultLanguage string, langCode string, locale string) *models.Language {
 	return &models.Language{
-		Code:               languageObjKey,
-		Locale:             code,
-		IsDefault:          (lang == defaultLanguage),
+		Code:               langCode,
+		Locale:             locale,
+		IsDefault:          (langCode == defaultLanguage),
 		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
 	}
+}
+
+func formatPathLocale(code string) string {
+	dashedCode := strings.ReplaceAll(code, "_", "-")
+	return strings.ToLower(dashedCode)
 }

@@ -19,85 +19,67 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
-	"kibble/api"
 	"kibble/models"
 )
 
-type LanguageRenderer interface {
-	PreprocessLanguageFiles(sourcePath string) error
-	ObtainTranslations() (api.TranslationsV1, error)
-}
-
-type languageRenderer struct {
-	cfg       *models.Config
-	site      *models.Site
-	isEnabled bool
-}
-
-func NewLanguageRenderer(cfg *models.Config, site *models.Site) LanguageRenderer {
-	return &languageRenderer{
-		cfg:       cfg,
-		site:      site,
-		isEnabled: site.Toggles["translations_api"],
-	}
-}
-
 //Setup and Create language files based on API or local language files
-func (l *languageRenderer) PreprocessLanguageFiles(sourcePath string) error {
-	apiTranslations, err := l.ObtainTranslations()
-	if err != nil {
-		log.Errorf("Failed to get translations: %s", err)
-		return err
+func WriteLanguageFiles(site *models.Site, sourcePath string) error {
+	// apiTranslations, err := l.ObtainTranslations()
+	// if err != nil {
+	// 	log.Errorf("Failed to get translations: %s", err)
+	// 	return err
+	// }
+
+	if !site.Toggles["translations_api"] {
+		return nil
 	}
 
 	//Create translation filenames based on langague code
-	if apiTranslations != nil {
-		for _, languageObj := range l.cfg.Languages {
-			code := languageObj.Code
 
-			filename := formatLanguageFilename(code)
+	for _, language := range site.Languages {
+		code := language.Code
 
-			file, err := json.Marshal(apiTranslations[code])
-			if err != nil {
-				log.Errorf("Failed to marshal translations json %s: %s", code, err)
-				return err
-			}
+		filename := formatLanguageFilename(code)
 
-			err = writeFile(filepath.Join(sourcePath, filename), file)
-			if err != nil {
-				log.Errorf("Failed to write translations files: %s", err)
-				return err
-			}
+		file, err := json.Marshal(language.Translations)
+		if err != nil {
+			log.Errorf("Failed to marshal translations json %s: %s", code, err)
+			return err
+		}
+
+		err = writeFile(filepath.Join(sourcePath, filename), file)
+		if err != nil {
+			log.Errorf("Failed to write translations files: %s", err)
+			return err
 		}
 	}
 
 	return nil
 }
 
-func (l *languageRenderer) ObtainTranslations() (api.TranslationsV1, error) {
-	if !(l.isEnabled) {
-		return nil, nil
-	}
+// func (l *languageRenderer) ObtainTranslations() (api.TranslationsV1, error) {
+// 	if !(l.isEnabled) {
+// 		return nil, nil
+// 	}
 
-	//retrieve translations
-	translations, err := api.LoadAllTranslations(l.cfg)
-	if err != nil {
-		return nil, err
-	}
+// 	//retrieve translations
+// 	translations, err := api.LoadAllTranslations(l.cfg)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	for key := range translations {
-		translations[formatPathLocale(key)] = translations[key]
-	}
+// 	// for key := range translations {
+// 	// 	translations[formatPathLocale(key)] = translations[key]
+// 	// }
 
-	return translations, nil
-}
+// 	return translations, nil
+// }
 
-func formatPathLocale(code string) string {
-	dashedCode := strings.ReplaceAll(code, "_", "-")
-	return strings.ToLower(dashedCode)
-}
+// func formatPathLocale(code string) string {
+// 	dashedCode := strings.ReplaceAll(code, "_", "-")
+// 	return strings.ToLower(dashedCode)
+// }
 
 func writeFile(filename string, data []byte) error {
 	file, err := os.Create(filename)
