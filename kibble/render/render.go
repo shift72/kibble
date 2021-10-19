@@ -19,7 +19,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"kibble/api"
 	"kibble/models"
@@ -94,8 +93,6 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		sourcePath: sourcePath,
 	}
 
-	//langRenderer := NewLanguageRenderer(cfg, site)
-
 	err = WriteLanguageFiles(site, sourcePath)
 	if err != nil {
 		return 1
@@ -117,7 +114,6 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		languageConfigs = cfg.Languages
 	}
 
-	//changed range from cfg.Langagues - > site.Languages
 	for languageObjKey, languageObj := range languageConfigs {
 
 		code := languageObj.Code
@@ -129,13 +125,13 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 
 		if languageObjKey != defaultLanguage {
-			ctx.RoutePrefix = fmt.Sprintf("/%s", formatPathLocale(languageObjKey))
+			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
 			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		} else {
 			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		}
 
-		renderLangSW := utils.NewStopwatchf("  render language: %s", formatPathLocale(languageObjKey))
+		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)
 
 		T, err := i18n.Tfunc(languageObj.Code, defaultLanguage)
 		if err != nil {
@@ -173,9 +169,4 @@ func createLanguage(defaultLanguage string, langCode string, locale string) *mod
 		IsDefault:          (langCode == defaultLanguage),
 		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
 	}
-}
-
-func formatPathLocale(code string) string {
-	dashedCode := strings.ReplaceAll(code, "_", "-")
-	return strings.ToLower(dashedCode)
 }

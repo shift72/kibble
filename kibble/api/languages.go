@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"kibble/models"
+	"strings"
 )
 
 func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
@@ -39,7 +40,7 @@ func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
-	site.DefaultLanguage = languages.DefaultLanguage.Code
+	site.DefaultLanguage = formatPathLocale(languages.DefaultLanguage.Code)
 	site.Languages = languages.mapToModel()
 
 	return nil
@@ -49,9 +50,10 @@ func (l languagesV1) mapToModel() []models.Language {
 	languages := make([]models.Language, 0)
 
 	for _, lang := range l.SupportedLanguages {
-		isDefault := lang.Code == l.DefaultLanguage.Code
+		code := formatPathLocale(lang.Code)
+		isDefault := code == formatPathLocale(l.DefaultLanguage.Code)
 		languages = append(languages, models.Language{
-			Code:      defaultLanguageOverride(isDefault, lang.Code),
+			Code:      code,
 			Name:      lang.Name,
 			Label:     lang.Label,
 			IsDefault: isDefault,
@@ -72,9 +74,13 @@ type languageV1 struct {
 	Label string `json:"label"`
 }
 
-func defaultLanguageOverride(isDefault bool, langCode string) string {
-	if isDefault {
-		return ""
-	}
-	return langCode
+// func defaultLanguageOverride(isDefault bool, langCode string) string {
+// 	if isDefault {
+// 		return ""
+// 	}
+// 	return langCode
+// }
+func formatPathLocale(code string) string {
+	dashedCode := strings.ReplaceAll(code, "_", "-")
+	return strings.ToLower(dashedCode)
 }

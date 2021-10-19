@@ -38,7 +38,11 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
-	for _, l := range site.Languages {
+	for code, wholeLanguage := range translations {
+		translations[formatPathLocale(code)] = wholeLanguage
+	}
+
+	for i, l := range site.Languages {
 		l.Translations = make(map[string]models.Translation)
 		for key, t := range translations[l.Code] {
 			l.Translations[key] = models.Translation{
@@ -50,6 +54,7 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 				Other: t.Other,
 			}
 		}
+		site.Languages[i] = l
 	}
 
 	return nil
