@@ -118,18 +118,19 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Film {
 
 	film := models.Film{
-		ID:          f.ID,
-		Slug:        f.Slug,
-		Title:       f.Title,
-		TitleSlug:   slug.Make(f.Title),
-		Overview:    f.Overview,
-		Tagline:     f.Tagline,
-		ReleaseDate: utils.ParseTimeFromString(f.ReleaseDate),
-		Runtime:     models.Runtime(f.Runtime),
-		Countries:   f.Countries,
-		Languages:   f.Languages,
-		Genres:      f.Genres,
-		Tags:        f.Tags,
+		ID:              f.ID,
+		Slug:            f.Slug,
+		Title:           f.Title,
+		TitleSlug:       slug.Make(f.Title),
+		Overview:        f.Overview,
+		Tagline:         f.Tagline,
+		ReleaseDate:     utils.ParseTimeFromString(f.ReleaseDate),
+		Runtime:         models.Runtime(f.Runtime),
+		Countries:       f.Countries,
+		Languages:       f.Languages,
+		Genres:          f.Genres,
+		AwardCategories: make([]models.AwardCategory, 0),
+		Tags:            f.Tags,
 		Seo: models.Seo{
 			SiteName:    serviceConfig.GetSiteName(),
 			Title:       serviceConfig.GetSEOTitle(f.SeoTitle, f.Title),
@@ -196,6 +197,14 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		film.Cast = append(film.Cast, models.CastMember{
 			Name:      t.Name,
 			Character: t.Character,
+		})
+	}
+
+	// award categories
+	for _, t := range f.AwardCategories {
+		film.AwardCategories = append(film.AwardCategories, models.AwardCategory{
+			Title:        t.Title,
+			DisplayLabel: t.DisplayLabel,
 		})
 	}
 
@@ -272,6 +281,10 @@ type filmV2 struct {
 	Refs            struct {
 		LetterboxdID string `json:"letterboxd_id"`
 	} `json:"refs"`
+	AwardCategories []struct {
+		Title        string `json:"title"`
+		DisplayLabel string `json:"display_label"`
+	} `json:"award_categories"`
 }
 
 type subtitleTrackV1 struct {

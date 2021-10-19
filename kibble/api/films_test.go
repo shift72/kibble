@@ -125,6 +125,13 @@ func getFilm() filmV2 {
 		}{
 			LetterboxdID: "abc123",
 		},
+		AwardCategories: []struct {
+			Title        string `json:"title"`
+			DisplayLabel string `json:"display_label"`
+		}{{
+			Title:        "An Award",
+			DisplayLabel: "The Award 2021",
+		}},
 	}
 	return apiFilm
 }
@@ -176,6 +183,8 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Contains(t, model.Studio, "Studio ABC")
 	assert.Contains(t, model.Tags, "one")
 	assert.Contains(t, model.Tags, "two")
+
+	assert.Equal(t, "An Award", model.AwardCategories[0].Title, "award_categories.title")
 }
 
 func TestFilmApiToModelWithoutClassifications(t *testing.T) {
