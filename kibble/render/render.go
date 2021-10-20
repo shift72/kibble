@@ -124,16 +124,23 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			Language:    createLanguage(defaultLanguage, languageObjKey, code),
 		}
 
+		// TODO - move translations from language struct to site struct because languages are printed out in application.jet fully and that is bad.
+
+		fmt.Println(fmt.Sprintf("default: %s    name: %s    key: %s    code: %s    path: %s", defaultLanguage, languageObj.Name, languageObjKey, code, ctx.Language.DefinitionFilePath))
+
 		if languageObjKey != defaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
-			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+			err := i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+			if err != nil {
+				log.Errorf("Translation file load failed: %s", err)
+			}
 		} else {
 			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)
 
-		T, err := i18n.Tfunc(languageObj.Code, defaultLanguage)
+		T, err := i18n.Tfunc(code, defaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)
 			errCount++

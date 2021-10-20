@@ -52,6 +52,9 @@ func (l languagesV1) mapToModel() []models.Language {
 	for _, lang := range l.SupportedLanguages {
 		code := formatPathLocale(lang.Code)
 		isDefault := code == formatPathLocale(l.DefaultLanguage.Code)
+		if isDefault {
+			code = ""
+		}
 		languages = append(languages, models.Language{
 			Code:      code,
 			Name:      lang.Name,
@@ -74,12 +77,6 @@ type languageV1 struct {
 	Label string `json:"label"`
 }
 
-// func defaultLanguageOverride(isDefault bool, langCode string) string {
-// 	if isDefault {
-// 		return ""
-// 	}
-// 	return langCode
-// }
 func formatPathLocale(code string) string {
 	dashedCode := strings.ReplaceAll(code, "_", "-")
 	return strings.ToLower(dashedCode)

@@ -38,8 +38,11 @@ func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 	//Create translation filenames based on langague code
 
 	for _, language := range site.Languages {
-		fmt.Println(fmt.Sprintf("OI OI OI %v", language))
 		code := language.Code
+
+		if code == "" {
+			code = site.DefaultLanguage
+		}
 
 		filename := fmt.Sprintf("%s.all.json", code)
 

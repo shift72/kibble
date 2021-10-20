@@ -153,8 +153,12 @@ func (site *Site) LanguagesToLanguageConfigs() map[string]LanguageConfig {
 	configMap := map[string]LanguageConfig{}
 
 	for _, l := range site.Languages {
-		configMap[l.Code] = LanguageConfig{
-			Code: l.Code,
+		code := l.Code
+		if code == "" {
+			code = site.DefaultLanguage
+		}
+		configMap[code] = LanguageConfig{
+			Code: code,
 			Name: l.Name,
 		}
 	}

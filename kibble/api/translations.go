@@ -44,7 +44,11 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 
 	for i, l := range site.Languages {
 		l.Translations = make(map[string]models.Translation)
-		for key, t := range translations[l.Code] {
+		code := l.Code
+		if code == "" {
+			code = site.DefaultLanguage
+		}
+		for key, t := range translations[code] {
 			l.Translations[key] = models.Translation{
 				Zero:  t.Zero,
 				One:   t.One,
