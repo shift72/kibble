@@ -128,14 +128,19 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 		fmt.Println(fmt.Sprintf("default: %s    name: %s    key: %s    code: %s    path: %s", defaultLanguage, languageObj.Name, languageObjKey, code, ctx.Language.DefinitionFilePath))
 
+		translationFilePath := filepath.Join(sourcePath, ctx.Language.DefinitionFilePath)
+
+		fmt.Println(fmt.Sprintf("translationFilePath: %s", translationFilePath))
+
 		if languageObjKey != defaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
-			err := i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+			fmt.Println(fmt.Sprintf("ctx.RoutePrefix : %s", ctx.RoutePrefix))
+			err := i18n.LoadTranslationFile(translationFilePath)
 			if err != nil {
 				log.Errorf("Translation file load failed: %s", err)
 			}
 		} else {
-			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+			i18n.MustLoadTranslationFile(translationFilePath)
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)

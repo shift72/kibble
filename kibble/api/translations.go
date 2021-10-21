@@ -64,6 +64,7 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 	return nil
 }
 
+// TODO fix this!  we can't have all of the pluralities here or go-i18n fails silently.
 type TranslationsV1 map[string]map[string]struct {
 	Zero  string `json:"zero"`
 	One   string `json:"one"`
