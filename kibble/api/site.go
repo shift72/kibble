@@ -46,21 +46,21 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	}
 
 	site := &models.Site{
-		SiteConfig: cfg,
-		Config:     config,
-		Toggles:    toggles,
-		Languages:  sortLanguages(cfg),
-		Navigation: navigation,
-
-		Bundles:     make(models.BundleCollection, 0),
-		Collections: make(models.CollectionCollection, 0),
-		Films:       make(models.FilmCollection, 0),
-		Pages:       pages,
-		Plans:       make(models.PlanCollection, 0),
-		Taxonomies:  make(models.Taxonomies),
-		TVShows:     make(models.TVShowCollection, 0),
-		TVSeasons:   make(models.TVSeasonCollection, 0),
-		TVEpisodes:  make(models.TVEpisodeCollection, 0),
+		SiteConfig:   cfg,
+		Config:       config,
+		Toggles:      toggles,
+		Languages:    sortLanguages(cfg),
+		Translations: make(models.Translations),
+		Navigation:   navigation,
+		Bundles:      make(models.BundleCollection, 0),
+		Collections:  make(models.CollectionCollection, 0),
+		Films:        make(models.FilmCollection, 0),
+		Pages:        pages,
+		Plans:        make(models.PlanCollection, 0),
+		Taxonomies:   make(models.Taxonomies),
+		TVShows:      make(models.TVShowCollection, 0),
+		TVSeasons:    make(models.TVSeasonCollection, 0),
+		TVEpisodes:   make(models.TVEpisodeCollection, 0),
 	}
 
 	err = LoadAllLanguages(cfg, site)

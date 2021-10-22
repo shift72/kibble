@@ -39,37 +39,10 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 	}
 
 	for code, wholeLanguage := range translations {
-		translations[formatPathLocale(code)] = wholeLanguage
-	}
-
-	for i, l := range site.Languages {
-		l.Translations = make(map[string]models.Translation)
-		code := l.Code
-		if code == "" {
-			code = site.DefaultLanguage
-		}
-		for key, t := range translations[code] {
-			l.Translations[key] = models.Translation{
-				Zero:  t.Zero,
-				One:   t.One,
-				Two:   t.Two,
-				Few:   t.Few,
-				Many:  t.Many,
-				Other: t.Other,
-			}
-		}
-		site.Languages[i] = l
+		site.Translations[formatPathLocale(code)] = wholeLanguage
 	}
 
 	return nil
 }
 
-// TODO fix this!  we can't have all of the pluralities here or go-i18n fails silently.
-type TranslationsV1 map[string]map[string]struct {
-	Zero  string `json:"zero"`
-	One   string `json:"one"`
-	Two   string `json:"two"`
-	Few   string `json:"few"`
-	Many  string `json:"many"`
-	Other string `json:"other"`
-}
+type TranslationsV1 map[string]map[string]map[string]string

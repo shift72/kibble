@@ -25,6 +25,7 @@ type Site struct {
 	Navigation      Navigation
 	DefaultLanguage string
 	Languages       []Language
+	Translations    map[string]map[string]map[string]string
 	Pages           Pages
 	Films           FilmCollection
 	TVShows         TVShowCollection

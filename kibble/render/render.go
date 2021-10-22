@@ -109,6 +109,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	if site.Toggles["translations_api"] {
 		defaultLanguage = site.DefaultLanguage
 		languageConfigs = site.LanguagesToLanguageConfigs()
+		// TODO: read from .kibble or output kibble
+		//translationFilePath := filepath.Join(sourcePath, ctx.Language.DefinitionFilePath)
 	} else {
 		defaultLanguage = cfg.DefaultLanguage
 		languageConfigs = cfg.Languages
@@ -124,17 +126,10 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			Language:    createLanguage(defaultLanguage, languageObjKey, code),
 		}
 
-		// TODO - move translations from language struct to site struct because languages are printed out in application.jet fully and that is bad.
-
-		fmt.Println(fmt.Sprintf("default: %s    name: %s    key: %s    code: %s    path: %s", defaultLanguage, languageObj.Name, languageObjKey, code, ctx.Language.DefinitionFilePath))
-
 		translationFilePath := filepath.Join(sourcePath, ctx.Language.DefinitionFilePath)
-
-		fmt.Println(fmt.Sprintf("translationFilePath: %s", translationFilePath))
 
 		if languageObjKey != defaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
-			fmt.Println(fmt.Sprintf("ctx.RoutePrefix : %s", ctx.RoutePrefix))
 			err := i18n.LoadTranslationFile(translationFilePath)
 			if err != nil {
 				log.Errorf("Translation file load failed: %s", err)

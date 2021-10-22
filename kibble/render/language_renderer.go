@@ -25,12 +25,6 @@ import (
 
 //Setup and Create language files based on API or local language files
 func WriteLanguageFiles(site *models.Site, sourcePath string) error {
-	// apiTranslations, err := l.ObtainTranslations()
-	// if err != nil {
-	// 	log.Errorf("Failed to get translations: %s", err)
-	// 	return err
-	// }
-
 	if !site.Toggles["translations_api"] {
 		return nil
 	}
@@ -46,7 +40,7 @@ func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 
 		filename := fmt.Sprintf("%s.all.json", code)
 
-		file, err := json.Marshal(language.Translations)
+		file, err := json.Marshal(site.Translations[code])
 		if err != nil {
 			log.Errorf("Failed to marshal translations json %s: %s", code, err)
 			return err
@@ -61,29 +55,6 @@ func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 
 	return nil
 }
-
-// func (l *languageRenderer) ObtainTranslations() (api.TranslationsV1, error) {
-// 	if !(l.isEnabled) {
-// 		return nil, nil
-// 	}
-
-// 	//retrieve translations
-// 	translations, err := api.LoadAllTranslations(l.cfg)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	// for key := range translations {
-// 	// 	translations[formatPathLocale(key)] = translations[key]
-// 	// }
-
-// 	return translations, nil
-// }
-
-// func formatPathLocale(code string) string {
-// 	dashedCode := strings.ReplaceAll(code, "_", "-")
-// 	return strings.ToLower(dashedCode)
-// }
 
 func writeFile(filename string, data []byte) error {
 	file, err := os.Create(filename)

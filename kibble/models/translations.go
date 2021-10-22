@@ -11,16 +11,6 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
-
 package models
 
-// Language - instance of a language
-type Language struct {
-	Code  string `json:"code"`
-	Name  string `json:"name"`
-	Label string `json:"label"`
-	// Deprecated: Use Language.Code instead.
-	Locale             string `json:"locale"`
-	DefinitionFilePath string `json:"-"`
-	IsDefault          bool   `json:"-"`
-}
+type Translations map[string]map[string]map[string]string
