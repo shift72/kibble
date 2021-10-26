@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+## 0.15.21
+Add support for Film Award Categories
+
 ## 0.15.20
 Add support for new fields in Plans (expiry date and plan type)
 
