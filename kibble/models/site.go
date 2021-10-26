@@ -25,7 +25,7 @@ type Site struct {
 	Navigation      Navigation
 	DefaultLanguage string
 	Languages       []Language
-	Translations    map[string]map[string]map[string]string
+	Translations    Translations
 	Pages           Pages
 	Films           FilmCollection
 	TVShows         TVShowCollection
@@ -150,6 +150,7 @@ func (site *Site) UpdatePageCollections() {
 	}
 }
 
+// Converts site.Languages into a map of LanguageConfigs to mimic the language configs from kibble.json.
 func (site *Site) LanguagesToLanguageConfigs() map[string]LanguageConfig {
 	configMap := map[string]LanguageConfig{}
 

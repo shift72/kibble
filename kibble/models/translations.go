@@ -13,4 +13,5 @@
 //    limitations under the License.
 package models
 
+// { "en-au": { "nav_signin": { "other": "Sign In" } } }
 type Translations map[string]map[string]map[string]string

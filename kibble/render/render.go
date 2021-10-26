@@ -69,7 +69,6 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 
 // Render - render the files
 func Render(sourcePath string, buildPath string, cfg *models.Config) int {
-
 	initSW := utils.NewStopwatch("load")
 
 	api.CheckAdminCredentials(cfg)
@@ -104,6 +103,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	errCount := 0
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 
+	// Use data from APIs if translations_api toggle is enabled.
+	// Otherwise, use data from kibble.json.
 	var defaultLanguage string
 	var languageConfigs map[string]models.LanguageConfig
 	var translationFilePath string
@@ -138,7 +139,6 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)
-
 		T, err := i18n.Tfunc(code, defaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)

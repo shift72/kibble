@@ -23,13 +23,11 @@ import (
 	"kibble/models"
 )
 
-//Setup and Create language files based on API or local language files
+// Setup and Create language files based on API or local language files.
 func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 	if !site.Toggles["translations_api"] {
 		return nil
 	}
-
-	//Create translation filenames based on langague code
 
 	for _, language := range site.Languages {
 		code := language.Code

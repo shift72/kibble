@@ -21,6 +21,7 @@ import (
 	"strings"
 )
 
+// Loads all languages from the v1 languages API for the given site if it has the translations_api feature toggle enabled.
 func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
 	if !site.Toggles["translations_api"] {
 		return nil
@@ -40,12 +41,16 @@ func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
+	// Force default language to be lowercase with '-' instead of '_'.
 	site.DefaultLanguage = formatPathLocale(languages.DefaultLanguage.Code)
 	site.Languages = languages.mapToModel()
 
 	return nil
 }
 
+// Maps API response to array of Language models.
+// Forces all language codes to be lowercase with '-' instead of '_' for use in browser path.
+// Forces default language to have a blank code for use in browser path.
 func (l languagesV1) mapToModel() []models.Language {
 	languages := make([]models.Language, 0)
 
@@ -77,6 +82,7 @@ type languageV1 struct {
 	Label string `json:"label"`
 }
 
+// Replace '_' with '-' and lowercase
 func formatPathLocale(code string) string {
 	dashedCode := strings.ReplaceAll(code, "_", "-")
 	return strings.ToLower(dashedCode)

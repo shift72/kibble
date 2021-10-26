@@ -19,6 +19,7 @@ import (
 	"kibble/models"
 )
 
+// Loads all translations from v1 translations API for the given site if it has the translations_api feature toggle enabled.
 func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 	if !site.Toggles["translations_api"] {
 		return nil
@@ -38,6 +39,7 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
+	// Map translations to lowercase codes on the site
 	for code, wholeLanguage := range translations {
 		site.Translations[formatPathLocale(code)] = wholeLanguage
 	}
@@ -45,4 +47,5 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 	return nil
 }
 
+// { "en-au": { "nav_signin": { "other": "Sign In" } } }
 type TranslationsV1 map[string]map[string]map[string]string

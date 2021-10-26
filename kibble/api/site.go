@@ -46,28 +46,34 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	}
 
 	site := &models.Site{
-		SiteConfig:   cfg,
-		Config:       config,
-		Toggles:      toggles,
+		SiteConfig: cfg,
+		Config:     config,
+		Toggles:    toggles,
+
+		// Load languages from kibble.json.
 		Languages:    sortLanguages(cfg),
 		Translations: make(models.Translations),
-		Navigation:   navigation,
-		Bundles:      make(models.BundleCollection, 0),
-		Collections:  make(models.CollectionCollection, 0),
-		Films:        make(models.FilmCollection, 0),
-		Pages:        pages,
-		Plans:        make(models.PlanCollection, 0),
-		Taxonomies:   make(models.Taxonomies),
-		TVShows:      make(models.TVShowCollection, 0),
-		TVSeasons:    make(models.TVSeasonCollection, 0),
-		TVEpisodes:   make(models.TVEpisodeCollection, 0),
+
+		Navigation:  navigation,
+		Bundles:     make(models.BundleCollection, 0),
+		Collections: make(models.CollectionCollection, 0),
+		Films:       make(models.FilmCollection, 0),
+		Pages:       pages,
+		Plans:       make(models.PlanCollection, 0),
+		Taxonomies:  make(models.Taxonomies),
+		TVShows:     make(models.TVShowCollection, 0),
+		TVSeasons:   make(models.TVSeasonCollection, 0),
+		TVEpisodes:  make(models.TVEpisodeCollection, 0),
 	}
 
+	// Loads all languages from API for given site.
+	// Overwrites result of sortLanguages function so must be called after.
 	err = LoadAllLanguages(cfg, site)
 	if err != nil {
 		return nil, err
 	}
 
+	// Loads all translations from API for given site.
 	err = LoadAllTranslations(cfg, site)
 	if err != nil {
 		return nil, err
