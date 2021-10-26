@@ -93,12 +93,12 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		sourcePath: sourcePath,
 	}
 
-	err = WriteLanguageFiles(site, sourcePath)
+	renderer.Initialise()
+
+	err = WriteLanguageFiles(site, buildPath)
 	if err != nil {
 		return 1
 	}
-
-	renderer.Initialise()
 
 	initSW.Completed()
 	errCount := 0
@@ -106,14 +106,15 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 	var defaultLanguage string
 	var languageConfigs map[string]models.LanguageConfig
+	var translationFilePath string
 	if site.Toggles["translations_api"] {
 		defaultLanguage = site.DefaultLanguage
 		languageConfigs = site.LanguagesToLanguageConfigs()
-		// TODO: read from .kibble or output kibble
-		//translationFilePath := filepath.Join(sourcePath, ctx.Language.DefinitionFilePath)
+		translationFilePath = buildPath
 	} else {
 		defaultLanguage = cfg.DefaultLanguage
 		languageConfigs = cfg.Languages
+		translationFilePath = sourcePath
 	}
 
 	for languageObjKey, languageObj := range languageConfigs {
@@ -126,16 +127,14 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			Language:    createLanguage(defaultLanguage, languageObjKey, code),
 		}
 
-		translationFilePath := filepath.Join(sourcePath, ctx.Language.DefinitionFilePath)
-
 		if languageObjKey != defaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
-			err := i18n.LoadTranslationFile(translationFilePath)
+			err := i18n.LoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
 			if err != nil {
 				log.Errorf("Translation file load failed: %s", err)
 			}
 		} else {
-			i18n.MustLoadTranslationFile(translationFilePath)
+			i18n.MustLoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)
