@@ -15,6 +15,7 @@
 package api
 
 import (
+	"strings"
 	"testing"
 
 	"kibble/models"
@@ -64,6 +65,8 @@ func TestRecurringPlanWithExpiryDate(t *testing.T) {
 		TrialPeriodDays: &trialPeriodDays,
 		PlanType:        &planType,
 		ExpiryDate:      expiryDate,
+		PortraitImage:   "/portrait_image.png",
+		LandscapeImage:  "/landscape_image.png",
 	}
 
 	model := apiPlan.mapToModel(serviceConfig, itemIndex)
@@ -76,6 +79,9 @@ func TestRecurringPlanWithExpiryDate(t *testing.T) {
 	assert.Equal(t, 7, model.TrialPeriodDays)
 	assert.Equal(t, "recurring", model.PlanType)
 	assert.True(t, model.HasExpiryDate())
+	assert.True(t, strings.HasSuffix(model.LandscapeImage, "landscape_image.png"))
+	assert.True(t, strings.HasSuffix(model.PortraitImage, "portrait_image.png"))
+
 }
 
 func TestOneOffPlanWithNoExpiryDate(t *testing.T) {
@@ -101,4 +107,6 @@ func TestOneOffPlanWithNoExpiryDate(t *testing.T) {
 	assert.Equal(t, 0, model.TrialPeriodDays)
 	assert.Equal(t, "one_off", model.PlanType)
 	assert.False(t, model.HasExpiryDate())
+	assert.Empty(t, model.PortraitImage)
+	assert.Empty(t, model.LandscapeImage)
 }

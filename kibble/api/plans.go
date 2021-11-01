@@ -62,6 +62,7 @@ func (p PlansV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models
 		PlanType:        "",
 		ExpiryDate:      p.ExpiryDate,
 		PortraitImage:   serviceConfig.ForceAbsoluteImagePath(p.PortraitImage),
+		LandscapeImage:  serviceConfig.ForceAbsoluteImagePath(p.LandscapeImage),
 		Description:     p.Description,
 		CreatedAt:       p.CreatedAt,
 		UpdatedAt:       p.UpdatedAt,
@@ -97,4 +98,5 @@ type PlansV1 struct {
 	PlanType        *string   `json:"plan_type"`
 	TrialPeriodDays *int      `json:"trial_period_days"`
 	PortraitImage   string    `json:"portrait_image"`
+	LandscapeImage  string    `json:"landscape_image"`
 }

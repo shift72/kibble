@@ -34,6 +34,7 @@ type Plan struct {
 	Page            *Page
 	PlanType        string
 	PortraitImage   string
+	LandscapeImage  string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	ExpiryDate      time.Time
