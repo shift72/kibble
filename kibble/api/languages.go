@@ -18,14 +18,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"kibble/models"
+	"sort"
 	"strings"
 )
 
 // Loads all languages from the v1 languages API for the given site if it has the translations_api feature toggle enabled.
 func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
-	if !site.Toggles["translations_api"] {
+	if site.Toggles["translations_api"] {
+		return loadFromApi(cfg, site)
+	} else {
+		loadFromConfig(cfg, site)
 		return nil
 	}
+}
+
+func loadFromApi(cfg *models.Config, site *models.Site) error {
 
 	path := fmt.Sprintf("%s/services/users/v1/languages", cfg.SiteURL)
 
@@ -86,4 +93,26 @@ type languageV1 struct {
 func formatPathLocale(code string) string {
 	dashedCode := strings.ReplaceAll(code, "_", "-")
 	return strings.ToLower(dashedCode)
+}
+
+func loadFromConfig(cfg *models.Config, site *models.Site) {
+	var keys []string
+	for k := range cfg.Languages {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		isDefault := k == cfg.DefaultLanguage
+		code := k
+		name := cfg.Languages[k].Name
+		if isDefault {
+			code = ""
+		}
+
+		site.Languages = append(site.Languages, models.Language{
+			IsDefault: isDefault,
+			Code:      code,
+			Name:      name,
+		})
+	}
 }
