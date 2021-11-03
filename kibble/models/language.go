@@ -14,6 +14,9 @@
 
 package models
 
+// LanguageCollection - all languages
+type LanguageCollection []Language
+
 // Language - instance of a language
 type Language struct {
 	Code  string `json:"code"`
