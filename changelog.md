@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.15.22
+Upgrade to go v1.17
+Support for landscape image field in Plans
+
 ## 0.15.21
 Add support for Film Award Categories
 
