@@ -94,11 +94,6 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 	renderer.Initialise()
 
-	err = WriteLanguageFiles(site, buildPath)
-	if err != nil {
-		return 1
-	}
-
 	initSW.Completed()
 	errCount := 0
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
@@ -109,27 +104,34 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	var languageConfigs map[string]models.LanguageConfig
 	var translationFilePath string
 	if site.Toggles["translations_api"] {
+
 		defaultLanguage = site.DefaultLanguage
 		languageConfigs = site.LanguagesToLanguageConfigs()
 		translationFilePath = buildPath
+		//Setup language files for writing translations obtained by API
+		err = ensureLanguageFiles(site, buildPath)
+		if err != nil {
+			return 1
+		}
+
 	} else {
 		defaultLanguage = cfg.DefaultLanguage
 		languageConfigs = cfg.Languages
 		translationFilePath = sourcePath
 	}
 
-	for languageObjKey, languageObj := range languageConfigs {
+	for languageKey, language := range languageConfigs {
 
-		code := languageObj.Code
+		code := language.Code
 
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
-			Language:    createLanguage(defaultLanguage, languageObjKey, code),
+			Language:    createLanguage(defaultLanguage, languageKey, code),
 		}
 
-		if languageObjKey != defaultLanguage {
-			ctx.RoutePrefix = fmt.Sprintf("/%s", languageObjKey)
+		if languageKey != defaultLanguage {
+			ctx.RoutePrefix = fmt.Sprintf("/%s", languageKey)
 			err := i18n.LoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
 			if err != nil {
 				log.Errorf("Translation file load failed: %s", err)
@@ -138,7 +140,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			i18n.MustLoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
 		}
 
-		renderLangSW := utils.NewStopwatchf("  render language: %s", languageObjKey)
+		renderLangSW := utils.NewStopwatchf("  render language: %s", languageKey)
 		T, err := i18n.Tfunc(code, defaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)

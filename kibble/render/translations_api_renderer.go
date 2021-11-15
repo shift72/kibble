@@ -17,18 +17,14 @@ package render
 import (
 	"encoding/json"
 	"fmt"
+	"kibble/models"
 	"os"
 	"path/filepath"
-
-	"kibble/models"
 )
 
-// Setup and Create language files based on API or local language files.
-func WriteLanguageFiles(site *models.Site, sourcePath string) error {
-	if !site.Toggles["translations_api"] {
-		return nil
-	}
-
+// Ensures language files exist for languges sepcified via Translations API
+func ensureLanguageFiles(site *models.Site, sourcePath string) error {
+	// Create new language files (e.g. en_AU.all.json) from the data in site.Languages that has been sourced from the API.
 	for _, language := range site.Languages {
 		code := language.Code
 
@@ -37,7 +33,6 @@ func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 		}
 
 		filename := fmt.Sprintf("%s.all.json", code)
-
 		file, err := json.Marshal(site.Translations[code])
 		if err != nil {
 			log.Errorf("Failed to marshal translations json %s: %s", code, err)

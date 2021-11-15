@@ -48,4 +48,11 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 }
 
 // { "en-au": { "nav_signin": { "other": "Sign In" } } }
-type TranslationsV1 map[string]map[string]map[string]string
+type TranslationsV1 map[string]map[string]struct {
+	Zero  string `json:"zero,omitempty"`
+	One   string `json:"one,omitempty"`
+	Two   string `json:"two,omitempty"`
+	Few   string `json:"few,omitempty"`
+	Many  string `json:"many,omitempty"`
+	Other string `json:"other,omitempty"`
+}
