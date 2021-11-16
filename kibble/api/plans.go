@@ -59,7 +59,10 @@ func (p PlansV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models
 		Interval:        "",
 		IntervalCount:   0,
 		TrialPeriodDays: 0,
+		PlanType:        "",
+		ExpiryDate:      p.ExpiryDate,
 		PortraitImage:   serviceConfig.ForceAbsoluteImagePath(p.PortraitImage),
+		LandscapeImage:  serviceConfig.ForceAbsoluteImagePath(p.LandscapeImage),
 		Description:     p.Description,
 		CreatedAt:       p.CreatedAt,
 		UpdatedAt:       p.UpdatedAt,
@@ -74,6 +77,9 @@ func (p PlansV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models
 	if p.TrialPeriodDays != nil {
 		m.TrialPeriodDays = *p.TrialPeriodDays
 	}
+	if p.PlanType != nil {
+		m.PlanType = *p.PlanType
+	}
 	return m
 }
 
@@ -85,9 +91,12 @@ type PlansV1 struct {
 	Status          string    `json:"status"`
 	CreatedAt       time.Time `json:"created_at"`
 	UpdatedAt       time.Time `json:"updated_at"`
+	ExpiryDate      time.Time `json:"expiry_date"`
 	PageID          int       `json:"page_id"`
 	Interval        *string   `json:"interval"`
 	IntervalCount   *int      `json:"interval_count"`
+	PlanType        *string   `json:"plan_type"`
 	TrialPeriodDays *int      `json:"trial_period_days"`
 	PortraitImage   string    `json:"portrait_image"`
+	LandscapeImage  string    `json:"landscape_image"`
 }

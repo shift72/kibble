@@ -40,6 +40,7 @@ type Film struct {
 	Countries       StringCollection
 	Languages       StringCollection
 	Genres          StringCollection
+	AwardCategories []AwardCategory
 	Tags            StringCollection
 	Seo             Seo
 	Images          ImageSet

@@ -27,7 +27,7 @@
 
 ## Installation
 
-* Requires go 1.14.0 (go mod)
+* Requires go 1.17.0 (go mod)
 * Build and install ```go install```
 * Check installed and running correctly ```kibble version```
 
