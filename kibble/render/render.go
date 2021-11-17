@@ -103,7 +103,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	var defaultLanguage string
 	var languageConfigs map[string]models.LanguageConfig
 	var translationFilePath string
-	if site.Toggles["translations_api"] {
+	if site.Toggles["site_translations_api"] {
 
 		defaultLanguage = site.DefaultLanguage
 		languageConfigs = site.LanguagesToLanguageConfigs()

@@ -24,7 +24,7 @@ import (
 
 // Loads all languages from the v1 languages API for the given site if it has the translations_api feature toggle enabled.
 func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
-	if site.Toggles["translations_api"] {
+	if site.Toggles["site_translations_api"] {
 		return loadAllLanguagesFromApi(cfg, site)
 	} else {
 		loadAllLanguagesFromConfig(cfg, site)

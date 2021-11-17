@@ -21,11 +21,11 @@ import (
 
 // Loads all translations from v1 translations API for the given site if it has the translations_api feature toggle enabled.
 func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
-	if !site.Toggles["translations_api"] {
+	if !site.Toggles["site_translations_api"] {
 		return nil
 	}
 
-	path := fmt.Sprintf("%s/services/users/v1/translations", cfg.SiteURL)
+	path := fmt.Sprintf("%s/services/users/v1/site_translations", cfg.SiteURL)
 
 	data, err := Get(cfg, path)
 	if err != nil {
