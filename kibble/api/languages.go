@@ -22,11 +22,12 @@ import (
 	"strings"
 )
 
-// Loads all languages from the v1 languages API for the given site if it has the translations_api feature toggle enabled.
+//Loads all languages from the API if the site_translations_api feature toggle is enabled.
 func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
 	if site.Toggles["site_translations_api"] {
 		return loadAllLanguagesFromApi(cfg, site)
 	} else {
+		//Use languages from config
 		loadAllLanguagesFromConfig(cfg, site)
 		return nil
 	}

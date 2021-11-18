@@ -98,13 +98,16 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	errCount := 0
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 
-	// Use data from APIs if translations_api toggle is enabled.
+	// Use data from APIs if site_translations_api toggle is enabled.
 	// Otherwise, use data from kibble.json.
 	var defaultLanguage string
 	var languageConfigs map[string]models.LanguageConfig
 	var translationFilePath string
-	if site.Toggles["site_translations_api"] {
 
+	var useApi = site.Toggles["site_translations_api"]
+	log.Infof("UseTranslationsApi: %t", useApi)
+
+	if useApi {
 		defaultLanguage = site.DefaultLanguage
 		languageConfigs = site.LanguagesToLanguageConfigs()
 		translationFilePath = buildPath
