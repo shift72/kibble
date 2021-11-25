@@ -71,15 +71,19 @@ func TestLanguagesConvertToJSON(t *testing.T) {
 	site := Site{
 		Languages: []Language{
 			{
-				Code:               "en",
-				Name:               "English",
+				Code:  "en",
+				Name:  "English",
+				Label: "nz",
+				//Deprecated
 				Locale:             "nz",
 				DefinitionFilePath: "/wut/wut",
 				IsDefault:          true,
 			},
 			{
-				Code:               "fr",
-				Name:               "French",
+				Code:  "fr",
+				Name:  "French",
+				Label: "FR",
+				//Deprecated
 				Locale:             "FR",
 				DefinitionFilePath: "/oi/oi",
 				IsDefault:          false,
@@ -93,5 +97,5 @@ func TestLanguagesConvertToJSON(t *testing.T) {
 		t.Error(err)
 	}
 
-	assert.Equal(t, string(b), `[{"code":"en","name":"English","locale":"nz"},{"code":"fr","name":"French","locale":"FR"}]`)
+	assert.Equal(t, string(b), `[{"code":"en","name":"English","label":"nz","locale":"nz"},{"code":"fr","name":"French","label":"FR","locale":"FR"}]`)
 }
