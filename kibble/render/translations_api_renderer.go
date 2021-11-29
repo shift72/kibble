@@ -22,7 +22,7 @@ import (
 	"path/filepath"
 )
 
-// Ensures language files exist for languges sepcified via Translations API
+// Ensures language files exist for languges specified via Translations API
 func ensureLanguageFiles(site *models.Site, sourcePath string) error {
 	// Create new language files (e.g. en_AU.all.json) from the data in site.Languages that has been sourced from the API.
 	for _, language := range site.Languages {
