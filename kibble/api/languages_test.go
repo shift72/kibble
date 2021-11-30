@@ -22,7 +22,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLangaugeV1MapToModel(t *testing.T) {
+func TestLanguagesV1MapToModel(t *testing.T) {
 	var languages languagesV1
 	var body = "{\"default_language\":{\"code\":\"en_AU\",\"label\":\"English\",\"display_name\":\"EnglishDisplayName\"},\"supported_languages\":[{\"code\":\"de_DE\",\"label\":\"Deutsche\",\"display_name\":\"DeutscheDisplayName\"},{\"code\":\"en_AU\",\"label\":\"English\",\"display_name\":\"EnglishDisplayName\"}]}"
 	var err = json.Unmarshal([]byte(body), &languages)

@@ -112,7 +112,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		languageConfigs = site.LanguagesToLanguageConfigs()
 		translationFilePath = buildPath
 		//Setup language files for writing translations obtained by API
-		err = ensureLanguageFiles(site, buildPath)
+		err = WriteLanguageFiles(site, buildPath)
 		if err != nil {
 			return 1
 		}

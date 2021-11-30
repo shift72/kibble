@@ -27,9 +27,7 @@ func LoadAllLanguages(cfg *models.Config, site *models.Site) error {
 	if site.Toggles["site_translations_api"] {
 		return loadAllLanguagesFromApi(cfg, site)
 	} else {
-		//Use languages from config
-		loadAllLanguagesFromConfig(cfg, site)
-		return nil
+		return loadAllLanguagesFromConfig(cfg, site)
 	}
 }
 
@@ -74,7 +72,6 @@ func (l languagesV1) mapToModel() []models.Language {
 			IsDefault: isDefault,
 		})
 	}
-
 	return languages
 }
 
@@ -92,10 +89,11 @@ type languageV1 struct {
 // Replace '_' with '-' and lowercase
 func formatPathLocale(code string) string {
 	dashedCode := strings.ReplaceAll(code, "_", "-")
+	dashedCode = strings.TrimSpace(dashedCode)
 	return strings.ToLower(dashedCode)
 }
 
-func loadAllLanguagesFromConfig(cfg *models.Config, site *models.Site) {
+func loadAllLanguagesFromConfig(cfg *models.Config, site *models.Site) error {
 	var keys []string
 	for k := range cfg.Languages {
 		keys = append(keys, k)
@@ -115,4 +113,5 @@ func loadAllLanguagesFromConfig(cfg *models.Config, site *models.Site) {
 			Name:      name,
 		})
 	}
+	return nil
 }
