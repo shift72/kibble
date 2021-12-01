@@ -1,8 +1,9 @@
 package config
 
 import (
-	"testing"
 	"kibble/models"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,22 +39,4 @@ func TestLoadLanguagesConfigWithObjects(t *testing.T) {
 	assert.Equal(t, cfg.Languages["en"].Name, "English")
 	assert.Equal(t, cfg.Languages["it"].Code, "it_IT")
 	assert.Equal(t, cfg.Languages["it"].Name, "Italian")
-}
-
-func TestUseTranslationsApiTrue(t *testing.T) {
-	sitePath = "./test/kibble-translations-key-true.json"
-	cfg := LoadConfig(false, "api-key", false)
-	assert.Equal(t, true, cfg.UseTranslationsApi)
-}
-
-func TestUseTranslationsApiFalse(t *testing.T) {
-	sitePath = "./test/kibble-translations-key-false.json"
-	cfg := LoadConfig(false, "api-key", false)
-	assert.Equal(t, false, cfg.UseTranslationsApi)
-}
-
-func TestUseTranslationsApiMissing(t *testing.T) {
-	sitePath = "./test/kibble-translations-key-missing.json"
-	cfg := LoadConfig(false, "api-key", false)
-	assert.Equal(t, false, cfg.UseTranslationsApi)
 }

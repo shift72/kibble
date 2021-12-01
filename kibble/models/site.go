@@ -19,29 +19,22 @@ type FeatureToggles map[string]bool
 
 // Site -
 type Site struct {
-	Config      ServiceConfig
-	SiteConfig  *Config
-	Toggles     FeatureToggles
-	Navigation  Navigation
-	Languages   []Language
-	Pages       Pages
-	Films       FilmCollection
-	TVShows     TVShowCollection
-	TVSeasons   TVSeasonCollection
-	TVEpisodes  TVEpisodeCollection
-	Bundles     BundleCollection
-	Collections CollectionCollection
-	Plans       PlanCollection
-	Taxonomies  Taxonomies
-}
-
-// Language - instance of a language
-type Language struct {
-	Code               string `json:"code"`
-	Name               string `json:"name"`
-	Locale             string `json:"locale"`
-	DefinitionFilePath string `json:"-"`
-	IsDefault          bool   `json:"-"`
+	Config          ServiceConfig
+	SiteConfig      *Config
+	Toggles         FeatureToggles
+	Navigation      Navigation
+	DefaultLanguage string
+	Languages       []Language
+	Translations    Translations
+	Pages           Pages
+	Films           FilmCollection
+	TVShows         TVShowCollection
+	TVSeasons       TVSeasonCollection
+	TVEpisodes      TVEpisodeCollection
+	Bundles         BundleCollection
+	Collections     CollectionCollection
+	Plans           PlanCollection
+	Taxonomies      Taxonomies
 }
 
 // ImageSet - set of images
@@ -161,4 +154,22 @@ func (site *Site) UpdatePageCollections() {
 			}
 		}
 	}
+}
+
+// Converts site.Languages into a map of LanguageConfigs to mimic the language configs from kibble.json.
+func (site *Site) LanguagesToLanguageConfigs() map[string]LanguageConfig {
+	configMap := map[string]LanguageConfig{}
+
+	for _, l := range site.Languages {
+		code := l.Code
+		if code == "" {
+			code = site.DefaultLanguage
+		}
+		configMap[code] = LanguageConfig{
+			Code: code,
+			Name: l.Name,
+		}
+	}
+
+	return configMap
 }

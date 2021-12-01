@@ -69,8 +69,6 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 
 // Render - render the files
 func Render(sourcePath string, buildPath string, cfg *models.Config) int {
-	
-	log.Infof("UseTranslationsApi: %t", cfg.UseTranslationsApi)
 	initSW := utils.NewStopwatch("load")
 
 	api.CheckAdminCredentials(cfg)
@@ -97,29 +95,56 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	renderer.Initialise()
 
 	initSW.Completed()
-
 	errCount := 0
-
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
-	for lang, localeObj := range cfg.Languages {
 
-		locale := localeObj.Code
+	// Use data from APIs if site_translations_api toggle is enabled.
+	// Otherwise, use data from kibble.json.
+	var defaultLanguage string
+	var languageConfigs map[string]models.LanguageConfig
+	var translationFilePath string
+
+	var useApi = site.Toggles["site_translations_api"]
+	log.Infof("UseTranslationsApi: %t", useApi)
+
+	if useApi {
+		defaultLanguage = site.DefaultLanguage
+		languageConfigs = site.LanguagesToLanguageConfigs()
+		translationFilePath = buildPath
+		//Setup language files for writing translations obtained by API
+		err = WriteLanguageFiles(site, buildPath)
+		if err != nil {
+			return 1
+		}
+
+	} else {
+		defaultLanguage = cfg.DefaultLanguage
+		languageConfigs = cfg.Languages
+		translationFilePath = sourcePath
+	}
+
+	for languageKey, language := range languageConfigs {
+
+		code := language.Code
 
 		ctx := models.RenderContext{
 			RoutePrefix: "",
 			Site:        site,
-			Language:    createLanguage(cfg, lang, locale),
+			Language:    createLanguage(defaultLanguage, languageKey, code),
 		}
 
-		if lang != cfg.DefaultLanguage {
-			ctx.RoutePrefix = fmt.Sprintf("/%s", lang)
-			i18n.LoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+		if languageKey != defaultLanguage {
+			ctx.RoutePrefix = fmt.Sprintf("/%s", languageKey)
+			err := i18n.LoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
+			if err != nil {
+				log.Errorf("Translation file load failed: %s", err)
+			}
 		} else {
-			i18n.MustLoadTranslationFile(filepath.Join(sourcePath, ctx.Language.DefinitionFilePath))
+			i18n.MustLoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
 		}
 
-		renderLangSW := utils.NewStopwatchf("  render language: %s", lang)
-		T, err := i18n.Tfunc(locale, cfg.DefaultLanguage)
+		renderLangSW := utils.NewStopwatchf("  render language: %s", languageKey)
+		T, err := i18n.Tfunc(code, defaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)
 			errCount++
@@ -145,13 +170,14 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	renderSW.Completed()
 
 	return errCount
+
 }
 
-func createLanguage(cfg *models.Config, lang string, locale string) *models.Language {
+func createLanguage(defaultLanguage string, langCode string, locale string) *models.Language {
 	return &models.Language{
-		Code:               lang,
+		Code:               langCode,
 		Locale:             locale,
-		IsDefault:          (lang == cfg.DefaultLanguage),
+		IsDefault:          (langCode == defaultLanguage),
 		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
 	}
 }
