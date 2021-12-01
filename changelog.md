@@ -1,6 +1,7 @@
 # Change log
 
 ## Unreleased
+Support for self service Translations API
 
 ## 0.15.22
 Upgrade to go v1.17
