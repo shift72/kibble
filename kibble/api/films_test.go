@@ -128,9 +128,11 @@ func getFilm() filmV2 {
 		AwardCategories: []struct {
 			Title        string `json:"title"`
 			DisplayLabel string `json:"display_label"`
+			IsWinner     bool   `json:"is_winner"`
 		}{{
 			Title:        "An Award",
 			DisplayLabel: "The Award 2021",
+			IsWinner:     true,
 		}},
 	}
 	return apiFilm

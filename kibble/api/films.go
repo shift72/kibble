@@ -205,6 +205,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		film.AwardCategories = append(film.AwardCategories, models.AwardCategory{
 			Title:        t.Title,
 			DisplayLabel: t.DisplayLabel,
+			IsWinner:       t.IsWinner,
 		})
 	}
 
@@ -284,6 +285,7 @@ type filmV2 struct {
 	AwardCategories []struct {
 		Title        string `json:"title"`
 		DisplayLabel string `json:"display_label"`
+		IsWinner     bool   `json:"is_winner"`
 	} `json:"award_categories"`
 }
 
