@@ -57,6 +57,7 @@ type Config struct {
 	Bucket         string
 	BucketRootPath string
 	FileRootPath   string
+	SiteURL        string
 }
 
 // Store - a place to store the site files
