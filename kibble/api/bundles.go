@@ -19,9 +19,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gosimple/slug"
 	"kibble/models"
 	"kibble/utils"
+
+	"github.com/gosimple/slug"
 )
 
 // LoadAllBundles - load all bundles
@@ -70,32 +71,34 @@ func (b BundleV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex model
 			Image:       serviceConfig.ForceAbsoluteImagePath(serviceConfig.SelectDefaultImageType(b.LandscapeImage, b.PortraitImage)),
 			VideoURL:    b.PromoURL,
 		},
-		Items:       itemIndex.MapToUnresolvedItems(b.Items),
-		CreatedAt:   b.CreatedAt,
-		UpdatedAt:   b.UpdatedAt,
-		Description: b.Description,
-		Tagline:     b.Tagline,
+		Items:        itemIndex.MapToUnresolvedItems(b.Items),
+		CreatedAt:    b.CreatedAt,
+		UpdatedAt:    b.UpdatedAt,
+		Description:  b.Description,
+		Tagline:      b.Tagline,
+		CustomFields: b.CustomFields,
 	}
 }
 
 // BundleV1 - model
 type BundleV1 struct {
-	ID             int       `json:"id"`
-	Title          string    `json:"title"`
-	Tagline        string    `json:"tagline"`
-	Description    string    `json:"description"`
-	Status         string    `json:"status"`
-	PublishedDate  time.Time `json:"published_date"`
-	SeoTitle       string    `json:"seo_title"`
-	SeoKeywords    string    `json:"seo_keywords"`
-	SeoDescription string    `json:"seo_description"`
-	PortraitImage  string    `json:"portrait_image"`
-	LandscapeImage string    `json:"landscape_image"`
-	CarouselImage  string    `json:"carousel_image"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
-	BgImage        string    `json:"bg_image"`
-	PromoURL       string    `json:"promo_url"`
-	ExternalID     string    `json:"external_id"`
-	Items          []string  `json:"items"`
+	ID             int                    `json:"id"`
+	Title          string                 `json:"title"`
+	Tagline        string                 `json:"tagline"`
+	Description    string                 `json:"description"`
+	Status         string                 `json:"status"`
+	PublishedDate  time.Time              `json:"published_date"`
+	SeoTitle       string                 `json:"seo_title"`
+	SeoKeywords    string                 `json:"seo_keywords"`
+	SeoDescription string                 `json:"seo_description"`
+	PortraitImage  string                 `json:"portrait_image"`
+	LandscapeImage string                 `json:"landscape_image"`
+	CarouselImage  string                 `json:"carousel_image"`
+	CreatedAt      time.Time              `json:"created_at"`
+	UpdatedAt      time.Time              `json:"updated_at"`
+	BgImage        string                 `json:"bg_image"`
+	PromoURL       string                 `json:"promo_url"`
+	ExternalID     string                 `json:"external_id"`
+	Items          []string               `json:"items"`
+	CustomFields   map[string]interface{} `json:"custom"`
 }
