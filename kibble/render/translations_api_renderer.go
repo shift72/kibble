@@ -33,6 +33,11 @@ func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 		}
 
 		filename := fmt.Sprintf("%s.all.json", code)
+
+		if site.Translations[code] == nil {
+			log.Errorf("Language '%s' contains no translations, check data exists.", code)
+		}
+
 		file, err := json.Marshal(site.Translations[code])
 		if err != nil {
 			log.Errorf("Failed to marshal translations json %s: %s", code, err)

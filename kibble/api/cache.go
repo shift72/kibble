@@ -151,11 +151,16 @@ func Get(cfg *models.Config, url string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
+	body, err := ioutil.ReadAll(resp.Body)
+
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("request failed %s status code:%d", url, resp.StatusCode)
+		if err != nil {
+			return nil, fmt.Errorf("request failed %s status code: %d", url, resp.StatusCode)
+		}
+		return nil, fmt.Errorf("request failed %s status code: %d %s", url, resp.StatusCode, string(body))
 	}
 
-	return ioutil.ReadAll(resp.Body)
+	return body, err
 }
 
 // Upload a file
