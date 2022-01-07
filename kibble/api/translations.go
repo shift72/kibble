@@ -30,7 +30,7 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 
 	data, err := Get(cfg, path)
 	if err != nil {
-		log.Infof("Translations from API failed to load %s", err)
+		log.Errorf("Translations from API failed to load %s", err)
 		return err
 	}
 
@@ -40,12 +40,12 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 	if err != nil {
 		return err
 	}
-
 	// Map translations to lowercase codes on the site
 	for code, wholeLanguage := range translations {
 		site.Translations[formatPathLocale(code)] = wholeLanguage
 	}
 
+	log.Infof("Translations Recieved and Parsed")
 	return nil
 }
 
