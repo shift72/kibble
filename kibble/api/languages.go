@@ -59,7 +59,9 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 		}
 	}
 	log.Infof("Default Language: %s ", site.DefaultLanguage)
-	log.Infof("Supported Languages: %v", strings.Join(langaugesList, ", "))
+	if langaugesList != nil {
+		log.Infof("Supported Languages: %s", strings.Join(langaugesList, ", "))
+	}
 	return nil
 }
 
