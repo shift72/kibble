@@ -153,10 +153,12 @@ func Get(cfg *models.Config, url string) ([]byte, error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response from %s status code: %d. error: %s", url, resp.StatusCode, err)
+	}
+
 	if resp.StatusCode != http.StatusOK {
-		if err != nil {
-			return nil, fmt.Errorf("request failed %s status code: %d", url, resp.StatusCode)
-		}
+		//status was not OK but Body is valid
 		return nil, fmt.Errorf("request failed %s status code: %d %s", url, resp.StatusCode, string(body))
 	}
 
