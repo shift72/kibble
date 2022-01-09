@@ -35,10 +35,7 @@ func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 		filename := fmt.Sprintf("%s.all.json", code)
 
 		data, ok := site.Translations[code]
-		if !ok {
-			log.Errorf("%s is not in the list of supported languages, check supported languages", code)
-		}
-		if data == nil {
+		if !ok || data == nil {
 			log.Errorf("Language '%s' contains no translations, check data exists.", code)
 		}
 
