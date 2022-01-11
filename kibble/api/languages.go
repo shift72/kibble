@@ -54,14 +54,14 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 	log.Infof("Site Languages Loaded from API")
 	var langaugesList []string
 	for _, langs := range site.Languages {
-		if langs.Code != "" {
+		if langs.IsDefault {
+			langaugesList = append(langaugesList, site.DefaultLanguage)
+		} else {
 			langaugesList = append(langaugesList, langs.Code)
 		}
 	}
 	log.Infof("Default Language: %s ", site.DefaultLanguage)
-	if langaugesList != nil {
-		log.Infof("Supported Languages: %s", strings.Join(langaugesList, ", "))
-	}
+	log.Infof("Supported Languages: %s", strings.Join(langaugesList, ", "))
 	return nil
 }
 
