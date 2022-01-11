@@ -128,10 +128,10 @@ func TestBundleCustomFields(t *testing.T) {
 		},
 	}
 
-	b := apiBundle.mapToModel(serviceConfig, itemIndex)
+	model := apiBundle.mapToModel(serviceConfig, itemIndex)
 
-	assert.Equal(t, b.CustomFields["string"], "wololo")
-	assert.Equal(t, b.CustomFields["int"], 9)
-	assert.Equal(t, b.CustomFields["bool"], false)
-	assert.Equal(t, b.CustomFields["missing"], nil)
+	assert.Equal(t, model.CustomFields["string"], "wololo")
+	assert.Equal(t, model.CustomFields["int"], 9)
+	assert.Equal(t, model.CustomFields["bool"], false)
+	assert.Equal(t, model.CustomFields["missing"], nil)
 }
