@@ -36,8 +36,7 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 
 	data, err := Get(cfg, path)
 	if err != nil {
-		log.Errorf("Languages from API failed to load %s", err)
-		return err
+		return fmt.Errorf("languages from API failed to load %s", err)
 	}
 
 	var languages languagesV1

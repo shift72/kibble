@@ -30,8 +30,7 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 
 	data, err := Get(cfg, path)
 	if err != nil {
-		log.Errorf("Translations from API failed to load %s", err)
-		return err
+		return fmt.Errorf(" translations from API failed to load %s", err)
 	}
 
 	var translations TranslationsV1
