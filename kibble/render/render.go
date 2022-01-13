@@ -149,9 +149,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 				log.Errorf("Default Language Translation file \"%s\" load failed: %s", ctx.Language.DefinitionFilePath, err)
 				return 1
 			}
-			//Not a warning, as warning logs are included in html, Info is not, as we dont want to break the html
-			log.Infof("Translation file \"%s\" load failed: %s", ctx.Language.DefinitionFilePath, err)
-			errCount++
+			log.Errorf("Translation file \"%s\" load failed: %s", ctx.Language.DefinitionFilePath, err)
+			return 1
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", languageKey)
