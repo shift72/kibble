@@ -18,6 +18,7 @@ import (
 	"testing"
 
 	"kibble/models"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -65,7 +66,7 @@ func TestBundlesToSeoDefaultImage(t *testing.T) {
 
 	serviceConfig := models.ServiceConfig{
 		"default_image_type": "landscape",
-		"image_root_path": "https://s3-bla-bla",
+		"image_root_path":    "https://s3-bla-bla",
 	}
 
 	apiBundle := BundleV1{
@@ -110,4 +111,27 @@ func TestBundlesApiToModel(t *testing.T) {
 
 	assert.Equal(t, "this is my tagline", model.Tagline, "expect tagline")
 	assert.Equal(t, "Bundle description", model.Description, "expect description")
+}
+
+func TestBundleCustomFields(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiBundle := BundleV1{
+		ID:    456,
+		Title: "Bundle 456",
+		CustomFields: map[string]interface{}{
+			"string": "wololo",
+			"int":    9,
+			"bool":   false,
+		},
+	}
+
+	model := apiBundle.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, model.CustomFields["string"], "wololo")
+	assert.Equal(t, model.CustomFields["int"], 9)
+	assert.Equal(t, model.CustomFields["bool"], false)
+	assert.Equal(t, model.CustomFields["missing"], nil)
 }

@@ -2,6 +2,7 @@
 
 ## Unreleased
 Support for self service Translations API
+Support for custom fields in Bundles
 
 ## 0.15.22
 Upgrade to go v1.17

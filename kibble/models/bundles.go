@@ -37,6 +37,7 @@ type Bundle struct {
 	PublishedDate time.Time
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+	CustomFields  CustomFields
 }
 
 // FindBundleByID - find the page by id
