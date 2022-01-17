@@ -53,6 +53,10 @@ var syncCmd = &cobra.Command{
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 		config.CheckVersion(cfg)
 
+		if syncCfg.SiteURL != "" {
+			cfg.SiteURL = syncCfg.SiteURL
+		}
+
 		if testIdempotent {
 			return sync.TestIdempotent(syncCfg, cfg)
 		}
@@ -124,6 +128,7 @@ func init() {
 	syncCmd.Flags().StringVarP(&syncCfg.Region, "region", "r", "us-east-1", "AWS Region (default us-east-1)")
 	syncCmd.Flags().StringVarP(&syncCfg.Bucket, "bucket", "b", "", "AWS S3 Bucket")
 	syncCmd.Flags().StringVarP(&syncCfg.BucketRootPath, "bucketrootpath", "", "", "AWS S3 Path")
+	syncCmd.Flags().StringVarP(&syncCfg.SiteURL, "siteurl", "s", "", "Site URL")
 
 	syncCmd.Flags().BoolVarP(&renderAndSync, "render", "", false, "Renders the site before syncing.")
 	syncCmd.Flags().BoolVarP(&testIdempotent, "test-idempotent", "", false, "Checks that two runs of the render process produce the same result.")
