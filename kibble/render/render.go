@@ -114,7 +114,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		//Setup language files for writing translations obtained by API
 		err = WriteLanguageFiles(site, buildPath)
 		if err != nil {
-			log.Errorf("Error writing language files:  ", err)
+			log.Errorf("Error: Failed to write translations files:  %s", err)
 			return 1
 		}
 
