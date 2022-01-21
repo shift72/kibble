@@ -32,6 +32,10 @@ func LoadAllPrices(cfg *models.Config, site *models.Site, itemIndex models.ItemI
 		slugs = append(slugs, k)
 	}
 
+	for k := range itemIndex["plan"] {
+		slugs = append(slugs, k)
+	}
+
 	sort.Strings(slugs)
 
 	const batchSize = 300
@@ -112,6 +116,13 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 				// replace the itemIndex
 				itemIndex.Replace(p.Item, f.GetGenericItem())
 			}
+		case "plan":
+			if f, err := site.Plans.FindPlanBySlug(p.Item); err == nil {
+				count++
+				f.Prices = pricingInfo
+				// replace the itemIndex
+				itemIndex.Replace(p.Item, f.GetGenericItem())
+			}
 		}
 	}
 
@@ -120,7 +131,10 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 
 type prices struct {
 	Prices []pricesV2 `json:"prices"`
-	// Plans  []interface{} `json:"plans"`
+	Plans  []struct {
+		Item    string
+		Plans   []string
+	} `json:"plans"`
 }
 
 type pricesV2 struct {
