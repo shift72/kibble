@@ -83,6 +83,29 @@ func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
 	}
 }
 
+// Set - an item
+func (itemIndex ItemIndex) SetWithStatus(slug string, statusID int, item GenericItem) {
+
+	slugType := getSlugType(slug)
+
+	index, ok := itemIndex[slugType]
+	if !ok {
+		itemIndex[slugType] = make(map[string]GenericItem)
+		index = itemIndex[slugType]
+	}
+
+	// unresolved can be overwritten, empty and item can not
+	foundItem, ok := index[slug]
+	item.StatusID = statusID
+	if (ok && (foundItem == Unresolved || foundItem == Empty)) || !ok {
+		index[slug] = item
+	}
+	// itemIndex.Print()
+	// itemIndex.PrintStats()
+	// log.Errorf("Setting status ID: status id recieved %d, vs item.Status: %d", statusID, item.StatusID)
+	// log.Errorf("Item: %s", index[slug])
+}
+
 // Replace a value in the index
 func (itemIndex ItemIndex) Replace(slug string, item GenericItem) {
 
@@ -176,6 +199,7 @@ func (itemIndex ItemIndex) Print() {
 	for t, val := range itemIndex {
 		log.Infof("type: %s", t)
 		for k, v := range val {
+			log.Infof("Value of status id: ", v.StatusID)
 			if v == Empty {
 				log.Infof("%s - %s : empty", t, k)
 			} else if v == Unresolved {
