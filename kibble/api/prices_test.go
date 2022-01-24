@@ -45,11 +45,18 @@ func TestMergePrices(t *testing.T) {
 				Slug: "/film/103",
 			},
 		},
+		Plans: []models.Plan{
+			{ID: 1,
+				Slug: "/plan/1",
+			},
+		},
 	}
 
 	// setup index
 	itemIndex := make(models.ItemIndex)
 	itemIndex.Set(site.Films[0].Slug, site.Films[0].GetGenericItem())
+	itemIndex.Set(site.Plans[0].Slug, site.Plans[0].GetGenericItem())
+
 
 	prices := prices{
 		Prices: []pricesV2{
@@ -67,22 +74,52 @@ func TestMergePrices(t *testing.T) {
 					HdString: str("$9.00"),
 				},
 			},
+			{
+				Item:     "/plan/1",
+				Currency: "NZD",
+				Rent: &qualityPriceV2{
+					Hd:       str("11.0"),
+					HdString: str("$11.00"),
+					Sd:       str("22.0"),
+					SdString: str("$22.00"),
+				},
+				Buy: &qualityPriceV2{
+					Hd:       str("33.0"),
+					HdString: str("$33.00"),
+				},
+			},
 		},
-	}
+		Plans: []struct{
+			Item string
+			Plans []string
+		}{
+			{
+				"/film/103",
+				[]string{"/plan/1","/plan/2"},
+			},
+		},
+}
+
 
 	// act - load the prices
 	count, err := processPrices(prices, site, itemIndex)
 	assert.NoError(t, err)
-	assert.Equal(t, 1, count)
+	assert.Equal(t, 2, count)
 
 	// verify the film entry is updated
 	assert.Equal(t, "$3.00", site.Films[0].Prices.GetLowestPrice(), "film price was not updated")
 
-	// check the itemIndex is updated
-	item := itemIndex.Get("/film/103")
-	film, ok := item.InnerItem.(models.Film)
+	// check the itemIndex is updated with film
+	filmItem := itemIndex.Get("/film/103")
+	film, ok := filmItem.InnerItem.(models.Film)
 	assert.True(t, ok)
 	assert.Equal(t, "$3.00", film.Prices.GetLowestPrice())
+
+	// check the itemIndex is updated with plan
+	planItem := itemIndex.Get("/plan/1")
+	plan, ok := planItem.InnerItem.(models.Plan)
+	assert.True(t, ok)
+	assert.Equal(t, "$11.00", plan.Prices.GetLowestPrice())
 }
 
 func TestDeserializePrices(t *testing.T) {
