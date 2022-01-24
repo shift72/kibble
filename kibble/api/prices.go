@@ -131,10 +131,6 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 
 type prices struct {
 	Prices []pricesV2 `json:"prices"`
-	Plans  []struct {
-		Item    string
-		Plans   []string
-	} `json:"plans"`
 }
 
 type pricesV2 struct {

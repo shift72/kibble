@@ -89,15 +89,6 @@ func TestMergePrices(t *testing.T) {
 				},
 			},
 		},
-		Plans: []struct{
-			Item string
-			Plans []string
-		}{
-			{
-				"/film/103",
-				[]string{"/plan/1","/plan/2"},
-			},
-		},
 }
 
 
