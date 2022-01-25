@@ -56,9 +56,9 @@ func AppendAllFilms(cfg *models.Config, site *models.Site, itemIndex models.Item
 	}
 
 	for i := 0; i < len(summary); i++ {
+
 		itemIndex.SetWithStatus(fmt.Sprintf("/film/%d", summary[i].ID), summary[i].StatusID, models.Unresolved)
-		//itemIndex.Set(fmt.Sprintf("/film/%d", summary[i].ID), models.Unresolved)
-		//log.Errorf("Status ID: %s", summary[i].StatusID)
+
 	}
 
 	return nil
@@ -66,7 +66,6 @@ func AppendAllFilms(cfg *models.Config, site *models.Site, itemIndex models.Item
 
 // AppendFilms - load a list of films
 func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex) error {
-
 	sort.Strings(slugs)
 
 	if len(slugs) > 300 {
@@ -106,8 +105,8 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 
 			f := film.mapToModel(site.Config, itemIndex)
 			site.Films = append(site.Films, f)
-			//itemIndex.SetWithStatus(f.Slug, f.StatusID, f.GetGenericItem())
-			itemIndex.Set(f.Slug, f.GetGenericItem())
+			itemIndex.Replace(f.Slug, f.GetGenericItem())
+
 		} else {
 			log.Error("film.error: %s", err)
 			log.Debug("invalid data %s", string(details[i]))
@@ -160,10 +159,6 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		},
 		Subtitles: f.Subtitles,
 	}
-
-	log.Errorf("Index return: %d", itemIndex.Get(f.Slug).StatusID)
-	itemIndex.Print()
-	itemIndex.PrintStats()
 
 	for _, s := range f.Studio {
 		film.Studio = append(film.Studio, s.Name)

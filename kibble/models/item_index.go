@@ -100,10 +100,6 @@ func (itemIndex ItemIndex) SetWithStatus(slug string, statusID int, item Generic
 	if (ok && (foundItem == Unresolved || foundItem == Empty)) || !ok {
 		index[slug] = item
 	}
-	// itemIndex.Print()
-	// itemIndex.PrintStats()
-	// log.Errorf("Setting status ID: status id recieved %d, vs item.Status: %d", statusID, item.StatusID)
-	// log.Errorf("Item: %s", index[slug])
 }
 
 // Replace a value in the index
@@ -148,12 +144,17 @@ func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem
 	t, ok := itemIndex[slugType]
 	if ok {
 		for k, v := range t {
-			if v == itemType {
+			if deepCompare(v, itemType) {
 				found = append(found, k)
 			}
 		}
 	}
 	return found
+}
+
+//Checking StatusID (which may be set) against generic Item type will cause fail check against all other feilds
+func deepCompare(a GenericItem, b GenericItem) bool {
+	return a.Slug == b.Slug && a.ItemType == b.ItemType && a.Title == b.Title && a.Images == b.Images && a.Seo == b.Seo
 }
 
 // LinkItems - link the items to the specific parts
@@ -199,7 +200,6 @@ func (itemIndex ItemIndex) Print() {
 	for t, val := range itemIndex {
 		log.Infof("type: %s", t)
 		for k, v := range val {
-			log.Infof("Value of status id: ", v.StatusID)
 			if v == Empty {
 				log.Infof("%s - %s : empty", t, k)
 			} else if v == Unresolved {
