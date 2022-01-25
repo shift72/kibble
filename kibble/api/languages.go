@@ -36,7 +36,7 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 
 	data, err := Get(cfg, path)
 	if err != nil {
-		return err
+		return fmt.Errorf("languages from API failed to load %s", err)
 	}
 
 	var languages languagesV1
@@ -50,6 +50,17 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 	site.DefaultLanguage = formatPathLocale(languages.DefaultLanguage.Code)
 	site.Languages = languages.mapToModel()
 
+	log.Infof("Site Languages Loaded from API")
+	var languagesList []string
+	for _, langs := range site.Languages {
+		if langs.IsDefault {
+			languagesList = append(languagesList, site.DefaultLanguage)
+		} else {
+			languagesList = append(languagesList, langs.Code)
+		}
+	}
+	log.Infof("Default Language: %s ", site.DefaultLanguage)
+	log.Infof("Supported Languages: %s", strings.Join(languagesList, ", "))
 	return nil
 }
 
