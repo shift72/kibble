@@ -152,7 +152,7 @@ func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem
 	return found
 }
 
-//Checking StatusID (which may be set) against generic Item type will cause fail check against all other feilds
+//Check fields of GenericItem, ignore StatusID (publish status) as it may differ.
 func deepCompare(a GenericItem, b GenericItem) bool {
 	return a.Slug == b.Slug && a.ItemType == b.ItemType && a.Title == b.Title && a.Images == b.Images && a.Seo == b.Seo
 }
