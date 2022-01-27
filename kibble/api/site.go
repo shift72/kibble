@@ -71,6 +71,11 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
+	err = LoadCSS(cfg, site)
+	if err != nil {
+		return nil, err
+	}
+
 	err = LoadAllCollections(cfg, site, itemIndex)
 	if err != nil {
 		return nil, err
