@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 0.16.0
 Support for self service Translations API. 
 Support for custom fields in Bundles. 
 Support for sync command to use an optional SiteURL parameter to override siteurl in kibble.json, used for shared templates.
