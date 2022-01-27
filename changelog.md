@@ -1,9 +1,9 @@
 # Change log
 
 ## Unreleased
-Support for self service Translations API
-Support for custom fields in Bundles
-Support for sync command to use an optional SiteURL parameter to override siteurl in kibble.json. Used for shared templates.
+Support for self service Translations API. 
+Support for custom fields in Bundles. 
+Support for sync command to use an optional SiteURL parameter to override siteurl in kibble.json, used for shared templates.
 
 ## 0.15.22
 Upgrade to go v1.17
