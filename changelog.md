@@ -1,5 +1,7 @@
 # Change log
 
+## 0.16.1
+
 ## 0.16.0
 Support for self service Translations API. 
 Support for custom fields in Bundles. 
