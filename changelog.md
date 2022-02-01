@@ -1,6 +1,8 @@
 # Change log
 
 ## 0.16.1
+Prices added to Plans
+An award category on a film now shows if the film is winner of that award category
 
 ## 0.16.0
 Support for self service Translations API. 
