@@ -45,6 +45,8 @@ func LoadAllPlans(cfg *models.Config, site *models.Site, itemIndex models.ItemIn
 		plan.LinkPlanToPage(site, b.PageID)
 
 		site.Plans = append(site.Plans, plan)
+
+		itemIndex.Set(plan.Slug, plan.GetGenericItem())
 	}
 
 	return nil

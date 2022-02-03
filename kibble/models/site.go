@@ -92,6 +92,7 @@ type CastMember struct {
 type AwardCategory struct {
 	Title        string
 	DisplayLabel string
+	IsWinner       bool
 }
 
 // SubtitleTrack -

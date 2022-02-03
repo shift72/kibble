@@ -57,6 +57,18 @@ func TestAddingTVShowToItemIndex(t *testing.T) {
 	assert.Equal(t, Unresolved, itemIndex.Get("/tv/123"), "expect item to be Unresolved")
 }
 
+func TestAddingPlanToItemIndex(t *testing.T) {
+
+	itemIndex := make(ItemIndex)
+
+	itemIndex.MapToUnresolvedItems([]string{"/plan/123"})
+
+	assert.Equal(t, 1, len(itemIndex["plan"]), "expect item index to include the plan")
+	assert.Equal(t, Unresolved, itemIndex["plan"]["/plan/123"], "expect item to be unresolved")
+	assert.Equal(t, false, itemIndex["plan"]["/plan/123"].IsResolved(), "expect item to be IsResolved() == false")
+	assert.Equal(t, Unresolved, itemIndex.Get("/plan/123"), "expect item to be Unresolved")
+}
+
 func TestLinkingBundlesItems(t *testing.T) {
 
 	itemIndex := make(ItemIndex)

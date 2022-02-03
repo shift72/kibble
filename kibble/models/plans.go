@@ -38,6 +38,7 @@ type Plan struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	ExpiryDate      time.Time
+	Prices          PriceInfo
 }
 
 func (plan *Plan) LinkPlanToPage(site *Site, PageID int) {
@@ -56,4 +57,24 @@ func (plan *Plan) LinkPlanToPage(site *Site, PageID int) {
 
 func (plan *Plan) HasExpiryDate() bool {
 	return !plan.ExpiryDate.IsZero()
+}
+
+// GetGenericItem - returns a generic item
+func (plan Plan) GetGenericItem() GenericItem {
+	return GenericItem{
+		Slug:      plan.Slug,
+		ItemType:  "plan",
+		InnerItem: plan,
+	}
+}
+
+// FindPlanBySlug - find the plan by the slug
+func (plans *PlanCollection) FindPlanBySlug(slug string) (*Plan, error) {
+	coll := *plans
+	for i := 0; i < len(coll); i++ {
+		if coll[i].Slug == slug {
+			return &coll[i], nil
+		}
+	}
+	return nil, ErrDataSourceMissing
 }
