@@ -63,6 +63,7 @@ type TVSeason struct {
 	SeasonNumber int
 	//TODO: consider removing this
 	Title           string
+	StatusID        int
 	Tagline         string
 	Overview        string
 	PublishingState string
@@ -153,6 +154,7 @@ func (season TVSeason) GetGenericItem() GenericItem {
 		Images:    season.Images,
 		ItemType:  "tvseason",
 		InnerItem: season,
+		StatusID:  season.StatusID,
 	}
 }
 
