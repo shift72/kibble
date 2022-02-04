@@ -1,7 +1,7 @@
 # Change log
 
 ## Unreleased
-Added CSS api call.
+Added CSS API call.
 Added CSSFilename to Site model.
 
 ## 0.16.1
