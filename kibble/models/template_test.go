@@ -119,7 +119,7 @@ func setupViewRenderer(site *Site, language *Language) *test.InMemoryRenderer {
 	T, _ := i18n.Tfunc("en-US")
 
 	ctx := RenderContext{Site: site, Language: language}
-	view := CreateTemplateView(nil, T, &ctx, "../sample_site/templates/")
+	view := CreateTemplateView(nil, T, nil, &ctx, "../sample_site/templates/")
 
 	return &test.InMemoryRenderer{View: view}
 }

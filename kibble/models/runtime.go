@@ -14,7 +14,10 @@
 
 package models
 
-import "github.com/nicksnyder/go-i18n/i18n"
+import (
+	"github.com/nicksnyder/go-i18n/i18n"
+	//"github.com/nicksnyder/go-i18n/v2/i18n"
+)
 
 // Runtime - Allows us to get accurate measures of hours and minutes.
 type Runtime int

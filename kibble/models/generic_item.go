@@ -14,7 +14,10 @@
 
 package models
 
-import "github.com/nicksnyder/go-i18n/i18n"
+import (
+	"github.com/nicksnyder/go-i18n/i18n"
+	//"github.com/nicksnyder/go-i18n/v2/i18n"
+)
 
 // GenericItem - used to store the common properties
 type GenericItem struct {

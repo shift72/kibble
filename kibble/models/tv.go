@@ -21,6 +21,7 @@ import (
 	"kibble/utils"
 
 	"github.com/nicksnyder/go-i18n/i18n"
+	//"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 // TVShow -

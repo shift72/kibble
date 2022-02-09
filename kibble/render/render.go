@@ -15,17 +15,21 @@
 package render
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
 
 	"kibble/api"
+
 	"kibble/models"
 	"kibble/utils"
 
 	"github.com/nicksnyder/go-i18n/i18n"
+	test "github.com/nicksnyder/go-i18n/v2/i18n"
 	logging "github.com/op/go-logging"
+	"golang.org/x/text/language"
 )
 
 var staticFolder = "static"
@@ -129,6 +133,14 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 	}
 
+	//Language Setup
+	bundle := test.NewBundle(language.English)
+	//log.Errorf(" %s ", bundle.LanguageTags())
+	//	log.Errorf(" %s ", bundle)
+	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
+	//bundle.MustLoadMessageFile("en.json")
+	//localizer := test.NewLocalizer(bundle, "en")
+
 	for languageKey, language := range languageConfigs {
 
 		code := language.Code
@@ -142,8 +154,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		if languageKey != defaultLanguage {
 			ctx.RoutePrefix = fmt.Sprintf("/%s", languageKey)
 		}
-
-		err := i18n.LoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
+		bundle.MustLoadMessageFile("/home/bryny/repos/kibblei18ntest/core-template/site/en.json")
+		err = i18n.LoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
 		if err != nil {
 			if languageKey == defaultLanguage {
 				log.Errorf("Default Language Translation file \"%s\" load failed: %s", ctx.Language.DefinitionFilePath, err)
@@ -154,6 +166,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 
 		renderLangSW := utils.NewStopwatchf("  render language: %s", languageKey)
+		//localizer here?
+		localizer := test.NewLocalizer(bundle, "en")
 		T, err := i18n.Tfunc(code, defaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)
@@ -161,7 +175,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 
 		// set the template view
-		renderer.view = models.CreateTemplateView(routeRegistry, T, &ctx, sourcePath)
+		renderer.view = models.CreateTemplateView(routeRegistry, T, localizer, &ctx, sourcePath)
 
 		for _, route := range routeRegistry.GetAll() {
 			renderRouteSW := utils.NewStopwatchf("    render route %s", route.Name)

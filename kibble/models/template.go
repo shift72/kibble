@@ -22,12 +22,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/nicksnyder/go-i18n/i18n"
+	test "github.com/nicksnyder/go-i18n/v2/i18n"
+
 	"kibble/version"
 
 	"github.com/CloudyKit/jet"
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/nicksnyder/go-i18n/i18n"
+
 	"gopkg.in/russross/blackfriday.v2"
 )
 
@@ -35,7 +38,7 @@ var templateTagRegex = regexp.MustCompile("(?U:{{.+}})+")
 var shortCodeView *jet.Set
 
 // CreateTemplateView - create a template view
-func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx *RenderContext, templatePath string) *jet.Set {
+func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, local *test.Localizer, ctx *RenderContext, templatePath string) *jet.Set {
 
 	view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", version.Version)
@@ -110,7 +113,13 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 
 			log.Errorf("WARN: translating %s found unrecognised type %s", translationID, argType)
 		}
-		return trans(translationID)
+		//return trans(translationID)
+		return local.MustLocalize(&test.LocalizeConfig{
+			DefaultMessage: &test.Message{
+				ID:    translationID,
+				Other: translationID,
+			},
+		})
 	})
 
 	view.AddGlobal("config", func(key string, args ...string) string {
