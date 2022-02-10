@@ -17,8 +17,6 @@ archives:
     amd64: 64-bit
     darwin: macOS
     linux: Tux
-  files:
-    - ../readme.md
   format_overrides:
     - goos: windows
       format: zip
