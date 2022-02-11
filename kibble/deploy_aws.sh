@@ -1,7 +1,19 @@
-VERSION=$(git describe --tags)
+VERSION=$1
+OS=$2
+
 if [ -z $VERSION ]; then
-  echo "error: tagged version not found"
+  echo "error: version not specified"
   exit 1
+fi
+
+if [ -z $OS ]; then
+  echo "error: OS not specified"
+  exit 1
+fi
+
+if [ $OS != "linux" ]; then
+  echo "Skipping hook for $OS"
+  exit 0
 fi
 
 echo "uploading linux only version - $VERSION"
