@@ -22,7 +22,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nicksnyder/go-i18n/i18n"
 	test "github.com/nicksnyder/go-i18n/v2/i18n"
 
 	"kibble/version"
@@ -38,7 +37,7 @@ var templateTagRegex = regexp.MustCompile("(?U:{{.+}})+")
 var shortCodeView *jet.Set
 
 // CreateTemplateView - create a template view
-func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, local *test.Localizer, ctx *RenderContext, templatePath string) *jet.Set {
+func CreateTemplateView(routeRegistry *RouteRegistry, local *test.Localizer, ctx *RenderContext, templatePath string) *jet.Set {
 
 	view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", version.Version)
@@ -92,32 +91,60 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 			       map[string]interface{} that contains a Count field and the template data,
 			       Count field must be an integer type (int, int8, int16, int32, int64) or a float formatted as a string (e.g. "123.45").
 		*/
+
 		if len(args) == 1 {
 
 			argType := reflect.TypeOf(args[0])
 			argTypeName := argType.String()
 
 			if argTypeName == "string" {
-				if f, ok := args[0].(string); ok && len(f) == 0 {
-					log.Warningf("WARN: found empty string parameter while translating \"%s\". Set a default or ensure the argument is not empty in %s", translationID, ctx.Route.TemplatePath)
-				}
+				log.Errorf("WARN: Argument must be a map not string translation: %s  filename: %s", translationID, ctx.Route.TemplatePath)
 			}
 
-			if argTypeName == "string" || strings.Contains(argTypeName, "int") || argTypeName == "map[string]interface {}" {
-				return trans(translationID, args[0])
+			if argTypeName == "map[string]interface {}" {
+				return local.MustLocalize(&test.LocalizeConfig{
+					DefaultMessage: &test.Message{
+						ID:    translationID,
+						Other: translationID,
+					},
+					TemplateData: args[0],
+				})
 			}
 
-			if f, ok := args[0].(float64); ok {
-				return trans(translationID, int(f))
+			if strings.Contains(argTypeName, "int") {
+				return local.MustLocalize(&test.LocalizeConfig{
+					DefaultMessage: &test.Message{
+						ID:    translationID,
+						Zero:  translationID,
+						One:   translationID,
+						Two:   translationID,
+						Many:  translationID,
+						Other: translationID,
+						Few:   translationID,
+					},
+					PluralCount: args[0],
+					TemplateData: map[string]interface{}{
+						"Count": args[0],
+					},
+				})
 			}
+
+			// if f, ok := args[0].(float64); ok {
+			// 	log.Warningf("Float Passed into translation")
+			// 	return trans(translationID, int(f))
+			// }
 
 			log.Errorf("WARN: translating %s found unrecognised type %s", translationID, argType)
 		}
-		//return trans(translationID)
 		return local.MustLocalize(&test.LocalizeConfig{
 			DefaultMessage: &test.Message{
 				ID:    translationID,
 				Other: translationID,
+				Zero:  translationID,
+				One:   translationID,
+				Two:   translationID,
+				Many:  translationID,
+				Few:   translationID,
 			},
 		})
 	})
