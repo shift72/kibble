@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Added CoreTemplateVersion property to kibble.json config model and v1/site_templates params.
+
 ## 0.16.4
 Fix to the release process - no changes from 0.16.2.
 
