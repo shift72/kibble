@@ -89,8 +89,14 @@ func TestMergePrices(t *testing.T) {
 				},
 			},
 		},
-}
-
+		Plans: []struct {
+			Item  string `json:"item"`
+			Plans []string `json:"plans"`
+		}{{
+			Item:  "/film/103",
+			Plans: []string{"/plan/1"},
+		}},
+	}
 
 	// act - load the prices
 	count, err := processPrices(prices, site, itemIndex)
@@ -111,6 +117,9 @@ func TestMergePrices(t *testing.T) {
 	plan, ok := planItem.InnerItem.(models.Plan)
 	assert.True(t, ok)
 	assert.Equal(t, "$11.00", plan.Prices.GetLowestPrice())
+
+	// check plan prices are assigned to film
+	assert.Equal(t, site.Films[0].Prices.PlanPrices["/plan/1"], plan.Prices.Prices)
 }
 
 func TestDeserializePrices(t *testing.T) {
