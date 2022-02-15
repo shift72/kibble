@@ -17,12 +17,16 @@ const (
 
 // PriceInfo - store the price and currency
 type PriceInfo struct {
-	Currency string
-	Prices   PriceCollection
+	Currency   string
+	Prices     PriceCollection
+	PlanPrices PlanPriceCollection
 }
 
 // PriceCollection -
 type PriceCollection []Price
+
+// PriceCollection -
+type PlanPriceCollection map[string]PriceCollection
 
 // Price -
 type Price struct {

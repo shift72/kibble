@@ -126,11 +126,31 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 		}
 	}
 
+	// loop over the retrieved list of all films that belong to plans
+	// assign to each film a slice of maps e.g. [{"plan/123" : prices }, ...]
+	for _, filmPlans := range details.Plans {}
+		if film, ok := site.Films.FindFilmBySlug(filmPlans.Item); ok {
+
+			filmPlanPrices := make(map[string]models.PriceCollection, 0)
+
+			for _, filmPlan := range filmPlans.Plans {
+				if plan, err := site.Plans.FindPlanBySlug(filmPlan); err == nil {
+					filmPlanPrices[filmPlan] = p.Prices.Prices
+				}
+			}
+			film.Prices.PlanPrices = filmPlanPrices
+		}
+	}
+
 	return count, nil
 }
 
 type prices struct {
 	Prices []pricesV2 `json:"prices"`
+	Plans  []struct {
+		Item  string   `json:"item"`
+		Plans []string `json:"plans"`
+	} `json:"plans"`
 }
 
 type pricesV2 struct {
