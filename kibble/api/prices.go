@@ -126,8 +126,8 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 		}
 	}
 
-	// loop over the retrieved list of all films that belong to plans
-	// assign to each film a slice of maps e.g. [{"plan/123" : prices }, ...]
+	// loop over the retrieved list of films that belong to plans
+	// assign a slice of maps to each film e.g. [{"plan/123" : prices }, ...]
 	for _, filmPlans := range details.Plans {
 		if film, ok := site.Films.FindFilmBySlug(filmPlans.Item); ok {
 
