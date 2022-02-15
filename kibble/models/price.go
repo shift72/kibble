@@ -25,7 +25,7 @@ type PriceInfo struct {
 // PriceCollection -
 type PriceCollection []Price
 
-// PriceCollection -
+// PlanPriceCollection -
 type PlanPriceCollection map[string]PriceCollection
 
 // Price -
