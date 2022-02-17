@@ -32,10 +32,6 @@ func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 			code = site.DefaultLanguage
 		}
 		filename := fmt.Sprintf("%s.json", code)
-		//placeholder for i18nv2, as we need to change file name format
-		if code == site.DefaultLanguage {
-			filename = fmt.Sprintf("%s.json", code)
-		}
 
 		data, ok := site.Translations[code]
 		if !ok || data == nil {

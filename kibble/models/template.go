@@ -37,7 +37,7 @@ var templateTagRegex = regexp.MustCompile("(?U:{{.+}})+")
 var shortCodeView *jet.Set
 
 // CreateTemplateView - create a template view
-func CreateTemplateView(routeRegistry *RouteRegistry, local *test.Localizer, ctx *RenderContext, templatePath string) *jet.Set {
+func CreateTemplateView(routeRegistry *RouteRegistry, local *test.Localizer, lang string, ctx *RenderContext, templatePath string) *jet.Set {
 
 	view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", version.Version)
@@ -102,17 +102,21 @@ func CreateTemplateView(routeRegistry *RouteRegistry, local *test.Localizer, ctx
 			}
 
 			if argTypeName == "map[string]interface {}" {
-				return local.MustLocalize(&test.LocalizeConfig{
+				translation, err := local.Localize(&test.LocalizeConfig{
 					DefaultMessage: &test.Message{
 						ID:    translationID,
 						Other: translationID,
 					},
 					TemplateData: args[0],
 				})
+				if err != nil {
+					log.Errorf("map string err %s", err)
+				}
+				return translation
 			}
 
 			if strings.Contains(argTypeName, "int") {
-				return local.MustLocalize(&test.LocalizeConfig{
+				translation, err := local.Localize(&test.LocalizeConfig{
 					DefaultMessage: &test.Message{
 						ID:    translationID,
 						Zero:  translationID,
@@ -127,26 +131,47 @@ func CreateTemplateView(routeRegistry *RouteRegistry, local *test.Localizer, ctx
 						"Count": args[0],
 					},
 				})
+				if err != nil {
+					log.Errorf("int err on lang %s : %s", lang, err)
+				}
+				return translation
 			}
 
-			// if f, ok := args[0].(float64); ok {
-			// 	log.Warningf("Float Passed into translation")
-			// 	return trans(translationID, int(f))
-			// }
+			if f, ok := args[0].(float64); ok {
+
+				translation, err := local.Localize(&test.LocalizeConfig{
+					MessageID: translationID,
+					DefaultMessage: &test.Message{
+						ID:    translationID,
+						Zero:  translationID,
+						One:   translationID,
+						Two:   translationID,
+						Many:  translationID,
+						Other: translationID,
+						Few:   translationID,
+					},
+					PluralCount: f,
+					TemplateData: map[string]interface{}{
+						"Count": f,
+					},
+				})
+				if err != nil {
+					log.Errorf("float err  on lang %s : %s", lang, err)
+				}
+				return translation
+			}
 
 			log.Errorf("WARN: translating %s found unrecognised type %s", translationID, argType)
 		}
-		return local.MustLocalize(&test.LocalizeConfig{
-			DefaultMessage: &test.Message{
-				ID:    translationID,
-				Other: translationID,
-				Zero:  translationID,
-				One:   translationID,
-				Two:   translationID,
-				Many:  translationID,
-				Few:   translationID,
-			},
+
+		translation, err := local.Localize(&test.LocalizeConfig{
+			MessageID: translationID,
 		})
+		if err != nil {
+			argType := reflect.TypeOf(err)
+			log.Errorf("standard translation error: Error: %s Error Type: %s", err, argType.String())
+		}
+		return translation
 	})
 
 	view.AddGlobal("config", func(key string, args ...string) string {
