@@ -38,7 +38,7 @@ type Plan struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	ExpiryDate      time.Time
-	Prices          PriceInfo
+	PriceInfo       PriceInfo
 }
 
 func (plan *Plan) LinkPlanToPage(site *Site, PageID int) {

@@ -23,20 +23,20 @@
     <div>
       Prices
       
-      <span>From: {{ film.Prices.GetLowestPrice() }} {{ film.Prices.Currency }}</span>
+      <span>From: {{ film.PriceInfo.GetLowestPrice() }} {{ film.PriceInfo.Currency }}</span>
 
-      {{ if film.Prices.HasPrice("buy", "hd")}}
-      <div>Buy HD: {{ film.Prices.GetPrice("buy", "hd") }} {{ film.Prices.Currency }}</div>
+      {{ if film.PriceInfo.HasPrice("buy", "hd")}}
+      <div>Buy HD: {{ film.PriceInfo.GetPrice("buy", "hd") }} {{ film.PriceInfo.Currency }}</div>
       {{ end }}
-      {{ if film.Prices.HasPrice("rent", "hd")}}
-      <div>Rent HD: {{ film.Prices.GetPrice("rent", "hd") }} {{ film.Prices.Currency }}</div>
+      {{ if film.PriceInfo.HasPrice("rent", "hd")}}
+      <div>Rent HD: {{ film.PriceInfo.GetPrice("rent", "hd") }} {{ film.PriceInfo.Currency }}</div>
       {{ end }}
-      {{ if film.Prices.HasPrice("buy", "sd")}}
-      <div>Buy SD: {{ film.Prices.GetPrice("buy", "sd") }} {{ film.Prices.Currency }}</div>
+      {{ if film.PriceInfo.HasPrice("buy", "sd")}}
+      <div>Buy SD: {{ film.PriceInfo.GetPrice("buy", "sd") }} {{ film.PriceInfo.Currency }}</div>
       {{ end }}
-      {{ if film.Prices.HasPrice("rent", "sd")}}
-      <div>Rent SD: {{ film.Prices.GetPrice("rent", "sd") }} {{ film.Prices.Currency }}</div>
-      <div>Rent SD: {{ film.Prices.GetValue("rent", "sd") }} {{ film.Prices.Currency }}</div>
+      {{ if film.PriceInfo.HasPrice("rent", "sd")}}
+      <div>Rent SD: {{ film.PriceInfo.GetPrice("rent", "sd") }} {{ film.PriceInfo.Currency }}</div>
+      <div>Rent SD: {{ film.PriceInfo.GetValue("rent", "sd") }} {{ film.PriceInfo.Currency }}</div>
       {{ end }}
     </div>
 

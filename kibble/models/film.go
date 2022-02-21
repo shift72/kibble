@@ -44,7 +44,7 @@ type Film struct {
 	Tags            StringCollection
 	Seo             Seo
 	Images          ImageSet
-	Prices          PriceInfo
+	PriceInfo       PriceInfo
 	Available       Period
 	Recommendations []GenericItem
 	Subtitles       []string

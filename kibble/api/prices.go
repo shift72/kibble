@@ -97,14 +97,14 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 		case "film":
 			if f, ok := site.Films.FindFilmBySlug(p.Item); ok {
 				count++
-				f.Prices = pricingInfo
+				f.PriceInfo = pricingInfo
 				// replace the itemIndex
 				itemIndex.Replace(p.Item, f.GetGenericItem())
 			}
 		case "tvseason":
 			if f, ok := site.TVSeasons.FindTVSeasonBySlug(p.Item); ok {
 				count++
-				f.Prices = pricingInfo
+				f.PriceInfo = pricingInfo
 				// replace the itemIndex
 				itemIndex.Replace(p.Item, f.GetGenericItem())
 			}
@@ -112,14 +112,14 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 		case "bundle":
 			if f, err := site.Bundles.FindBundleBySlug(p.Item); err == nil {
 				count++
-				f.Prices = pricingInfo
+				f.PriceInfo = pricingInfo
 				// replace the itemIndex
 				itemIndex.Replace(p.Item, f.GetGenericItem())
 			}
 		case "plan":
 			if f, err := site.Plans.FindPlanBySlug(p.Item); err == nil {
 				count++
-				f.Prices = pricingInfo
+				f.PriceInfo = pricingInfo
 				// replace the itemIndex
 				itemIndex.Replace(p.Item, f.GetGenericItem())
 			}
@@ -135,10 +135,10 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 
 			for _, filmPlan := range filmPlans.Plans {
 				if plan, err := site.Plans.FindPlanBySlug(filmPlan); err == nil {
-					filmPlanPrices[filmPlan] = plan.Prices.Prices
+					filmPlanPrices[filmPlan] = plan.PriceInfo.Prices
 				}
 			}
-			film.Prices.PlanPrices = filmPlanPrices
+			film.PriceInfo.PlanPrices = filmPlanPrices
 		}
 	}
 
