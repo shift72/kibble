@@ -104,22 +104,22 @@ func TestMergePrices(t *testing.T) {
 	assert.Equal(t, 2, count)
 
 	// verify the film entry is updated
-	assert.Equal(t, "$3.00", site.Films[0].PriceInfo.GetLowestPrice(), "film price was not updated")
+	assert.Equal(t, "$3.00", site.Films[0].Prices.GetLowestPrice(), "film price was not updated")
 
 	// check the itemIndex is updated with film
 	filmItem := itemIndex.Get("/film/103")
 	film, ok := filmItem.InnerItem.(models.Film)
 	assert.True(t, ok)
-	assert.Equal(t, "$3.00", film.PriceInfo.GetLowestPrice())
+	assert.Equal(t, "$3.00", film.Prices.GetLowestPrice())
 
 	// check the itemIndex is updated with plan
 	planItem := itemIndex.Get("/plan/1")
 	plan, ok := planItem.InnerItem.(models.Plan)
 	assert.True(t, ok)
-	assert.Equal(t, "$11.00", plan.PriceInfo.GetLowestPrice())
+	assert.Equal(t, "$11.00", plan.Prices.GetLowestPrice())
 
 	// check plan prices are assigned to film
-	assert.Equal(t, site.Films[0].PriceInfo.PlanPrices["/plan/1"], plan.PriceInfo.Prices)
+	assert.Equal(t, site.Films[0].Prices.PlanPrices["/plan/1"], plan.Prices.Prices)
 }
 
 func TestDeserializePrices(t *testing.T) {

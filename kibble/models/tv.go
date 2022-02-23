@@ -69,7 +69,7 @@ type TVSeason struct {
 	ShowInfo        *TVShow
 	Seo             Seo
 	Images          ImageSet
-	PriceInfo       PriceInfo
+	Prices          PriceInfo
 	Available       Period
 	Trailers        []Trailer
 	Episodes        TVEpisodeCollection

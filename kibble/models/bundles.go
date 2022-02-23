@@ -32,7 +32,7 @@ type Bundle struct {
 	Images        ImageSet
 	PromoURL      string
 	ExternalID    string
-	PriceInfo     PriceInfo
+	Prices        PriceInfo
 	Items         GenericItems
 	PublishedDate time.Time
 	CreatedAt     time.Time
