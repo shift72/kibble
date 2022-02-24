@@ -67,6 +67,10 @@ func Execute(sourcePath string, buildPath string, cfg *models.Config, zipOnly bo
 		"builderVersion": cfg.BuilderVersion,
 	}
 
+	if cfg.CoreTemplateVersion != "" {
+		extraParams["coreTemplateVersion"] = cfg.CoreTemplateVersion
+	}
+
 	log.Infof("uploading name: %s@%s built with %s", cfg.Name, cfg.Version, cfg.BuilderVersion)
 	err = api.Upload(cfg, cfg.SiteURL+"/services/users/v1/site_templates", extraParams, target)
 	if err != nil {

@@ -33,6 +33,7 @@ type Config struct {
 	DefaultTimeZone           string                    `json:"defaultTimeZone"`
 	DefaultDateFormat         string                    `json:"defaultDateFormat"`
 	DefaultTimeFormat         string                    `json:"defaultTimeFormat"`
+	CoreTemplateVersion       string                    `json:"coreTemplateVersion"`
 }
 
 // LiveReloadConfig - configuration options for the live_reloader
