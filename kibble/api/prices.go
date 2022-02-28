@@ -131,7 +131,7 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 	for _, filmPlans := range details.Plans {
 		if film, ok := site.Films.FindFilmBySlug(filmPlans.Item); ok {
 
-			filmPlanPrices := make(map[string]models.PriceCollection, 0)
+			filmPlanPrices := make(models.PlanPriceCollection, 0)
 
 			for _, filmPlan := range filmPlans.Plans {
 				if plan, err := site.Plans.FindPlanBySlug(filmPlan); err == nil {
