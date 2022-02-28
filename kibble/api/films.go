@@ -24,6 +24,7 @@ import (
 
 	"kibble/models"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gosimple/slug"
 )
 
@@ -117,6 +118,28 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 
 func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Film {
 
+	// Convert foo_image to 'Foo'
+	for key, value := range f.ImageUrls {
+		titleCaseKey := strings.Title(strings.ToLower(key))
+		titleCaseKey = strings.Replace(titleCaseKey, "_image", "", -1)
+		if titleCaseKey != key {
+			f.ImageUrls[titleCaseKey] = value
+			delete(f.ImageUrls, key)
+		}
+	}
+
+	spew.Dump("f.ImageUrls", f.ImageUrls)
+
+	landscapeImage := ""
+	if f.ImageUrls["Landscape"] != nil {
+		landscapeImage = f.ImageUrls["Landscape"].(string)
+	}
+
+	portraitImage := ""
+	if f.ImageUrls["Portrait"] != nil {
+		portraitImage = f.ImageUrls["Portrait"].(string)
+	}
+
 	film := models.Film{
 		ID:              f.ID,
 		Slug:            f.Slug,
@@ -136,17 +159,9 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 			Title:       serviceConfig.GetSEOTitle(f.SeoTitle, f.Title),
 			Keywords:    serviceConfig.GetKeywords(f.SeoKeywords),
 			Description: utils.Coalesce(f.SeoDescription, f.Tagline),
-			Image:       serviceConfig.SelectDefaultImageType(f.ImageUrls.Landscape, f.ImageUrls.Portrait),
+			Image:       serviceConfig.SelectDefaultImageType(landscapeImage, portraitImage),
 		},
-		Images: models.ImageSet{
-			Portrait:       f.ImageUrls.Portrait,
-			Landscape:      f.ImageUrls.Landscape,
-			Header:         f.ImageUrls.Header,
-			Carousel:       f.ImageUrls.Carousel,
-			Background:     f.ImageUrls.Bg,
-			Classification: f.ImageUrls.Classification,
-			Seo:            f.ImageUrls.Seo,
-		},
+		Images:          f.ImageUrls,
 		Recommendations: itemIndex.MapToUnresolvedItems(f.Recommendations),
 		Trailers:        make([]models.Trailer, 0),
 		Cast:            make([]models.CastMember, 0),
@@ -205,7 +220,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		film.AwardCategories = append(film.AwardCategories, models.AwardCategory{
 			Title:        t.Title,
 			DisplayLabel: t.DisplayLabel,
-			IsWinner:       t.IsWinner,
+			IsWinner:     t.IsWinner,
 		})
 	}
 
@@ -218,15 +233,16 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	}
 
 	// add bonuses - supports linking to bonus entries (supported??)
-	for _, bonus := range f.Bonuses {
-		b := bonus.mapToModel2(film.Slug, film.Images)
-		film.Bonuses = append(film.Bonuses, b)
-		itemIndex.Set(b.Slug, b.GetGenericItem())
-	}
+	// for _, bonus := range f.Bonuses {
+	// 	b := bonus.mapToModel2(film.Slug, film.Images)
+	// 	film.Bonuses = append(film.Bonuses, b)
+	// 	itemIndex.Set(b.Slug, b.GetGenericItem())
+	// }
 
 	// if seo image is available, use it
-	if len(film.Images.Seo) > 0 {
-		film.Seo.Image = film.Images.Seo
+	seo_image := film.Images["Seo"]
+	if (seo_image != nil) && (len(seo_image.(string)) > 0) {
+		film.Seo.Image = seo_image.(string)
 	}
 
 	return film
@@ -250,27 +266,19 @@ type filmV2 struct {
 	Studio []struct {
 		Name string `json:"name"`
 	} `json:"studio"`
-	Overview    string   `json:"overview"`
-	Tagline     string   `json:"tagline"`
-	ReleaseDate string   `json:"release_date,omitempty"`
-	Runtime     float64  `json:"runtime"`
-	Countries   []string `json:"countries"`
-	Languages   []string `json:"languages"`
-	Genres      []string `json:"genres"`
-	Tags        []string `json:"tags"`
-	Title       string   `json:"title"`
-	Slug        string   `json:"slug"`
-	FilmID      int      `json:"film_id"`
-	ID          int      `json:"id"`
-	ImageUrls   struct {
-		Portrait       string `json:"portrait"`
-		Landscape      string `json:"landscape"`
-		Header         string `json:"header"`
-		Carousel       string `json:"carousel"`
-		Bg             string `json:"bg"`
-		Classification string `json:"classification"`
-		Seo            string `json:"seo"`
-	} `json:"image_urls"`
+	Overview        string                      `json:"overview"`
+	Tagline         string                      `json:"tagline"`
+	ReleaseDate     string                      `json:"release_date,omitempty"`
+	Runtime         float64                     `json:"runtime"`
+	Countries       []string                    `json:"countries"`
+	Languages       []string                    `json:"languages"`
+	Genres          []string                    `json:"genres"`
+	Tags            []string                    `json:"tags"`
+	Title           string                      `json:"title"`
+	Slug            string                      `json:"slug"`
+	FilmID          int                         `json:"film_id"`
+	ID              int                         `json:"id"`
+	ImageUrls       map[string]interface{}      `json:"image_urls"`
 	Recommendations []string                    `json:"recommendations"`
 	Subtitles       []string                    `json:"subtitles"`
 	SubtitleTracks  []subtitleTrackV1           `json:"subtitle_tracks"`

@@ -92,7 +92,7 @@ type CastMember struct {
 type AwardCategory struct {
 	Title        string
 	DisplayLabel string
-	IsWinner       bool
+	IsWinner     bool
 }
 
 // SubtitleTrack -
@@ -112,6 +112,8 @@ type Classification struct {
 
 // CustomFields are key-value pairs that can be aded to a film, season, bonus, or episode
 type CustomFields map[string]interface{}
+
+type ImageUrls map[string]interface{}
 
 // GetString returns the custom field in string format
 func (fields CustomFields) GetString(fieldKey string, defaultValue string) string {

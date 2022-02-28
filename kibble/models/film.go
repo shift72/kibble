@@ -43,7 +43,7 @@ type Film struct {
 	AwardCategories []AwardCategory
 	Tags            StringCollection
 	Seo             Seo
-	Images          ImageSet
+	Images          ImageUrls
 	Prices          PriceInfo
 	Available       Period
 	Recommendations []GenericItem
@@ -82,9 +82,9 @@ func (films *FilmCollection) FindFilmBySlug(slug string) (*Film, bool) {
 // GetGenericItem - returns a generic item
 func (film Film) GetGenericItem() GenericItem {
 	return GenericItem{
-		Title:     film.Title,
-		Slug:      film.Slug,
-		Images:    film.Images,
+		Title: film.Title,
+		Slug:  film.Slug,
+		// Images:    {},
 		ItemType:  "film",
 		InnerItem: film,
 	}

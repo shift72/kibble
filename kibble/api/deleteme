@@ -1,0 +1,22 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+func main() {
+	imageJson := `{ "image_urls": { "portrait": "portrait.png", "seo": nil, "sponsor": "sponsor.png" } }`
+	var result map[string]interface{}
+	json.Unmarshal([]byte(imageJson), &result)
+
+	// a map[string]interface{} type, and its type is asserted from
+	// the interface{} type
+	images := result["image_urls"].(map[string]interface{})
+
+	for key, value := range images {
+		// Each value is an interface{} type, that is type asserted as a string
+		fmt.Println(key, value.(string))
+	}
+
+}

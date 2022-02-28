@@ -1,0 +1,34 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+)
+
+func main() {
+	imageJson := `{"image_urls":{"protrait":"portrait.png","seo": null, "landscape":"bird of prey"}}`
+	var result map[string]interface{}
+	json.Unmarshal([]byte(imageJson), &result)
+
+	// The object stored in the "birds" key is also stored as
+	// a map[string]interface{} type, and its type is asserted from
+	// the interface{} type
+	imageUrls := result["image_urls"].(map[string]interface{})
+
+	fmt.Println(imageUrls)
+
+	for key, value := range imageUrls {
+		// Each value is an interface{} type, that is type asserted as a string
+
+		titleCaseKey := strings.Title(strings.ToLower(key))
+		if titleCaseKey != key {
+			imageUrls[titleCaseKey] = value
+			delete(imageUrls, key)
+		}
+
+	}
+	fmt.Println(imageUrls)
+	//pigeon likes to perch on rocks
+	//eagle bird of prey
+}

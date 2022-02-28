@@ -87,18 +87,6 @@ func getFilm() filmV2 {
 		Bonuses: []bonusContentV2{{
 			Number: 1,
 			Title:  "Behind the scenes",
-			ImageUrls: struct {
-				Portrait       string `json:"portrait"`
-				Landscape      string `json:"landscape"`
-				Header         string `json:"header"`
-				Carousel       string `json:"carousel"`
-				Bg             string `json:"bg"`
-				Classification string `json:"classification"`
-			}{
-				Portrait:       "portrait",
-				Landscape:      "landscape",
-				Classification: "classification",
-			},
 		}},
 		Studio: []struct {
 			Name string `json:"name"`
@@ -134,6 +122,11 @@ func getFilm() filmV2 {
 			DisplayLabel: "The Award 2021",
 			IsWinner:     true,
 		}},
+		ImageUrls: map[string]interface{}{
+			"portrait_image":       nil,
+			"landscape_image":      nil,
+			"classification_image": nil,
+		},
 	}
 	return apiFilm
 }
@@ -160,8 +153,8 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, "Darth Vadar", model.Cast[0].Character, "cast.character")
 	assert.Equal(t, "Peter Jackson", model.Crew[0].Name, "crew.name")
 
-	assert.Equal(t, 1, len(model.Bonuses), "expect 1 bonus")
-	assert.Equal(t, "/film/52/bonus/1", model.Bonuses[0].Slug, "bonus.slug")
+	// assert.Equal(t, 1, len(model.Bonuses), "expect 1 bonus")
+	// assert.Equal(t, "/film/52/bonus/1", model.Bonuses[0].Slug, "bonus.slug")
 
 	assert.Equal(t, 2, len(model.Recommendations), "expect 2 generic items")
 
@@ -200,6 +193,31 @@ func TestFilmApiToModelWithoutClassifications(t *testing.T) {
 	assert.Equal(t, 0, len(model.Classifications))
 }
 
+func TestFilmApiToModelImages(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := filmV2{
+		ID:    123,
+		Title: "Film 99",
+		Slug:  "/film/99",
+		ImageUrls: map[string]interface{}{
+			"background_image": "background.png",
+			"portrait":         "portrait.jpg",
+			"landscape_image":  nil,
+			"sponsor_image":    "sponsor.bmp",
+		},
+	}
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, model.Images["Background"], "background.png", "should be equal")
+	assert.Equal(t, model.Images["Portrait"], "portrait.jpg", "should be equal")
+	assert.Nil(t, model.Images["Landscape"], "should be nil")
+	assert.Equal(t, model.Images["Sponsor"], "sponsor.bmp", "should be equal")
+}
+
 func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
 
 	itemIndex := make(models.ItemIndex)
@@ -208,8 +226,8 @@ func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
 
 	apiFilm := getFilm()
 	imageURL := "image.jpeg"
-	apiFilm.ImageUrls.Portrait = imageURL
-	apiFilm.ImageUrls.Landscape = imageURL
+	apiFilm.ImageUrls["portrait_image"] = imageURL
+	apiFilm.ImageUrls["landscape_image"] = imageURL
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
 
@@ -224,7 +242,7 @@ func TestFilmApiToModelWithSeoImage(t *testing.T) {
 
 	apiFilm := getFilm()
 	imageURL := "seo_image.jpeg"
-	apiFilm.ImageUrls.Seo = imageURL
+	apiFilm.ImageUrls["seo_image"] = imageURL
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
 

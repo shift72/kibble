@@ -25,7 +25,8 @@ type GenericItem struct {
 	Slug     string
 	Title    string
 	Images   ImageSet
-	Seo      Seo
+	// ImageUrls ImageUrls
+	Seo Seo
 }
 
 // GetTitle - returns the title in the current language
