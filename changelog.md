@@ -1,6 +1,7 @@
 # Change log
 
 ## Unreleased
+Added PlanPrices to Films
 
 ## 0.16.4
 Fix to the release process - no changes from 0.16.2.
