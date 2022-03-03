@@ -63,7 +63,7 @@ func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex models.It
 		site.TVShows = append(site.TVShows, summary[ti].mapToModel())
 
 		for si := 0; si < len(summary[ti].Seasons); si++ {
-			itemIndex.Set(summary[ti].Seasons[si].Slug, models.Unresolved)
+			itemIndex.SetWithStatus(summary[ti].Seasons[si].Slug, summary[ti].Seasons[si].StatusID, models.Unresolved)
 		}
 	}
 
@@ -118,7 +118,7 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 			}
 
 			site.TVSeasons = append(site.TVSeasons, &season)
-			itemIndex.Set(season.Slug, season.GetGenericItem())
+			itemIndex.Replace(season.Slug, season.GetGenericItem())
 		} else {
 			log.Info("Failed marshalling season %s %s", details.Seasons[i], err)
 		}
@@ -172,6 +172,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 		Tagline:         t.Tagline,
 		PublishingState: t.PublishingState,
 		Title:           t.Title,
+		StatusID:        itemIndex.Get(t.Slug).StatusID,
 		SeasonNumber:    seasonNumber,
 		Seo: models.Seo{
 			SiteName:    serviceConfig.GetSiteName(),
