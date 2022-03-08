@@ -38,8 +38,8 @@ func (ds *FilmIndexDataSource) GetEntityType() reflect.Type {
 // Iterator - return a list of all films, iteration of 1
 func (ds *FilmIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 	clonedFilms := make([]*models.Film, len(ctx.Site.Films))
-	for i, f := range ctx.Site.Films {
-		clonedFilms[i] = transformFilm(f)
+	for _, f := range ctx.Site.Films {
+		clonedFilms = append(clonedFilms, transformFilm(f))
 	}
 
 	vars := make(jet.VarMap)

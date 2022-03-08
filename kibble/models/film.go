@@ -15,9 +15,10 @@
 package models
 
 import (
-	"fmt"
-	"sort"
+	// "fmt"
+	// "sort"
 	"time"
+	"strconv"
 
 	"kibble/utils"
 )
@@ -56,15 +57,13 @@ type Film struct {
 }
 
 // FilmCollection - all films
-type FilmCollection []Film
+type FilmCollection map[string]Film
 
 // FindFilmByID - find film by id
 func (films *FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 	coll := *films
-	for i := 0; i < len(coll); i++ {
-		if coll[i].ID == filmID {
-			return &coll[i], true
-		}
+	if val, ok := coll["/film/" + strconv.Itoa(filmID)]; ok {
+		return &val, true
 	}
 	return nil, false
 }
@@ -72,10 +71,8 @@ func (films *FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 // FindFilmBySlug - find the film by the slug
 func (films *FilmCollection) FindFilmBySlug(slug string) (*Film, bool) {
 	coll := *films
-	for i := 0; i < len(coll); i++ {
-		if coll[i].Slug == slug || coll[i].TitleSlug == slug {
-			return &coll[i], true
-		}
+	if val, ok := coll[slug]; ok {
+		return &val, true
 	}
 	return nil, false
 }
@@ -105,41 +102,41 @@ func (film Film) GetSubtitles() StringCollection {
 }
 
 // MakeTitleSlugsUnique scans the films looking for duplicates
-func (films *FilmCollection) MakeTitleSlugsUnique() {
+// func (films *FilmCollection) MakeTitleSlugsUnique() {
 
-	groups := make(map[string][]int, 0)
+// 	groups := make(map[string][]int, 0)
 
-	// create a grouping of slugs to films first
-	for fi, film := range *films {
-		if groups[film.TitleSlug] == nil {
-			groups[film.TitleSlug] = []int{fi}
-		} else {
-			groups[film.TitleSlug] = append(groups[film.TitleSlug], fi)
-		}
-	}
+// 	// create a grouping of slugs to films first
+// 	for fi, film := range *films {
+// 		if groups[film.TitleSlug] == nil {
+// 			groups[film.TitleSlug] = []int{fi}
+// 		} else {
+// 			groups[film.TitleSlug] = append(groups[film.TitleSlug], fi)
+// 		}
+// 	}
 
-	// if any groups are larger than 1 then make them unique
-	for _, group := range groups {
-		if len(group) == 1 {
-			continue
-		}
+// 	// if any groups are larger than 1 then make them unique
+// 	for _, group := range groups {
+// 		if len(group) == 1 {
+// 			continue
+// 		}
 
-		// sort them by id, so the first film is not changed
-		sort.Slice(group, func(i int, j int) bool {
-			return (*films)[group[i]].ID < (*films)[group[j]].ID
-		})
+// 		// sort them by id, so the first film is not changed
+// 		sort.Slice(group, func(i int, j int) bool {
+// 			return (*films)[group[i]].ID < (*films)[group[j]].ID
+// 		})
 
-		// append i + 1 to end of slug
-		for j := 0; j < len(group); j++ {
-			if j == 0 {
-				continue
-			}
+// 		// append i + 1 to end of slug
+// 		for j := 0; j < len(group); j++ {
+// 			if j == 0 {
+// 				continue
+// 			}
 
-			// find the correct value to update, without making a copy
-			(*films)[group[j]].TitleSlug = fmt.Sprintf("%s-%d", (*films)[group[j]].TitleSlug, j+1)
-		}
-	}
-}
+// 			// find the correct value to update, without making a copy
+// 			(*films)[group[j]].TitleSlug = fmt.Sprintf("%s-%d", (*films)[group[j]].TitleSlug, j+1)
+// 		}
+// 	}
+// }
 
 type FilmRefs struct {
 	LetterboxdID string `json:"letterboxd_id"`
