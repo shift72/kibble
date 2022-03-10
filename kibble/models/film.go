@@ -57,13 +57,13 @@ type Film struct {
 }
 
 // FilmCollection - all films
-type FilmCollection map[string]Film
+type FilmCollection map[string]*Film
 
 // FindFilmByID - find film by id
 func (films *FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 	coll := *films
 	if val, ok := coll["/film/" + strconv.Itoa(filmID)]; ok {
-		return &val, true
+		return val, true
 	}
 	return nil, false
 }
@@ -72,7 +72,7 @@ func (films *FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 func (films *FilmCollection) FindFilmBySlug(slug string) (*Film, bool) {
 	coll := *films
 	if val, ok := coll[slug]; ok {
-		return &val, true
+		return val, true
 	}
 	return nil, false
 }

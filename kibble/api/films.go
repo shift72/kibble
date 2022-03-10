@@ -104,7 +104,7 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 		if err == nil {
 
 			f := film.mapToModel(site.Config, itemIndex)
-			site.Films[f.Slug] = f
+			site.Films[f.Slug] = &f
 			itemIndex.Replace(f.Slug, f.GetGenericItem())
 
 		} else {

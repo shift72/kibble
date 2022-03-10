@@ -75,7 +75,7 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 	data.Set("site", ctx.Site)
 
 	for _, f := range ctx.Site.Films {
-		data.Set("film", transformFilm(f))
+		data.Set("film", transformFilm(*f))
 
 		filePath := ds.GetRouteForEntity(ctx, &f)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
