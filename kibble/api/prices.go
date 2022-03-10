@@ -95,16 +95,17 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 
 		switch found.ItemType {
 		case "film":
-			// if f, ok := site.Films.FindFilmBySlug(p.Item); ok {
-			// 	count++
-			// 	f.Prices = pricingInfo
-			// 	itemIndex.Replace(p.Item, f.GetGenericItem())
-			// }
-			if film, ok := site.Films[p.Item]; ok {
-				film.Prices = pricingInfo
-				site.Films[film.Slug] = film
-				itemIndex.Replace(p.Item, film.GetGenericItem())
+			if f, ok := site.Films.FindFilmBySlug(p.Item); ok {
+				count++
+				f.Prices = pricingInfo
+				itemIndex.Replace(p.Item, f.GetGenericItem())
 			}
+			// Bad idea as it doesn't retrieve pointer, increased Time by 49%
+			// if film, ok := site.Films[p.Item]; ok {
+			// 	film.Prices = pricingInfo
+			// 	site.Films[film.Slug] = film
+			// 	itemIndex.Replace(p.Item, film.GetGenericItem())
+			// }
 		case "tvseason":
 			if f, ok := site.TVSeasons.FindTVSeasonBySlug(p.Item); ok {
 				count++
