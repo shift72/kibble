@@ -38,7 +38,7 @@ func createTestFilm() (models.RenderContext, *models.Route) {
 		RoutePrefix: "",
 		Site: &models.Site{
 			Films: models.FilmCollection{
-				models.Film{
+				"/film/123": &models.Film{
 					ID:        123,
 					Slug:      "/film/123",
 					TitleSlug: "the-big-lebowski",
@@ -127,7 +127,7 @@ func TestRenderingGlobal(t *testing.T) {
 		RoutePrefix: "",
 		Site: &models.Site{
 			Films: models.FilmCollection{
-				models.Film{
+				"/film/123": &models.Film{
 					ID:        123,
 					Slug:      "/film/123",
 					TitleSlug: "the-big-lebowski",
@@ -164,7 +164,7 @@ func TestRenderingSlug(t *testing.T) {
 		RoutePrefix: "/fr",
 		Site: &models.Site{
 			Films: models.FilmCollection{
-				models.Film{
+				"/film/123": &models.Film{
 					ID:        123,
 					Slug:      "/film/123",
 					TitleSlug: "the-big-lebowski",
@@ -209,7 +209,7 @@ func TestRouteToFilm(t *testing.T) {
 		RoutePrefix: "/fr",
 		Site: &models.Site{
 			Films: models.FilmCollection{
-				models.Film{
+				"/film/123": &models.Film{
 					ID:        123,
 					Slug:      "/film/123",
 					TitleSlug: "the-big-lebowski",
@@ -257,7 +257,7 @@ func TestTransLanguage(t *testing.T) {
 		Route: r,
 		Site: &models.Site{
 			Films: models.FilmCollection{
-				models.Film{
+				"/film/123": &models.Film{
 					ID:        123,
 					Slug:      "/film/123",
 					TitleSlug: "the-big-lebowski",
