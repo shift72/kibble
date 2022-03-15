@@ -81,7 +81,7 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
 
 		if ctx.Route.HasPartial() {
-			partialFilePath := ds.GetPartialRouteForEntity(ctx, &f)
+			partialFilePath := ds.GetPartialRouteForEntity(ctx, f)
 			errCount += renderer.Render(ctx.Route.PartialTemplatePath, partialFilePath, data)
 		}
 	}
