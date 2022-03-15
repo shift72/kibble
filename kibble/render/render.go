@@ -43,7 +43,11 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 	liveReload.StartLiveReload(port, func() {
 		// re-render
 		logReader.Clear()
-		Render(sourcePath, buildPath, cfg)
+		err := Render(sourcePath, buildPath, cfg)
+		if err > 0 {
+			log.Errorf("Error in Render, LiveReload exiting")
+			os.Exit(1)
+		}
 	})
 
 	proxy := NewProxy(cfg.SiteURL, cfg.ProxyPatterns)
