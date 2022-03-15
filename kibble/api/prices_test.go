@@ -95,23 +95,11 @@ func TestMergePrices(t *testing.T) {
 		},
 }
 
-fmt.Println("afterPanic")
-
 	// act - load the prices
-	// fmt.Println("begin")
-	// fmt.Println("begin")
-	// fmt.Println("begin")
-	// fmt.Println("begin")
-	// fmt.Println("begin")
+
 	count, err := processPrices(prices, site, itemIndex)
 	assert.NoError(t, err)
 	assert.Equal(t, 2, count)
-	// fmt.Println(count)
-	// fmt.Println("end")
-	// fmt.Println("end")
-	// fmt.Println("end")
-	// fmt.Println("end")
-	// fmt.Println("end")
 
 	// // verify the film entry is updated
 	// assert.Equal(t, "$3.00", site.Films["/film/103"].Prices.GetLowestPrice(), "film price was not updated")
