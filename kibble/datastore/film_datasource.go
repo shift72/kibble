@@ -77,7 +77,7 @@ func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 	for _, f := range ctx.Site.Films {
 		data.Set("film", transformFilm(*f))
 
-		filePath := ds.GetRouteForEntity(ctx, &f)
+		filePath := ds.GetRouteForEntity(ctx, f)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
 
 		if ctx.Route.HasPartial() {

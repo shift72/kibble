@@ -20,7 +20,7 @@ import (
 
 	"kibble/models"
 	"kibble/test"
-
+"fmt"
 	"github.com/CloudyKit/jet"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
@@ -46,6 +46,7 @@ func createTestFilm() (models.RenderContext, *models.Route) {
 			},
 		},
 	}
+	fmt.Println(ctx)
 
 	return ctx, r
 }
@@ -298,12 +299,17 @@ func TestRenderFilm(t *testing.T) {
 	ds.Iterator(ctx, renderer)
 
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
+
 	assert.Equal(t, "/film/123/the-big-lebowski", renderer.FilePath)
+
 	assert.Equal(t, "film/item.jet", renderer.TemplatePath)
 }
 
 func TestRenderPartialFilm(t *testing.T) {
+	fmt.Println("begin")
 	ctx, r := createTestFilm()
+	fmt.Println("end")
+
 	r.PartialTemplatePath = "/film/partial.jet"
 	r.PartialURLPath = "/partials/film/:filmID.html"
 
@@ -315,4 +321,5 @@ func TestRenderPartialFilm(t *testing.T) {
 	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
 	assert.Equal(t, "/partials/film/123.html", renderer.FilePath)
 	assert.Equal(t, "/film/partial.jet", renderer.TemplatePath)
+
 }
