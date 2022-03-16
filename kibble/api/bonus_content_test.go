@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"kibble/models"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -52,22 +53,14 @@ func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {
 			Number: 1,
 			Title:  "Behind the scenes",
 		}},
-		ImageUrls: struct {
-			Portrait       string `json:"portrait"`
-			Landscape      string `json:"landscape"`
-			Header         string `json:"header"`
-			Carousel       string `json:"carousel"`
-			Bg             string `json:"bg"`
-			Classification string `json:"classification"`
-			Seo            string `json:"seo"`
-		}{
-			Portrait:       "film-portrait.jpeg",
-			Landscape:      "film-landscape.jpeg",
-			Header:         "film-header.jpeg",
-			Carousel:       "film-carousel.jpeg",
-			Bg:             "film-background.jpeg",
-			Classification: "film-classification.jpeg",
-			Seo:            "film-seo.jpeg",
+		ImageUrls: map[string]interface{}{
+			"portrait_image":       "film-portrait.jpeg",
+			"landscape_image":      "film-landscape.jpeg",
+			"header_image":         "film-header.jpeg",
+			"carousel_image":       "film-carousel.jpeg",
+			"bg_image":             "film-background.jpeg",
+			"classification_image": "film-classification.jpeg",
+			"seo_image":            "film-seo.jpeg",
 		},
 	}
 
