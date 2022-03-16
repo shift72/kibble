@@ -134,11 +134,7 @@ func getFilm() filmV2 {
 			DisplayLabel: "The Award 2021",
 			IsWinner:     true,
 		}},
-		ImageUrls: map[string]interface{}{
-			"portrait_image":       nil,
-			"landscape_image":      nil,
-			"classification_image": nil,
-		},
+		ImageUrls: map[string]interface{}{},
 	}
 	return apiFilm
 }
