@@ -53,7 +53,7 @@ func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {
 			Number: 1,
 			Title:  "Behind the scenes",
 		}},
-		ImageUrls: map[string]interface{}{
+		ImageUrls: map[string]string{
 			"portrait_image":       "film-portrait.jpeg",
 			"landscape_image":      "film-landscape.jpeg",
 			"header_image":         "film-header.jpeg",

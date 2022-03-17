@@ -135,15 +135,9 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	}
 
 	// A couple of defaults used to fallback on
-	landscapeImage := ""
-	if f.ImageUrls["Landscape"] != nil {
-		landscapeImage = f.ImageUrls["Landscape"].(string)
-	}
+	landscapeImage := f.ImageUrls["Landscape"]
 
-	portraitImage := ""
-	if f.ImageUrls["Portrait"] != nil {
-		portraitImage = f.ImageUrls["Portrait"].(string)
-	}
+	portraitImage := f.ImageUrls["Portrait"]
 
 	film := models.Film{
 		ID:              f.ID,
@@ -248,10 +242,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	}
 
 	// if seo image is available, use it
-	seo_image := film.ImageMap["Seo"]
-	if (seo_image != nil) && (len(seo_image.(string)) > 0) {
-		film.Seo.Image = seo_image.(string)
-	}
+	film.Seo.Image = film.ImageMap["Seo"]
 
 	return film
 }
@@ -286,7 +277,7 @@ type filmV2 struct {
 	Slug            string                      `json:"slug"`
 	FilmID          int                         `json:"film_id"`
 	ID              int                         `json:"id"`
-	ImageUrls       map[string]interface{}      `json:"image_urls"`
+	ImageUrls       map[string]string           `json:"image_urls"`
 	Recommendations []string                    `json:"recommendations"`
 	Subtitles       []string                    `json:"subtitles"`
 	SubtitleTracks  []subtitleTrackV1           `json:"subtitle_tracks"`

@@ -50,7 +50,7 @@ type ImageSet struct {
 }
 
 // All-purpose map between image type and path
-type ImageMap map[string]interface{}
+type ImageMap map[string]string
 
 // Seo - common seo settings
 type Seo struct {
@@ -185,39 +185,27 @@ func ImageMapToImageSet(imageMap ImageMap) ImageSet {
 	images := ImageSet{}
 
 	if path, ok := imageMap["Portrait"]; ok {
-		if path != nil {
-			images.Portrait = path.(string)
-		}
+		images.Portrait = path
 	}
 
 	if path, ok := imageMap["Landscape"]; ok {
-		if path != nil {
-			images.Landscape = path.(string)
-		}
+		images.Landscape = path
 	}
 
 	if path, ok := imageMap["Header"]; ok {
-		if path != nil {
-			images.Header = path.(string)
-		}
+		images.Header = path
 	}
 
 	if path, ok := imageMap["Background"]; ok {
-		if path != nil {
-			images.Background = path.(string)
-		}
+		images.Background = path
 	}
 
 	if path, ok := imageMap["Carousel"]; ok {
-		if path != nil {
-			images.Carousel = path.(string)
-		}
+		images.Carousel = path
 	}
 
 	if path, ok := imageMap["Classification"]; ok {
-		if path != nil {
-			images.Classification = path.(string)
-		}
+		images.Classification = path
 	}
 
 	return images

@@ -134,7 +134,7 @@ func getFilm() filmV2 {
 			DisplayLabel: "The Award 2021",
 			IsWinner:     true,
 		}},
-		ImageUrls: map[string]interface{}{},
+		ImageUrls: map[string]string{},
 	}
 	return apiFilm
 }
@@ -199,10 +199,10 @@ func TestFilmApiToModelImages(t *testing.T) {
 		ID:    123,
 		Title: "Film 99",
 		Slug:  "/film/99",
-		ImageUrls: map[string]interface{}{
+		ImageUrls: map[string]string{
 			"background_image": "background.png",
 			"portrait":         "portrait.jpg",
-			"landscape_image":  nil,
+			"landscape_image":  "",
 			"sponsor_image":    "sponsor.bmp",
 		},
 	}
@@ -215,7 +215,7 @@ func TestFilmApiToModelImages(t *testing.T) {
 
 	assert.Equal(t, model.ImageMap["Background"], "background.png", "should be equal")
 	assert.Equal(t, model.ImageMap["Portrait"], "portrait.jpg", "should be equal")
-	assert.Nil(t, model.ImageMap["Landscape"], "should be nil")
+	assert.Empty(t, model.ImageMap["Landscape"], "should be empty")
 	assert.Equal(t, model.ImageMap["Sponsor"], "sponsor.bmp", "should be equal")
 }
 
