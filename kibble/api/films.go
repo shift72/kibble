@@ -236,7 +236,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 
 	// add bonuses - supports linking to bonus entries (supported??)
 	for _, bonus := range f.Bonuses {
-		b := bonus.mapToModel3(film.Slug, film.ImageMap)
+		b := bonus.mapToModel2(film.Slug, film.Images)
 		film.Bonuses = append(film.Bonuses, b)
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}
