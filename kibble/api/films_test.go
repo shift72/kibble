@@ -209,10 +209,14 @@ func TestFilmApiToModelImages(t *testing.T) {
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
 
-	assert.Equal(t, model.Images["Background"], "background.png", "should be equal")
-	assert.Equal(t, model.Images["Portrait"], "portrait.jpg", "should be equal")
-	assert.Nil(t, model.Images["Landscape"], "should be nil")
-	assert.Equal(t, model.Images["Sponsor"], "sponsor.bmp", "should be equal")
+	assert.Equal(t, model.Images.Background, "background.png", "should be equal")
+	assert.Equal(t, model.Images.Portrait, "portrait.jpg", "should be equal")
+	assert.Empty(t, model.Images.Landscape, "should be empty")
+
+	assert.Equal(t, model.ImageMap["Background"], "background.png", "should be equal")
+	assert.Equal(t, model.ImageMap["Portrait"], "portrait.jpg", "should be equal")
+	assert.Nil(t, model.ImageMap["Landscape"], "should be nil")
+	assert.Equal(t, model.ImageMap["Sponsor"], "sponsor.bmp", "should be equal")
 }
 
 func TestFilmApiToModelWithoutClassifications(t *testing.T) {

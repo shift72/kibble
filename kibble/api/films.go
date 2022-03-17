@@ -167,7 +167,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 			Description: utils.Coalesce(f.SeoDescription, f.Tagline),
 			Image:       serviceConfig.SelectDefaultImageType(landscapeImage, portraitImage),
 		},
-		Images:          f.ImageUrls,
+		ImageMap:        f.ImageUrls,
 		Recommendations: itemIndex.MapToUnresolvedItems(f.Recommendations),
 		Trailers:        make([]models.Trailer, 0),
 		Cast:            make([]models.CastMember, 0),
@@ -178,6 +178,8 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		},
 		Subtitles: f.Subtitles,
 	}
+
+	film.Images = models.ImageMapToImageSet(film.ImageMap)
 
 	for _, s := range f.Studio {
 		film.Studio = append(film.Studio, s.Name)
@@ -240,13 +242,13 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 
 	// add bonuses - supports linking to bonus entries (supported??)
 	for _, bonus := range f.Bonuses {
-		b := bonus.mapToModel3(film.Slug, film.Images)
+		b := bonus.mapToModel3(film.Slug, film.ImageMap)
 		film.Bonuses = append(film.Bonuses, b)
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}
 
 	// if seo image is available, use it
-	seo_image := film.Images["Seo"]
+	seo_image := film.ImageMap["Seo"]
 	if (seo_image != nil) && (len(seo_image.(string)) > 0) {
 		film.Seo.Image = seo_image.(string)
 	}

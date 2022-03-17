@@ -44,7 +44,8 @@ type Film struct {
 	AwardCategories []AwardCategory
 	Tags            StringCollection
 	Seo             Seo
-	Images          ImageMap
+	Images          ImageSet
+	ImageMap        ImageMap
 	Prices          PriceInfo
 	Available       Period
 	Recommendations []GenericItem
@@ -85,7 +86,7 @@ func (film Film) GetGenericItem() GenericItem {
 	return GenericItem{
 		Title:     film.Title,
 		Slug:      film.Slug,
-		Images:    ImageMapToImageSet(film.Images),
+		Images:    film.Images,
 		ItemType:  "film",
 		InnerItem: film,
 		StatusID:  film.StatusID,
