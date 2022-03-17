@@ -58,28 +58,28 @@ func (bcv2 bonusContentV2) mapToModel2(parentSlug string, parentImages models.Im
 }
 
 // For parent models which use the ImageMap rather than ImageSet
-func (bcv2 bonusContentV2) mapToModel3(parentSlug string, parentImages models.ImageMap) models.BonusContent {
+func (bc bonusContentV2) mapToModel3(parentSlug string, parentImages models.ImageMap) models.BonusContent {
 
 	// Convert the ImageMap to an ImageSet (which we will eventually phase out)
 	images := models.ImageMapToImageSet(parentImages)
-	images.Portrait = utils.Coalesce(bcv2.ImageUrls.Portrait, images.Portrait)
-	images.Landscape = utils.Coalesce(bcv2.ImageUrls.Landscape, images.Landscape)
-	images.Header = utils.Coalesce(bcv2.ImageUrls.Header, images.Header)
-	images.Carousel = utils.Coalesce(bcv2.ImageUrls.Carousel, images.Carousel)
-	images.Background = utils.Coalesce(bcv2.ImageUrls.Bg, images.Background)
-	images.Classification = utils.Coalesce(bcv2.ImageUrls.Classification, images.Classification)
+	images.Portrait = utils.Coalesce(bc.ImageUrls.Portrait, images.Portrait)
+	images.Landscape = utils.Coalesce(bc.ImageUrls.Landscape, images.Landscape)
+	images.Header = utils.Coalesce(bc.ImageUrls.Header, images.Header)
+	images.Carousel = utils.Coalesce(bc.ImageUrls.Carousel, images.Carousel)
+	images.Background = utils.Coalesce(bc.ImageUrls.Bg, images.Background)
+	images.Classification = utils.Coalesce(bc.ImageUrls.Classification, images.Classification)
 
 	b := models.BonusContent{
-		Slug:         fmt.Sprintf("%s/bonus/%d", parentSlug, bcv2.Number),
-		Number:       bcv2.Number,
-		Title:        bcv2.Title,
-		Runtime:      models.Runtime(bcv2.Runtime),
-		Overview:     bcv2.Overview,
+		Slug:         fmt.Sprintf("%s/bonus/%d", parentSlug, bc.Number),
+		Number:       bc.Number,
+		Title:        bc.Title,
+		Runtime:      models.Runtime(bc.Runtime),
+		Overview:     bc.Overview,
 		Images:       images,
-		CustomFields: bcv2.CustomFields,
+		CustomFields: bc.CustomFields,
 	}
 
-	for _, t := range bcv2.SubtitleTracks {
+	for _, t := range bc.SubtitleTracks {
 		b.SubtitleTracks = append(b.SubtitleTracks, models.SubtitleTrack{
 			Language: t.Language,
 			Name:     t.Name,
