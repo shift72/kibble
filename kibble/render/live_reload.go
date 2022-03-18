@@ -60,14 +60,6 @@ var embed = `
 </script>
 `
 
-var ignorePaths = []string{
-	".git",
-	".kibble",
-	"node_modules",
-	"npm-debug.log",
-	"package.json",
-}
-
 // LiveReload -
 type LiveReload struct {
 	lastModified              time.Time
@@ -81,10 +73,9 @@ type LiveReload struct {
 // intercepts all write calls so as to append the live reload script
 type WrapperResponseWriter struct {
 	http.ResponseWriter
-	status      int
-	wroteHeader bool
-	buf         bytes.Buffer
-	prefixBuf   bytes.Buffer
+	status    int
+	buf       bytes.Buffer
+	prefixBuf bytes.Buffer
 }
 
 // NewWrapperResponseWriter - create a new response writer
@@ -120,7 +111,7 @@ func (w *WrapperResponseWriter) PrefixWithLogs(logs []string) {
 func (w *WrapperResponseWriter) Done() (n int, err error) {
 	w.Header().Set("Content-Length", strconv.Itoa(w.buf.Len()+w.prefixBuf.Len()))
 	w.ResponseWriter.WriteHeader(w.status)
-	w.ResponseWriter.Write(w.prefixBuf.Bytes())
+	_, _ = w.ResponseWriter.Write(w.prefixBuf.Bytes())
 	return w.ResponseWriter.Write(w.buf.Bytes())
 }
 
@@ -144,12 +135,12 @@ func (live *LiveReload) GetMiddleware(next http.Handler) http.Handler {
 				ww.PrefixWithLogs(live.logReader.Logs())
 
 				if live.reloadBrowserOnFileChange {
-					ww.Write([]byte(embed))
+					_, _ = ww.Write([]byte(embed))
 				}
 			}
 		}
 
-		ww.Done()
+		_, _ = ww.Done()
 	})
 }
 
@@ -169,7 +160,7 @@ func (live *LiveReload) Handler(w http.ResponseWriter, req *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusOK)
 	}
-	w.Write([]byte(fmt.Sprintf("last modified: %s", live.lastModified.String())))
+	_, _ = w.Write([]byte(fmt.Sprintf("last modified: %s", live.lastModified.String())))
 }
 
 // StartLiveReload - start the process to watch the files and wait for a reload
@@ -249,6 +240,10 @@ func (live *LiveReload) selectFilesToWatch(changesChannel chan bool) {
 
 	// search the path for files that might have changed
 	err = filepath.Walk(live.sourcePath, func(path string, f os.FileInfo, err error) error {
+		if err != nil {
+			log.Error("Watcher: ", err)
+		}
+
 		if ignorer.IsIgnored(path) {
 			return nil
 		}

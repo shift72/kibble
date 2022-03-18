@@ -31,7 +31,9 @@ func TestLoadAll(t *testing.T) {
 	itemIndex := make(models.ItemIndex)
 	site := &models.Site{}
 
-	AppendAllTVShows(cfg, site, itemIndex)
+	if err := AppendAllTVShows(cfg, site, itemIndex); err != nil {
+		t.Error(err)
+	}
 
 }
 

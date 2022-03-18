@@ -108,12 +108,15 @@ func createArchive(target string, sourcePath string, ignoredPaths utils.FileIgno
 
 func zipit(source string, archive *zip.Writer, ignoredPaths utils.FileIgnorer) error {
 
-	info, err := os.Stat(source)
+	_, err := os.Stat(source)
 	if err != nil && os.IsNotExist(err) {
-		os.MkdirAll(source, 0777)
+		if err := os.MkdirAll(source, 0777); err != nil {
+			log.Error("error zipping: %w", err)
+			return err
+		}
 	}
 
-	info, err = os.Stat(source)
+	info, err := os.Stat(source)
 	if err != nil {
 		return err
 	}
@@ -123,7 +126,7 @@ func zipit(source string, archive *zip.Writer, ignoredPaths utils.FileIgnorer) e
 		baseDir = filepath.Base(source)
 	}
 
-	filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -168,15 +171,4 @@ func zipit(source string, archive *zip.Writer, ignoredPaths utils.FileIgnorer) e
 		_, err = io.Copy(writer, file)
 		return err
 	})
-
-	return err
-}
-
-func ignorePath(ignorePaths []string, name string) bool {
-	for _, c := range ignorePaths {
-		if strings.HasPrefix(name, c) || strings.HasSuffix(name, c) {
-			return true
-		}
-	}
-	return false
 }
