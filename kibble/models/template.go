@@ -255,14 +255,14 @@ func ConfigureShortcodeTemplatePath(cfg *Config) {
 		// built-in templates
 		_, err := shortCodeView.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
 		if err != nil {
-			log.Error("loading failed for template echo.jet")
+			log.Error("template loading failed for echo.jet")
 		}
 		_, err = shortCodeView.LoadTemplate("youtube.jet", `
 <div {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;\"" | raw }} >
 <iframe src="//www.youtube.com/embed/{{id}}" {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: absolute; top: 0; left: 0; width: 100%; height: 100%;\"" | raw }}{{if isset(autoplay) && autoplay=="true" }} autoplay=1{{end}} allowfullscreen frameborder="0"></iframe>
 </div>`)
 		if err != nil {
-			log.Error("loading failed for template youtube.jet")
+			log.Error("template loading failed for youtube.jet")
 		}
 	}
 }
