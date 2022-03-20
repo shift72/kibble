@@ -253,17 +253,27 @@ func ConfigureShortcodeTemplatePath(cfg *Config) {
 		shortCodeView = jet.NewHTMLSet(cfg.ShortCodePath())
 
 		// built-in templates
-		shortCodeView.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
-		shortCodeView.LoadTemplate("youtube.jet", `
+		_, err := shortCodeView.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
+		if err != nil {
+			log.Error("template loading failed for echo.jet")
+		}
+		_, err = shortCodeView.LoadTemplate("youtube.jet", `
 <div {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;\"" | raw }} >
 <iframe src="//www.youtube.com/embed/{{id}}" {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: absolute; top: 0; left: 0; width: 100%; height: 100%;\"" | raw }}{{if isset(autoplay) && autoplay=="true" }} autoplay=1{{end}} allowfullscreen frameborder="0"></iframe>
 </div>`)
+		if err != nil {
+			log.Error("template loading failed for youtube.jet")
+		}
 	}
 }
 
 func processTemplateTag(templateTag string) string {
 
 	templateName, data, err := parseParameters(templateTag)
+	if err != nil {
+		log.Error("Parsing parameters from template tag faild: %v", err)
+		return "Err"
+	}
 
 	w := bytes.NewBufferString("")
 	templatePath := fmt.Sprintf("%s.jet", templateName)
@@ -280,7 +290,7 @@ func processTemplateTag(templateTag string) string {
 		log.Errorf("Shortcode template execute error: %s", err)
 	}
 
-	return string(w.Bytes())
+	return w.String()
 }
 
 // parse the template tag into the template and arguments

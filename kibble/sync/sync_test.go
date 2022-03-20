@@ -207,7 +207,10 @@ func TestSync(t *testing.T) {
 		local = append(local, add(fmt.Sprintf("file%d.html|ccc", i)))
 	}
 
-	PerformSync(store, local, remote)
+	_, _, err := PerformSync(store, local, remote)
+	if err != nil {
+		t.Error(err)
+	}
 }
 
 func TestSyncWithErrors(t *testing.T) {
@@ -231,11 +234,5 @@ func TestSyncWithErrors(t *testing.T) {
 func add(raw string) (f FileRef) {
 	f = parseFileRef(raw)
 	f.action = ADD
-	return
-}
-
-func remove(raw string) (f FileRef) {
-	f = parseFileRef(raw)
-	f.action = REMOVE
 	return
 }

@@ -48,7 +48,11 @@ func (store *LocalStore) List() (FileRefCollection, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer os.Chdir(wd)
+	defer func() {
+		if err := os.Chdir(wd); err != nil {
+			log.Errorf("WARN: error while changing directory back to original %s", err)
+		}
+	}()
 
 	var fileList []FileRef
 	err = filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
