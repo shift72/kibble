@@ -271,7 +271,7 @@ func processTemplateTag(templateTag string) string {
 
 	templateName, data, err := parseParameters(templateTag)
 	if err != nil {
-		log.Error("Parsing parameters from template tag faild: %v", err)
+		log.Error("Parsing parameters from template tag failed: %v", err)
 		return "Err"
 	}
 
