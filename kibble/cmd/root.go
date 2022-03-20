@@ -21,7 +21,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
 var runAsAdmin bool
 var disableCache bool
 var verbose bool

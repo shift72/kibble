@@ -45,7 +45,7 @@ var cache = httpcache.Cache(httpcache.NewMemoryCache())
 // CheckAdminCredentials - check that the admin credentials are valid
 func CheckAdminCredentials(cfg *models.Config) {
 
-	if cfg.RunAsAdmin && cfg.SkipLogin == false {
+	if cfg.RunAsAdmin && !cfg.SkipLogin {
 		isAdmin, err := IsAdmin(cfg)
 		if err != nil {
 			fmt.Println(err)
@@ -213,6 +213,9 @@ func newfileUploadRequest(uri string, params map[string]string, paramName, path 
 		return nil, err
 	}
 	count, err := io.Copy(part, file)
+	if err != nil {
+		return nil, err
+	}
 	log.Debugf("uploading bytes %d", count)
 
 	for key, val := range params {

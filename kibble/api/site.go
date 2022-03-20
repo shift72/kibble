@@ -104,14 +104,14 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	// while there are unresolved film slugs
 	s := itemIndex.FindUnresolvedSlugs("film")
 	for len(s) > 0 {
-		AppendFilms(cfg, site, s, itemIndex)
+		_ = AppendFilms(cfg, site, s, itemIndex)
 		s = itemIndex.FindUnresolvedSlugs("film")
 	}
 
 	// while there are unresolved tv season slugs
 	tvs := itemIndex.FindUnresolvedSlugs("tv-season")
 	for len(tvs) > 0 {
-		AppendTVSeasons(cfg, site, tvs, itemIndex)
+		_ = AppendTVSeasons(cfg, site, tvs, itemIndex)
 		tvs = itemIndex.FindUnresolvedSlugs("tv-season")
 	}
 
