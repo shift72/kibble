@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: continuous-integration
 
 # Controls when the workflow will run
 on:
