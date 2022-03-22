@@ -1,6 +1,8 @@
 # Change log
 
 ## Unreleased
+Added ImageMap to models.Film object to support any fields ending in "_image" to sit in parallel with Images for the forseeable future
+
 
 ## 0.16.5
 Added CoreTemplateVersion property to kibble.json config model and v1/site_templates params.
@@ -23,8 +25,8 @@ Prices added to Plans
 An award category on a film now shows if the film is winner of that award category
 
 ## 0.16.0
-Support for self service Translations API. 
-Support for custom fields in Bundles. 
+Support for self service Translations API.
+Support for custom fields in Bundles.
 Support for sync command to use an optional SiteURL parameter to override siteurl in kibble.json, used for shared templates.
 
 ## 0.15.22
