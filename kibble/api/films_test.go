@@ -134,6 +134,7 @@ func getFilm() filmV2 {
 			DisplayLabel: "The Award 2021",
 			IsWinner:     true,
 		}},
+		ImageUrls: map[string]string{},
 	}
 	return apiFilm
 }
@@ -189,6 +190,35 @@ func TestFilmApiToModel(t *testing.T) {
 	assert.Equal(t, "An Award", model.AwardCategories[0].Title, "award_categories.title")
 }
 
+func TestFilmApiToModelImages(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+
+	serviceConfig := commonServiceConfig()
+
+	apiFilm := filmV2{
+		ID:    123,
+		Title: "Film 99",
+		Slug:  "/film/99",
+		ImageUrls: map[string]string{
+			"background_image": "background.png",
+			"portrait":         "portrait.jpg",
+			"landscape_image":  "",
+			"sponsor_image":    "sponsor.bmp",
+		},
+	}
+
+	model := apiFilm.mapToModel(serviceConfig, itemIndex)
+
+	assert.Equal(t, model.Images.Background, "background.png", "should be equal")
+	assert.Equal(t, model.Images.Portrait, "portrait.jpg", "should be equal")
+	assert.Empty(t, model.Images.Landscape, "should be empty")
+
+	assert.Equal(t, model.ImageMap["Background"], "background.png", "should be equal")
+	assert.Equal(t, model.ImageMap["Portrait"], "portrait.jpg", "should be equal")
+	assert.Empty(t, model.ImageMap["Landscape"], "should be empty")
+	assert.Equal(t, model.ImageMap["Sponsor"], "sponsor.bmp", "should be equal")
+}
+
 func TestFilmApiToModelWithoutClassifications(t *testing.T) {
 	itemIndex := make(models.ItemIndex)
 	serviceConfig := commonServiceConfig()
@@ -208,8 +238,7 @@ func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
 
 	apiFilm := getFilm()
 	imageURL := "image.jpeg"
-	apiFilm.ImageUrls.Portrait = imageURL
-	apiFilm.ImageUrls.Landscape = imageURL
+	apiFilm.ImageUrls["seo_image"] = imageURL
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
 
@@ -224,7 +253,7 @@ func TestFilmApiToModelWithSeoImage(t *testing.T) {
 
 	apiFilm := getFilm()
 	imageURL := "seo_image.jpeg"
-	apiFilm.ImageUrls.Seo = imageURL
+	apiFilm.ImageUrls["seo_image"] = imageURL
 
 	model := apiFilm.mapToModel(serviceConfig, itemIndex)
 
