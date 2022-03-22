@@ -82,5 +82,33 @@ func TestFormatPathLocale(t *testing.T) {
 	languageCode = "_"
 	formatted = formatPathLocale(languageCode)
 	assert.Equal(t, formatted, "-")
+}
 
+func TestLanguageV1Validate(t *testing.T) {
+	defaultLanguageNotSet := languagesV1{
+		DefaultLanguage:    languageV1{},
+		SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
+	}
+	defaultLanguageMissingDisplayName := languagesV1{
+		DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: ""},
+		SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
+	}
+	noSiteLanguagesSet := languagesV1{
+		DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+		SupportedLanguages: make([]languageV1, 0),
+	}
+	siteLanguageMissingDisplayName := languagesV1{
+		DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+		SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: ""}},
+	}
+	defaultLanguageNotInSiteLanguages := languagesV1{
+		DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+		SupportedLanguages: []languageV1{{Code: "de", Label: "German", Name: "Deutsch"}},
+	}
+
+	assert.EqualError(t, defaultLanguageNotSet.validate(), "DefaultLanguage not set, DefaultLanguage not in SiteLanguages")
+	assert.EqualError(t, defaultLanguageMissingDisplayName.validate(), "DefaultLanguage en is missing display name")
+	assert.EqualError(t, noSiteLanguagesSet.validate(), "No SiteLanguages set, DefaultLanguage not in SiteLanguages")
+	assert.EqualError(t, siteLanguageMissingDisplayName.validate(), "Language en is missing display name")
+	assert.EqualError(t, defaultLanguageNotInSiteLanguages.validate(), "DefaultLanguage not in SiteLanguages")
 }

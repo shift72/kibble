@@ -20,6 +20,8 @@ import (
 	"kibble/models"
 	"sort"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 //Loads all languages from the API if the site_translations_api feature toggle is enabled.
@@ -46,6 +48,11 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
+	err = languages.validate()
+	if err != nil {
+		return fmt.Errorf("Language validation failed: %s", err)
+	}
+
 	// Force default language to be lowercase with '-' instead of '_'.
 	site.DefaultLanguage = formatPathLocale(languages.DefaultLanguage.Code)
 	site.Languages = languages.mapToModel()
@@ -61,6 +68,51 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 	}
 	log.Infof("Default Language: %s ", site.DefaultLanguage)
 	log.Infof("Supported Languages: %s", strings.Join(languagesList, ", "))
+	return nil
+}
+
+// Returns an error if:
+// - default language is not set.
+// - default language is missing display name.
+// - no site languages are set.
+// - any site language is missing a display name.
+// - default language is not included in supported languages.
+func (l languagesV1) validate() error {
+	isZero := func(val string) bool {
+		return val == ""
+	}
+
+	errorMessages := make([]string, 0)
+
+	if isZero(l.DefaultLanguage.Code) && isZero(l.DefaultLanguage.Label) && isZero(l.DefaultLanguage.Name) {
+		errorMessages = append(errorMessages, "DefaultLanguage not set")
+	} else if isZero(l.DefaultLanguage.Name) {
+		errorMessages = append(errorMessages, fmt.Sprintf("DefaultLanguage %s is missing display name", l.DefaultLanguage.Code))
+	}
+
+	if len(l.SupportedLanguages) == 0 {
+		errorMessages = append(errorMessages, "No SiteLanguages set")
+	}
+
+	defaultInLanguages := false
+	for _, lang := range l.SupportedLanguages {
+		if lang.Code == l.DefaultLanguage.Code {
+			defaultInLanguages = true
+		}
+
+		if isZero(lang.Name) {
+			errorMessages = append(errorMessages, fmt.Sprintf("Language %s is missing display name", lang.Code))
+			// no need to check Code or Label as they are required by database schema.
+		}
+	}
+	if !defaultInLanguages {
+		errorMessages = append(errorMessages, "DefaultLanguage not in SiteLanguages")
+	}
+
+	if len(errorMessages) > 0 {
+		return errors.New(strings.Join(errorMessages, ", "))
+	}
+
 	return nil
 }
 
