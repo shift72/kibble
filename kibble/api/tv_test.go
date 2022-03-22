@@ -242,8 +242,9 @@ func TestSeasonClassifications(t *testing.T) {
 
 	assert.Equal(t, 2, len(model.Classifications))
 
-	assert.Equal(t, "au", model.Classifications[0].CountryCode)
-	assert.Equal(t, "nz", model.Classifications[1].CountryCode)
+	countryCodes := [2]string{model.Classifications[0].CountryCode, model.Classifications[1].CountryCode}
+	assert.Contains(t, countryCodes, "au", "expect 'au' in country codes")
+	assert.Contains(t, countryCodes, "nz", "expect 'nz' in country codes")
 }
 
 func TestSeasonWithoutClassifications(t *testing.T) {
