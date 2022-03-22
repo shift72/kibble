@@ -1,8 +1,9 @@
 # Change log
 
 ## Unreleased
-Added ImageMap to models.Film object to support any fields ending in "_image" to sit in parallel with Images for the forseeable future
 
+## 0.16.6
+Added ImageMap to models.Film object to support any fields ending in "_image" to sit in parallel with Images for the forseeable future
 
 ## 0.16.5
 Added CoreTemplateVersion property to kibble.json config model and v1/site_templates params.
