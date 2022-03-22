@@ -1,6 +1,7 @@
 # Change log
 
 ## Unreleased
+Validation for language api response.
 
 ## 0.16.5
 Added CoreTemplateVersion property to kibble.json config model and v1/site_templates params.
