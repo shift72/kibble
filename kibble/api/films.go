@@ -241,7 +241,6 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}
 
-	// if seo image is available, use it
 	film.Seo.Image = film.ImageMap["Seo"]
 
 	return film
