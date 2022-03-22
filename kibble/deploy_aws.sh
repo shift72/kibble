@@ -1,8 +1,6 @@
 VERSION=$1
 OS=$2
 
-echo "OS $OS"
-
 if [ -z $VERSION ]; then
   echo "error: version not specified"
   exit 1

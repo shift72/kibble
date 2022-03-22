@@ -8,7 +8,7 @@ builds:
       - amd64
     ldflags: -s -w -X kibble/version.Version={{.Version}}
     hooks:
-      post: sh ./deploy_aws.sh {{.Version}} {{.Goos}}
+      post: sh ./deploy_aws.sh {{.Version}} {{.Os}}
 
 archives:
 - id: main
