@@ -106,9 +106,9 @@ func TestLanguageV1Validate(t *testing.T) {
 		SupportedLanguages: []languageV1{{Code: "de", Label: "German", Name: "Deutsch"}},
 	}
 
-	assert.EqualError(t, defaultLanguageNotSet.validate(), "DefaultLanguage not set, DefaultLanguage not in SiteLanguages")
+	assert.EqualError(t, defaultLanguageNotSet.validate(), "DefaultLanguage not set")
 	assert.EqualError(t, defaultLanguageMissingDisplayName.validate(), "DefaultLanguage en is missing display name")
-	assert.EqualError(t, noSiteLanguagesSet.validate(), "No SiteLanguages set, DefaultLanguage not in SiteLanguages")
+	assert.EqualError(t, noSiteLanguagesSet.validate(), "No SiteLanguages set")
 	assert.EqualError(t, siteLanguageMissingDisplayName.validate(), "Language en is missing display name")
 	assert.EqualError(t, defaultLanguageNotInSiteLanguages.validate(), "DefaultLanguage not in SiteLanguages")
 }

@@ -81,16 +81,14 @@ func (l languagesV1) validate() error {
 		return val == ""
 	}
 
-	errorMessages := make([]string, 0)
-
 	if isZero(l.DefaultLanguage.Code) && isZero(l.DefaultLanguage.Label) && isZero(l.DefaultLanguage.Name) {
-		errorMessages = append(errorMessages, "DefaultLanguage not set")
+		return errors.New("DefaultLanguage not set")
 	} else if isZero(l.DefaultLanguage.Name) {
-		errorMessages = append(errorMessages, fmt.Sprintf("DefaultLanguage %s is missing display name", l.DefaultLanguage.Code))
+		return errors.New(fmt.Sprintf("DefaultLanguage %s is missing display name", l.DefaultLanguage.Code))
 	}
 
 	if len(l.SupportedLanguages) == 0 {
-		errorMessages = append(errorMessages, "No SiteLanguages set")
+		return errors.New("No SiteLanguages set")
 	}
 
 	defaultInLanguages := false
@@ -100,16 +98,12 @@ func (l languagesV1) validate() error {
 		}
 
 		if isZero(lang.Name) {
-			errorMessages = append(errorMessages, fmt.Sprintf("Language %s is missing display name", lang.Code))
+			return errors.New(fmt.Sprintf("Language %s is missing display name", lang.Code))
 			// no need to check Code or Label as they are required by database schema.
 		}
 	}
 	if !defaultInLanguages {
-		errorMessages = append(errorMessages, "DefaultLanguage not in SiteLanguages")
-	}
-
-	if len(errorMessages) > 0 {
-		return errors.New(strings.Join(errorMessages, ", "))
+		return errors.New("DefaultLanguage not in SiteLanguages")
 	}
 
 	return nil
