@@ -16,12 +16,11 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"kibble/models"
 	"sort"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 //Loads all languages from the API if the site_translations_api feature toggle is enabled.
