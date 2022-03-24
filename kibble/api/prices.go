@@ -92,11 +92,13 @@ func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex
 		found := itemIndex.Get(p.Item)
 
 		pricingInfo := p.getPrices()
+
 		switch found.ItemType {
 		case "film":
 			if f, ok := site.Films.FindFilmBySlug(p.Item); ok {
 				count++
 				f.Prices = pricingInfo
+				// replace the itemIndex
 				itemIndex.Replace(p.Item, f.GetGenericItem())
 			}
 		case "tvseason":

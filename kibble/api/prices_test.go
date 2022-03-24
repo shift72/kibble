@@ -53,11 +53,9 @@ func TestMergePrices(t *testing.T) {
 		},
 	}
 
-
 	// setup index
 	itemIndex := make(models.ItemIndex)
 	itemIndex.Set(site.Films["/film/103"].Slug, site.Films["/film/103"].GetGenericItem())
-
 	itemIndex.Set(site.Plans[0].Slug, site.Plans[0].GetGenericItem())
 
 
@@ -95,7 +93,6 @@ func TestMergePrices(t *testing.T) {
 }
 
 	// act - load the prices
-
 	count, err := processPrices(prices, site, itemIndex)
 	assert.NoError(t, err)
 	assert.Equal(t, 2, count)

@@ -127,12 +127,13 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 			return group[i] < group[j]
 		})
 
-		// // append i + 1 to end of slug
+		// append i + 1 to end of slug
 		for j := 0; j < len(group); j++ {
 			if j == 0 {
 				continue
 			}
 
+			// find the correct value to update, without making a copy
 			if val, ok := (*films)["/film/" + strconv.Itoa(group[j])]; ok {
 				val.TitleSlug = fmt.Sprintf("%s-%d", val.TitleSlug, j+1)
 			}
