@@ -128,7 +128,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 
 	initAPI.Completed()
 
-	// site.Films.MakeTitleSlugsUnique()
+	site.Films.MakeTitleSlugsUnique()
 
 	site.UpdatePageCollections()
 
