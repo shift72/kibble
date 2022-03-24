@@ -85,30 +85,56 @@ func TestFormatPathLocale(t *testing.T) {
 }
 
 func TestLanguageV1Validate(t *testing.T) {
-	defaultLanguageNotSet := languagesV1{
-		DefaultLanguage:    languageV1{},
-		SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
-	}
-	defaultLanguageMissingDisplayName := languagesV1{
-		DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: ""},
-		SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
-	}
-	noSiteLanguagesSet := languagesV1{
-		DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
-		SupportedLanguages: make([]languageV1, 0),
-	}
-	siteLanguageMissingDisplayName := languagesV1{
-		DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
-		SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: ""}},
-	}
-	defaultLanguageNotInSiteLanguages := languagesV1{
-		DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
-		SupportedLanguages: []languageV1{{Code: "de", Label: "German", Name: "Deutsch"}},
+	var tests = []struct {
+		name      string
+		input     languagesV1
+		error_msg string
+	}{
+		{
+			"default lanuage not set",
+			languagesV1{
+				DefaultLanguage:    languageV1{},
+				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
+			},
+			"DefaultLanguage not set",
+		},
+		{
+			"default language missing display name",
+			languagesV1{
+				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: ""},
+				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
+			},
+			"DefaultLanguage en is missing display name",
+		},
+		{
+			"no site languages set",
+			languagesV1{
+				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+				SupportedLanguages: make([]languageV1, 0),
+			},
+			"No SiteLanguages set",
+		},
+		{
+			"site language missing display name",
+			languagesV1{
+				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: ""}},
+			},
+			"Language en is missing display name",
+		},
+		{
+			"default language not in site languages",
+			languagesV1{
+				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+				SupportedLanguages: []languageV1{{Code: "de", Label: "German", Name: "Deutsch"}},
+			},
+			"DefaultLanguage not in SiteLanguages",
+		},
 	}
 
-	assert.EqualError(t, defaultLanguageNotSet.validate(), "DefaultLanguage not set")
-	assert.EqualError(t, defaultLanguageMissingDisplayName.validate(), "DefaultLanguage en is missing display name")
-	assert.EqualError(t, noSiteLanguagesSet.validate(), "No SiteLanguages set")
-	assert.EqualError(t, siteLanguageMissingDisplayName.validate(), "Language en is missing display name")
-	assert.EqualError(t, defaultLanguageNotInSiteLanguages.validate(), "DefaultLanguage not in SiteLanguages")
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.EqualError(t, tc.input.validate(), tc.error_msg)
+		})
+	}
 }
