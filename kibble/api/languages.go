@@ -16,6 +16,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"kibble/models"
 	"sort"
@@ -81,7 +82,7 @@ func (l languagesV1) validate() error {
 	}
 
 	if isZero(l.DefaultLanguage.Code) && isZero(l.DefaultLanguage.Label) && isZero(l.DefaultLanguage.Name) {
-		return fmt.Errorf("DefaultLanguage not set")
+		return errors.New("DefaultLanguage not set")
 	}
 
 	if isZero(l.DefaultLanguage.Name) {
@@ -89,7 +90,7 @@ func (l languagesV1) validate() error {
 	}
 
 	if len(l.SupportedLanguages) == 0 {
-		return fmt.Errorf("No SiteLanguages set")
+		return errors.New("No SiteLanguages set")
 	}
 
 	defaultInLanguages := false
@@ -103,7 +104,7 @@ func (l languagesV1) validate() error {
 		}
 	}
 	if !defaultInLanguages {
-		return fmt.Errorf("DefaultLanguage not in SiteLanguages")
+		return errors.New("DefaultLanguage not in SiteLanguages")
 	}
 
 	return nil
