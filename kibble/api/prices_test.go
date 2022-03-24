@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"kibble/models"
 	"testing"
-	"fmt"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -101,20 +100,20 @@ func TestMergePrices(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 2, count)
 
-	// // verify the film entry is updated
-	// assert.Equal(t, "$3.00", site.Films["/film/103"].Prices.GetLowestPrice(), "film price was not updated")
+	// verify the film entry is updated
+	assert.Equal(t, "$3.00", site.Films["/film/103"].Prices.GetLowestPrice(), "film price was not updated")
 
-	// // check the itemIndex is updated with film
-	// filmItem := itemIndex.Get("/film/103")
-	// film, ok := filmItem.InnerItem.(models.Film)
-	// assert.True(t, ok)
-	// assert.Equal(t, "$3.00", film.Prices.GetLowestPrice())
+	// check the itemIndex is updated with film
+	filmItem := itemIndex.Get("/film/103")
+	film, ok := filmItem.InnerItem.(models.Film)
+	assert.True(t, ok)
+	assert.Equal(t, "$3.00", film.Prices.GetLowestPrice())
 
-	// // check the itemIndex is updated with plan
-	// planItem := itemIndex.Get("/plan/1")
-	// plan, ok := planItem.InnerItem.(models.Plan)
-	// assert.True(t, ok)
-	// assert.Equal(t, "$11.00", plan.Prices.GetLowestPrice())
+	// check the itemIndex is updated with plan
+	planItem := itemIndex.Get("/plan/1")
+	plan, ok := planItem.InnerItem.(models.Plan)
+	assert.True(t, ok)
+	assert.Equal(t, "$11.00", plan.Prices.GetLowestPrice())
 }
 
 func TestDeserializePrices(t *testing.T) {
