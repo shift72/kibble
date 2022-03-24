@@ -107,36 +107,34 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 	groups := make(map[string][]int, 0)
 
 	// create a grouping of slugs to films first
-	cnt := 0
 	for _, film := range *films {
 		if groups[film.TitleSlug] == nil {
-			groups[film.TitleSlug] = []int{cnt}
+			groups[film.TitleSlug] = []int{film.ID}
 		} else {
-			groups[film.TitleSlug] = append(groups[film.TitleSlug], cnt)
+			groups[film.TitleSlug] = append(groups[film.TitleSlug], film.ID)
 		}
-		cnt++
 	}
-	fmt.Println(*films)
 
 	// if any groups are larger than 1 then make them unique
 	for _, group := range groups {
 		if len(group) == 1 {
 			continue
 		}
+
 		// sort them by id, so the first film is not changed
 		sort.Slice(group, func(i int, j int) bool {
-			// return (*films)[group[i]].ID < (*films)[group[j]].ID
-			return true
+			return group[i] < group[j]
 		})
 
-		// append i + 1 to end of slug
+		// // append i + 1 to end of slug
 		for j := 0; j < len(group); j++ {
 			if j == 0 {
 				continue
 			}
 
-			// find the correct value to update, without making a copy
-			// (*films)[group[j]].TitleSlug = fmt.Sprintf("%s-%d", (*films)[group[j]].TitleSlug, j+1)
+			if val, ok := (*films)["/film/" + strconv.Itoa(group[j])]; ok {
+				val.TitleSlug = fmt.Sprintf("%s-%d", val.TitleSlug, j+1)
+			}
 		}
 	}
 }
