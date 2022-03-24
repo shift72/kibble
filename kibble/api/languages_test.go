@@ -86,12 +86,10 @@ func TestFormatPathLocale(t *testing.T) {
 
 func TestLanguageV1Validate(t *testing.T) {
 	var tests = []struct {
-		name      string
 		input     languagesV1
 		error_msg string
 	}{
 		{
-			"default lanuage not set",
 			languagesV1{
 				DefaultLanguage:    languageV1{},
 				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
@@ -99,7 +97,6 @@ func TestLanguageV1Validate(t *testing.T) {
 			"DefaultLanguage not set",
 		},
 		{
-			"default language missing display name",
 			languagesV1{
 				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: ""},
 				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
@@ -107,7 +104,6 @@ func TestLanguageV1Validate(t *testing.T) {
 			"DefaultLanguage en is missing display name",
 		},
 		{
-			"no site languages set",
 			languagesV1{
 				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
 				SupportedLanguages: make([]languageV1, 0),
@@ -115,7 +111,6 @@ func TestLanguageV1Validate(t *testing.T) {
 			"No SiteLanguages set",
 		},
 		{
-			"site language missing display name",
 			languagesV1{
 				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
 				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: ""}},
@@ -123,7 +118,6 @@ func TestLanguageV1Validate(t *testing.T) {
 			"Language en is missing display name",
 		},
 		{
-			"default language not in site languages",
 			languagesV1{
 				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
 				SupportedLanguages: []languageV1{{Code: "de", Label: "German", Name: "Deutsch"}},
@@ -133,7 +127,7 @@ func TestLanguageV1Validate(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
+		t.Run(tc.error_msg, func(t *testing.T) {
 			assert.EqualError(t, tc.input.validate(), tc.error_msg)
 		})
 	}
