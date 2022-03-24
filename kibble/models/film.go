@@ -46,6 +46,7 @@ type Film struct {
 	Tags            StringCollection
 	Seo             Seo
 	Images          ImageSet
+	ImageMap        ImageMap
 	Prices          PriceInfo
 	Available       Period
 	Recommendations []GenericItem

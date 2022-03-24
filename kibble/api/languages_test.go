@@ -47,7 +47,9 @@ func TestLoadAllLanguagesFromConfig(t *testing.T) {
 	}
 
 	site := &models.Site{}
-	loadAllLanguagesFromConfig(cfg, site)
+	if err := loadAllLanguagesFromConfig(cfg, site); err != nil {
+		t.Error(err)
+	}
 	assert.Equal(t, site.Languages, []models.Language{
 		{Code: "de", Name: "Deutsche", Label: "", Locale: "", DefinitionFilePath: "", IsDefault: false},
 		{Code: "", Name: "English", Label: "", Locale: "", DefinitionFilePath: "", IsDefault: true},

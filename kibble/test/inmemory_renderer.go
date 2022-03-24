@@ -38,7 +38,7 @@ type InMemoryResult struct {
 // Output - return the result
 func (r *InMemoryResult) Output() string {
 	if r.err == nil {
-		return fmt.Sprintf("%s", r.buffer)
+		return r.buffer.String()
 	}
 	return fmt.Sprintf("error: %s\n", r.err)
 }
@@ -67,7 +67,7 @@ func (c *InMemoryRenderer) DumpErrors(t *testing.T) {
 func (c *InMemoryRenderer) DumpResults() {
 	for _, r := range c.Results {
 		fmt.Printf("---- %s start ----\n", r.filePath)
-		fmt.Printf(r.Output())
+		fmt.Println(r.Output())
 		fmt.Printf("---- %s end ----\n", r.filePath)
 	}
 }

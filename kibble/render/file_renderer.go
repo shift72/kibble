@@ -46,6 +46,9 @@ func (c FileRenderer) Initialise() {
 	// copy language files too, they are a special file name format
 	glob := filepath.Join(c.sourcePath, "/*.all.json")
 	langFiles, err := filepath.Glob(glob)
+	if err != nil {
+		log.Warningf("Warn: getting language files failed %s", err)
+	}
 	if len(langFiles) > 0 {
 		for _, file := range langFiles {
 			dst := filepath.Join(c.buildPath, filepath.Base(file))
@@ -93,7 +96,9 @@ func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarM
 	}
 
 	dirPath := filepath.Dir(fullPath)
-	os.MkdirAll(dirPath, 0777)
+	if err := os.MkdirAll(dirPath, 0777); err != nil {
+		log.Warningf("Error while creating directory: %s: %s", dirPath, err)
+	}
 
 	// optional check
 

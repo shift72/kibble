@@ -45,7 +45,7 @@ func NewStopwatchf(msg string, a ...interface{}) *Stopwatch {
 
 // Completed - stops the stop watch
 func (sw *Stopwatch) Completed() time.Duration {
-	d := round(time.Now().Sub(sw.start), time.Millisecond)
+	d := round(time.Since(sw.start), time.Millisecond)
 	if log.IsEnabledFor(sw.level) {
 		log.Noticef("%s: %s", sw.msg, d)
 	} else {

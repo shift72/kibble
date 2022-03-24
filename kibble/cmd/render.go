@@ -18,6 +18,7 @@ import (
 	"kibble/config"
 	"kibble/render"
 	"kibble/utils"
+
 	"github.com/spf13/cobra"
 )
 
@@ -37,12 +38,12 @@ Kibble is used to build and develop custom sites to run on the SHIFT72 platform.
 		if watch || serve {
 			log := utils.ConfigureWatchedLogging(utils.ConvertToLoggingLevel(verbose))
 			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
-			config.CheckVersion(cfg)
+			_ = config.CheckVersion(cfg)
 			render.Watch(cfg.SourcePath(), cfg.BuildPath(), cfg, port, log, watch)
 		} else {
 			utils.ConfigureStandardLogging(utils.ConvertToLoggingLevel(verbose))
 			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
-			config.CheckVersion(cfg)
+			_ = config.CheckVersion(cfg)
 			render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)
 		}
 	},
