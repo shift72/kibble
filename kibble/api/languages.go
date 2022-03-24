@@ -100,7 +100,6 @@ func (l languagesV1) validate() error {
 
 		if isZero(lang.Name) {
 			return fmt.Errorf("Language %s is missing display name", lang.Code)
-			// no need to check Code or Label as they are required by database schema.
 		}
 	}
 	if !defaultInLanguages {
