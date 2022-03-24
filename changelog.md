@@ -1,6 +1,7 @@
 # Change log
 
 ## Unreleased
+Validation for language api response.
 
 ## 0.16.6
 Added ImageMap to models.Film object to support any fields ending in "_image" to sit in parallel with Images for the forseeable future

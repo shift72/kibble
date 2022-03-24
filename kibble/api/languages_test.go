@@ -82,5 +82,53 @@ func TestFormatPathLocale(t *testing.T) {
 	languageCode = "_"
 	formatted = formatPathLocale(languageCode)
 	assert.Equal(t, formatted, "-")
+}
 
+func TestLanguageV1Validate(t *testing.T) {
+	var tests = []struct {
+		input     languagesV1
+		error_msg string
+	}{
+		{
+			languagesV1{
+				DefaultLanguage:    languageV1{},
+				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
+			},
+			"DefaultLanguage not set",
+		},
+		{
+			languagesV1{
+				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: ""},
+				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: "English"}},
+			},
+			"DefaultLanguage en is missing display name",
+		},
+		{
+			languagesV1{
+				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+				SupportedLanguages: make([]languageV1, 0),
+			},
+			"No SiteLanguages set",
+		},
+		{
+			languagesV1{
+				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+				SupportedLanguages: []languageV1{{Code: "en", Label: "English", Name: ""}},
+			},
+			"Language en is missing display name",
+		},
+		{
+			languagesV1{
+				DefaultLanguage:    languageV1{Code: "en", Label: "English", Name: "English"},
+				SupportedLanguages: []languageV1{{Code: "de", Label: "German", Name: "Deutsch"}},
+			},
+			"DefaultLanguage not in SiteLanguages",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.error_msg, func(t *testing.T) {
+			assert.EqualError(t, tc.input.validate(), tc.error_msg)
+		})
+	}
 }
