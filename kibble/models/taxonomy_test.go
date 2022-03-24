@@ -37,13 +37,7 @@ func create2FilmSite() Site {
 		Taxonomies: make(Taxonomies),
 	}
 }
-// Films: models.FilmCollection{
-// 	"/film/123" : &models.Film{
-// 		ID:        123,
-// 		Slug:      "/film/123",
-// 		TitleSlug: "the-big-lebowski",
-// 	},
-// },
+
 func TestBuildGenreTaxonomy(t *testing.T) {
 
 	s := Site{

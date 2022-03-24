@@ -20,7 +20,6 @@ import (
 
 	"kibble/models"
 	"kibble/test"
-"fmt"
 	"github.com/CloudyKit/jet"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
@@ -46,7 +45,6 @@ func createTestFilm() (models.RenderContext, *models.Route) {
 			},
 		},
 	}
-	fmt.Println(ctx)
 
 	return ctx, r
 }
@@ -305,7 +303,6 @@ func TestRenderFilm(t *testing.T) {
 
 func TestRenderPartialFilm(t *testing.T) {
 	ctx, r := createTestFilm()
-
 	r.PartialTemplatePath = "/film/partial.jet"
 	r.PartialURLPath = "/partials/film/:filmID.html"
 

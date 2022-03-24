@@ -101,6 +101,9 @@ func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarM
 	}
 
 	// optional check
+	if _, err := os.Stat(fullPath); err == nil {
+		log.Warningf("File exists and will be overwritten: %s", fullPath)
+	}
 
 	err = ioutil.WriteFile(fullPath, w.Bytes(), 0777)
 	if err != nil {
