@@ -16,7 +16,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"kibble/models"
 	"sort"
@@ -82,13 +81,15 @@ func (l languagesV1) validate() error {
 	}
 
 	if isZero(l.DefaultLanguage.Code) && isZero(l.DefaultLanguage.Label) && isZero(l.DefaultLanguage.Name) {
-		return errors.New("DefaultLanguage not set")
-	} else if isZero(l.DefaultLanguage.Name) {
-		return errors.New(fmt.Sprintf("DefaultLanguage %s is missing display name", l.DefaultLanguage.Code))
+		return fmt.Errorf("DefaultLanguage not set")
+	}
+
+	if isZero(l.DefaultLanguage.Name) {
+		return fmt.Errorf("DefaultLanguage %s is missing display name", l.DefaultLanguage.Code)
 	}
 
 	if len(l.SupportedLanguages) == 0 {
-		return errors.New("No SiteLanguages set")
+		return fmt.Errorf("No SiteLanguages set")
 	}
 
 	defaultInLanguages := false
@@ -98,12 +99,12 @@ func (l languagesV1) validate() error {
 		}
 
 		if isZero(lang.Name) {
-			return errors.New(fmt.Sprintf("Language %s is missing display name", lang.Code))
+			return fmt.Errorf("Language %s is missing display name", lang.Code)
 			// no need to check Code or Label as they are required by database schema.
 		}
 	}
 	if !defaultInLanguages {
-		return errors.New("DefaultLanguage not in SiteLanguages")
+		return fmt.Errorf("DefaultLanguage not in SiteLanguages")
 	}
 
 	return nil
