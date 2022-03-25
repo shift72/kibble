@@ -4,12 +4,16 @@
 Validation for language api response.
 
 ## 0.16.6
-Added ImageMap to models.Film object to support any fields ending in "_image" to sit in parallel with Images for the forseeable future
+
+### Added 
+Added a new `ImageMap` to films to support any fields ending in `_image`. This will exist in parallel with the hardcoded `Images` until v1.
 
 ## 0.16.5
-Added CoreTemplateVersion property to kibble.json config model and v1/site_templates params.
-Added Status_ID to Genereic Items, currently supported in Film and TV Season models for publish and unpublished states.
-Added error in StartLiveReload.
+
+### Added
+- `kibble.json` now has `CoreTemplateVersion` used by the site_templates API.
+- Generic items now have `Status_ID`, currently supported in Film and TV Season models for publish and unpublished states.
+- `StartLiveReload` now exits on error.
 
 ## 0.16.4
 Fix to the release process - no changes from 0.16.2.
