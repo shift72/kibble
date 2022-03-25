@@ -6,7 +6,7 @@ Validation for language api response.
 ## 0.16.6
 
 ### Added 
-Added a new `ImageMap` to films to support any fields ending in `_image`. This will exist in parallel with the hardcoded `Images` until v1.
+- A new `ImageMap` on films to support any fields ending in `_image`. This will exist in parallel with the hardcoded `Images` until v1.
 
 ## 0.16.5
 
