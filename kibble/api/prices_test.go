@@ -40,8 +40,9 @@ func TestMergePrices(t *testing.T) {
 
 	// site
 	site := &models.Site{
-		Films: []models.Film{
-			{ID: 103,
+		Films: models.FilmCollection{
+			"/film/103": &models.Film{
+				ID: 103,
 				Slug: "/film/103",
 			},
 		},
@@ -54,7 +55,7 @@ func TestMergePrices(t *testing.T) {
 
 	// setup index
 	itemIndex := make(models.ItemIndex)
-	itemIndex.Set(site.Films[0].Slug, site.Films[0].GetGenericItem())
+	itemIndex.Set(site.Films["/film/103"].Slug, site.Films["/film/103"].GetGenericItem())
 	itemIndex.Set(site.Plans[0].Slug, site.Plans[0].GetGenericItem())
 
 
@@ -91,14 +92,13 @@ func TestMergePrices(t *testing.T) {
 		},
 }
 
-
 	// act - load the prices
 	count, err := processPrices(prices, site, itemIndex)
 	assert.NoError(t, err)
 	assert.Equal(t, 2, count)
 
 	// verify the film entry is updated
-	assert.Equal(t, "$3.00", site.Films[0].Prices.GetLowestPrice(), "film price was not updated")
+	assert.Equal(t, "$3.00", site.Films["/film/103"].Prices.GetLowestPrice(), "film price was not updated")
 
 	// check the itemIndex is updated with film
 	filmItem := itemIndex.Get("/film/103")

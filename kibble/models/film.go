@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"sort"
 	"time"
+	"strconv"
 
 	"kibble/utils"
 )
@@ -57,15 +58,13 @@ type Film struct {
 }
 
 // FilmCollection - all films
-type FilmCollection []Film
+type FilmCollection map[string]*Film
 
 // FindFilmByID - find film by id
 func (films *FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 	coll := *films
-	for i := 0; i < len(coll); i++ {
-		if coll[i].ID == filmID {
-			return &coll[i], true
-		}
+	if val, ok := coll["/film/" + strconv.Itoa(filmID)]; ok {
+		return val, true
 	}
 	return nil, false
 }
@@ -73,10 +72,8 @@ func (films *FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 // FindFilmBySlug - find the film by the slug
 func (films *FilmCollection) FindFilmBySlug(slug string) (*Film, bool) {
 	coll := *films
-	for i := 0; i < len(coll); i++ {
-		if coll[i].Slug == slug || coll[i].TitleSlug == slug {
-			return &coll[i], true
-		}
+	if val, ok := coll[slug]; ok {
+		return val, true
 	}
 	return nil, false
 }
@@ -111,11 +108,11 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 	groups := make(map[string][]int, 0)
 
 	// create a grouping of slugs to films first
-	for fi, film := range *films {
+	for _, film := range *films {
 		if groups[film.TitleSlug] == nil {
-			groups[film.TitleSlug] = []int{fi}
+			groups[film.TitleSlug] = []int{film.ID}
 		} else {
-			groups[film.TitleSlug] = append(groups[film.TitleSlug], fi)
+			groups[film.TitleSlug] = append(groups[film.TitleSlug], film.ID)
 		}
 	}
 
@@ -127,7 +124,7 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 
 		// sort them by id, so the first film is not changed
 		sort.Slice(group, func(i int, j int) bool {
-			return (*films)[group[i]].ID < (*films)[group[j]].ID
+			return group[i] < group[j]
 		})
 
 		// append i + 1 to end of slug
@@ -137,7 +134,9 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 			}
 
 			// find the correct value to update, without making a copy
-			(*films)[group[j]].TitleSlug = fmt.Sprintf("%s-%d", (*films)[group[j]].TitleSlug, j+1)
+			if val, ok := (*films)["/film/" + strconv.Itoa(group[j])]; ok {
+				val.TitleSlug = fmt.Sprintf("%s-%d", val.TitleSlug, j+1)
+			}
 		}
 	}
 }

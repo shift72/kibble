@@ -328,12 +328,12 @@ func TestFilmSubtitlesAsArray(t *testing.T) {
 func TestUniqueFilmTitles(t *testing.T) {
 
 	collection := models.FilmCollection{
-		models.Film{
+		"/film/1": &models.Film{
 			ID:        1,
 			Slug:      "/film/1",
 			TitleSlug: "the-big-lebowski",
 		},
-		models.Film{
+		"/film/2": &models.Film{
 			ID:        2,
 			Slug:      "/film/2",
 			TitleSlug: "the-big-lebowski",
@@ -342,24 +342,24 @@ func TestUniqueFilmTitles(t *testing.T) {
 
 	collection.MakeTitleSlugsUnique()
 
-	assert.Equal(t, "the-big-lebowski", collection[0].TitleSlug)
-	assert.Equal(t, "the-big-lebowski-2", collection[1].TitleSlug)
+	assert.Equal(t, "the-big-lebowski", collection["/film/1"].TitleSlug)
+	assert.Equal(t, "the-big-lebowski-2", collection["/film/2"].TitleSlug)
 }
 
 func TestUniqueFilmTitlesTheNewestGetsTheLargestIndex(t *testing.T) {
 
 	collection := models.FilmCollection{
-		models.Film{
+		"/film/3": &models.Film{
 			ID:        3,
 			Slug:      "/film/3",
 			TitleSlug: "the-big-lebowski",
 		},
-		models.Film{
+		"/film/1": &models.Film{
 			ID:        1,
 			Slug:      "/film/1",
 			TitleSlug: "the-big-lebowski",
 		},
-		models.Film{
+		"/film/2": &models.Film{
 			ID:        2,
 			Slug:      "/film/2",
 			TitleSlug: "the-big-lebowski",
@@ -368,9 +368,9 @@ func TestUniqueFilmTitlesTheNewestGetsTheLargestIndex(t *testing.T) {
 
 	collection.MakeTitleSlugsUnique()
 
-	assert.Equal(t, "the-big-lebowski-3", collection[0].TitleSlug)
-	assert.Equal(t, "the-big-lebowski", collection[1].TitleSlug)
-	assert.Equal(t, "the-big-lebowski-2", collection[2].TitleSlug)
+	assert.Equal(t, "the-big-lebowski-3", collection["/film/3"].TitleSlug)
+	assert.Equal(t, "the-big-lebowski", collection["/film/1"].TitleSlug)
+	assert.Equal(t, "the-big-lebowski-2", collection["/film/2"].TitleSlug)
 }
 
 func TestFilmCrewJobs(t *testing.T) {

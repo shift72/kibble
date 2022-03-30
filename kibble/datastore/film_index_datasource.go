@@ -15,10 +15,11 @@
 package datastore
 
 import (
+	"kibble/models"
 	"reflect"
 
 	"github.com/CloudyKit/jet"
-	"kibble/models"
+
 	logging "github.com/op/go-logging"
 )
 
@@ -38,8 +39,11 @@ func (ds *FilmIndexDataSource) GetEntityType() reflect.Type {
 // Iterator - return a list of all films, iteration of 1
 func (ds *FilmIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 	clonedFilms := make([]*models.Film, len(ctx.Site.Films))
-	for i, f := range ctx.Site.Films {
-		clonedFilms[i] = transformFilm(f)
+
+	i := 0
+	for _, f := range ctx.Site.Films {
+		clonedFilms[i] = transformFilm(*f)
+		i++
 	}
 
 	vars := make(jet.VarMap)

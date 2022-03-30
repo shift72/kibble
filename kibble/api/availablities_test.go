@@ -15,8 +15,8 @@ func TestMergeAvailabilities(t *testing.T) {
 
 	// site
 	site := &models.Site{
-		Films: []models.Film{
-			{ID: 103,
+		Films: models.FilmCollection{
+			"/film/103":{ID: 103,
 				Slug: "/film/103",
 			},
 		},
@@ -24,7 +24,7 @@ func TestMergeAvailabilities(t *testing.T) {
 
 	// setup index
 	itemIndex := make(models.ItemIndex)
-	itemIndex.Set(site.Films[0].Slug, site.Films[0].GetGenericItem())
+	itemIndex.Set(site.Films["/film/103"].Slug, site.Films["/film/103"].GetGenericItem())
 
 	from := utils.ParseTimeFromString("2012-04-01T00:00:00.000Z")
 	to := utils.ParseTimeFromString("2012-05-01T00:00:00.000Z")
@@ -42,7 +42,7 @@ func TestMergeAvailabilities(t *testing.T) {
 	assert.Equal(t, 1, count)
 
 	// verify the film entry is updated
-	assert.Equal(t, from, *site.Films[0].Available.From, "film from was not set")
+	assert.Equal(t, from, *site.Films["/film/103"].Available.From, "film from was not set")
 
 	// // check the itemIndex is updated
 	item := itemIndex.Get("/film/103")
