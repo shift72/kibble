@@ -3,7 +3,7 @@ module kibble
 go 1.17
 
 require (
-	github.com/CloudyKit/jet v2.1.1+incompatible
+	github.com/CloudyKit/jet/v6 v6.1.0
 	github.com/araddon/dateparse v0.0.0-20210207001429-0eec95c9db7e
 	github.com/aws/aws-sdk-go v1.12.2
 	github.com/gosimple/slug v1.1.1
@@ -24,7 +24,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
-	github.com/CloudyKit/fastprinter v0.0.0-20170127035650-74b38d55f37a // indirect
+	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-ini/ini v1.28.2 // indirect

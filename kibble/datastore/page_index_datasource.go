@@ -22,7 +22,7 @@ import (
 
 	"kibble/models"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 var indexArgs = []models.RouteArgument{

@@ -20,7 +20,8 @@ import (
 
 	"kibble/models"
 	"kibble/test"
-	"github.com/CloudyKit/jet"
+
+	"github.com/CloudyKit/jet/v6"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
 )
@@ -105,10 +106,13 @@ func TestFilmDataStore(t *testing.T) {
 
 func TestRenderingGlobal(t *testing.T) {
 
-	view := jet.NewHTMLSet("../templates/")
-	view.AddGlobal("version", "v1.1.145")
+	loader := jet.NewInMemLoader()
+	loader.Set("version.jet", "{{ version }}")
 
-	tem, _ := view.LoadTemplate("", "{{ version }}")
+	view := jet.NewSet(loader)
+	view.AddGlobal("version", "v1.1.146")
+
+	tem, _ := view.GetTemplate("version.jet")
 
 	renderer1 := &test.InMemoryTemplateRenderer{
 		View:     view,
@@ -138,7 +142,7 @@ func TestRenderingGlobal(t *testing.T) {
 	var fds FilmDataSource
 	fds.Iterator(ctx, renderer1)
 
-	if renderer1.Result.Output() != "v1.1.145" {
+	if renderer1.Result.Output() != "v1.1.146" {
 		t.Error("Unexpected output")
 	}
 }
@@ -176,8 +180,7 @@ func TestRenderingSlug(t *testing.T) {
 	assert.NoError(t, err)
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
-
-	tem, _ := view.LoadTemplate("", "{{ routeToSlug(film.Slug, \"filmItem\") }}")
+	tem, err := view.GetTemplate("film_slug.jet")
 
 	renderer := &test.InMemoryTemplateRenderer{
 		View:     view,
@@ -226,7 +229,7 @@ func TestRouteToFilm(t *testing.T) {
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
 
-	tem, _ := view.LoadTemplate("", "{{ routeTo(film, \"filmItem\") }}")
+	tem, _ := view.GetTemplate("film_route.jet")
 
 	renderer := &test.InMemoryTemplateRenderer{
 		View:     view,
@@ -274,7 +277,7 @@ func TestTransLanguage(t *testing.T) {
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
 
-	tem, _ := view.LoadTemplate("", "MSG {{ i18n(\"settings_title\") }}")
+	tem, _ := view.GetTemplate("film_translation.jet")
 
 	renderer := &test.InMemoryTemplateRenderer{
 		View:     view,

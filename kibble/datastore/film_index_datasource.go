@@ -18,7 +18,7 @@ import (
 	"kibble/models"
 	"reflect"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 
 	logging "github.com/op/go-logging"
 )

@@ -15,10 +15,9 @@
 package datastore
 
 import (
-	"testing"
-
 	"kibble/models"
 	"kibble/test"
+	"testing"
 
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
@@ -58,7 +57,7 @@ func TestRenderingShowSlug(t *testing.T) {
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
 
-	tem, _ := view.LoadTemplate("", "{{ routeToSlug(site.TVShows[0].Slug) }}")
+	tem, _ := view.GetTemplate("tv_show_slug.jet")
 
 	renderer := &test.InMemoryTemplateRenderer{
 		View:     view,

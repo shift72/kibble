@@ -15,7 +15,7 @@
 package test
 
 import (
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 // MockRenderer - testable renderer

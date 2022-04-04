@@ -23,7 +23,7 @@ import (
 	"kibble/models"
 	"kibble/utils"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 var bundleArgs = []models.RouteArgument{

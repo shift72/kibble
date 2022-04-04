@@ -17,7 +17,7 @@ package test
 import (
 	"bytes"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 // InMemoryTemplateRenderer - render template in memory

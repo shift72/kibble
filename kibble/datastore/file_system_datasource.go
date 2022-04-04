@@ -23,7 +23,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 var fileSystemArgs = []models.RouteArgument{}
