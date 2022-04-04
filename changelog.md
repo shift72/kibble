@@ -2,6 +2,7 @@
 
 ## Unreleased
 Validation for language api response.
+- Removed Status ID from generic items
 
 ## 0.16.6
 
