@@ -29,7 +29,6 @@ type Film struct {
 	Slug            string
 	Title           string
 	TitleSlug       string
-	StatusID        int
 	Trailers        []Trailer
 	Bonuses         BonusContentCollection
 	Cast            []CastMember
@@ -86,7 +85,6 @@ func (film Film) GetGenericItem() GenericItem {
 		Images:    film.Images,
 		ItemType:  "film",
 		InnerItem: film,
-		StatusID:  film.StatusID,
 	}
 }
 

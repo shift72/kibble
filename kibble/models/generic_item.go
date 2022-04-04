@@ -26,7 +26,6 @@ type GenericItem struct {
 	Title    string
 	Images   ImageSet
 	Seo      Seo
-	StatusID int
 }
 
 // GetTitle - returns the title in the current language
