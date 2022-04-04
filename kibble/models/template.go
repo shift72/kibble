@@ -37,10 +37,7 @@ var shortCodeView *jet.Set
 // CreateTemplateView - create a template view
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx *RenderContext, templatePath string) *jet.Set {
 
-	// loader := jet.NewInMemLoader()
-	fmt.Println("TEMPLATE PATH>>", templatePath)
 	view := jet.NewSet(jet.NewOSFileSystemLoader(templatePath))
-	// view := jet.NewHTMLSet(templatePath)
 	view.AddGlobal("version", version.Version)
 	view.AddGlobal("lang", ctx.Language)
 	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
