@@ -180,7 +180,7 @@ func TestRenderingSlug(t *testing.T) {
 	assert.NoError(t, err)
 
 	view := models.CreateTemplateView(routeRegistry, i18n.IdentityTfunc(), &ctx, "./templates")
-	tem, err := view.GetTemplate("film_slug.jet")
+	tem, _ := view.GetTemplate("film_slug.jet")
 
 	renderer := &test.InMemoryTemplateRenderer{
 		View:     view,
