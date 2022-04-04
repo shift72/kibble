@@ -1,12 +1,14 @@
 # Change log
 
 ## Unreleased
+
+## 0.16.7
 Validation for language api response.
 - Removed Status ID from generic items
 
 ## 0.16.6
 
-### Added 
+### Added
 - A new `ImageMap` on films to support any fields ending in `_image`. This will exist in parallel with the hardcoded `Images` until v1.
 
 ## 0.16.5
