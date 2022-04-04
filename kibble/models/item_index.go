@@ -76,26 +76,9 @@ func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
 		index = itemIndex[slugType]
 	}
 
+	// unresolved can be overwritten, empty and item can not
 	foundItem, ok := index[slug]
-	if !ok || foundItem == Unresolved || foundItem == Empty {
-		index[slug] = item
-	}
-}
-
-// Set - an item
-func (itemIndex ItemIndex) SetWithStatus(slug string, statusID int, item GenericItem) {
-
-	slugType := getSlugType(slug)
-
-	index, ok := itemIndex[slugType]
-	if !ok {
-		itemIndex[slugType] = make(map[string]GenericItem)
-		index = itemIndex[slugType]
-	}
-
-	foundItem, ok := index[slug]
-	item.StatusID = statusID
-	if !ok || foundItem == Unresolved || foundItem == Empty {
+	if (ok && (foundItem == Unresolved || foundItem == Empty)) || !ok {
 		index[slug] = item
 	}
 }
@@ -142,17 +125,12 @@ func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem
 	t, ok := itemIndex[slugType]
 	if ok {
 		for k, v := range t {
-			if equalsIgnoreStatus(v, itemType) {
+			if v == itemType {
 				found = append(found, k)
 			}
 		}
 	}
 	return found
-}
-
-//Check fields of GenericItem, ignore StatusID (publish status) as it may differ.
-func equalsIgnoreStatus(a GenericItem, b GenericItem) bool {
-	return a.Slug == b.Slug && a.ItemType == b.ItemType && a.Title == b.Title && a.Images == b.Images && a.Seo == b.Seo
 }
 
 // LinkItems - link the items to the specific parts
