@@ -21,13 +21,13 @@ import (
 func create2FilmSite() Site {
 	return Site{
 		Films: FilmCollection{
-			Film{
+			"/film/123": &Film{
 				ID:        123,
 				Slug:      "/film/123",
 				TitleSlug: "the-big-lebowski",
 				Genres:    []string{"comedy", "drama"},
 			},
-			Film{
+			"/film/124": &Film{
 				ID:        124,
 				Slug:      "/film/124",
 				TitleSlug: "fargo",
@@ -42,7 +42,7 @@ func TestBuildGenreTaxonomy(t *testing.T) {
 
 	s := Site{
 		Films: FilmCollection{
-			Film{
+			"/film/123": &Film{
 				ID:        123,
 				Slug:      "/film/123",
 				TitleSlug: "the-big-lebowski",

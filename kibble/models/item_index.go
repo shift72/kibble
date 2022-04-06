@@ -136,8 +136,11 @@ func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem
 // LinkItems - link the items to the specific parts
 func (site *Site) LinkItems(itemIndex ItemIndex) {
 
-	for i := range site.Films {
-		site.Films[i].Recommendations = itemIndex.Resolve(site.Films[i].Recommendations)
+	for _, f := range site.Films {
+		if film, ok := site.Films[f.Slug]; ok {
+			film.Recommendations = itemIndex.Resolve(f.Recommendations)
+			site.Films[f.Slug] = film
+		}
 	}
 
 	for i := range site.TVSeasons {

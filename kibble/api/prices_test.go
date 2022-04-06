@@ -40,8 +40,9 @@ func TestMergePrices(t *testing.T) {
 
 	// site
 	site := &models.Site{
-		Films: []models.Film{
-			{ID: 103,
+		Films: models.FilmCollection{
+			"/film/103": &models.Film{
+				ID:   103,
 				Slug: "/film/103",
 			},
 		},
@@ -54,9 +55,8 @@ func TestMergePrices(t *testing.T) {
 
 	// setup index
 	itemIndex := make(models.ItemIndex)
-	itemIndex.Set(site.Films[0].Slug, site.Films[0].GetGenericItem())
+	itemIndex.Set(site.Films["/film/103"].Slug, site.Films["/film/103"].GetGenericItem())
 	itemIndex.Set(site.Plans[0].Slug, site.Plans[0].GetGenericItem())
-
 
 	prices := prices{
 		Prices: []pricesV2{
@@ -90,7 +90,7 @@ func TestMergePrices(t *testing.T) {
 			},
 		},
 		Plans: []struct {
-			Item  string `json:"item"`
+			Item  string   `json:"item"`
 			Plans []string `json:"plans"`
 		}{{
 			Item:  "/film/103",
@@ -104,7 +104,7 @@ func TestMergePrices(t *testing.T) {
 	assert.Equal(t, 2, count)
 
 	// verify the film entry is updated
-	assert.Equal(t, "$3.00", site.Films[0].Prices.GetLowestPrice(), "film price was not updated")
+	assert.Equal(t, "$3.00", site.Films["/film/103"].Prices.GetLowestPrice(), "film price was not updated")
 
 	// check the itemIndex is updated with film
 	filmItem := itemIndex.Get("/film/103")
@@ -119,7 +119,7 @@ func TestMergePrices(t *testing.T) {
 	assert.Equal(t, "$11.00", plan.Prices.GetLowestPrice())
 
 	// check plan prices are assigned to film
-	assert.Equal(t, site.Films[0].Prices.PlanPrices["/plan/1"], plan.Prices.Prices)
+	assert.Equal(t, site.Films["/film/103"].Prices.PlanPrices["/plan/1"], plan.Prices.Prices)
 }
 
 func TestDeserializePrices(t *testing.T) {

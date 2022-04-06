@@ -55,7 +55,7 @@ func (s Site) PopulateTaxonomyWithFilms(taxonomy string, finder func(*Film) []st
 	}
 
 	for _, f := range s.Films {
-		for _, key := range finder(&f) {
+		for _, key := range finder(f) {
 			// omit any empty keys
 			if key != "" {
 				_, ok := t[key]

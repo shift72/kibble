@@ -3,6 +3,22 @@
 ## Unreleased
 Added PlanPrices to Films
 
+## 0.16.7
+Validation for language api response.
+- Removed Status ID from generic items
+
+## 0.16.6
+
+### Added
+- A new `ImageMap` on films to support any fields ending in `_image`. This will exist in parallel with the hardcoded `Images` until v1.
+
+## 0.16.5
+
+### Added
+- `kibble.json` now has `CoreTemplateVersion` used by the site_templates API.
+- Generic items now have `Status_ID`, currently supported in Film and TV Season models for publish and unpublished states.
+- `StartLiveReload` now exits on error.
+
 ## 0.16.4
 Fix to the release process - no changes from 0.16.2.
 
@@ -19,8 +35,8 @@ Prices added to Plans
 An award category on a film now shows if the film is winner of that award category
 
 ## 0.16.0
-Support for self service Translations API. 
-Support for custom fields in Bundles. 
+Support for self service Translations API.
+Support for custom fields in Bundles.
 Support for sync command to use an optional SiteURL parameter to override siteurl in kibble.json, used for shared templates.
 
 ## 0.15.22

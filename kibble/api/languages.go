@@ -16,6 +16,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"kibble/models"
 	"sort"
@@ -46,6 +47,11 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
+	err = languages.validate()
+	if err != nil {
+		return fmt.Errorf("Language validation failed: %s", err)
+	}
+
 	// Force default language to be lowercase with '-' instead of '_'.
 	site.DefaultLanguage = formatPathLocale(languages.DefaultLanguage.Code)
 	site.Languages = languages.mapToModel()
@@ -61,6 +67,46 @@ func loadAllLanguagesFromApi(cfg *models.Config, site *models.Site) error {
 	}
 	log.Infof("Default Language: %s ", site.DefaultLanguage)
 	log.Infof("Supported Languages: %s", strings.Join(languagesList, ", "))
+	return nil
+}
+
+// Returns an error if:
+// - default language is not set.
+// - default language is missing display name.
+// - no site languages are set.
+// - any site language is missing a display name.
+// - default language is not included in supported languages.
+func (l languagesV1) validate() error {
+	isZero := func(val string) bool {
+		return val == ""
+	}
+
+	if isZero(l.DefaultLanguage.Code) && isZero(l.DefaultLanguage.Label) && isZero(l.DefaultLanguage.Name) {
+		return errors.New("DefaultLanguage not set")
+	}
+
+	if isZero(l.DefaultLanguage.Name) {
+		return fmt.Errorf("DefaultLanguage %s is missing display name", l.DefaultLanguage.Code)
+	}
+
+	if len(l.SupportedLanguages) == 0 {
+		return errors.New("No SiteLanguages set")
+	}
+
+	defaultInLanguages := false
+	for _, lang := range l.SupportedLanguages {
+		if lang.Code == l.DefaultLanguage.Code {
+			defaultInLanguages = true
+		}
+
+		if isZero(lang.Name) {
+			return fmt.Errorf("Language %s is missing display name", lang.Code)
+		}
+	}
+	if !defaultInLanguages {
+		return errors.New("DefaultLanguage not in SiteLanguages")
+	}
+
 	return nil
 }
 

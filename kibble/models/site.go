@@ -49,6 +49,9 @@ type ImageSet struct {
 	Seo            string
 }
 
+// All-purpose map between image type and path
+type ImageMap map[string]string
+
 // Seo - common seo settings
 type Seo struct {
 	SiteName    string
@@ -92,7 +95,7 @@ type CastMember struct {
 type AwardCategory struct {
 	Title        string
 	DisplayLabel string
-	IsWinner       bool
+	IsWinner     bool
 }
 
 // SubtitleTrack -
@@ -174,4 +177,36 @@ func (site *Site) LanguagesToLanguageConfigs() map[string]LanguageConfig {
 	}
 
 	return configMap
+}
+
+// Convert an ImageMap to an ImageSet of hard-coded image names (which we will eventually phase out)
+func ImageMapToImageSet(imageMap ImageMap) ImageSet {
+
+	images := ImageSet{}
+
+	if path, ok := imageMap["Portrait"]; ok {
+		images.Portrait = path
+	}
+
+	if path, ok := imageMap["Landscape"]; ok {
+		images.Landscape = path
+	}
+
+	if path, ok := imageMap["Header"]; ok {
+		images.Header = path
+	}
+
+	if path, ok := imageMap["Background"]; ok {
+		images.Background = path
+	}
+
+	if path, ok := imageMap["Carousel"]; ok {
+		images.Carousel = path
+	}
+
+	if path, ok := imageMap["Classification"]; ok {
+		images.Classification = path
+	}
+
+	return images
 }

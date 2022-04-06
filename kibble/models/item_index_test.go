@@ -99,7 +99,10 @@ func TestLinkingBundlesItems(t *testing.T) {
 		Films:   make(FilmCollection, 0),
 	}
 	site.Bundles = append(site.Bundles, bundle)
-	site.Films = append(site.Films, film)
+	site.Films["/film/103"] = &Film{
+		ID: 103,
+		Slug: "/film/103",
+	}
 
 	// link the items
 	site.LinkItems(itemIndex)
