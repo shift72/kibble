@@ -39,7 +39,7 @@ func LoadAllBundles(cfg *models.Config, site *models.Site, itemIndex models.Item
 	if err != nil {
 		return err
 	}
-
+	apiBundles = []BundleV1{}
 	for _, b := range apiBundles {
 		n := b.mapToModel(site.Config, itemIndex)
 		site.Bundles = append(site.Bundles, n)

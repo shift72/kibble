@@ -40,7 +40,7 @@ func (ds *TVSeasonIndexDataSource) Iterator(ctx models.RenderContext, renderer m
 
 	cloned := make([]*models.TVSeason, len(ctx.Site.TVSeasons))
 	for i, s := range ctx.Site.TVSeasons {
-		cloned[i] = transformTVSeason(s)
+		cloned[i] = s
 	}
 
 	vars := make(jet.VarMap)
@@ -62,28 +62,6 @@ func (ds *TVSeasonIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slu
 // IsSlugMatch - is the slug a match
 func (ds *TVSeasonIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
-}
-
-func transformTVSeason(f *models.TVSeason) *models.TVSeason {
-	f.Overview = models.ApplyContentTransforms(f.Overview)
-
-	if f.ShowInfo != nil {
-		f.ShowInfo.Overview = models.ApplyContentTransforms(f.ShowInfo.Overview)
-	}
-
-	for i, e := range f.Episodes {
-		ov := models.ApplyContentTransforms(e.Overview)
-		// ranges create a copy of the array, so we need to set the original object
-		f.Episodes[i].Overview = ov
-	}
-
-	for i, e := range f.Bonuses {
-		ov := models.ApplyContentTransforms(e.Overview)
-		// ranges create a copy of the array, so we need to set the original object
-		f.Bonuses[i].Overview = ov
-	}
-
-	return f
 }
 
 // GetRouteArguments returns the available route arguments

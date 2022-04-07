@@ -17,8 +17,9 @@ package datastore
 import (
 	"reflect"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
+
+	"github.com/CloudyKit/jet"
 )
 
 // BundleIndexDataSource - a list of all bundles
@@ -38,10 +39,6 @@ func (ds *BundleIndexDataSource) GetEntityType() reflect.Type {
 func (ds *BundleIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) int {
 
 	clonedBundles := make([]*models.Bundle, len(ctx.Site.Bundles))
-	for i, f := range ctx.Site.Bundles {
-		clonedBundles[i] = transformBundle(f)
-	}
-
 	vars := make(jet.VarMap)
 	vars.Set("bundles", clonedBundles)
 	vars.Set("site", ctx.Site)
@@ -61,11 +58,6 @@ func (ds *BundleIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slug 
 // IsSlugMatch - is the slug a match
 func (ds *BundleIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
-}
-
-func transformBundle(f models.Bundle) *models.Bundle {
-	f.Description = models.ApplyContentTransforms(f.Description)
-	return &f
 }
 
 // GetRouteArguments returns the available route arguments

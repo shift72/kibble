@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"kibble/api"
 	"kibble/models"
@@ -77,19 +78,23 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 	api.CheckAdminCredentials(cfg)
 
-	models.ConfigureShortcodeTemplatePath(cfg)
+	shortCodeTmplSet := models.InitshortCodeTmplSet(cfg)
 
-	site, err := api.LoadSite(cfg)
+	sw1 := utils.NewStopwatchLevel("LoadSite", logging.NOTICE)
+	site, err := api.LoadSite(cfg, shortCodeTmplSet)
 	if err != nil {
 		log.Errorf("Loading site config failed: %s", err)
 		return 1
 	}
+	sw1.Completed()
 
+	sw1 = utils.NewStopwatchLevel("NewRouteRegistryFromConfig", logging.NOTICE)
 	routeRegistry, err := models.NewRouteRegistryFromConfig(cfg)
 	if err != nil {
 		log.Errorf("Loading site config failed: %s", err)
 		return 1
 	}
+	sw1.Completed()
 
 	renderer := FileRenderer{
 		buildPath:  buildPath,
@@ -133,54 +138,14 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 	}
 
+	fmt.Printf(">>>>>>>%+v\n", languageConfigs)
+
+	var wg sync.WaitGroup
+	wg.Add(len(languageConfigs))
 	for languageKey, language := range languageConfigs {
-
-		code := language.Code
-
-		ctx := models.RenderContext{
-			RoutePrefix: "",
-			Site:        site,
-			Language:    createLanguage(defaultLanguage, languageKey, code),
-		}
-
-		if languageKey != defaultLanguage {
-			ctx.RoutePrefix = fmt.Sprintf("/%s", languageKey)
-		}
-
-		err := i18n.LoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
-		if err != nil {
-			if languageKey == defaultLanguage {
-				log.Errorf("Default Language Translation file \"%s\" load failed: %s", ctx.Language.DefinitionFilePath, err)
-				return 1
-			}
-			log.Errorf("Translation file \"%s\" load failed: %s", ctx.Language.DefinitionFilePath, err)
-			return 1
-		}
-
-		renderLangSW := utils.NewStopwatchf("  render language: %s", languageKey)
-		T, err := i18n.Tfunc(code, defaultLanguage)
-		if err != nil {
-			log.Errorf("Translation failed: %s", err)
-			errCount++
-		}
-
-		// set the template view
-		renderer.view = models.CreateTemplateView(routeRegistry, T, &ctx, sourcePath)
-
-		for _, route := range routeRegistry.GetAll() {
-			renderRouteSW := utils.NewStopwatchf("    render route %s", route.Name)
-
-			// set the route on the render context for datasources
-			ctx.Route = route
-			if route.ResolvedDataSource != nil {
-				errCount += route.ResolvedDataSource.Iterator(ctx, renderer)
-			}
-			renderRouteSW.Completed()
-		}
-
-		renderLangSW.Completed()
+		go render(&wg, site, renderer, routeRegistry, sourcePath, translationFilePath, defaultLanguage, languageKey, language)
 	}
-
+	wg.Wait()
 	renderSW.Completed()
 
 	return errCount
@@ -194,4 +159,53 @@ func createLanguage(defaultLanguage string, langCode string, locale string) *mod
 		IsDefault:          (langCode == defaultLanguage),
 		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
 	}
+}
+
+func render(wg *sync.WaitGroup, site *models.Site, renderer FileRenderer, routeRegistry *models.RouteRegistry, sourcePath, translationFilePath, defaultLanguage, languageKey string, language models.LanguageConfig) int {
+	defer wg.Done()
+	code := language.Code
+	errCount := 0
+	ctx := models.RenderContext{
+		RoutePrefix: "",
+		Site:        site,
+		Language:    createLanguage(defaultLanguage, languageKey, code),
+	}
+
+	if languageKey != defaultLanguage {
+		ctx.RoutePrefix = fmt.Sprintf("/%s", languageKey)
+	}
+
+	err := i18n.LoadTranslationFile(filepath.Join(translationFilePath, ctx.Language.DefinitionFilePath))
+	if err != nil {
+		if languageKey == defaultLanguage {
+			log.Errorf("Default Language Translation file \"%s\" load failed: %s", ctx.Language.DefinitionFilePath, err)
+			return 1
+		}
+		log.Errorf("Translation file \"%s\" load failed: %s", ctx.Language.DefinitionFilePath, err)
+		return 1
+	}
+
+	renderLangSW := utils.NewStopwatchfWithLevel("  render language: %s", languageKey)
+	T, err := i18n.Tfunc(code, defaultLanguage)
+	if err != nil {
+		log.Errorf("Translation failed: %s", err)
+		errCount++
+	}
+
+	// set the template view
+	renderer.view = models.CreateTemplateView(routeRegistry, T, &ctx, sourcePath)
+
+	for _, route := range routeRegistry.GetAll() {
+		renderRouteSW := utils.NewStopwatchfWithLevel("    render route %s", route.Name)
+
+		// set the route on the render context for datasources
+		ctx.Route = route
+		if route.ResolvedDataSource != nil {
+			errCount += route.ResolvedDataSource.Iterator(ctx, renderer)
+		}
+		renderRouteSW.Completed()
+	}
+
+	renderLangSW.Completed()
+	return errCount
 }

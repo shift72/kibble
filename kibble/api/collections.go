@@ -36,7 +36,7 @@ func LoadAllCollections(cfg *models.Config, site *models.Site, itemIndex models.
 	if err != nil {
 		return err
 	}
-
+	details = []CollectionV4{}
 	for _, c := range details {
 		collection := c.mapToModel(site.Config, itemIndex)
 		site.Collections = append(site.Collections, collection)

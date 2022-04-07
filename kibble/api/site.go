@@ -18,27 +18,26 @@ import (
 	"kibble/models"
 	"kibble/utils"
 
+	"github.com/CloudyKit/jet"
 	logging "github.com/op/go-logging"
 )
 
 // LoadSite - load the complete site
-func LoadSite(cfg *models.Config) (*models.Site, error) {
+func LoadSite(cfg *models.Config, shortCodeTmplSet *jet.Set) (*models.Site, error) {
 
 	initAPI := utils.NewStopwatchLevel("api", logging.NOTICE)
 
 	itemIndex := make(models.ItemIndex)
-
 	config, err := LoadConfig(cfg)
 	if err != nil {
 		return nil, err
 	}
-
 	toggles, err := LoadFeatureToggles(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	pages, navigation, err := LoadBios(cfg, config, itemIndex)
+	pages, navigation, err := LoadBios(cfg, config, itemIndex, shortCodeTmplSet)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +59,6 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		TVSeasons:    make(models.TVSeasonCollection, 0),
 		TVEpisodes:   make(models.TVEpisodeCollection, 0),
 	}
-
 	err = LoadAllLanguages(cfg, site)
 	if err != nil {
 		return nil, err
@@ -75,7 +73,6 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	err = LoadAllCollections(cfg, site, itemIndex)
 	if err != nil {
 		return nil, err
@@ -104,14 +101,14 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	// while there are unresolved film slugs
 	s := itemIndex.FindUnresolvedSlugs("film")
 	for len(s) > 0 {
-		_ = AppendFilms(cfg, site, s, itemIndex)
+		_ = AppendFilms(cfg, site, s, itemIndex, shortCodeTmplSet)
 		s = itemIndex.FindUnresolvedSlugs("film")
 	}
 
 	// while there are unresolved tv season slugs
 	tvs := itemIndex.FindUnresolvedSlugs("tv-season")
 	for len(tvs) > 0 {
-		_ = AppendTVSeasons(cfg, site, tvs, itemIndex)
+		_ = AppendTVSeasons(cfg, site, tvs, itemIndex, shortCodeTmplSet)
 		tvs = itemIndex.FindUnresolvedSlugs("tv-season")
 	}
 

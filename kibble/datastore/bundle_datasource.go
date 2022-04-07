@@ -75,8 +75,7 @@ func (ds *BundleDataSource) Iterator(ctx models.RenderContext, renderer models.R
 	data.Set("site", ctx.Site)
 
 	for _, p := range ctx.Site.Bundles {
-		c := transformBundle(p)
-		data.Set("bundle", c)
+		data.Set("bundle", p)
 
 		// normal bundle pages
 		filePath := ds.GetRouteForEntity(ctx, &p)

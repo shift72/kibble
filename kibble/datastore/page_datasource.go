@@ -75,8 +75,7 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 	data.Set("site", ctx.Site)
 
 	for _, p := range ctx.Site.Pages {
-
-		data.Set("page", transformPage(p))
+		data.Set("page", p)
 
 		// render page endpoints first
 		// don't render external pages

@@ -55,7 +55,6 @@ func (ds *PageIndexDataSource) GetEntityType() reflect.Type {
 
 // Iterator - return a list of all Pages, iteration of 1
 func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
-
 	// rule for page 1
 	if ctx.Route.PageSize > 0 {
 
@@ -98,10 +97,6 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 			}
 
 			clonedPages := make([]*models.Page, endIndex-startIndex+1)
-			for i := startIndex; i <= endIndex; i++ {
-				clonedPages[i-startIndex] = transformPage(ctx.Site.Pages[i])
-			}
-
 			vars := make(jet.VarMap)
 			vars.Set("pages", clonedPages)
 			vars.Set("pagination", ctx.Route.Pagination)
@@ -117,10 +112,6 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 		}
 
 		clonedPages := make([]*models.Page, len(ctx.Site.Pages))
-		for i, f := range ctx.Site.Pages {
-			clonedPages[i] = transformPage(f)
-		}
-
 		vars := make(jet.VarMap)
 		vars.Set("pages", clonedPages)
 		vars.Set("pagination", ctx.Route.Pagination)
@@ -144,14 +135,4 @@ func (ds *PageIndexDataSource) GetRouteForSlug(ctx models.RenderContext, slug st
 // IsSlugMatch - is the slug a match
 func (ds *PageIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
-}
-
-func transformPage(f models.Page) *models.Page {
-	f.Content = models.ApplyContentTransforms(f.Content)
-
-	for i := 0; i < len(f.PageCollections); i++ {
-		f.PageCollections[i].Description = models.ApplyContentTransforms(f.PageCollections[i].Description)
-	}
-
-	return &f
 }

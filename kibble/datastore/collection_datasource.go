@@ -75,8 +75,7 @@ func (ds *CollectionDataSource) Iterator(ctx models.RenderContext, renderer mode
 	data.Set("site", ctx.Site)
 
 	for _, p := range ctx.Site.Collections {
-		c := transformCollection(p)
-		data.Set("collection", c)
+		data.Set("collection", p)
 
 		filePath := ds.GetRouteForEntity(ctx, &p)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)

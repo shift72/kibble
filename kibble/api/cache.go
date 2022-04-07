@@ -32,6 +32,7 @@ import (
 
 	"kibble/config"
 	"kibble/models"
+	"kibble/utils"
 
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
@@ -123,7 +124,7 @@ func IsAdmin(cfg *models.Config) (bool, error) {
 
 // Get - make an http request and read the response
 func Get(cfg *models.Config, url string) ([]byte, error) {
-
+	sw := utils.NewStopwatchfWithLevel("  http request: %s", url)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -161,7 +162,7 @@ func Get(cfg *models.Config, url string) ([]byte, error) {
 		//status was not OK but Body is valid
 		return nil, fmt.Errorf("request failed %s status code: %d %s", url, resp.StatusCode, string(body))
 	}
-
+	sw.Completed()
 	return body, err
 }
 

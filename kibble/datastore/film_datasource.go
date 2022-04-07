@@ -70,12 +70,11 @@ func (ds *FilmDataSource) GetEntityType() reflect.Type {
 
 // Iterator - loop over each film
 func (ds *FilmDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
-
 	data := make(jet.VarMap)
 	data.Set("site", ctx.Site)
 
 	for _, f := range ctx.Site.Films {
-		data.Set("film", transformFilm(*f))
+		data.Set("film", *f)
 
 		filePath := ds.GetRouteForEntity(ctx, f)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)

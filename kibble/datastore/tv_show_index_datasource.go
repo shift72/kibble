@@ -59,11 +59,6 @@ func (ds *TVShowIndexDataSource) IsSlugMatch(slug string) bool {
 	return false
 }
 
-func transformTVShow(f *models.TVShow) *models.TVShow {
-	f.Overview = models.ApplyContentTransforms(f.Overview)
-	return f
-}
-
 // GetRouteArguments returns the available route arguments
 func (ds *TVShowIndexDataSource) GetRouteArguments() []models.RouteArgument {
 	return indexArgs

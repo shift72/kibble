@@ -42,7 +42,7 @@ func (ds *FilmIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 
 	i := 0
 	for _, f := range ctx.Site.Films {
-		clonedFilms[i] = transformFilm(*f)
+		clonedFilms[i] = f
 		i++
 	}
 
@@ -68,15 +68,6 @@ func (ds *FilmIndexDataSource) IsSlugMatch(slug string) bool {
 }
 
 var log = logging.MustGetLogger("datastore")
-
-func transformFilm(f models.Film) *models.Film {
-	f.Overview = models.ApplyContentTransforms(f.Overview)
-	// do the same to any bonus content
-	for i := range f.Bonuses {
-		f.Bonuses[i].Overview = models.ApplyContentTransforms(f.Bonuses[i].Overview)
-	}
-	return &f
-}
 
 // GetRouteArguments returns the available route arguments
 func (ds *FilmIndexDataSource) GetRouteArguments() []models.RouteArgument {

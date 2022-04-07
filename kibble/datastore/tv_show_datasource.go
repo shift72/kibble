@@ -77,7 +77,7 @@ func (ds *TVShowDataSource) Iterator(ctx models.RenderContext, renderer models.R
 	for i := 0; i < len(ctx.Site.TVShows); i++ {
 		f := ctx.Site.TVShows[i]
 
-		data.Set("tvshow", transformTVShow(f))
+		data.Set("tvshow", f)
 
 		filePath := ds.GetRouteForEntity(ctx, f)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)

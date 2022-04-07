@@ -107,7 +107,7 @@ func (ds *TVEpisodeDataSource) Iterator(ctx models.RenderContext, renderer model
 	for i := 0; i < len(ctx.Site.TVEpisodes); i++ {
 		episode := ctx.Site.TVEpisodes[i]
 
-		data.Set("tvepisode", transformEpisode(episode))
+		data.Set("tvepisode", episode)
 		if len(ctx.Route.TemplatePath) > 0 {
 			filePath := ds.GetRouteForEntity(ctx, episode)
 			errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
@@ -151,13 +151,4 @@ func (ds *TVEpisodeDataSource) IsSlugMatch(slug string) bool {
 // IsValid checks for any validation errors
 func (ds *TVEpisodeDataSource) IsValid(route *models.Route) error {
 	return nil
-}
-
-// transformEpisode applies any content transforms to the episodes overview field
-func transformEpisode(e *models.TVEpisode) *models.TVEpisode {
-	ov := models.ApplyContentTransforms(e.Overview)
-	// ranges create a copy of the array, so we need to set the original object
-	e.Overview = ov
-
-	return e
 }

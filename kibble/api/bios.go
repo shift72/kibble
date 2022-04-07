@@ -20,10 +20,12 @@ import (
 
 	"kibble/models"
 	"kibble/utils"
+
+	"github.com/CloudyKit/jet"
 )
 
 // LoadBios - load the bios request
-func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) (models.Pages, models.Navigation, error) {
+func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex, shortCodeTmplSet *jet.Set) (models.Pages, models.Navigation, error) {
 
 	var bios biosV1
 
@@ -41,7 +43,7 @@ func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex 
 
 	pages := make(models.Pages, 0)
 	for _, p := range bios.Pages {
-		page := p.mapToModel(serviceConfig, itemIndex)
+		page := p.mapToModel(serviceConfig, itemIndex, shortCodeTmplSet)
 		pages = append(pages, page)
 		itemIndex.Set(page.Slug, page.GetGenericItem())
 	}
@@ -49,7 +51,7 @@ func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex 
 	return pages, bios.Navigation, nil
 }
 
-func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Page {
+func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex, shortCodeTmplSet *jet.Set) models.Page {
 
 	page := models.Page{
 		ID:        p.ID,
@@ -57,7 +59,7 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		TitleSlug: p.Slug, // pages already has a property called slug which is really a title slug
 		Title:     p.Title,
 		Tagline:   p.Tagline,
-		Content:   p.Content,
+		Content:   models.ApplyContentTransforms(shortCodeTmplSet, p.Content),
 		PageType:  p.PageType,
 		URL:       p.URL,
 		// Page images are currently relatively pathed in the bios response

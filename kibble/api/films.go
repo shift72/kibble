@@ -24,6 +24,7 @@ import (
 
 	"kibble/models"
 
+	"github.com/CloudyKit/jet"
 	"github.com/gosimple/slug"
 )
 
@@ -44,7 +45,7 @@ func loadFilmSummary(cfg *models.Config) ([]filmSummary, error) {
 		return nil, err
 	}
 
-	return summary, nil
+	return summary[:2], nil
 }
 
 // AppendAllFilms -
@@ -63,7 +64,7 @@ func AppendAllFilms(cfg *models.Config, site *models.Site, itemIndex models.Item
 }
 
 // AppendFilms - load a list of films
-func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex) error {
+func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex, shortCodeTmplSet *jet.Set) error {
 
 	sort.Strings(slugs)
 
@@ -102,7 +103,7 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 
 		if err == nil {
 
-			f := film.mapToModel(site.Config, itemIndex)
+			f := film.mapToModel(site.Config, itemIndex, shortCodeTmplSet)
 			site.Films[f.Slug] = &f
 			itemIndex.Set(f.Slug, f.GetGenericItem())
 
@@ -115,7 +116,7 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 	return nil
 }
 
-func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Film {
+func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex, shortCodeTmplSet *jet.Set) models.Film {
 
 	// Convert 'foo_image' or 'foo' to 'Foo'
 	for key, value := range f.ImageUrls {
@@ -143,7 +144,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Slug:            f.Slug,
 		Title:           f.Title,
 		TitleSlug:       slug.Make(f.Title),
-		Overview:        f.Overview,
+		Overview:        models.ApplyContentTransforms(shortCodeTmplSet, f.Overview),
 		Tagline:         f.Tagline,
 		ReleaseDate:     utils.ParseTimeFromString(f.ReleaseDate),
 		Runtime:         models.Runtime(f.Runtime),
@@ -234,7 +235,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 
 	// add bonuses - supports linking to bonus entries (supported??)
 	for _, bonus := range f.Bonuses {
-		b := bonus.mapToModel2(film.Slug, film.Images)
+		b := bonus.mapToModel2(film.Slug, film.Images, shortCodeTmplSet)
 		film.Bonuses = append(film.Bonuses, b)
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}

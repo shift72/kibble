@@ -5,6 +5,8 @@ import (
 
 	"kibble/models"
 	"kibble/utils"
+
+	"github.com/CloudyKit/jet"
 )
 
 // bonusContentV2 - bonus content model
@@ -25,14 +27,14 @@ type bonusContentV2 struct {
 	CustomFields   map[string]interface{} `json:"custom"`
 }
 
-func (bc bonusContentV2) mapToModel2(parentSlug string, parentImages models.ImageSet) models.BonusContent {
+func (bc bonusContentV2) mapToModel2(parentSlug string, parentImages models.ImageSet, shortCodeTmplSet *jet.Set) models.BonusContent {
 
 	b := models.BonusContent{
 		Slug:     fmt.Sprintf("%s/bonus/%d", parentSlug, bc.Number),
 		Number:   bc.Number,
 		Title:    bc.Title,
 		Runtime:  models.Runtime(bc.Runtime),
-		Overview: bc.Overview,
+		Overview: models.ApplyContentTransforms(shortCodeTmplSet, bc.Overview),
 		Images: models.ImageSet{
 			Portrait:       utils.Coalesce(bc.ImageUrls.Portrait, parentImages.Portrait),
 			Landscape:      utils.Coalesce(bc.ImageUrls.Landscape, parentImages.Landscape),

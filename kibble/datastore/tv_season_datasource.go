@@ -87,7 +87,7 @@ func (ds *TVSeasonDataSource) Iterator(ctx models.RenderContext, renderer models
 	for i := 0; i < len(ctx.Site.TVSeasons); i++ {
 		f := ctx.Site.TVSeasons[i]
 
-		data.Set("tvseason", transformTVSeason(f))
+		data.Set("tvseason", f)
 
 		filePath := ds.GetRouteForEntity(ctx, f)
 		errCount += renderer.Render(ctx.Route.TemplatePath, filePath, data)
