@@ -7,6 +7,8 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 BINARY=kibble
 
+export CGO_ENABLED=0
+
 GOARCH = amd64
 VERSION=$(shell git describe --abbrev=0 --tags)
 
