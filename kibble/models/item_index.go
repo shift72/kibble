@@ -16,6 +16,7 @@ package models
 
 import (
 	"strings"
+	"sync"
 )
 
 var (
@@ -26,7 +27,15 @@ var (
 )
 
 // ItemIndex - an item index
-type ItemIndex map[string]map[string]GenericItem
+type ItemIndex struct {
+	sync.RWMutex
+	Items map[string]map[string]GenericItem
+}
+
+// NewItemIndex -
+func NewItemIndex() *ItemIndex {
+	return &ItemIndex{Items: make(map[string]map[string]GenericItem)}
+}
 
 // IsResolved -
 func (genericItem GenericItem) IsResolved() bool {
@@ -41,7 +50,7 @@ func (genericItem GenericItem) IsResolved() bool {
 //
 
 // MapToUnresolvedItems - create an array of unresolved items from an array of slugs
-func (itemIndex ItemIndex) MapToUnresolvedItems(items []string) GenericItems {
+func (itemIndex *ItemIndex) MapToUnresolvedItems(items []string) GenericItems {
 
 	genericItems := make(GenericItems, len(items))
 
@@ -66,14 +75,16 @@ func getSlugType(slug string) string {
 }
 
 // Set - an item
-func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
+func (itemIndex *ItemIndex) Set(slug string, item GenericItem) {
+	itemIndex.Lock()
+	defer itemIndex.Unlock()
 
 	slugType := getSlugType(slug)
 
-	index, ok := itemIndex[slugType]
+	index, ok := itemIndex.Items[slugType]
 	if !ok {
-		itemIndex[slugType] = make(map[string]GenericItem)
-		index = itemIndex[slugType]
+		itemIndex.Items[slugType] = make(map[string]GenericItem)
+		index = itemIndex.Items[slugType]
 	}
 
 	// unresolved can be overwritten, empty and item can not
@@ -84,25 +95,29 @@ func (itemIndex ItemIndex) Set(slug string, item GenericItem) {
 }
 
 // Replace a value in the index
-func (itemIndex ItemIndex) Replace(slug string, item GenericItem) {
+func (itemIndex *ItemIndex) Replace(slug string, item GenericItem) {
+	itemIndex.Lock()
+	defer itemIndex.Unlock()
 
 	slugType := getSlugType(slug)
 
-	index, ok := itemIndex[slugType]
+	index, ok := itemIndex.Items[slugType]
 	if !ok {
-		itemIndex[slugType] = make(map[string]GenericItem)
-		index = itemIndex[slugType]
+		itemIndex.Items[slugType] = make(map[string]GenericItem)
+		index = itemIndex.Items[slugType]
 	}
 
 	index[slug] = item
 }
 
 // Get - get the slug
-func (itemIndex ItemIndex) Get(slug string) (item GenericItem) {
+func (itemIndex *ItemIndex) Get(slug string) (item GenericItem) {
+	itemIndex.RLock()
+	defer itemIndex.RUnlock()
 
 	slugType := getSlugType(slug)
 
-	t, ok := itemIndex[slugType]
+	t, ok := itemIndex.Items[slugType]
 	if ok {
 		return t[slug]
 	}
@@ -111,18 +126,21 @@ func (itemIndex ItemIndex) Get(slug string) (item GenericItem) {
 }
 
 // FindEmptySlugs - find the slugs that are missing
-func (itemIndex ItemIndex) FindEmptySlugs(slugType string) []string {
+func (itemIndex *ItemIndex) FindEmptySlugs(slugType string) []string {
 	return itemIndex.findSlugsOfType(slugType, Empty)
 }
 
 // FindUnresolvedSlugs - find unresolved slugs
-func (itemIndex ItemIndex) FindUnresolvedSlugs(slugType string) []string {
+func (itemIndex *ItemIndex) FindUnresolvedSlugs(slugType string) []string {
 	return itemIndex.findSlugsOfType(slugType, Unresolved)
 }
 
-func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem) []string {
+func (itemIndex *ItemIndex) findSlugsOfType(slugType string, itemType GenericItem) []string {
+	itemIndex.RLock()
+	defer itemIndex.RUnlock()
+
 	found := make([]string, 0)
-	t, ok := itemIndex[slugType]
+	t, ok := itemIndex.Items[slugType]
 	if ok {
 		for k, v := range t {
 			if v == itemType {
@@ -134,7 +152,7 @@ func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem
 }
 
 // LinkItems - link the items to the specific parts
-func (site *Site) LinkItems(itemIndex ItemIndex) {
+func (site *Site) LinkItems(itemIndex *ItemIndex) {
 
 	for _, f := range site.Films {
 		if film, ok := site.Films[f.Slug]; ok {
@@ -163,7 +181,7 @@ func (site *Site) LinkItems(itemIndex ItemIndex) {
 }
 
 // Resolve - convert an array of generic items to resolved items
-func (itemIndex ItemIndex) Resolve(gItems GenericItems) GenericItems {
+func (itemIndex *ItemIndex) Resolve(gItems GenericItems) GenericItems {
 	resolvedItems := make([]GenericItem, 0)
 	for _, item := range gItems {
 		t := itemIndex.Get(item.Slug)
@@ -175,8 +193,11 @@ func (itemIndex ItemIndex) Resolve(gItems GenericItems) GenericItems {
 }
 
 // Print - print the item index
-func (itemIndex ItemIndex) Print() {
-	for t, val := range itemIndex {
+func (itemIndex *ItemIndex) Print() {
+	itemIndex.RLock()
+	defer itemIndex.RUnlock()
+
+	for t, val := range itemIndex.Items {
 		log.Infof("type: %s", t)
 		for k, v := range val {
 			if v == Empty {
@@ -191,11 +212,14 @@ func (itemIndex ItemIndex) Print() {
 }
 
 // PrintStats - print the stats about the index
-func (itemIndex ItemIndex) PrintStats() {
+func (itemIndex *ItemIndex) PrintStats() {
+	itemIndex.RLock()
+	defer itemIndex.RUnlock()
+
 	log.Info("item index:")
 	var loadedCount = 0
 	var totalCount = 0
-	for t, val := range itemIndex {
+	for t, val := range itemIndex.Items {
 		var count = 0
 		var loaded = 0
 		for _, v := range val {

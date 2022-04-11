@@ -48,7 +48,7 @@ func loadFilmSummary(cfg *models.Config) ([]filmSummary, error) {
 }
 
 // AppendAllFilms -
-func AppendAllFilms(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
+func AppendAllFilms(cfg *models.Config, site *models.Site, itemIndex *models.ItemIndex) error {
 
 	summary, err := loadFilmSummary(cfg)
 	if err != nil {
@@ -63,7 +63,7 @@ func AppendAllFilms(cfg *models.Config, site *models.Site, itemIndex models.Item
 }
 
 // AppendFilms - load a list of films
-func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex) error {
+func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemIndex *models.ItemIndex) error {
 
 	sort.Strings(slugs)
 
@@ -115,7 +115,7 @@ func AppendFilms(cfg *models.Config, site *models.Site, slugs []string, itemInde
 	return nil
 }
 
-func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Film {
+func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex *models.ItemIndex) models.Film {
 
 	// Convert 'foo_image' or 'foo' to 'Foo'
 	for key, value := range f.ImageUrls {

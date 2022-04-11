@@ -38,6 +38,11 @@ func NewStopwatchLevel(msg string, level logging.Level) *Stopwatch {
 	return &Stopwatch{msg: msg, start: time.Now(), level: level}
 }
 
+// NewStopwatchf - start a stop watch with formatting and accepts a level
+func NewStopwatchfWithLevel(msg string, a ...interface{}) *Stopwatch {
+	return &Stopwatch{msg: fmt.Sprintf(msg, a...), start: time.Now(), level: logging.NOTICE}
+}
+
 // NewStopwatchf - start a stop watch with formatting
 func NewStopwatchf(msg string, a ...interface{}) *Stopwatch {
 	return &Stopwatch{msg: fmt.Sprintf(msg, a...), start: time.Now(), level: logging.DEBUG}

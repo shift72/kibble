@@ -23,7 +23,7 @@ import (
 )
 
 // LoadBios - load the bios request
-func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) (models.Pages, models.Navigation, error) {
+func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex *models.ItemIndex) (models.Pages, models.Navigation, error) {
 
 	var bios biosV1
 
@@ -49,7 +49,7 @@ func LoadBios(cfg *models.Config, serviceConfig models.ServiceConfig, itemIndex 
 	return pages, bios.Navigation, nil
 }
 
-func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Page {
+func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex *models.ItemIndex) models.Page {
 
 	page := models.Page{
 		ID:        p.ID,
@@ -87,7 +87,7 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 	return page
 }
 
-func (pf pageFeatureV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.PageCollection {
+func (pf pageFeatureV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex *models.ItemIndex) models.PageCollection {
 	return models.PageCollection{
 		ID:          pf.FeatureID,
 		Layout:      pf.Layout,

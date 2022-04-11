@@ -15,6 +15,7 @@
 package api
 
 import (
+	"context"
 	"kibble/models"
 	"kibble/utils"
 
@@ -22,11 +23,11 @@ import (
 )
 
 // LoadSite - load the complete site
-func LoadSite(cfg *models.Config) (*models.Site, error) {
+func LoadSite(ctx context.Context, cfg *models.Config) (*models.Site, error) {
 
 	initAPI := utils.NewStopwatchLevel("api", logging.NOTICE)
 
-	itemIndex := make(models.ItemIndex)
+	var itemIndex = models.NewItemIndex()
 
 	config, err := LoadConfig(cfg)
 	if err != nil {
@@ -116,12 +117,12 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	}
 
 	// find the prices for all of the items
-	err = LoadAllPrices(cfg, site, itemIndex)
+	err = LoadAllPrices(ctx, cfg, site, itemIndex)
 	if err != nil {
 		return nil, err
 	}
 
-	err = LoadAllAvailabilities(cfg, site, itemIndex)
+	err = LoadAllAvailabilities(ctx, cfg, site, itemIndex)
 	if err != nil {
 		return nil, err
 	}

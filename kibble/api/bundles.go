@@ -26,7 +26,7 @@ import (
 )
 
 // LoadAllBundles - load all bundles
-func LoadAllBundles(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
+func LoadAllBundles(cfg *models.Config, site *models.Site, itemIndex *models.ItemIndex) error {
 
 	path := fmt.Sprintf("%s/services/meta/v1/bundles", cfg.SiteURL)
 	data, err := Get(cfg, path)
@@ -49,7 +49,7 @@ func LoadAllBundles(cfg *models.Config, site *models.Site, itemIndex models.Item
 	return nil
 }
 
-func (b BundleV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Bundle {
+func (b BundleV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex *models.ItemIndex) models.Bundle {
 	return models.Bundle{
 		ID:            b.ID,
 		Slug:          fmt.Sprintf("/bundle/%d", b.ID),

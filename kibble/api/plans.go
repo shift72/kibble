@@ -25,7 +25,7 @@ import (
 )
 
 // LoadAllPlans - loads all active plans
-func LoadAllPlans(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
+func LoadAllPlans(cfg *models.Config, site *models.Site, itemIndex *models.ItemIndex) error {
 
 	path := fmt.Sprintf("%s/services/pricing/v1/plans", cfg.SiteURL)
 	data, err := Get(cfg, path)
@@ -52,7 +52,7 @@ func LoadAllPlans(cfg *models.Config, site *models.Site, itemIndex models.ItemIn
 	return nil
 }
 
-func (p PlansV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Plan {
+func (p PlansV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex *models.ItemIndex) models.Plan {
 	m := models.Plan{
 		ID:              p.ID,
 		Slug:            fmt.Sprintf("/plan/%d", p.ID),

@@ -50,7 +50,7 @@ func loadAllTVShows(cfg *models.Config) ([]tvShowSummaryV3, error) {
 }
 
 // AppendAllTVShows -
-func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
+func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex *models.ItemIndex) error {
 
 	summary, err := loadAllTVShows(cfg)
 	if err != nil {
@@ -71,7 +71,7 @@ func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex models.It
 }
 
 // AppendTVSeasons - load a list of tv seasons
-func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex) error {
+func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, itemIndex *models.ItemIndex) error {
 
 	sort.Strings(slugs)
 	ids := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(slugs)), ","), "[]")
@@ -160,7 +160,7 @@ func mergeTVShow(tvShowA *models.TVShow, tvShowB *models.TVShow) *models.TVShow 
 	return tvShowA
 }
 
-func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.TVSeason {
+func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex *models.ItemIndex) models.TVSeason {
 
 	seasonNumber, _ := utils.ParseIntFromSlug(t.Slug, 4)
 

@@ -23,7 +23,7 @@ import (
 )
 
 // LoadAllCollections - load all collections
-func LoadAllCollections(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
+func LoadAllCollections(cfg *models.Config, site *models.Site, itemIndex *models.ItemIndex) error {
 
 	path := fmt.Sprintf("%s/services/meta/v4/featured", cfg.SiteURL)
 	data, err := Get(cfg, path)
@@ -46,7 +46,7 @@ func LoadAllCollections(cfg *models.Config, site *models.Site, itemIndex models.
 	return nil
 }
 
-func (c CollectionV4) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.Collection {
+func (c CollectionV4) mapToModel(serviceConfig models.ServiceConfig, itemIndex *models.ItemIndex) models.Collection {
 
 	return models.Collection{
 		ID:          c.ID,

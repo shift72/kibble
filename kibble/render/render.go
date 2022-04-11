@@ -15,6 +15,7 @@
 package render
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -78,8 +79,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	api.CheckAdminCredentials(cfg)
 
 	models.ConfigureShortcodeTemplatePath(cfg)
-
-	site, err := api.LoadSite(cfg)
+	ctx := context.Background()
+	site, err := api.LoadSite(ctx, cfg)
 	if err != nil {
 		log.Errorf("Loading site config failed: %s", err)
 		return 1
@@ -132,9 +133,10 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			return 1
 		}
 	}
-
+	a := 1
 	for languageKey, language := range languageConfigs {
-
+		fmt.Println(a)
+		a += 1
 		code := language.Code
 
 		ctx := models.RenderContext{
@@ -157,7 +159,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			return 1
 		}
 
-		renderLangSW := utils.NewStopwatchf("  render language: %s", languageKey)
+		renderLangSW := utils.NewStopwatchfWithLevel("  render language: %s", languageKey)
 		T, err := i18n.Tfunc(code, defaultLanguage)
 		if err != nil {
 			log.Errorf("Translation failed: %s", err)
@@ -168,7 +170,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		renderer.view = models.CreateTemplateView(routeRegistry, T, &ctx, sourcePath)
 
 		for _, route := range routeRegistry.GetAll() {
-			renderRouteSW := utils.NewStopwatchf("    render route %s", route.Name)
+			renderRouteSW := utils.NewStopwatchfWithLevel("    render route %s", route.Name)
 
 			// set the route on the render context for datasources
 			ctx.Route = route

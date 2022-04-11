@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"kibble/models"
@@ -8,10 +9,11 @@ import (
 	"strings"
 
 	"github.com/shopspring/decimal"
+	"golang.org/x/sync/errgroup"
 )
 
 // LoadAllPrices will load all prices
-func LoadAllPrices(cfg *models.Config, site *models.Site, itemIndex models.ItemIndex) error {
+func LoadAllPrices(ctx context.Context, cfg *models.Config, site *models.Site, itemIndex *models.ItemIndex) error {
 
 	if cfg.DefaultPricingCountryCode == "" {
 		log.Info("skipping pricing, not country code specified")
@@ -20,19 +22,19 @@ func LoadAllPrices(cfg *models.Config, site *models.Site, itemIndex models.ItemI
 
 	slugs := make([]string, 0)
 
-	for k := range itemIndex["film"] {
+	for k := range itemIndex.Items["film"] {
 		slugs = append(slugs, k)
 	}
 
-	for k := range itemIndex["bundle"] {
+	for k := range itemIndex.Items["bundle"] {
 		slugs = append(slugs, k)
 	}
 
-	for k := range itemIndex["tv-season"] {
+	for k := range itemIndex.Items["tv-season"] {
 		slugs = append(slugs, k)
 	}
 
-	for k := range itemIndex["plan"] {
+	for k := range itemIndex.Items["plan"] {
 		slugs = append(slugs, k)
 	}
 
@@ -40,8 +42,11 @@ func LoadAllPrices(cfg *models.Config, site *models.Site, itemIndex models.ItemI
 
 	const batchSize = 300
 	var total = 0
-	var s []string
+	g, ctx := errgroup.WithContext(ctx)
+	// create a channel to receive the results/no of items processed.
+	res := make(chan int)
 	for len(slugs) > 0 {
+		var s []string
 
 		if len(slugs) > batchSize {
 			s = slugs[:batchSize]
@@ -50,20 +55,28 @@ func LoadAllPrices(cfg *models.Config, site *models.Site, itemIndex models.ItemI
 			s = slugs[:]
 			slugs = nil
 		}
-
-		count, err := loadPrices(cfg, site, s, itemIndex)
-		if err != nil {
-			return err
-		}
-		total += count
+		g.Go(func() error {
+			return loadPrices(cfg, site, s, itemIndex, res)
+		})
 	}
 
+	go func() {
+		g.Wait()
+		close(res)
+	}()
+	for count := range res {
+		total += count
+	}
+	// Check whether any of the goroutines failed.
+	if err := g.Wait(); err != nil {
+		return err
+	}
 	log.Infof("prices: loaded %d for %s", total, cfg.DefaultPricingCountryCode)
 
 	return nil
 }
 
-func loadPrices(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex) (int, error) {
+func loadPrices(cfg *models.Config, site *models.Site, slugs []string, itemIndex *models.ItemIndex, res chan int) error {
 
 	ids := strings.Join(slugs, ",")
 	path := fmt.Sprintf("%s/services/pricing/v2/prices/show_multiple?items=%s&location=%s", cfg.SiteURL, ids, cfg.DefaultPricingCountryCode)
@@ -71,7 +84,7 @@ func loadPrices(cfg *models.Config, site *models.Site, slugs []string, itemIndex
 	data, err := Get(cfg, path)
 	if err != nil {
 		log.Infof("pricing failed to load %s", err)
-		return 0, err
+		return err
 	}
 
 	var details prices
@@ -79,13 +92,20 @@ func loadPrices(cfg *models.Config, site *models.Site, slugs []string, itemIndex
 	if err != nil {
 		log.Error("price.error: %s", err)
 		log.Debug("invalid data %s", string(data))
-		return 0, err
+		return err
 	}
 
-	return processPrices(details, site, itemIndex)
+	c, err := processPrices(details, site, itemIndex)
+	if err != nil {
+		log.Infof("processing pricing failed %s", err)
+		return err
+	}
+	res <- c
+
+	return nil
 }
 
-func processPrices(details prices, site *models.Site, itemIndex models.ItemIndex) (int, error) {
+func processPrices(details prices, site *models.Site, itemIndex *models.ItemIndex) (int, error) {
 
 	count := 0
 	for _, p := range details.Prices {
