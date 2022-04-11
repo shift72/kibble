@@ -24,7 +24,7 @@ import (
 
 	"kibble/utils"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 // FileRenderer - designed to render to the file system for testing

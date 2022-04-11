@@ -17,8 +17,9 @@ package datastore
 import (
 	"reflect"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
+
+	"github.com/CloudyKit/jet/v6"
 )
 
 // BundleIndexDataSource - a list of all bundles

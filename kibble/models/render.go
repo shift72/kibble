@@ -15,7 +15,7 @@
 package models
 
 import (
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 // RenderContext - Context passed during rendering / serving

@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 // InMemoryRenderer - render to memory for testing

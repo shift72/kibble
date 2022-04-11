@@ -18,8 +18,9 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
+
+	"github.com/CloudyKit/jet/v6"
 )
 
 // ConsoleRenderer - designed to render to the console for testing

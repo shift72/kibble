@@ -6,9 +6,10 @@ import (
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/CloudyKit/jet"
 	"kibble/models"
 	"kibble/test"
+
+	"github.com/CloudyKit/jet/v6"
 )
 
 func TestSitePlans(t *testing.T) {

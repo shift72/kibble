@@ -24,7 +24,7 @@ import (
 
 	"kibble/version"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 	strip "github.com/grokify/html-strip-tags-go"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/nicksnyder/go-i18n/i18n"
@@ -37,7 +37,7 @@ var shortCodeView *jet.Set
 // CreateTemplateView - create a template view
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx *RenderContext, templatePath string) *jet.Set {
 
-	view := jet.NewHTMLSet(templatePath)
+	view := jet.NewSet(jet.NewOSFileSystemLoader(templatePath))
 	view.AddGlobal("version", version.Version)
 	view.AddGlobal("lang", ctx.Language)
 	view.AddGlobal("routeTo", func(entity interface{}, routeName string) string {
@@ -250,20 +250,8 @@ func ConfigureShortcodeTemplatePath(cfg *Config) {
 
 	if shortCodeView == nil {
 		// get the template view
-		shortCodeView = jet.NewHTMLSet(cfg.ShortCodePath())
-
-		// built-in templates
-		_, err := shortCodeView.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
-		if err != nil {
-			log.Error("template loading failed for echo.jet")
-		}
-		_, err = shortCodeView.LoadTemplate("youtube.jet", `
-<div {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;\"" | raw }} >
-<iframe src="//www.youtube.com/embed/{{id}}" {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: absolute; top: 0; left: 0; width: 100%; height: 100%;\"" | raw }}{{if isset(autoplay) && autoplay=="true" }} autoplay=1{{end}} allowfullscreen frameborder="0"></iframe>
-</div>`)
-		if err != nil {
-			log.Error("template loading failed for youtube.jet")
-		}
+		loader := jet.NewOSFileSystemLoader(cfg.ShortCodePath())
+		shortCodeView = jet.NewSet(loader)
 	}
 }
 

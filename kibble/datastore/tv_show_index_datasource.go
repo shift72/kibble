@@ -19,7 +19,7 @@ import (
 
 	"kibble/models"
 
-	"github.com/CloudyKit/jet"
+	"github.com/CloudyKit/jet/v6"
 )
 
 // TVShowIndexDataSource - a list of all films

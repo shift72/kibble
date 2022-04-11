@@ -25,6 +25,8 @@ import (
 	"kibble/models"
 
 	"github.com/gosimple/slug"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 // loadFilmSummary - load the bios request
@@ -124,7 +126,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 			key = "background"
 		}
 
-		titleCaseKey := strings.Title(strings.ToLower(key))
+		titleCaseKey := cases.Title(language.Und).String(strings.ToLower(key))
 		titleCaseKey = strings.Replace(titleCaseKey, "_image", "", -1)
 
 		if titleCaseKey != key {
