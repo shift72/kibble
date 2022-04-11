@@ -13,6 +13,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+const batchSize = 300
+
 // LoadAllAvailabilities will load all availabilities
 func LoadAllAvailabilities(ctx context.Context, cfg *models.Config, site *models.Site, itemIndex *models.ItemIndex) error {
 	sw := utils.NewStopwatchfWithLevel(" LoadAllAvailabilities ")
@@ -30,7 +32,6 @@ func LoadAllAvailabilities(ctx context.Context, cfg *models.Config, site *models
 
 	sort.Strings(slugs)
 
-	const batchSize = 100
 	var total = 0
 	g, ctx := errgroup.WithContext(ctx)
 	// create a channel to receive the results/no of items processed.
