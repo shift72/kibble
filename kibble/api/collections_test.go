@@ -18,12 +18,13 @@ import (
 	"testing"
 
 	"kibble/models"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCollectionToSeoMap(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -45,5 +46,5 @@ func TestCollectionToSeoMap(t *testing.T) {
 	assert.Equal(t, "portrait", model.Seo.Image, "the default seo image is portrait")
 	assert.Equal(t, "", model.Seo.VideoURL, "no video is defined for the collection")
 
-	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films)")
+	assert.Equal(t, 2, len(itemIndex.Items["film"]), "expect the item index to include 2 films)")
 }

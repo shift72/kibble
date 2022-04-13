@@ -42,7 +42,7 @@ func TestMergePrices(t *testing.T) {
 	site := &models.Site{
 		Films: models.FilmCollection{
 			"/film/103": &models.Film{
-				ID: 103,
+				ID:   103,
 				Slug: "/film/103",
 			},
 		},
@@ -54,10 +54,9 @@ func TestMergePrices(t *testing.T) {
 	}
 
 	// setup index
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 	itemIndex.Set(site.Films["/film/103"].Slug, site.Films["/film/103"].GetGenericItem())
 	itemIndex.Set(site.Plans[0].Slug, site.Plans[0].GetGenericItem())
-
 
 	prices := prices{
 		Prices: []pricesV2{
@@ -90,7 +89,7 @@ func TestMergePrices(t *testing.T) {
 				},
 			},
 		},
-}
+	}
 
 	// act - load the prices
 	count, err := processPrices(prices, site, itemIndex)

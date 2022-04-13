@@ -141,7 +141,7 @@ func getFilm() filmV2 {
 
 func TestFilmApiToModel(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 	apiFilm := getFilm()
@@ -166,7 +166,7 @@ func TestFilmApiToModel(t *testing.T) {
 
 	assert.Equal(t, 2, len(model.Recommendations), "expect 2 generic items")
 
-	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
+	assert.Equal(t, 2, len(itemIndex.Items["film"]), "expect the item index to include 2 films")
 
 	assert.Equal(t, 1, len(model.Subtitles), "expect hard-coded subs to be 1")
 	assert.Equal(t, 2, len(model.SubtitleTracks), "expect the subtitles to be 2")
@@ -191,7 +191,7 @@ func TestFilmApiToModel(t *testing.T) {
 }
 
 func TestFilmApiToModelImages(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -220,7 +220,7 @@ func TestFilmApiToModelImages(t *testing.T) {
 }
 
 func TestFilmApiToModelWithoutClassifications(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 	serviceConfig := commonServiceConfig()
 	apiFilm := getFilm()
 	apiFilm.Classifications = nil
@@ -232,7 +232,7 @@ func TestFilmApiToModelWithoutClassifications(t *testing.T) {
 
 func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -247,7 +247,7 @@ func TestFilmApiToModelWithoutSeoImage(t *testing.T) {
 
 func TestFilmApiToModelWithSeoImage(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -262,7 +262,7 @@ func TestFilmApiToModelWithSeoImage(t *testing.T) {
 
 func TestFilmCustomFields(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -286,7 +286,7 @@ func TestFilmCustomFields(t *testing.T) {
 }
 
 func TestFilmRefs(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -307,7 +307,7 @@ func TestFilmRefs(t *testing.T) {
 }
 
 func TestFilmSubtitlesAsArray(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -375,7 +375,7 @@ func TestUniqueFilmTitlesTheNewestGetsTheLargestIndex(t *testing.T) {
 
 func TestFilmCrewJobs(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 	serviceConfig := commonServiceConfig()
 
 	apiFilm := filmV2{

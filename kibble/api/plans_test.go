@@ -26,7 +26,7 @@ import (
 
 func TestPlansMapping(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -46,7 +46,7 @@ func TestPlansMapping(t *testing.T) {
 
 func TestRecurringPlanWithExpiryDate(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -85,7 +85,7 @@ func TestRecurringPlanWithExpiryDate(t *testing.T) {
 }
 
 func TestOneOffPlanWithNoExpiryDate(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 

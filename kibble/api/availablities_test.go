@@ -16,14 +16,14 @@ func TestMergeAvailabilities(t *testing.T) {
 	// site
 	site := &models.Site{
 		Films: models.FilmCollection{
-			"/film/103":{ID: 103,
+			"/film/103": {ID: 103,
 				Slug: "/film/103",
 			},
 		},
 	}
 
 	// setup index
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 	itemIndex.Set(site.Films["/film/103"].Slug, site.Films["/film/103"].GetGenericItem())
 
 	from := utils.ParseTimeFromString("2012-04-01T00:00:00.000Z")

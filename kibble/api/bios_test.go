@@ -24,7 +24,7 @@ import (
 
 func TestPageToSeoMap(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -48,7 +48,7 @@ func TestPageToSeoMap(t *testing.T) {
 
 func TestPagehasAbsoluteImagePaths(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -72,7 +72,7 @@ func TestPagehasAbsoluteImagePaths(t *testing.T) {
 
 func TestPageToPageFeatures(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -110,13 +110,13 @@ func TestPageToPageFeatures(t *testing.T) {
 	assert.Equal(t, "/collection/120", model.PageCollections[0].Slug)
 	assert.Equal(t, "/page-feature/blam", model.PageCollections[0].TitleSlug)
 
-	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
-	assert.Equal(t, 1, len(itemIndex["bundle"]), "expect the item index to include 1 bundles")
+	assert.Equal(t, 2, len(itemIndex.Items["film"]), "expect the item index to include 2 films")
+	assert.Equal(t, 1, len(itemIndex.Items["bundle"]), "expect the item index to include 1 bundles")
 }
 
 func TestPageCustomFields(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 

@@ -39,7 +39,7 @@ func TestBonusContentSubtitlesModelSupport(t *testing.T) {
 
 func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -76,7 +76,7 @@ func TestBonusContentImagesUseFilmImagesAsFallback(t *testing.T) {
 
 func TestBonusContentImagesUseSeasonImagesAsFallback(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 

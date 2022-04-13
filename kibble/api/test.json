@@ -1,0 +1,271 @@
+[
+    {
+        "trailers": [
+            {
+                "url": "https://shift72c.akamaized.net/76ab3d12-ba24-486d-a8da-ea925866eefc/big_buck_bunny_trailer_kb.mp4",
+                "type": "Full"
+            }
+        ],
+        "bonuses": [],
+        "cast": [],
+        "crew": [],
+        "tagline": "Its a bunny tag",
+        "overview": "Its a bunnysss",
+        "release_date": "2016-06-27T12:00:00.000Z",
+        "runtime": 222,
+        "countries": [
+            "Albania"
+        ],
+        "languages": [
+            "English"
+        ],
+        "studio": [],
+        "genres": [
+            "Action"
+        ],
+        "title": "Big Buck Bunny..",
+        "slug": "/film/330",
+        "film_id": 330,
+        "id": 330,
+        "subtitle_tracks": [
+            {
+                "language": "es",
+                "language_name": "Spanish",
+                "type": "subtitle",
+                "path": "https://d1ho4360zp6ihx.cloudfront.net/954e2/subtitles/film/330/es/subtitle-81.vtt"
+            },
+            {
+                "language": "ja",
+                "language_name": "Japanese",
+                "type": "subtitle",
+                "path": "https://d1ho4360zp6ihx.cloudfront.net/954e2/subtitles/film/330/ja/subtitle-82.vtt"
+            },
+            {
+                "language": "de",
+                "language_name": "German",
+                "type": "subtitle",
+                "path": "https://d1ho4360zp6ihx.cloudfront.net/954e2/subtitles/film/330/de/subtitle-83.vtt"
+            }
+        ],
+        "recommendations": [],
+        "seo_title": null,
+        "seo_keywords": null,
+        "seo_description": null,
+        "image_urls": {
+            "portrait": "https://d1ho4360zp6ihx.cloudfront.net/954e2/images/282x422/film/330/c2d486c93586d09fd6c3752a366edce5.jpg",
+            "landscape": "https://d1ho4360zp6ihx.cloudfront.net/954e2/images/585x330/film/330/dd55d06d651ef378dd5575d931acb978.png",
+            "header": null,
+            "carousel": null,
+            "bg": "https://d1ho4360zp6ihx.cloudfront.net/954e2/images/1600x1100/film/330/263bc21a455ab41ef9ed2aa100a2cbe4.png",
+            "classification": null,
+            "seo": null
+        },
+        "award_categories": [
+            {
+                "title": "AS Colour",
+                "display_label": "1",
+                "is_winner": true
+            }
+        ],
+        "classifications": {},
+        "subtitles": [
+            "German",
+            "Japanese",
+            "Spanish"
+        ]
+    },
+    {
+        "trailers": [
+            {
+                "url": "https://www.youtube.com/watch?v=tI1JGPhYBS8",
+                "type": "Full"
+            }
+        ],
+        "bonuses": [
+            {
+                "number": 4,
+                "runtime": 1,
+                "title": "33",
+                "image_urls": {
+                    "portrait": null,
+                    "landscape": null,
+                    "header": null,
+                    "carousel": null,
+                    "bg": null,
+                    "classification": null,
+                    "seo": null
+                },
+                "subtitle_tracks": []
+            },
+            {
+                "number": 2,
+                "title": "ssss",
+                "runtime": 1,
+                "landscape_image": "/images/700x400/film/1584/bonus/2/f79b30422cfb76711cb448b2ec96bec7.jpg",
+                "image_urls": {
+                    "portrait": null,
+                    "landscape": "https://d1ho4360zp6ihx.cloudfront.net/954e2/images/700x400/film/1584/bonus/2/f79b30422cfb76711cb448b2ec96bec7.jpg",
+                    "header": null,
+                    "carousel": null,
+                    "bg": null,
+                    "classification": null,
+                    "seo": null
+                },
+                "subtitle_tracks": []
+            },
+            {
+                "number": 5,
+                "runtime": 1,
+                "title": "Test - 1",
+                "image_urls": {
+                    "portrait": null,
+                    "landscape": null,
+                    "header": null,
+                    "carousel": null,
+                    "bg": null,
+                    "classification": null,
+                    "seo": null
+                },
+                "subtitle_tracks": []
+            },
+            {
+                "number": 1,
+                "title": "ll",
+                "runtime": null,
+                "portrait_image": "/images/282x422/film/1584/bonus/1/0208a843e541eab053445b3e9c5c3feb.jpg",
+                "image_urls": {
+                    "portrait": "https://d1ho4360zp6ihx.cloudfront.net/954e2/images/282x422/film/1584/bonus/1/0208a843e541eab053445b3e9c5c3feb.jpg",
+                    "landscape": null,
+                    "header": null,
+                    "carousel": null,
+                    "bg": null,
+                    "classification": null,
+                    "seo": null
+                },
+                "subtitle_tracks": []
+            },
+            {
+                "number": 6,
+                "runtime": 1,
+                "title": "Cinando",
+                "image_urls": {
+                    "portrait": null,
+                    "landscape": null,
+                    "header": null,
+                    "carousel": null,
+                    "bg": null,
+                    "classification": null,
+                    "seo": null
+                },
+                "subtitle_tracks": []
+            },
+            {
+                "number": 3,
+                "runtime": 1,
+                "title": "<|°_°|>",
+                "image_urls": {
+                    "portrait": null,
+                    "landscape": null,
+                    "header": null,
+                    "carousel": null,
+                    "bg": null,
+                    "classification": null,
+                    "seo": null
+                },
+                "subtitle_tracks": []
+            }
+        ],
+        "cast": [],
+        "crew": [],
+        "studio": [],
+        "tagline": "d da s sad",
+        "overview": "_ addddddddddddddd _dss\n",
+        "release_date": "2012-04-01T00:00:00.000Z",
+        "countries": [
+            "Afghanistan"
+        ],
+        "runtime": 222,
+        "languages": [
+            "English",
+            "Dimili",
+            "Dimli",
+            "Kirdki",
+            "Kirmanjki",
+            "Zaza",
+            "Zazaki"
+        ],
+        "custom": {
+            "2": "2",
+            "general_kenobi": "F",
+            "what_is_your_age": -1
+        },
+        "tags": [],
+        "refs": {
+            "letterboxd_id": ""
+        },
+        "genres": [
+            "Action"
+        ],
+        "title": "! Foresic",
+        "slug": "/film/1584",
+        "film_id": 1584,
+        "id": 1584,
+        "subtitle_tracks": [
+            {
+                "language": "pl_pl",
+                "language_name": "pololoi",
+                "type": "caption",
+                "path": "https://d1ho4360zp6ihx.cloudfront.net/954e2/subtitles/film/1584/pl_pl/caption-1041.vtt"
+            },
+            {
+                "language": "es-mx",
+                "language_name": "spunsh",
+                "type": "subtitle",
+                "path": "https://d1ho4360zp6ihx.cloudfront.net/954e2/subtitles/film/1584/es-mx/subtitle-1040.vtt"
+            }
+        ],
+        "recommendations": [
+            "/page/195",
+            "/page/1047",
+            "/page/1021",
+            "/tv/138/season/1/episode/1",
+            "/tv/33/season/1/episode/1",
+            "/film/1951",
+            "/bundle/65",
+            "/film/1973"
+        ],
+        "seo_title": null,
+        "seo_keywords": null,
+        "seo_description": null,
+        "image_urls": {
+            "portrait": "https://d1ho4360zp6ihx.cloudfront.net/954e2/images/282x422/film/1584/5c8c8c07c49517a50e7882b96fe26f42.jpg",
+            "landscape": "https://d1ho4360zp6ihx.cloudfront.net/954e2/images/585x330/film/1584/163e33f957a808f9e7be4b34e2da5e99.jpg",
+            "header": null,
+            "carousel": null,
+            "bg": null,
+            "classification": null,
+            "seo": null
+        },
+        "award_categories": [
+            {
+                "title": "AS Colour",
+                "display_label": "1",
+                "is_winner": false
+            }
+        ],
+        "classifications": {
+            "al": {
+                "label": "doot",
+                "description": "asdsad asdas dsa"
+            },
+            "--": {
+                "label": ":(",
+                "description": "Oh boy"
+            }
+        },
+        "subtitles": [
+            "pololoi",
+            "spunsh"
+        ]
+    }
+]

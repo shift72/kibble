@@ -22,56 +22,56 @@ import (
 
 func TestAddingBundlesToItemIndex(t *testing.T) {
 
-	itemIndex := make(ItemIndex)
+	itemIndex := NewItemIndex()
 
 	itemIndex.MapToUnresolvedItems([]string{"/bundle/123"})
 
-	assert.Equal(t, 1, len(itemIndex["bundle"]), "expect item index to include the bundle")
-	assert.Equal(t, Unresolved, itemIndex["bundle"]["/bundle/123"], "expect item to be unresolved")
-	assert.Equal(t, false, itemIndex["bundle"]["/bundle/123"].IsResolved(), "expect item to be IsResolved() == false")
+	assert.Equal(t, 1, len(itemIndex.Items["bundle"]), "expect item index to include the bundle")
+	assert.Equal(t, Unresolved, itemIndex.Items["bundle"]["/bundle/123"], "expect item to be unresolved")
+	assert.Equal(t, false, itemIndex.Items["bundle"]["/bundle/123"].IsResolved(), "expect item to be IsResolved() == false")
 
 	assert.Equal(t, Unresolved, itemIndex.Get("/bundle/123"), "expect item to be Unresolved")
 }
 
 func TestAddingTVSeasonToItemIndex(t *testing.T) {
 
-	itemIndex := make(ItemIndex)
+	itemIndex := NewItemIndex()
 
 	itemIndex.MapToUnresolvedItems([]string{"/tv/123/season/456"})
 
-	assert.Equal(t, 1, len(itemIndex["tv-season"]), "expect item index to include the tv season")
-	assert.Equal(t, Unresolved, itemIndex["tv-season"]["/tv/123/season/456"], "expect item to be unresolved")
-	assert.Equal(t, false, itemIndex["tv-season"]["/tv/123/season/456"].IsResolved(), "expect item to be IsResolved() == false")
+	assert.Equal(t, 1, len(itemIndex.Items["tv-season"]), "expect item index to include the tv season")
+	assert.Equal(t, Unresolved, itemIndex.Items["tv-season"]["/tv/123/season/456"], "expect item to be unresolved")
+	assert.Equal(t, false, itemIndex.Items["tv-season"]["/tv/123/season/456"].IsResolved(), "expect item to be IsResolved() == false")
 	assert.Equal(t, Unresolved, itemIndex.Get("/tv/123/season/456"), "expect item to be Unresolved")
 }
 
 func TestAddingTVShowToItemIndex(t *testing.T) {
 
-	itemIndex := make(ItemIndex)
+	itemIndex := NewItemIndex()
 
 	itemIndex.MapToUnresolvedItems([]string{"/tv/123"})
 
-	assert.Equal(t, 1, len(itemIndex["tv"]), "expect item index to include the tv show")
-	assert.Equal(t, Unresolved, itemIndex["tv"]["/tv/123"], "expect item to be unresolved")
-	assert.Equal(t, false, itemIndex["tv"]["/tv/123"].IsResolved(), "expect item to be IsResolved() == false")
+	assert.Equal(t, 1, len(itemIndex.Items["tv"]), "expect item index to include the tv show")
+	assert.Equal(t, Unresolved, itemIndex.Items["tv"]["/tv/123"], "expect item to be unresolved")
+	assert.Equal(t, false, itemIndex.Items["tv"]["/tv/123"].IsResolved(), "expect item to be IsResolved() == false")
 	assert.Equal(t, Unresolved, itemIndex.Get("/tv/123"), "expect item to be Unresolved")
 }
 
 func TestAddingPlanToItemIndex(t *testing.T) {
 
-	itemIndex := make(ItemIndex)
+	itemIndex := NewItemIndex()
 
 	itemIndex.MapToUnresolvedItems([]string{"/plan/123"})
 
-	assert.Equal(t, 1, len(itemIndex["plan"]), "expect item index to include the plan")
-	assert.Equal(t, Unresolved, itemIndex["plan"]["/plan/123"], "expect item to be unresolved")
-	assert.Equal(t, false, itemIndex["plan"]["/plan/123"].IsResolved(), "expect item to be IsResolved() == false")
+	assert.Equal(t, 1, len(itemIndex.Items["plan"]), "expect item index to include the plan")
+	assert.Equal(t, Unresolved, itemIndex.Items["plan"]["/plan/123"], "expect item to be unresolved")
+	assert.Equal(t, false, itemIndex.Items["plan"]["/plan/123"].IsResolved(), "expect item to be IsResolved() == false")
 	assert.Equal(t, Unresolved, itemIndex.Get("/plan/123"), "expect item to be Unresolved")
 }
 
 func TestLinkingBundlesItems(t *testing.T) {
 
-	itemIndex := make(ItemIndex)
+	itemIndex := NewItemIndex()
 
 	// add bundle with 2 items
 	bundle := Bundle{
@@ -100,7 +100,7 @@ func TestLinkingBundlesItems(t *testing.T) {
 	}
 	site.Bundles = append(site.Bundles, bundle)
 	site.Films["/film/103"] = &Film{
-		ID: 103,
+		ID:   103,
 		Slug: "/film/103",
 	}
 

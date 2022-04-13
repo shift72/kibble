@@ -28,7 +28,7 @@ func TestLoadAll(t *testing.T) {
 		SiteURL: "https://staging-store.shift72.com",
 	}
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 	site := &models.Site{}
 
 	if err := AppendAllTVShows(cfg, site, itemIndex); err != nil {
@@ -47,7 +47,7 @@ func TestLoadTVSeasons(t *testing.T) {
 		SiteURL: "https://staging-store.shift72.com",
 	}
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 	site := &models.Site{}
 	slugs := []string{
 		"/tv/4/season/2",
@@ -60,7 +60,7 @@ func TestLoadTVSeasons(t *testing.T) {
 		t.Error(err)
 	}
 
-	assert.True(t, len(itemIndex) > 0, "itemIndex")
+	assert.True(t, len(itemIndex.Items) > 0, "itemIndex")
 	//ensure episodes are added to the correct index properly
 	assert.True(t, len(site.TVEpisodes) > 0, "site.TVEpisodes")
 	assert.NotNil(t, site.TVEpisodes[0].Season, "First episodes Season")
@@ -68,7 +68,7 @@ func TestLoadTVSeasons(t *testing.T) {
 }
 func TestSeasonToSeoMap(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -97,7 +97,7 @@ func TestSeasonToSeoMap(t *testing.T) {
 
 func TestSeasonToSeoMapWithSeoImage(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -123,7 +123,7 @@ func TestSeasonToSeoMapWithSeoImage(t *testing.T) {
 
 func TestTVEpisodeSlugPopulations(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -153,7 +153,7 @@ func TestTVEpisodeSlugPopulations(t *testing.T) {
 }
 
 func TestEpisodeImageFallback(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -196,7 +196,7 @@ func TestEpisodeImageFallback(t *testing.T) {
 }
 
 func TestSeasonCustomFieldSupport(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -219,7 +219,7 @@ func TestSeasonCustomFieldSupport(t *testing.T) {
 }
 
 func TestSeasonClassifications(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -247,7 +247,7 @@ func TestSeasonClassifications(t *testing.T) {
 }
 
 func TestSeasonWithoutClassifications(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -262,7 +262,7 @@ func TestSeasonWithoutClassifications(t *testing.T) {
 }
 
 func TestEpisodeCustomFieldSupport(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -291,7 +291,7 @@ func TestEpisodeCustomFieldSupport(t *testing.T) {
 }
 
 func TestBonusContentModelBinding(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -330,7 +330,7 @@ func TestBonusContentModelBinding(t *testing.T) {
 }
 
 func TestEpisodesAreAddedToItemIndex(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -357,7 +357,7 @@ func TestEpisodesAreAddedToItemIndex(t *testing.T) {
 }
 
 func TestEpisodeHasATitleSlug(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -379,7 +379,7 @@ func TestEpisodeHasATitleSlug(t *testing.T) {
 }
 
 func TestEpisodeSubtitles(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -414,7 +414,7 @@ func TestEpisodeSubtitles(t *testing.T) {
 }
 
 func TestEpisodeSubtitlesNil(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -433,7 +433,7 @@ func TestEpisodeSubtitlesNil(t *testing.T) {
 
 func TestTvSeasonCrewJobs(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 	serviceConfig := commonServiceConfig()
 
 	apiSeason := tvSeasonV2{

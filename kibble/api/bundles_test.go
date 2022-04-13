@@ -36,7 +36,7 @@ func commonServiceConfig() models.ServiceConfig {
 
 func TestBundleToSeoMap(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -62,7 +62,7 @@ func TestBundleToSeoMap(t *testing.T) {
 }
 func TestBundlesToSeoDefaultImage(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := models.ServiceConfig{
 		"default_image_type": "landscape",
@@ -81,7 +81,7 @@ func TestBundlesToSeoDefaultImage(t *testing.T) {
 
 func TestBundlesApiToModel(t *testing.T) {
 
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
@@ -107,14 +107,14 @@ func TestBundlesApiToModel(t *testing.T) {
 	assert.Equal(t, "/film/2", model.Items[1].Slug, "expect /film/2")
 	assert.Equal(t, nil, model.Items[0].InnerItem, "expect inner item to be nil")
 
-	assert.Equal(t, 2, len(itemIndex["film"]), "expect the item index to include 2 films")
+	assert.Equal(t, 2, len(itemIndex.Items["film"]), "expect the item index to include 2 films")
 
 	assert.Equal(t, "this is my tagline", model.Tagline, "expect tagline")
 	assert.Equal(t, "Bundle description", model.Description, "expect description")
 }
 
 func TestBundleCustomFields(t *testing.T) {
-	itemIndex := make(models.ItemIndex)
+	itemIndex := models.NewItemIndex()
 
 	serviceConfig := commonServiceConfig()
 
