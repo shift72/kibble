@@ -33,7 +33,7 @@ func LoadAllAvailabilities(ctx context.Context, cfg *models.Config, site *models
 	sort.Strings(slugs)
 
 	var total = 0
-	g, ctx := errgroup.WithContext(ctx)
+	g, _ := errgroup.WithContext(ctx)
 	// create a channel to receive the results/no of items processed.
 	res := make(chan int)
 	for len(slugs) > 0 {
@@ -51,7 +51,7 @@ func LoadAllAvailabilities(ctx context.Context, cfg *models.Config, site *models
 		})
 	}
 	go func() {
-		g.Wait()
+		_ = g.Wait()
 		close(res)
 	}()
 	for count := range res {

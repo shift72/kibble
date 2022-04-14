@@ -42,7 +42,7 @@ func LoadAllPrices(ctx context.Context, cfg *models.Config, site *models.Site, i
 
 	const batchSize = 300
 	var total = 0
-	g, ctx := errgroup.WithContext(ctx)
+	g, _ := errgroup.WithContext(ctx)
 	// create a channel to receive the results/no of items processed.
 	res := make(chan int)
 	for len(slugs) > 0 {
