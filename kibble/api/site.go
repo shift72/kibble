@@ -28,10 +28,12 @@ func LoadSite(cfg *models.Config, shortCodeTmplSet *jet.Set) (*models.Site, erro
 	initAPI := utils.NewStopwatchLevel("api", logging.NOTICE)
 
 	itemIndex := make(models.ItemIndex)
+
 	config, err := LoadConfig(cfg)
 	if err != nil {
 		return nil, err
 	}
+
 	toggles, err := LoadFeatureToggles(cfg)
 	if err != nil {
 		return nil, err
