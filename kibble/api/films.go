@@ -45,7 +45,7 @@ func loadFilmSummary(cfg *models.Config) ([]filmSummary, error) {
 		return nil, err
 	}
 
-	return summary[:2], nil
+	return summary, nil
 }
 
 // AppendAllFilms -

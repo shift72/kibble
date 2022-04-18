@@ -15,7 +15,6 @@
 package models
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -126,10 +125,6 @@ func (itemIndex ItemIndex) findSlugsOfType(slugType string, itemType GenericItem
 	t, ok := itemIndex[slugType]
 	if ok {
 		for k, v := range t {
-			fmt.Println(" >>>>>", k, v.Title, v.Slug)
-		}
-		for k, v := range t {
-
 			if v == itemType {
 				found = append(found, k)
 			}

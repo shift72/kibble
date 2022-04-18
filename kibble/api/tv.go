@@ -46,7 +46,7 @@ func loadAllTVShows(cfg *models.Config) ([]tvShowSummaryV3, error) {
 	if err != nil {
 		return nil, err
 	}
-	summary = []tvShowSummaryV3{}
+
 	return summary, nil
 }
 
@@ -59,7 +59,6 @@ func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex models.It
 	}
 
 	for ti := 0; ti < len(summary); ti++ {
-		fmt.Println("errrrrrrrrrrrrrrrrrrrrrrrr", summary)
 		// add tv shows
 		site.TVShows = append(site.TVShows, summary[ti].mapToModel())
 

@@ -138,8 +138,6 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 		}
 	}
 
-	fmt.Printf(">>>>>>>%+v\n", languageConfigs)
-
 	var wg sync.WaitGroup
 	wg.Add(len(languageConfigs))
 	for languageKey, language := range languageConfigs {
