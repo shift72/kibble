@@ -61,6 +61,7 @@ func LoadSite(cfg *models.Config, shortCodeTmplSet *jet.Set) (*models.Site, erro
 		TVSeasons:    make(models.TVSeasonCollection, 0),
 		TVEpisodes:   make(models.TVEpisodeCollection, 0),
 	}
+
 	err = LoadAllLanguages(cfg, site)
 	if err != nil {
 		return nil, err
@@ -75,6 +76,7 @@ func LoadSite(cfg *models.Config, shortCodeTmplSet *jet.Set) (*models.Site, erro
 	if err != nil {
 		return nil, err
 	}
+
 	err = LoadAllCollections(cfg, site, itemIndex)
 	if err != nil {
 		return nil, err

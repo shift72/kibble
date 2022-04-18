@@ -39,6 +39,10 @@ func (ds *BundleIndexDataSource) GetEntityType() reflect.Type {
 func (ds *BundleIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) int {
 
 	clonedBundles := make([]*models.Bundle, len(ctx.Site.Bundles))
+	for i, f := range ctx.Site.Bundles {
+		clonedBundles[i] = &f
+	}
+
 	vars := make(jet.VarMap)
 	vars.Set("bundles", clonedBundles)
 	vars.Set("site", ctx.Site)

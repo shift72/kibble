@@ -80,21 +80,17 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 	shortCodeTmplSet := models.InitshortCodeTmplSet(cfg)
 
-	sw1 := utils.NewStopwatchLevel("LoadSite", logging.NOTICE)
 	site, err := api.LoadSite(cfg, shortCodeTmplSet)
 	if err != nil {
 		log.Errorf("Loading site config failed: %s", err)
 		return 1
 	}
-	sw1.Completed()
 
-	sw1 = utils.NewStopwatchLevel("NewRouteRegistryFromConfig", logging.NOTICE)
 	routeRegistry, err := models.NewRouteRegistryFromConfig(cfg)
 	if err != nil {
 		log.Errorf("Loading site config failed: %s", err)
 		return 1
 	}
-	sw1.Completed()
 
 	renderer := FileRenderer{
 		buildPath:  buildPath,

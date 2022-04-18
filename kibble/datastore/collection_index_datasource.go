@@ -39,6 +39,10 @@ func (ds *CollectionIndexDataSource) GetEntityType() reflect.Type {
 func (ds *CollectionIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
 	clonedCollections := make([]*models.Collection, len(ctx.Site.Collections))
+	for i, f := range ctx.Site.Collections {
+		clonedCollections[i] = &f
+	}
+
 	vars := make(jet.VarMap)
 	vars.Set("collections", clonedCollections)
 	vars.Set("site", ctx.Site)
