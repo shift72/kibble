@@ -24,6 +24,9 @@ import (
 
 	"kibble/models"
 
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
+
 	"github.com/gosimple/slug"
 )
 
@@ -124,7 +127,7 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 			key = "background"
 		}
 
-		titleCaseKey := strings.Title(strings.ToLower(key))
+		titleCaseKey := cases.Title(language.Und).String(key)
 		titleCaseKey = strings.Replace(titleCaseKey, "_image", "", -1)
 
 		if titleCaseKey != key {

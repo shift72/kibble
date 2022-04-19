@@ -442,3 +442,26 @@ func TestFilmCrewJobs(t *testing.T) {
 	caterers := film.Crew.GetMembers("Caterer")
 	assert.Equal(t, 0, len(caterers))
 }
+func TestMapToModelWithImageURLs(t *testing.T) {
+	itemIndex := make(models.ItemIndex)
+	serviceConfig := commonServiceConfig()
+
+	tests := map[string]struct {
+		name   string
+		input  map[string]string
+		except models.ImageMap
+	}{
+		"with empty image urls":           {input: make(map[string]string), except: make(models.ImageMap)},
+		"with image urls":                 {input: map[string]string{"Logo_image": "img_url"}, except: models.ImageMap{"Logo": "img_url"}},
+		"with image urls in capital case": {input: map[string]string{"LOGO_IMAGE": "img_url"}, except: models.ImageMap{"Logo": "img_url"}},
+		"with image urls in lower case":   {input: map[string]string{"logo_image": "img_url"}, except: models.ImageMap{"Logo": "img_url"}},
+	}
+	filmV2 := filmV2{}
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
+			filmV2.ImageUrls = tc.input
+			film := filmV2.mapToModel(serviceConfig, itemIndex)
+			assert.Equal(t, film.ImageMap, tc.except, name)
+		})
+	}
+}
