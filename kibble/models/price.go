@@ -17,9 +17,10 @@ const (
 
 // PriceInfo - store the price and currency
 type PriceInfo struct {
-	Currency   string
-	Prices     PriceCollection
-	PlanPrices PlanPriceCollection
+	Currency             string
+	Prices               PriceCollection
+	PlanPrices           PlanPriceCollection
+	LowestAvailablePrice decimal.Decimal
 }
 
 // PriceCollection -
@@ -96,4 +97,29 @@ func (p PriceInfo) GetLowestValue() decimal.Decimal {
 		return found.Price
 	}
 	return decimal.Zero
+}
+
+// Returns lowest plan value
+func (p PriceInfo) GetLowestPlanValue() decimal.Decimal {
+
+	found := p.PlanPrices.findLowestPrice()
+
+	if found != nil {
+		return found.Price
+	}
+	return decimal.Zero
+}
+
+// Returns lowest price
+func (col PlanPriceCollection) findLowestPrice() *Price {
+	var found *Price
+
+	for _, v := range col {
+		if v != nil {
+			if found == nil || found.Price.GreaterThan(v[0].Price) {
+				found = &v[0]
+			}
+		}
+	}
+	return found
 }

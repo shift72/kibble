@@ -16,11 +16,12 @@ package models
 
 import (
 	"fmt"
-	"sort"
-	"time"
-	"strconv"
-
 	"kibble/utils"
+	"sort"
+	"strconv"
+	"time"
+
+	decimal "github.com/shopspring/decimal"
 )
 
 // Film - all of the film bits
@@ -137,6 +138,47 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 			}
 		}
 	}
+}
+
+// Find lowest film Price, find lowest film plan price. Remove film if any found prices are zero/free
+func (films *FilmCollection) CalculateLowestAvailablePricesHideFree() {
+	coll := *films
+
+collectionLoop:
+	for key, item := range coll {
+		fmt.Sprintf("=>", "item:", item)
+
+		var lowestValue = item.Prices.GetLowestValue()
+
+		// is a free film
+		if decimal.Zero.Equal(lowestValue) {
+			delete(coll, key)
+			continue
+		}
+
+		// if no planprices then select lowest price
+		if len(item.Prices.PlanPrices) == 0 {
+			item.Prices.LowestAvailablePrice = lowestValue
+			continue
+		}
+
+		for _, planPrice := range item.Prices.PlanPrices {
+			// in "free plan" or plan with price set to 0
+			if len(planPrice) == 0 {
+				delete(coll, key)
+				continue collectionLoop
+			}
+		}
+
+		lowestPlanValue := item.Prices.GetLowestPlanValue()
+
+		if lowestValue.GreaterThan(lowestPlanValue) {
+			item.Prices.LowestAvailablePrice = lowestPlanValue
+		} else {
+			item.Prices.LowestAvailablePrice = lowestValue
+		}
+	}
+
 }
 
 type FilmRefs struct {
