@@ -1,6 +1,7 @@
 # Go parameters
 GOCMD=go
 GOBUILD=$(GOCMD) build
+GOBUILD_WITH_RACE=$(GOCMD) build --race
 GOINSTALL=$(GOCMD) install
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
@@ -20,8 +21,14 @@ all: test darwin
 darwin:
 	GOOS=darwin GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}'
 
+darwin-with-race:
+	CGO_ENABLED=1 GOOS=darwin GOARCH=${GOARCH} $(GOBUILD_WITH_RACE) -ldflags '${LDFLAGS}'
+
 linux:
 	GOOS=linux GOARCH=${GOARCH} $(GOBUILD) -ldflags '${LDFLAGS}' -o ${BINARY} .
+
+linux-with-race:
+	GOOS=linux GOARCH=${GOARCH} $(GOBUILD_WITH_RACE) -ldflags '${LDFLAGS}' -o ${BINARY} .
 
 linux-install:
 	GOOS=linux GOARCH=${GOARCH} $(GOINSTALL) -ldflags '${LDFLAGS}' -v .
