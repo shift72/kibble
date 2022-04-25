@@ -18,10 +18,12 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sync"
 )
 
 // Route - represents a route for rendering and
 type Route struct {
+	sync.RWMutex
 	Name                string       `json:"name"`
 	URLPath             string       `json:"urlPath"`
 	TemplatePath        string       `json:"templatePath"`
@@ -72,6 +74,20 @@ func (r *Route) validate() error {
 	}
 
 	return ValidateRouteWithDatasource(r.PartialURLPath, r.ResolvedDataSource)
+}
+
+// SetPagination - sets pagination
+func (r *Route) SetPagination(p Pagination) {
+	r.RLock()
+	r.Pagination = p
+	r.RUnlock()
+}
+
+// SetPagination - sets pagination
+func (r *Route) GetPagination() Pagination {
+	r.Lock()
+	defer r.Unlock()
+	return r.Pagination
 }
 
 // RouteRegistry - stores a list of routes

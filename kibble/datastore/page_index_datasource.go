@@ -105,11 +105,11 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 		}
 	} else {
 
-		ctx.Route.Pagination = models.Pagination{
+		ctx.Route.SetPagination(models.Pagination{
 			Index: 1,
 			Total: len(ctx.Site.Pages),
 			Size:  len(ctx.Site.Pages),
-		}
+		})
 
 		clonedPages := make([]*models.Page, len(ctx.Site.Pages))
 		vars := make(jet.VarMap)
