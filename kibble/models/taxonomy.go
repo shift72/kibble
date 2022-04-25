@@ -19,14 +19,22 @@ package models
 import (
 	"fmt"
 	"sort"
+	"sync"
 )
 
 // Taxonomies - list of taxonomies
-type Taxonomies map[string]Taxonomy
+type Taxonomies map[string]*Taxonomy
 
 // Taxonomy - a grouping of related generic items
 // e.g. films from "2005"
-type Taxonomy map[string]GenericItems
+type Taxonomy struct {
+	sync.RWMutex
+	Items map[string]GenericItems
+}
+
+func newTaxnomy() *Taxonomy {
+	return &Taxonomy{Items: make(map[string]GenericItems, 0)}
+}
 
 // GenericItems - a list of generic items
 // e.g. Films from "2005"
@@ -50,7 +58,7 @@ func (s Site) PopulateTaxonomyWithFilms(taxonomy string, finder func(*Film) []st
 	t, ok := s.Taxonomies[taxonomy]
 
 	if !ok {
-		t = make(Taxonomy)
+		t = newTaxnomy()
 		s.Taxonomies[taxonomy] = t
 	}
 
@@ -58,11 +66,11 @@ func (s Site) PopulateTaxonomyWithFilms(taxonomy string, finder func(*Film) []st
 		for _, key := range finder(f) {
 			// omit any empty keys
 			if key != "" {
-				_, ok := t[key]
+				_, ok := t.Items[key]
 				if !ok {
-					t[key] = make(GenericItems, 0)
+					t.Items[key] = make(GenericItems, 0)
 				}
-				t[key] = append(t[key], f.GetGenericItem())
+				t.Items[key] = append(t.Items[key], f.GetGenericItem())
 			}
 		}
 	}
@@ -74,7 +82,7 @@ func (s Site) PopulateTaxonomyWithTVSeasons(taxonomy string, finder func(*TVSeas
 	t, ok := s.Taxonomies[taxonomy]
 
 	if !ok {
-		t = make(Taxonomy)
+		t = newTaxnomy()
 		s.Taxonomies[taxonomy] = t
 	}
 
@@ -82,18 +90,19 @@ func (s Site) PopulateTaxonomyWithTVSeasons(taxonomy string, finder func(*TVSeas
 		for _, key := range finder(f) {
 			// omit any empty keys
 			if key != "" {
-				_, ok := t[key]
+				_, ok := t.Items[key]
 				if !ok {
-					t[key] = make(GenericItems, 0)
+					t.Items[key] = make(GenericItems, 0)
 				}
-				t[key] = append(t[key], f.GetGenericItem())
+				t.Items[key] = append(t.Items[key], f.GetGenericItem())
 			}
 		}
 	}
 }
 
 // Alphabetical - sort the keys
-func (t Taxonomy) Alphabetical() OrderedEntries {
+func (t *Taxonomy) Alphabetical() OrderedEntries {
+	t.Lock()
 	keys := t.getKeys()
 	sort.Strings(keys)
 
@@ -101,11 +110,12 @@ func (t Taxonomy) Alphabetical() OrderedEntries {
 
 	for ki, k := range keys {
 
-		sort.Sort(t[k])
+		sort.Sort(t.Items[k])
 
 		set[ki].Key = k
-		set[ki].Items = t[k]
+		set[ki].Items = append(set[ki].Items, t.Items[k]...)
 	}
+	t.Unlock()
 	return set
 }
 
@@ -119,17 +129,17 @@ func (t OrderedEntries) Print() {
 	}
 }
 
-func (t Taxonomy) getKeys() []string {
-	keys := make([]string, 0, len(t))
-	for k := range t {
+func (t *Taxonomy) getKeys() []string {
+	keys := make([]string, 0, len(t.Items))
+	for k := range t.Items {
 		keys = append(keys, k)
 	}
 	return keys
 }
 
 // Print - print a Taxonomy
-func (t Taxonomy) Print() {
-	for k, v := range t {
+func (t *Taxonomy) Print() {
+	for k, v := range t.Items {
 		fmt.Printf("key: %s\n", k)
 
 		for _, vv := range v {
