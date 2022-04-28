@@ -114,7 +114,7 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 		clonedPages := make([]*models.Page, len(ctx.Site.Pages))
 		vars := make(jet.VarMap)
 		vars.Set("pages", clonedPages)
-		vars.Set("pagination", ctx.Route.Pagination)
+		vars.Set("pagination", ctx.Route.GetPagination())
 		vars.Set("site", ctx.Site)
 		errCount += renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+ctx.Route.URLPath, vars)
 	}

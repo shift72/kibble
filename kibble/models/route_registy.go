@@ -78,9 +78,9 @@ func (r *Route) validate() error {
 
 // SetPagination - sets pagination
 func (r *Route) SetPagination(p Pagination) {
-	r.RLock()
+	r.Lock()
+	defer r.Unlock()
 	r.Pagination = p
-	r.RUnlock()
 }
 
 // SetPagination - sets pagination
