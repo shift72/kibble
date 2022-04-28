@@ -18,12 +18,11 @@ import (
 	"kibble/models"
 	"kibble/utils"
 
-	"github.com/CloudyKit/jet"
 	logging "github.com/op/go-logging"
 )
 
 // LoadSite - load the complete site
-func LoadSite(cfg *models.Config, shortCodeTmplSet *jet.Set) (*models.Site, error) {
+func LoadSite(cfg *models.Config) (*models.Site, error) {
 
 	initAPI := utils.NewStopwatchLevel("api", logging.NOTICE)
 
@@ -39,7 +38,7 @@ func LoadSite(cfg *models.Config, shortCodeTmplSet *jet.Set) (*models.Site, erro
 		return nil, err
 	}
 
-	pages, navigation, err := LoadBios(cfg, config, itemIndex, shortCodeTmplSet)
+	pages, navigation, err := LoadBios(cfg, config, itemIndex)
 	if err != nil {
 		return nil, err
 	}
@@ -105,14 +104,14 @@ func LoadSite(cfg *models.Config, shortCodeTmplSet *jet.Set) (*models.Site, erro
 	// while there are unresolved film slugs
 	s := itemIndex.FindUnresolvedSlugs("film")
 	for len(s) > 0 {
-		_ = AppendFilms(cfg, site, s, itemIndex, shortCodeTmplSet)
+		_ = AppendFilms(cfg, site, s, itemIndex)
 		s = itemIndex.FindUnresolvedSlugs("film")
 	}
 
 	// while there are unresolved tv season slugs
 	tvs := itemIndex.FindUnresolvedSlugs("tv-season")
 	for len(tvs) > 0 {
-		_ = AppendTVSeasons(cfg, site, tvs, itemIndex, shortCodeTmplSet)
+		_ = AppendTVSeasons(cfg, site, tvs, itemIndex)
 		tvs = itemIndex.FindUnresolvedSlugs("tv-season")
 	}
 

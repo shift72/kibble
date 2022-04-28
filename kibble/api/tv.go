@@ -25,7 +25,6 @@ import (
 	"kibble/models"
 	"kibble/utils"
 
-	"github.com/CloudyKit/jet"
 	"github.com/gosimple/slug"
 )
 
@@ -71,7 +70,7 @@ func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex models.It
 }
 
 // AppendTVSeasons - load a list of tv seasons
-func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex, shortCodeTmplSet *jet.Set) error {
+func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex) error {
 
 	sort.Strings(slugs)
 	ids := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(slugs)), ","), "[]")
@@ -99,7 +98,7 @@ func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, item
 		var seasonV2 tvSeasonV2
 		err = json.Unmarshal(details.Seasons[i], &seasonV2)
 		if err == nil {
-			season := seasonV2.mapToModel(site.Config, itemIndex, shortCodeTmplSet)
+			season := seasonV2.mapToModel(site.Config, itemIndex)
 
 			// merge the tv show information collected by the tvShowSummary and the season meta object
 			// before this stage the season.ShowInfo does not have an ID field (its not returned from the api)
@@ -160,7 +159,7 @@ func mergeTVShow(tvShowA *models.TVShow, tvShowB *models.TVShow) *models.TVShow 
 	return tvShowA
 }
 
-func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex, shortCodeTmplSet *jet.Set) models.TVSeason {
+func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.ItemIndex) models.TVSeason {
 
 	seasonNumber, _ := utils.ParseIntFromSlug(t.Slug, 4)
 
@@ -236,7 +235,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 
 	// add bonuses - supports linking to bonus entries (supported??)
 	for _, bonus := range t.Bonuses {
-		b := bonus.mapToModel2(season.Slug, season.Images, shortCodeTmplSet)
+		b := bonus.mapToModel2(season.Slug, season.Images)
 		season.Bonuses = append(season.Bonuses, b)
 		itemIndex.Set(b.Slug, b.GetGenericItem())
 	}

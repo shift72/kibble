@@ -78,9 +78,13 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 
 	api.CheckAdminCredentials(cfg)
 
-	shortCodeTmplSet := models.InitshortCodeTmplSet(cfg)
+	//
+	if err := models.LoadshortCodeTmplSet(cfg); err != nil {
+		log.Errorf("Loading short code templates failed: %s", err)
+		return 1
+	}
 
-	site, err := api.LoadSite(cfg, shortCodeTmplSet)
+	site, err := api.LoadSite(cfg)
 	if err != nil {
 		log.Errorf("Loading site config failed: %s", err)
 		return 1

@@ -33,6 +33,9 @@ import (
 
 var templateTagRegex = regexp.MustCompile("(?U:{{.+}})+")
 
+// global short code template set.
+var ShortCodeTmplSet *jet.Set
+
 // CreateTemplateView - create a template view
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx *RenderContext, templatePath string) *jet.Set {
 
@@ -202,17 +205,17 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 }
 
 // ApplyContentTransforms - add the markdown / sanitization / shortcodes
-func ApplyContentTransforms(shortCodeTmplSet *jet.Set, data string) string {
+func ApplyContentTransforms(data string) string {
 
 	// apply mark down
 	unsafe := blackfriday.Run([]byte(data))
 
 	// apply the templates
-	return insertTemplates(shortCodeTmplSet, string(unsafe))
+	return insertTemplates(string(unsafe))
 }
 
 // insertTemplates applies any templates and sanitises the output
-func insertTemplates(shortCodeTmplSet *jet.Set, data string) string {
+func insertTemplates(data string) string {
 	var p string
 
 	matches := templateTagRegex.FindAllStringSubmatchIndex(data, -1)
@@ -227,13 +230,13 @@ func insertTemplates(shortCodeTmplSet *jet.Set, data string) string {
 		for i := 0; i < c; i++ {
 			if i == 0 {
 				p = p + cleaner.Sanitize(data[:matches[i][0]]) +
-					processTemplateTag(shortCodeTmplSet, data[matches[i][0]:matches[i][1]])
+					processTemplateTag(ShortCodeTmplSet, data[matches[i][0]:matches[i][1]])
 			}
 			if i == c-1 {
 				p = p + cleaner.Sanitize(data[matches[i][1]:])
 			} else {
 				p = p + cleaner.Sanitize(data[matches[i][1]:matches[i+1][0]]) +
-					processTemplateTag(shortCodeTmplSet, data[matches[i+1][0]:matches[i+1][1]])
+					processTemplateTag(ShortCodeTmplSet, data[matches[i+1][0]:matches[i+1][1]])
 			}
 		}
 	} else {
@@ -243,26 +246,27 @@ func insertTemplates(shortCodeTmplSet *jet.Set, data string) string {
 	return p
 }
 
-// InitshortCodeTmplSet sets the directory where the short codes
-// will be loaded from
-func InitshortCodeTmplSet(cfg *Config) *jet.Set {
+// LoadshortCodeTmplSet loads all the short code templates into a global template set
+// which is used to transform site's content.
+func LoadshortCodeTmplSet(cfg *Config) error {
 
-	shortCodeTmplSet := jet.NewHTMLSet(cfg.ShortCodePath())
+	ShortCodeTmplSet = jet.NewHTMLSet(cfg.ShortCodePath())
 
 	// built-in templates
-	_, err := shortCodeTmplSet.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
+	_, err := ShortCodeTmplSet.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
 	if err != nil {
 		log.Error("template loading failed for echo.jet")
+		return err
 	}
-	_, err = shortCodeTmplSet.LoadTemplate("youtube.jet", `
+	_, err = ShortCodeTmplSet.LoadTemplate("youtube.jet", `
 <div {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;\"" | raw }} >
 <iframe src="//www.youtube.com/embed/{{id}}" {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: absolute; top: 0; left: 0; width: 100%; height: 100%;\"" | raw }}{{if isset(autoplay) && autoplay=="true" }} autoplay=1{{end}} allowfullscreen frameborder="0"></iframe>
 </div>`)
 	if err != nil {
 		log.Error("template loading failed for youtube.jet")
+		return err
 	}
-
-	return shortCodeTmplSet
+	return nil
 }
 
 func processTemplateTag(shortCodeTmplSet *jet.Set, templateTag string) string {
