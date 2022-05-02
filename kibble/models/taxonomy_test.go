@@ -65,12 +65,12 @@ func TestBuildGenreTaxonomy(t *testing.T) {
 	s.PopulateTaxonomyWithTVSeasons("genres", GetTVShowGenres)
 
 	// expect
-	if len(s.Taxonomies["genres"]) != 2 {
-		t.Errorf("expected 2 genres found %d", len(s.Taxonomies["genres"]))
+	if len(s.Taxonomies["genres"].Items) != 2 {
+		t.Errorf("expected 2 genres found %d", len(s.Taxonomies["genres"].Items))
 	}
 
-	if len(s.Taxonomies["genres"]["comedy"]) != 2 {
-		t.Errorf("expected 1 film found %d", len(s.Taxonomies["genres"]))
+	if len(s.Taxonomies["genres"].Items["comedy"]) != 2 {
+		t.Errorf("expected 1 film found %d", len(s.Taxonomies["genres"].Items["comedy"]))
 	}
 }
 
@@ -82,12 +82,12 @@ func TestGiven2FilmsBuildGenreTaxonomy(t *testing.T) {
 	s.PopulateTaxonomyWithFilms("genres", GetGenres)
 
 	// expect
-	if len(s.Taxonomies["genres"]) != 3 {
-		t.Errorf("expected 3 genres found %d", len(s.Taxonomies["genres"]))
+	if len(s.Taxonomies["genres"].Items) != 3 {
+		t.Errorf("expected 3 genres found %d", len(s.Taxonomies["genres"].Items))
 	}
 
-	if len(s.Taxonomies["genres"]["comedy"]) != 2 {
-		t.Errorf("expected 2 films found %d", len(s.Taxonomies["genres"]))
+	if len(s.Taxonomies["genres"].Items["comedy"]) != 2 {
+		t.Errorf("expected 2 films found %d", len(s.Taxonomies["genres"].Items["comedy"]))
 	}
 }
 

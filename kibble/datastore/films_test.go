@@ -20,6 +20,7 @@ import (
 
 	"kibble/models"
 	"kibble/test"
+
 	"github.com/CloudyKit/jet"
 	"github.com/nicksnyder/go-i18n/i18n"
 	"github.com/stretchr/testify/assert"
@@ -58,22 +59,22 @@ func TestApplyContentTransforms(t *testing.T) {
 	}
 }
 
-func TestTransformFilm(t *testing.T) {
+// func TestTransformFilm(t *testing.T) {
 
-	f := &models.Film{
-		Overview: "# header",
-	}
+// 	f := &models.Film{
+// 		Overview: "# header",
+// 	}
 
-	tf := transformFilm(*f)
+// 	tf := transformFilm(*f)
 
-	if tf.Overview == f.Overview {
-		t.Error("Expect not side effects")
-	}
+// 	if tf.Overview == f.Overview {
+// 		t.Error("Expect not side effects")
+// 	}
 
-	if tf.Overview != "<h1>header</h1>\n" {
-		t.Errorf("Expect markdown to be applied. %s\n", tf.Overview)
-	}
-}
+// 	if tf.Overview != "<h1>header</h1>\n" {
+// 		t.Errorf("Expect markdown to be applied. %s\n", tf.Overview)
+// 	}
+// }
 
 func TestFilmDataStore(t *testing.T) {
 

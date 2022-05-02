@@ -33,8 +33,8 @@ import (
 
 var templateTagRegex = regexp.MustCompile("(?U:{{.+}})+")
 
-// global short code template set.
-var ShortCodeTmplSet *jet.Set
+// shortCodeTmplSet holds all the short codes loaded.
+var shortCodeTmplSet *jet.Set
 
 // CreateTemplateView - create a template view
 func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, ctx *RenderContext, templatePath string) *jet.Set {
@@ -230,13 +230,13 @@ func insertTemplates(data string) string {
 		for i := 0; i < c; i++ {
 			if i == 0 {
 				p = p + cleaner.Sanitize(data[:matches[i][0]]) +
-					processTemplateTag(ShortCodeTmplSet, data[matches[i][0]:matches[i][1]])
+					processTemplateTag(shortCodeTmplSet, data[matches[i][0]:matches[i][1]])
 			}
 			if i == c-1 {
 				p = p + cleaner.Sanitize(data[matches[i][1]:])
 			} else {
 				p = p + cleaner.Sanitize(data[matches[i][1]:matches[i+1][0]]) +
-					processTemplateTag(ShortCodeTmplSet, data[matches[i+1][0]:matches[i+1][1]])
+					processTemplateTag(shortCodeTmplSet, data[matches[i+1][0]:matches[i+1][1]])
 			}
 		}
 	} else {
@@ -250,15 +250,15 @@ func insertTemplates(data string) string {
 // which is used to transform site's content.
 func LoadshortCodeTmplSet(cfg *Config) error {
 
-	ShortCodeTmplSet = jet.NewHTMLSet(cfg.ShortCodePath())
+	shortCodeTmplSet = jet.NewHTMLSet(cfg.ShortCodePath())
 
 	// built-in templates
-	_, err := ShortCodeTmplSet.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
+	_, err := shortCodeTmplSet.LoadTemplate("echo.jet", "<div class=\"echo\">slug:{{slug}}</div>")
 	if err != nil {
 		log.Error("template loading failed for echo.jet")
 		return err
 	}
-	_, err = ShortCodeTmplSet.LoadTemplate("youtube.jet", `
+	_, err = shortCodeTmplSet.LoadTemplate("youtube.jet", `
 <div {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;\"" | raw }} >
 <iframe src="//www.youtube.com/embed/{{id}}" {{isset(class) ? "class=\"" + class + "\"" : "style=\"position: absolute; top: 0; left: 0; width: 100%; height: 100%;\"" | raw }}{{if isset(autoplay) && autoplay=="true" }} autoplay=1{{end}} allowfullscreen frameborder="0"></iframe>
 </div>`)

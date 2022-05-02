@@ -144,22 +144,3 @@ func TestPartialRenderTVSeason(t *testing.T) {
 	assert.Equal(t, "/fr/partials/tv/123/season/2.html", renderer.FilePath)
 	assert.Equal(t, "/season/partial.jet", renderer.TemplatePath)
 }
-
-func TestContentTransforms(t *testing.T) {
-	var ds TVSeasonDataSource
-
-	renderer := &test.MockRenderer{}
-
-	ctx, _ := createTestTVSeason()
-
-	ds.Iterator(ctx, renderer)
-
-	assert.True(t, renderer.RenderCalled, "renderer.RenderCalled")
-
-	season, _ := renderer.Data["tvseason"].Elem().Interface().(models.TVSeason)
-
-	assert.Equal(t, "<h1>Season Title</h1>\n", season.Overview)
-	assert.Equal(t, "<h1>Show Title</h1>\n", season.ShowInfo.Overview)
-	assert.Equal(t, "<h1>Episode Title</h1>\n", season.Episodes[0].Overview)
-	assert.Equal(t, "<p><strong>Rating:</strong> Five stars, <em>a blast!</em></p>\n", season.Bonuses[0].Overview)
-}
