@@ -103,6 +103,7 @@ func (s Site) PopulateTaxonomyWithTVSeasons(taxonomy string, finder func(*TVSeas
 // Alphabetical - sort the keys
 func (t *Taxonomy) Alphabetical() OrderedEntries {
 	t.Lock()
+	defer t.Unlock()
 	keys := t.getKeys()
 	sort.Strings(keys)
 
@@ -115,7 +116,6 @@ func (t *Taxonomy) Alphabetical() OrderedEntries {
 		set[ki].Key = k
 		set[ki].Items = append(set[ki].Items, t.Items[k]...)
 	}
-	t.Unlock()
 	return set
 }
 
