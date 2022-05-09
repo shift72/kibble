@@ -59,3 +59,20 @@ func (i GenericItem) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) st
 	}
 	return i.Title
 }
+
+func (items GenericItems) GetCount() map[string]int {
+	filmCount := 0
+	tvSeasonCount := 0
+	for _, i := range items {
+		if i.ItemType == "film" {
+			filmCount += 1
+		} else if i.ItemType == "tvseason" {
+			tvSeasonCount += 1
+		}
+
+	}
+	return map[string]int{
+		"film":     filmCount,
+		"tvseason": tvSeasonCount,
+	}
+}
