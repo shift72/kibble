@@ -240,10 +240,20 @@ func TestSeasonClassifications(t *testing.T) {
 
 	model := apiSeason.mapToModel(serviceConfig, itemIndex)
 
-	assert.Equal(t, 2, len(model.Classifications))
-
-	assert.Equal(t, "au", model.Classifications[0].CountryCode)
-	assert.Equal(t, "nz", model.Classifications[1].CountryCode)
+	// Check these are the members of the list, regardless of order
+	expect := []models.Classification{
+		{
+			CountryCode: "au",
+			Label:       "Australian Label",
+			Description: "Australian Description",
+		},
+		{
+			CountryCode: "nz",
+			Label:       "NZ Label",
+			Description: "NZ Description",
+		},
+	}
+	assert.ElementsMatch(t, model.Classifications, expect)
 }
 
 func TestSeasonWithoutClassifications(t *testing.T) {
