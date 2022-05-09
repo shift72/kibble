@@ -149,3 +149,20 @@ func (slice GenericItems) Less(i, j int) bool {
 func (slice GenericItems) Swap(i, j int) {
 	slice[i], slice[j] = slice[j], slice[i]
 }
+
+func (items GenericItems) GetCount() map[string]int {
+	filmCount := 0
+	tvSeasonCount := 0
+	for _, i := range items {
+		if i.ItemType == "film" {
+			filmCount += 1
+		} else if i.ItemType == "tvseason" {
+			tvSeasonCount += 1
+		}
+
+	}
+	return map[string]int{
+		"film":     filmCount,
+		"tvseason": tvSeasonCount,
+	}
+}
