@@ -26,6 +26,7 @@ type Site struct {
 	DefaultLanguage string
 	Languages       []Language
 	Translations    Translations
+	SiteBrand       SiteBrand
 	Pages           Pages
 	Films           FilmCollection
 	TVShows         TVShowCollection
