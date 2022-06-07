@@ -70,11 +70,13 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	log.Infof("Loading Brandings")
 	err = loadSiteBrand(cfg, site)
 	if err != nil {
 		return nil, err
 	}
+	log.Infof("%s ", site.SiteBrand.Images)
+	log.Infof("%s ", site.SiteBrand.Links)
 
 	err = LoadCSS(cfg, site)
 	if err != nil {

@@ -23,6 +23,7 @@ func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 	//If both self_service toggles are off
 	if !site.Toggles["self_service_site_images"] && !site.Toggles["self_service_css"] {
 		// Do nothing - use local site assets
+		log.Infof("Self Service Images and CSS disabled")
 		return nil
 	}
 
@@ -41,28 +42,39 @@ func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
-	for i, Info := range siteBrand.Images {
-		println(Info.Type)
-		println(Info.URL)
-		println(siteBrand.Images[i].Type)
-		println(siteBrand.Images[i].URL)
+	//move this to function
+	if site.Toggles["self_service_site_images"] {
+		//might have to move these out of here and always assign even if empty to avoid assignment to entry in nil map when usin getX function
+		images := make(map[string]string)
+		for _, Info := range siteBrand.Images {
+			images[Info.Type] = Info.URL
+
+		}
+		site.SiteBrand.Images = images
 	}
-	var strings = siteBrand.Images[0]
-	print(strings)
-	// site.SiteBrand.Links = siteBrand.Links
+
+	if site.Toggles["self_service_css"] {
+		//might have to move these out of here and always assign even if empty to avoid assignment to entry in nil map when usin getX function
+		links := make(map[string]string)
+		for _, Link := range siteBrand.Links {
+			links[Link.Type] = Link.URL
+		}
+		site.SiteBrand.Links = links
+	}
 
 	return nil
 }
 
-type SiteBrandV1 struct {
-	Images []map[string]string `json:"images,omitempty"`
-	Links  []map[string]string `json:"links,omitempty"`
-}
+// type SiteBrandV1 struct {
+// 	Images []map[string]string `json:"images,omitempty"`
+// 	Links  []map[string]string `json:"links,omitempty"`
+// }
+
 type SiteBrandsV1 struct {
-	Images []InfoV1 `json:"images,omitempty"`
-	Links  []InfoV1 `json:"links,omitempty"`
+	Images []SiteBrandItemV1 `json:"images,omitempty"`
+	Links  []SiteBrandItemV1 `json:"links,omitempty"`
 }
-type InfoV1 struct {
+type SiteBrandItemV1 struct {
 	Type string `json:"type,omitempty"`
 	URL  string `json:"url,omitempty"`
 }
