@@ -80,6 +80,7 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	models.ConfigureShortcodeTemplatePath(cfg)
 
 	site, err := api.LoadSite(cfg)
+
 	if err != nil {
 		log.Errorf("Loading site config failed: %s", err)
 		return 1
@@ -101,6 +102,18 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	initSW.Completed()
 	errCount := 0
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
+
+	emailpath := site.SiteBrand.GetImage("email-logo", "")
+
+	if emailpath != "" {
+		image, err := api.Get(cfg, emailpath)
+		if err != nil {
+			log.Errorf("err getting Image: %s", err)
+			return 1
+		}
+		log.Info("Replacing email-logo")
+		writeFile(buildPath+"/images/email/logo.png", image)
+	}
 
 	// Use data from APIs if site_translations_api toggle is enabled.
 	// Otherwise, use data from kibble.json.

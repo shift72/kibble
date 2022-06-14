@@ -17,13 +17,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"kibble/models"
+	"strings"
 )
 
 func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 	//If both self_service toggles are off
 	if !site.Toggles["self_service_site_images"] && !site.Toggles["self_service_css"] {
 		// Do nothing - use local site assets
-		log.Infof("Self Service Images and CSS disabled")
+		log.Infof("Self Service Images and CSS disabled, using local branding assets")
 		return nil
 	}
 
@@ -32,7 +33,7 @@ func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 
 	data, err := Get(cfg, path)
 	if err != nil {
-		return fmt.Errorf(" site branding from API failed to load %s", err)
+		return fmt.Errorf(" Site branding from API failed to load %s", err)
 	}
 
 	var siteBrand SiteBrandsV1
@@ -42,33 +43,37 @@ func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
-	//move this to function
+	//initialise empty maps, empty is still valid on site model
+	images := make(map[string]string)
+	links := make(map[string]string)
+
+	var brandingState strings.Builder
+	brandingState.WriteString("Branding Assets:")
+
 	if site.Toggles["self_service_site_images"] {
-		//might have to move these out of here and always assign even if empty to avoid assignment to entry in nil map when usin getX function
-		images := make(map[string]string)
+		log.Info("Self Service Images Enbabled")
+		brandingState.WriteString("\nImages: ")
 		for _, Info := range siteBrand.Images {
 			images[Info.Type] = Info.URL
-
+			brandingState.WriteString(Info.Type + " ")
 		}
-		site.SiteBrand.Images = images
 	}
+	site.SiteBrand.Images = images
 
 	if site.Toggles["self_service_css"] {
-		//might have to move these out of here and always assign even if empty to avoid assignment to entry in nil map when usin getX function
-		links := make(map[string]string)
+		log.Info("Self Service Links Enbabled")
+		brandingState.WriteString("\nLinks: ")
 		for _, Link := range siteBrand.Links {
 			links[Link.Type] = Link.URL
+			brandingState.WriteString(Link.Type + " ")
 		}
-		site.SiteBrand.Links = links
 	}
+	site.SiteBrand.Links = links
+
+	log.Info("%s", brandingState.String())
 
 	return nil
 }
-
-// type SiteBrandV1 struct {
-// 	Images []map[string]string `json:"images,omitempty"`
-// 	Links  []map[string]string `json:"links,omitempty"`
-// }
 
 type SiteBrandsV1 struct {
 	Images []SiteBrandItemV1 `json:"images,omitempty"`
