@@ -103,8 +103,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	errCount := 0
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 
+	//Replace local email logo if branding information exists for it
 	emailpath := site.SiteBrand.GetImage("email-logo", "")
-
 	if emailpath != "" {
 		image, err := api.Get(cfg, emailpath)
 		if err != nil {
@@ -112,6 +112,8 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 			return 1
 		}
 		log.Info("Replacing email-logo")
+
+		//Mandrill email templates are expecting a .png
 		writeFile(buildPath+"/images/email/logo.png", image)
 	}
 
