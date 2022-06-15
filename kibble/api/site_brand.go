@@ -24,7 +24,7 @@ func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 	//If both self_service toggles are off
 	if !site.Toggles["self_service_site_images"] && !site.Toggles["self_service_css"] {
 		// Do nothing - use local site assets
-		log.Infof("Self Service Images and CSS disabled, using local branding assets")
+		log.Infof("Self Service Images and CSS disabled, all branding assets will use default paths")
 		return nil
 	}
 
