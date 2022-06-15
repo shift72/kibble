@@ -108,13 +108,17 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	if emailpath != "" {
 		image, err := api.Get(cfg, emailpath)
 		if err != nil {
-			log.Errorf("err getting Image: %s", err)
+			log.Errorf("err getting image: %s", err)
 			return 1
 		}
 		log.Info("Replacing email-logo")
 
 		//Mandrill email templates are expecting a .png
-		writeFile(buildPath+"/images/email/logo.png", image)
+		err = writeFile(buildPath+"/images/email/logo.png", image)
+		if err != nil {
+			log.Errorf("err Writing image: %s", err)
+			return 1
+		}
 	}
 
 	// Use data from APIs if site_translations_api toggle is enabled.
