@@ -18,19 +18,21 @@ type SiteBrand struct {
 	Links  map[string]string
 }
 
-//Get path for SiteBrand item, return a passed in default path is non-existant
+//Get URL for SiteBrand item, return a passed in default path if non-existant
 func (s *SiteBrand) GetImage(assetType string, defaultPath string) string {
 
-	if imagePath, found := s.Images[assetType]; found {
-		return imagePath
-	}
-	return defaultPath
+	return getItem(s.Images, assetType, defaultPath)
 }
 
 func (s *SiteBrand) GetLink(assetType string, defaultPath string) string {
 
-	if linkPath, found := s.Links[assetType]; found {
-		return linkPath
+	return getItem(s.Links, assetType, defaultPath)
+}
+
+func getItem(brandType map[string]string, assetType string, defaultPath string) string {
+
+	if path, found := brandType[assetType]; found {
+		return path
 	}
 	return defaultPath
 }

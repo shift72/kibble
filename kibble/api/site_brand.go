@@ -20,7 +20,7 @@ import (
 	"strings"
 )
 
-func loadSiteBrand(cfg *models.Config, site *models.Site) error {
+func LoadSiteBrand(cfg *models.Config, site *models.Site) error {
 	//If both self_service toggles are off
 	if !site.Toggles["self_service_site_images"] && !site.Toggles["self_service_css"] {
 		// Do nothing - use local site assets
@@ -36,9 +36,9 @@ func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 		return fmt.Errorf(" Site branding from API failed to load %s", err)
 	}
 
-	var siteBrand SiteBrandsV1
+	var siteBrands SiteBrandsV1
 
-	err = json.Unmarshal([]byte(data), &siteBrand)
+	err = json.Unmarshal([]byte(data), &siteBrands)
 	if err != nil {
 		return err
 	}
@@ -53,9 +53,9 @@ func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 	if site.Toggles["self_service_site_images"] {
 		log.Info("Self Service Images Enbabled")
 		brandingState.WriteString("\nImages: ")
-		for _, Info := range siteBrand.Images {
-			images[Info.Type] = Info.URL
-			brandingState.WriteString(Info.Type + " ")
+		for _, info := range siteBrands.Images {
+			images[info.Type] = info.URL
+			brandingState.WriteString(info.Type + " ")
 		}
 	}
 	site.SiteBrand.Images = images
@@ -63,9 +63,9 @@ func loadSiteBrand(cfg *models.Config, site *models.Site) error {
 	if site.Toggles["self_service_css"] {
 		log.Info("Self Service Links Enbabled")
 		brandingState.WriteString("\nLinks: ")
-		for _, Link := range siteBrand.Links {
-			links[Link.Type] = Link.URL
-			brandingState.WriteString(Link.Type + " ")
+		for _, link := range siteBrands.Links {
+			links[link.Type] = link.URL
+			brandingState.WriteString(link.Type + " ")
 		}
 	}
 	site.SiteBrand.Links = links

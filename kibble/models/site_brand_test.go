@@ -19,7 +19,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetImageOnEmpty(t *testing.T) {
+func TestGetImageWhenSiteBrandImagesIsEmpty(t *testing.T) {
 
 	var site Site
 
@@ -28,7 +28,7 @@ func TestGetImageOnEmpty(t *testing.T) {
 
 }
 
-func TestGetLinkOnEmpty(t *testing.T) {
+func TestGetLinkWhenSiteBrandLinksIsEmpty(t *testing.T) {
 
 	var site Site
 
@@ -37,7 +37,7 @@ func TestGetLinkOnEmpty(t *testing.T) {
 
 }
 
-func TestGetLinkCSS(t *testing.T) {
+func TestGetLinkWhenSiteBrandLinksContainsCSS(t *testing.T) {
 
 	site := Site{
 		SiteBrand: SiteBrand{
@@ -55,7 +55,7 @@ func TestGetLinkCSS(t *testing.T) {
 
 }
 
-func TestGetImageSingleImageType(t *testing.T) {
+func TestGetImageWhenSiteBrandImagesContainsSingleImage(t *testing.T) {
 
 	site := Site{
 		SiteBrand: SiteBrand{
@@ -73,7 +73,7 @@ func TestGetImageSingleImageType(t *testing.T) {
 
 }
 
-func TestGetImageMultipleImageTypes(t *testing.T) {
+func TestGetImageWhenSiteBrandImagesContainsMultipleImages(t *testing.T) {
 
 	site := Site{
 		SiteBrand: SiteBrand{
@@ -99,7 +99,7 @@ func TestGetImageMultipleImageTypes(t *testing.T) {
 
 }
 
-func TestGetImageAllImages(t *testing.T) {
+func TestGetImageWhenSiteBrandImagesContainsAllImagesTypes(t *testing.T) {
 
 	site := Site{
 		SiteBrand: SiteBrand{
