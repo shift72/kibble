@@ -42,33 +42,38 @@ func LoadSiteBrand(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
-	if site.Toggles["self_service_site_images"] {
+	imagesEnabled := site.Toggles["self_service_site_images"]
+	cssEnabled := site.Toggles["self_service_css"]
 
-		site.SiteBrand.Images = mapBranding(siteBrands.Images)
-		log.Infof("Self Service Images enabled:")
-		printAssets(site.SiteBrand.Images)
+	site.SiteBrand.Images = mapBranding(imagesEnabled, siteBrands.Images)
+	site.SiteBrand.Links = mapBranding(cssEnabled, siteBrands.Links)
 
+	if imagesEnabled {
+		log.Infof("Self Service Images Enabled: ")
+		for i := range site.SiteBrand.Images {
+			log.Infof(" %s", i)
+		}
 	}
-	if site.Toggles["self_service_css"] {
-		site.SiteBrand.Links = mapBranding(siteBrands.Links)
-		log.Infof("Self Service Links enabled:")
-		printAssets(site.SiteBrand.Links)
+
+	if cssEnabled {
+		log.Infof("Self Service CSS Enabled:")
+		for l := range site.SiteBrand.Links {
+			log.Infof(" %s", l)
+		}
 	}
+
 	return nil
 }
 
-func mapBranding(brandingItems []SiteBrandItemV1) map[string]string {
+func mapBranding(isEnabled bool, brandingItems []SiteBrandItemV1) map[string]string {
 	assetMap := make(map[string]string)
-	for _, asset := range brandingItems {
-		assetMap[asset.Type] = asset.URL
+	if isEnabled {
+		for _, asset := range brandingItems {
+			assetMap[asset.Type] = asset.URL
+		}
+
 	}
 	return assetMap
-}
-
-func printAssets(assetMap map[string]string) {
-	for s := range assetMap {
-		log.Infof(" %s", s)
-	}
 }
 
 type SiteBrandsV1 struct {
