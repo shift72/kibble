@@ -17,7 +17,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"kibble/models"
-	"strings"
 )
 
 func LoadSiteBrand(cfg *models.Config, site *models.Site) error {
@@ -43,36 +42,33 @@ func LoadSiteBrand(cfg *models.Config, site *models.Site) error {
 		return err
 	}
 
-	//initialise empty maps, empty is still valid on site model
-	images := make(map[string]string)
-	links := make(map[string]string)
-
-	var brandingState strings.Builder
-	brandingState.WriteString("Branding Assets:")
-
 	if site.Toggles["self_service_site_images"] {
-		log.Info("Self Service Images Enbabled")
-		brandingState.WriteString("\nImages: ")
-		for _, info := range siteBrands.Images {
-			images[info.Type] = info.URL
-			brandingState.WriteString(info.Type + " ")
-		}
-	}
-	site.SiteBrand.Images = images
 
+		site.SiteBrand.Images = mapBranding(siteBrands.Images)
+		log.Infof("Self Service Images enabled:")
+		printAssets(site.SiteBrand.Images)
+
+	}
 	if site.Toggles["self_service_css"] {
-		log.Info("Self Service Links Enbabled")
-		brandingState.WriteString("\nLinks: ")
-		for _, link := range siteBrands.Links {
-			links[link.Type] = link.URL
-			brandingState.WriteString(link.Type + " ")
-		}
+		site.SiteBrand.Links = mapBranding(siteBrands.Links)
+		log.Infof("Self Service Links enabled:")
+		printAssets(site.SiteBrand.Links)
 	}
-	site.SiteBrand.Links = links
-
-	log.Info("%s", brandingState.String())
-
 	return nil
+}
+
+func mapBranding(brandingItems []SiteBrandItemV1) map[string]string {
+	assetMap := make(map[string]string)
+	for _, asset := range brandingItems {
+		assetMap[asset.Type] = asset.URL
+	}
+	return assetMap
+}
+
+func printAssets(assetMap map[string]string) {
+	for s := range assetMap {
+		log.Infof(" %s", s)
+	}
 }
 
 type SiteBrandsV1 struct {
