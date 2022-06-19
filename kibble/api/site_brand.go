@@ -71,7 +71,6 @@ func mapBranding(isEnabled bool, brandingItems []SiteBrandItemV1) map[string]str
 		for _, asset := range brandingItems {
 			assetMap[asset.Type] = asset.URL
 		}
-
 	}
 	return assetMap
 }

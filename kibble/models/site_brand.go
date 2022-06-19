@@ -29,10 +29,10 @@ func (s *SiteBrand) GetLink(assetType string, defaultPath string) string {
 	return getItem(s.Links, assetType, defaultPath)
 }
 
-func getItem(brandType map[string]string, assetType string, defaultPath string) string {
+func getItem(assetMap map[string]string, assetType string, defaultURL string) string {
 
-	if path, found := brandType[assetType]; found {
-		return path
+	if url, found := assetMap[assetType]; found {
+		return url
 	}
-	return defaultPath
+	return defaultURL
 }
