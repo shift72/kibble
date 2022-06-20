@@ -20,10 +20,14 @@ import (
 )
 
 func LoadSiteBrand(cfg *models.Config, site *models.Site) error {
+
+	imagesEnabled := site.Toggles["self_service_site_images"]
+	cssEnabled := site.Toggles["self_service_css"]
+
 	//If both self_service toggles are off
-	if !site.Toggles["self_service_site_images"] && !site.Toggles["self_service_css"] {
+	if !imagesEnabled && !cssEnabled {
 		// Do nothing - use local site assets
-		log.Infof("Self Service Images and CSS disabled, all branding assets will use default paths")
+		log.Infof("Self Service Images and CSS disabled, all branding assets will use default URLs")
 		return nil
 	}
 
@@ -41,9 +45,6 @@ func LoadSiteBrand(cfg *models.Config, site *models.Site) error {
 	if err != nil {
 		return err
 	}
-
-	imagesEnabled := site.Toggles["self_service_site_images"]
-	cssEnabled := site.Toggles["self_service_css"]
 
 	site.SiteBrand.Images = mapBranding(imagesEnabled, siteBrands.Images)
 	site.SiteBrand.Links = mapBranding(cssEnabled, siteBrands.Links)
