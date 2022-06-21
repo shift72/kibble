@@ -20,7 +20,6 @@ import (
 )
 
 func LoadSiteBrand(cfg *models.Config, site *models.Site) error {
-
 	imagesEnabled := site.Toggles["self_service_site_images"]
 	cssEnabled := site.Toggles["self_service_css"]
 
@@ -47,6 +46,9 @@ func LoadSiteBrand(cfg *models.Config, site *models.Site) error {
 	}
 
 	site.SiteBrand.Images = mapBranding(imagesEnabled, siteBrands.Images)
+
+	//this is only temporary, as it reflects the data structer of the API, Links contains only css URL.
+	//Once Links and css are both implemented this will change.
 	site.SiteBrand.Links = mapBranding(cssEnabled, siteBrands.Links)
 
 	if imagesEnabled {
