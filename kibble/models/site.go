@@ -36,6 +36,7 @@ type Site struct {
 	Collections     CollectionCollection
 	Plans           PlanCollection
 	Taxonomies      Taxonomies
+	CSSFilename     string
 }
 
 // ImageSet - set of images
