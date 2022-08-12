@@ -102,6 +102,12 @@ func Render(sourcePath string, buildPath string, cfg *models.Config) int {
 	errCount := 0
 	renderSW := utils.NewStopwatchLevel("render", logging.NOTICE)
 
+	//Replace local email logo if branding information exists for it
+	err = replaceEmailLogo(site, buildPath, cfg)
+	if err != nil {
+		log.Errorf("Error replacing email logo %s", err)
+	}
+
 	// Use data from APIs if site_translations_api toggle is enabled.
 	// Otherwise, use data from kibble.json.
 	var defaultLanguage string
@@ -194,4 +200,21 @@ func createLanguage(defaultLanguage string, langCode string, locale string) *mod
 		IsDefault:          (langCode == defaultLanguage),
 		DefinitionFilePath: fmt.Sprintf("%s.all.json", locale),
 	}
+}
+
+func replaceEmailLogo(site *models.Site, buildPath string, cfg *models.Config) error {
+	emailLogoURL := site.SiteBrand.Images["email-logo"]
+	if emailLogoURL != "" {
+		image, err := api.Get(cfg, emailLogoURL)
+		if err != nil {
+			return fmt.Errorf("failed to GET email logo: %s", err)
+		}
+		log.Info("Replacing email-logo")
+		//Mandrill email templates are expecting a .png
+		err = writeFile(buildPath+"/images/email/logo.png", image)
+		if err != nil {
+			return fmt.Errorf("failed to write email logo png: %s", err)
+		}
+	}
+	return nil
 }

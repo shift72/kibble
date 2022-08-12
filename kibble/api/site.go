@@ -71,7 +71,7 @@ func LoadSite(cfg *models.Config) (*models.Site, error) {
 		return nil, err
 	}
 
-	err = LoadCSS(cfg, site)
+	err = LoadSiteBrand(cfg, site)
 	if err != nil {
 		return nil, err
 	}

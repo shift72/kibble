@@ -113,3 +113,20 @@ func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarM
 
 	return errorCount
 }
+
+func writeFile(filename string, data []byte) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		log.Errorf("%s", err)
+		return err
+	}
+
+	_, err = file.Write(data)
+	if err != nil {
+		log.Errorf("%s", err)
+		file.Close()
+		return err
+	}
+
+	return file.Close()
+}

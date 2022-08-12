@@ -26,6 +26,7 @@ type Site struct {
 	DefaultLanguage string
 	Languages       []Language
 	Translations    Translations
+	SiteBrand       SiteBrand
 	Pages           Pages
 	Films           FilmCollection
 	TVShows         TVShowCollection
@@ -35,7 +36,6 @@ type Site struct {
 	Collections     CollectionCollection
 	Plans           PlanCollection
 	Taxonomies      Taxonomies
-	CSSFilename     string
 }
 
 // ImageSet - set of images

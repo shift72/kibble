@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"kibble/models"
-	"os"
 	"path/filepath"
 )
 
@@ -51,21 +50,4 @@ func WriteLanguageFiles(site *models.Site, sourcePath string) error {
 	}
 
 	return nil
-}
-
-func writeFile(filename string, data []byte) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		log.Errorf("%s", err)
-		return err
-	}
-
-	_, err = file.Write(data)
-	if err != nil {
-		log.Errorf("%s", err)
-		file.Close()
-		return err
-	}
-
-	return file.Close()
 }
