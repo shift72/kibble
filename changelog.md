@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## 0.17.0
+
+### Added
+- Added .DS_Store to .gitignore.
+- Added SiteBrand API and model.
+
+### Changed
+- Updated golangcli-lint Github action.
+- Removed redundant CSS API.
+- Bumped golang.org/x/sys in go.mod.
+- Removed redundant CSSFilename property from the site model.  Added SiteBrand property instead.
+- Moved render writeFile function to a more logical place.
+- Modified render function to write an email logo to the site output if it is present in the SiteBrand model.
+
+### Fixed
+- Pass goreleaser OS to deploy script.
+- Replaced deprecated strings.Title with cases.Title.
+
 ## 0.16.7
 Validation for language api response.
 - Removed Status ID from generic items
