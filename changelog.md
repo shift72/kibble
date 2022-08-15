@@ -19,6 +19,7 @@
 ### Fixed
 - Pass goreleaser OS to deploy script.
 - Replaced deprecated strings.Title with cases.Title.
+- Added _v1 suffix to build path in deploy script https://goreleaser.com/customization/build/#why-is-there-a-_v1-suffix-on-amd64-builds.
 
 ## 0.16.7
 Validation for language api response.
