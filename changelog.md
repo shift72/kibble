@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.17.1
+
+### Added
+- Added support for running on Apple Silicon (darwin arm64).
+
 ## 0.17.0
 
 ### Added
