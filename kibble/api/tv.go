@@ -74,6 +74,11 @@ func AppendAllTVShows(cfg *models.Config, site *models.Site, itemIndex models.It
 func AppendTVSeasons(cfg *models.Config, site *models.Site, slugs []string, itemIndex models.ItemIndex) error {
 
 	sort.Strings(slugs)
+
+	if len(slugs) > 300 {
+		slugs = slugs[:300]
+	}
+
 	ids := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(slugs)), ","), "[]")
 
 	// set index to empty for the items requested
