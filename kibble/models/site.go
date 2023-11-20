@@ -27,6 +27,7 @@ type Site struct {
 	Languages       []Language
 	Translations    Translations
 	SiteBrand       SiteBrand
+	SiteTheme       SiteTheme
 	Pages           Pages
 	Films           FilmCollection
 	TVShows         TVShowCollection

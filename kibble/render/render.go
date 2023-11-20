@@ -73,6 +73,7 @@ func Watch(sourcePath string, buildPath string, cfg *models.Config, port int32, 
 
 // Render - render the files
 func Render(sourcePath string, buildPath string, cfg *models.Config) int {
+	log.Infof("LOU TEST")
 	initSW := utils.NewStopwatch("load")
 
 	api.CheckAdminCredentials(cfg)
