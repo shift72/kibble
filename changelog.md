@@ -1,6 +1,8 @@
 # Change log
 
-## Unreleased
+## [Unreleased]
+ - release-it: smoother automated releases
+ - TV: batch fetch TV content to avoid hitting API limits with large numbers of shows
 
 ## 0.17.1
 

@@ -1,0 +1,20 @@
+{
+  "git": {
+    "commitMessage": "Release: ${version}",
+    "tagName": "${version}"
+  },
+  "github": {
+    "release": true,
+    "web": true
+  },
+
+  "npm": {
+    "publish": false
+  },
+
+  "plugins": {
+    "@release-it/keep-a-changelog": {
+      "filename": "changelog.md"
+    }
+  }
+}
