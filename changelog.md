@@ -4,7 +4,7 @@
  - release-it: smoother automated releases
  - TV: batch fetch TV content to avoid hitting API limits with large numbers of shows
 
-## 0.17.1
+## [0.17.1]
 
 ### Added
 - Added support for running on Apple Silicon (darwin arm64).
