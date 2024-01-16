@@ -21,7 +21,7 @@ jobs:
         run: |
           cd kibble-npm
           NPM_PACKAGE_VERSION=`node -p 'require("./package.json").version'`
-          if [ "$NPM_PACKAGE_VERSION" != "$WORKFLOW_REF"" ]; then
+          if [ "$NPM_PACKAGE_VERSION" != "$WORKFLOW_REF" ]; then
             echo "::error file=kibble-npm/package.json,title=NPM package version mismatch::Cannot publish as the package version is $NPM_PACKAGE_VERSION but the workflow tag is $WORKFLOW_REF"
             exit 1
           fi
