@@ -1,6 +1,6 @@
 # Change log
 
-## [Unreleased]
+## [0.17.2-0] - 2024-01-16
  - release-it: smoother automated releases
  - TV: batch fetch TV content to avoid hitting API limits with large numbers of shows
 
