@@ -7,6 +7,25 @@ on:
   #   types: [created]
 
 jobs:
+  sanity-checks:
+    name: Prerelease sanity checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Ensure kibble-npm package version matches the tag
+        env:
+          WORKFLOW_REF: ${{github.ref_name}}
+        run: |
+          cd kibble-npm
+          NPM_PACKAGE_VERSION=`node -p 'require("./package.json").version'`
+          if [ "$NPM_PACKAGE_VERSION" != "$WORKFLOW_REF"" ]; then
+            echo "::error file=kibble-npm/package.json,title=NPM package version mismatch::Cannot publish as the package version is $NPM_PACKAGE_VERSION but the workflow tag is $WORKFLOW_REF"
+            exit 1
+          fi
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -40,7 +59,7 @@ jobs:
 
   release:
     name: Release
-    needs: [lint, test]
+    needs: [sanity-checks, lint, test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -58,6 +77,24 @@ jobs:
           version: latest
           install-only: true
       - run: make release
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #   TODO: AWS creds for pushing to the s3 bucket here too!
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-npm:
+    name: Publish to NPM
+    needs: [release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Install deps
+        working-directory: kibble-npm
+        run: npm ci
+      - name: Publish wrapper package to npm
+        working-directory: kibble-npm
+        run: npm publish --dry-run
+        env:
+          NODE_AUTH_TOKEN: "TODO"
