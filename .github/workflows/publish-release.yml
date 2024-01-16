@@ -57,6 +57,7 @@ jobs:
           distribution: goreleaser
           version: latest
           install-only: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: goreleaser build
+      - run: make release
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #   TODO: AWS creds for pushing to the s3 bucket here too!
