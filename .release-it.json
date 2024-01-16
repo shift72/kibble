@@ -12,6 +12,10 @@
 
   "npm": false,
 
+  "hooks": {
+    "after:bump": "cd kibble-npm && npm version ${version}"
+  },
+
   "plugins": {
     "@release-it/keep-a-changelog": {
       "filename": "changelog.md"
