@@ -4,9 +4,10 @@
     "tagName": "${version}"
   },
   "github": {
-    "//": "goreleaser will handle doing a release and attaching the kibble binaries",
-    "release": false,
-    "web": true
+    "release": true,
+    "draft": true,
+    "web": true,
+    "releaseName": "${version}"
   },
 
   "npm": {
