@@ -10,9 +10,7 @@
     "releaseName": "${version}"
   },
 
-  "npm": {
-    "publish": false
-  },
+  "npm": false,
 
   "plugins": {
     "@release-it/keep-a-changelog": {
