@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.17.2
+
+### Changed
+- Limit number of films that can be indexed to batches of 300
+
 ## 0.17.1
 
 ### Added
