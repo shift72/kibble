@@ -10,6 +10,11 @@
 
 - Batch indexing of tv seasons to improve scalability
 
+## 0.17.4
+
+### Changed
+- Fix build support for arm64
+
 ## 0.17.3
 
 ### Added
