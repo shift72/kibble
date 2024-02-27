@@ -18,6 +18,7 @@ archives:
   format: tar.gz
   replacements:
     amd64: 64-bit
+    arm64: arm64-bit
     darwin: macOS
     linux: Tux
   format_overrides:
