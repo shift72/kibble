@@ -3,7 +3,9 @@ VERSION    := $(shell git describe --tags)
 DARWINx64   := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_macOS_64-bit.zip"
 DARWINarm64 := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_macOS_arm64-bit.zip"
 LINUXx64    := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_Tux_64-bit.tar.gz"
+LINUXxarm64 := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_Tux_arm64-bit.tar.gz"
 WINDOWSx64  := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_windows_64-bit.zip"
+WINDOWSxarm64  := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_windows_arm64-bit.zip"
 
 release:
 	cd kibble && AWS_PROFILE=shift72a goreleaser --clean
@@ -12,7 +14,9 @@ release:
 	aws s3api put-object-acl --bucket shift72-sites --key $(DARWINx64)  --acl public-read --profile shift72a
 	aws s3api put-object-acl --bucket shift72-sites --key $(DARWINarm64)  --acl public-read --profile shift72a
 	aws s3api put-object-acl --bucket shift72-sites --key $(LINUXx64)   --acl public-read --profile shift72a
+	aws s3api put-object-acl --bucket shift72-sites --key $(LINUXxarm64)   --acl public-read --profile shift72a
 	aws s3api put-object-acl --bucket shift72-sites --key $(WINDOWSx64) --acl public-read --profile shift72a
+	aws s3api put-object-acl --bucket shift72-sites --key $(WINDOWSxarm64) --acl public-read --profile shift72a
 	
 	cd kibble-npm && npm publish
 
