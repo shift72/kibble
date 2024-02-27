@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.17.3
+
+### Added
+- Build support for arm64
+
 ## 0.17.2
 
 ### Changed
