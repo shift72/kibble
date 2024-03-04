@@ -10,19 +10,26 @@
 
 - Batch indexing of tv seasons to improve scalability
 
+### Added
+
+- Added CarouselFocus to film / season model
+
 ## 0.17.4
 
 ### Changed
+
 - Fix build support for arm64
 
 ## 0.17.3
 
 ### Added
+
 - Build support for arm64
 
 ## 0.17.2
 
 ### Changed
+
 - Limit number of films that can be indexed to batches of 300
 
 ## 0.17.1
