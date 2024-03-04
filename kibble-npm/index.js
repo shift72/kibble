@@ -12,6 +12,8 @@ module.exports = binwrap({
     "darwin-x64": root + "/kibble_" + version + "_macOS_64-bit.zip",
     "darwin-arm64": root + "/kibble_" + version + "_macOS_arm64-bit.zip",
     "linux-x64":  root + "/kibble_" + version + "_Tux_64-bit.tar.gz",
-    "win32-x64":  root + "/kibble_" + version + "_windows_64-bit.zip"
+    "linux-arm64":  root + "/kibble_" + version + "_Tux_arm64-bit.tar.gz",
+    "win32-x64":  root + "/kibble_" + version + "_windows_64-bit.zip",
+    "win32-arm64":  root + "/kibble_" + version + "_windows_arm64-bit.zip"
   }
 });
