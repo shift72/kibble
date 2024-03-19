@@ -21,11 +21,12 @@ type GenericItem struct {
 	// link to the actual item
 	InnerItem interface{}
 	// film / show / season/ episode / bundle / page
-	ItemType string
-	Slug     string
-	Title    string
-	Images   ImageSet
-	Seo      Seo
+	ItemType      string
+	Slug          string
+	Title         string
+	Images        ImageSet
+	Seo           Seo
+	CarouselFocus string
 }
 
 // GetTitle - returns the title in the current language
@@ -58,4 +59,27 @@ func (i GenericItem) GetTranslatedTitle(T i18n.TranslateFunc, i18nKey string) st
 		}
 	}
 	return i.Title
+}
+
+// get carousel focus
+func (i GenericItem) GetCarouselImageFocusArea() string {
+	switch i.ItemType {
+	case "film":
+		if f, ok := i.InnerItem.(Film); ok {
+			return f.CarouselFocus
+		}
+	case "tvseason":
+		if s, ok := i.InnerItem.(TVSeason); ok {
+			return s.CarouselFocus
+		}
+	case "page":
+		if p, ok := i.InnerItem.(Page); ok {
+			return p.CustomFields.GetString("carousel_focus", "")
+		}
+	case "bundle":
+		if b, ok := i.InnerItem.(Bundle); ok {
+			return b.CustomFields.GetString("carousel_focus", "")
+		}
+	}
+	return i.CarouselFocus
 }
