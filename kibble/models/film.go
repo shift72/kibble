@@ -54,6 +54,7 @@ type Film struct {
 	CustomFields    CustomFields
 	Refs            FilmRefs
 	Classifications []Classification
+	CarouselFocus   string
 }
 
 // FilmCollection - all films

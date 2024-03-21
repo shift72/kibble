@@ -201,6 +201,7 @@ func (t tvSeasonV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex mod
 		Cast:            make([]models.CastMember, 0),
 		Crew:            make([]models.CrewMember, 0),
 		CustomFields:    t.CustomFields,
+		CarouselFocus:   t.CarouselFocus,
 	}
 
 	// map trailers
@@ -373,6 +374,7 @@ type tvSeasonV2 struct {
 	Overview        string   `json:"overview"`
 	PublishingState string   `json:"publishing_state"`
 	Title           string   `json:"title"`
+	CarouselFocus   string   `json:"carousel_focus"`
 	ShowInfo        tvShowV2 `json:"show_info"`
 	Slug            string   `json:"slug"`
 	SeasonNum       int      `json:"season_num"`

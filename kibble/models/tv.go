@@ -79,6 +79,7 @@ type TVSeason struct {
 	Recommendations []GenericItem
 	CustomFields    CustomFields
 	Classifications []Classification
+	CarouselFocus   string
 }
 
 // TVShowCollection -
