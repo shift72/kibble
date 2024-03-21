@@ -21,12 +21,11 @@ type GenericItem struct {
 	// link to the actual item
 	InnerItem interface{}
 	// film / show / season/ episode / bundle / page
-	ItemType      string
-	Slug          string
-	Title         string
-	Images        ImageSet
-	Seo           Seo
-	CarouselFocus string
+	ItemType string
+	Slug     string
+	Title    string
+	Images   ImageSet
+	Seo      Seo
 }
 
 // GetTitle - returns the title in the current language
@@ -81,5 +80,5 @@ func (i GenericItem) GetCarouselImageFocusArea() string {
 			return b.CustomFields.GetString("carousel_focus", "")
 		}
 	}
-	return i.CarouselFocus
+	return ""
 }
