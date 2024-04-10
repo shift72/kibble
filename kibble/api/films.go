@@ -171,7 +171,8 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Refs: models.FilmRefs{
 			LetterboxdID: f.Refs.LetterboxdID,
 		},
-		Subtitles: f.Subtitles,
+		Subtitles:     f.Subtitles,
+		CarouselFocus: f.CarouselFocus,
 	}
 
 	film.Images = models.ImageMapToImageSet(film.ImageMap)
@@ -274,6 +275,7 @@ type filmV2 struct {
 	Genres          []string                    `json:"genres"`
 	Tags            []string                    `json:"tags"`
 	Title           string                      `json:"title"`
+	CarouselFocus   string                      `json:"carousel_focus"`
 	Slug            string                      `json:"slug"`
 	FilmID          int                         `json:"film_id"`
 	ID              int                         `json:"id"`

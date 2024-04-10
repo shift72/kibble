@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Carousel Focus to film / tv models.
+
 ## 0.17.4
 
 ### Changed
