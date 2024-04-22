@@ -4,7 +4,25 @@
  - release-it: smoother automated releases
  - TV: batch fetch TV content to avoid hitting API limits with large numbers of shows
 
-## [0.17.1]
+### Added
+- Carousel Focus to film / tv models.
+
+## 0.17.4
+
+### Changed
+- Fix build support for arm64
+
+## 0.17.3
+
+### Added
+- Build support for arm64
+
+## 0.17.2
+
+### Changed
+- Limit number of films that can be indexed to batches of 300
+
+## 0.17.1
 
 ### Added
 - Added support for running on Apple Silicon (darwin arm64).
