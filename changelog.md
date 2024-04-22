@@ -1,11 +1,10 @@
 # Change log
 
-## [0.17.2-0] - 2024-01-16
- - release-it: smoother automated releases
- - TV: batch fetch TV content to avoid hitting API limits with large numbers of shows
+## [Unreleased]
 
 ### Added
-- Carousel Focus to film / tv models.
+ - release-it: smoother automated releases
+ - Carousel Focus to film / tv models.
 
 ## 0.17.4
 
