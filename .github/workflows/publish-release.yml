@@ -74,7 +74,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
-          version: latest
+          version: v1.10.3
           install-only: true
       - run: make release
         env:
