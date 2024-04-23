@@ -3,8 +3,8 @@ run-name: Build and deploy ${{github.ref_name}}
 
 on: 
   workflow_dispatch:
-  # release:
-  #   types: [created]
+  release:
+    types: [created]
 
 jobs:
   sanity-checks:
