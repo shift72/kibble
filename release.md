@@ -31,11 +31,11 @@ changelog.md
 
 ### b. Run release-it
 
-```
-// You will be prompted to select a relevant version number
-// Afterwards it'll ask you permission to do the different steps, for now only say no to 
-// creating a release as it's currently broken due to the changelog being massive.
+You will be prompted to select a relevant version number.
+Afterwards it'll ask you permission to do the different steps, you should say yes
+to all these steps.
 
+```
 npx release-it
 ```
 
