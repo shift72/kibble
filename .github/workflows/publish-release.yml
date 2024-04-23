@@ -98,6 +98,6 @@ jobs:
         run: npm ci
       - name: Publish wrapper package to npm
         working-directory: kibble-npm
-        run: npm publish --dry-run
+        run: npm publish
         env:
-          NODE_AUTH_TOKEN: "TODO"
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

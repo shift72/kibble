@@ -19,7 +19,7 @@ release:
 	aws s3api put-object-acl --bucket shift72-sites --key $(LINUXarm64)   --acl public-read
 	aws s3api put-object-acl --bucket shift72-sites --key $(WINDOWSx64) --acl public-read
 	aws s3api put-object-acl --bucket shift72-sites --key $(WINDOWSarm64) --acl public-read
-	aws s3 cp ./kibble/dist/kibble_linux_amd64_v1/kibble s3://shift72-sites/builder/$(VERSION)/kibble --debug
+	aws s3 cp ./kibble/dist/kibble_linux_amd64_v1/kibble s3://shift72-sites/builder/$(VERSION)/kibble
 
 update_s3:
 	echo "setting acls for the released versions"
