@@ -8,7 +8,7 @@ WINDOWSx64  := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_windows_64-bit.zip"
 WINDOWSarm64  := "s72-web/kibble/$(VERSION)/kibble_$(VERSION)_windows_arm64-bit.zip"
 
 release:
-	cd kibble && AWS_PROFILE=shift72a goreleaser --clean
+	cd kibble && AWS_PROFILE=shift72a goreleaser --rm-dist
 
 	echo "setting acls for the released versions"
 	aws s3api put-object-acl --bucket shift72-sites --key $(DARWINx64)  --acl public-read --profile shift72a
