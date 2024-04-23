@@ -76,13 +76,12 @@ jobs:
           distribution: goreleaser
           version: v1.10.3
           install-only: true
-      - run: mkdir ~/.aws
-      - run: echo "[profile shift72a]\nregion = ap-southeast-2\n" > ~/.aws/config
       - run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ vars.KIBBLE_DEPLOY_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.KIBBLE_DEPLOY_AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ap-southeast-2
 
   publish-npm:
     name: Publish to NPM
