@@ -76,6 +76,8 @@ jobs:
           distribution: goreleaser
           version: v1.10.3
           install-only: true
+      - run: mkdir ~/.aws
+      - run: echo "[profile shift72a]\nregion = ap-southeast-2\n" > ~/.aws/config
       - run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
