@@ -17,4 +17,4 @@ if [ $OS != "linux" ]; then
 fi
 
 echo "uploading linux only version - $VERSION"
-aws s3 cp ./dist/kibble_linux_amd64_v1/kibble s3://shift72-sites/builder/$VERSION/kibble --profile shift72a
+aws s3 cp ./dist/kibble_linux_amd64_v1/kibble s3://shift72-sites/builder/$VERSION/kibble --debug --profile shift72a
