@@ -17,7 +17,7 @@ release:
 	aws s3api put-object-acl --bucket shift72-sites --key $(LINUXarm64)   --acl public-read --profile shift72a
 	aws s3api put-object-acl --bucket shift72-sites --key $(WINDOWSx64) --acl public-read --profile shift72a
 	aws s3api put-object-acl --bucket shift72-sites --key $(WINDOWSarm64) --acl public-read --profile shift72a
-	aws s3 cp ./dist/kibble_linux_amd64_v1/kibble s3://shift72-sites/builder/$(VERSION)/kibble --debug --profile shift72a
+	aws s3 cp ./kibble/dist/kibble_linux_amd64_v1/kibble s3://shift72-sites/builder/$(VERSION)/kibble --debug --profile shift72a
 	
 	cd kibble-npm && npm publish
 
