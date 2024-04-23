@@ -1,6 +1,6 @@
 # Change log
 
-## [Unreleased]
+## [0.17.5-0] - 2024-04-24
 
 ### Added
  - release-it: smoother automated releases
