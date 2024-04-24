@@ -12,7 +12,7 @@
  - release-it: smoother automated releases
  - Carousel Focus to film / tv models.
 
-## 0.17.4
+## [0.17.4] - 2024-02-27
 
 ### Changed
 - Fix build support for arm64
