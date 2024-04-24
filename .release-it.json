@@ -1,0 +1,26 @@
+{
+  "git": {
+    "commitMessage": "Release: ${version}",
+    "tagName": "${version}"
+  },
+  "github": {
+    "release": true,
+    "draft": true,
+    "web": true,
+    "releaseName": "${version}"
+  },
+
+  "npm": false,
+
+  "hooks": {
+    "after:bump": "cd kibble-npm && npm version ${version}"
+  },
+
+  "plugins": {
+    "@release-it/keep-a-changelog": {
+      "filename": "changelog.md",
+      "strictLatest": false,
+      "addUnreleased": true
+    }
+  }
+}

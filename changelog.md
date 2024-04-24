@@ -1,11 +1,17 @@
 # Change log
 
-## Unreleased
+## [Unreleased]
+
+## [0.17.5] - 2024-04-24
+  - Stable release it deploys
+
+## [0.17.5-0] - 2024-04-24
 
 ### Added
-- Carousel Focus to film / tv models.
+ - release-it: smoother automated releases
+ - Carousel Focus to film / tv models.
 
-## 0.17.4
+## [0.17.4] - 2024-02-27
 
 ### Changed
 - Fix build support for arm64
