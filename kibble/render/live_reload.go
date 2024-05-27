@@ -31,7 +31,7 @@ import (
 	fsnotify "gopkg.in/fsnotify/fsnotify.v1"
 )
 
-var embed = `
+var liveReloadEmbed = `
 <script>
 (function(){
 	var etag = ''; // IE 11 can't handle the 'If-Modified-Since' header
@@ -60,6 +60,55 @@ var embed = `
 </script>
 `
 
+var kibbleErrorMessage = `
+  <div class="kibble-errors">
+    <b>Kibble errors</b>
+    <p>This may prevent the site from working properly. Check terminal output for details<p>
+  </div>
+
+  <script>
+    const el = document.querySelector('.kibble-errors');
+    const hide = () => {
+        el.classList.add("kibble-errors--hidden");
+        setTimeout(() => el.remove(), 1000);
+    };
+    
+    el.addEventListener('click', hide);
+    setTimeout(hide, 5000);
+  </script>
+  
+  <style>
+    .kibble-errors {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        width: 350px;
+        z-index: 10000;
+        border-radius: 0.25rem;
+        border: 1px solid #a61e4d;
+        color: #a61e4d;
+        background-color: #fcc2d7;
+        box-shadow: 0 10px 10px rgba(0,0,0,0.2);
+        transition: transform, opacity, 0.5s;
+        transform: translate(0,0);
+        opacity: 1;
+        font-size: 16px;
+        padding: 0.75em 1em;
+    }
+
+    .kibble-errors p {
+        margin: 0;
+        font-size: 0.8em;
+        opacity: 0.8;
+    }
+
+    .kibble-errors--hidden {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+  </style>
+`
+
 // LiveReload -
 type LiveReload struct {
 	lastModified              time.Time
@@ -73,9 +122,9 @@ type LiveReload struct {
 // intercepts all write calls so as to append the live reload script
 type WrapperResponseWriter struct {
 	http.ResponseWriter
-	status    int
-	buf       bytes.Buffer
-	prefixBuf bytes.Buffer
+	status       int
+	buf          bytes.Buffer
+	htmlToInject bytes.Buffer
 }
 
 // NewWrapperResponseWriter - create a new response writer
@@ -94,25 +143,35 @@ func (w *WrapperResponseWriter) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-// PrefixWithLogs - write the logs to the head of the page
-func (w *WrapperResponseWriter) PrefixWithLogs(logs []string) {
-	if len(logs) == 0 {
-		return
-	}
-
-	w.prefixBuf.Write([]byte("<div>"))
-	for _, s := range logs {
-		w.prefixBuf.Write([]byte(fmt.Sprintf("<pre>%s</pre>", s)))
-	}
-	w.prefixBuf.Write([]byte("</div>"))
+func (w *WrapperResponseWriter) AddHtmlInject(html string) {
+	w.htmlToInject.WriteString(html)
 }
 
 // Done - called when are ready to return a result
-func (w *WrapperResponseWriter) Done() (n int, err error) {
-	w.Header().Set("Content-Length", strconv.Itoa(w.buf.Len()+w.prefixBuf.Len()))
+func (w *WrapperResponseWriter) Done() (err error) {
+	if w.htmlToInject.Len() > 0 {
+		responseBytes := w.buf.Bytes()
+
+		// Find the end of the HTML body to inject our stuff. This is a little
+		// bit flaky as it assumes "sensible" html style on the body closing tag
+		endOfBodyIndex := bytes.LastIndex(responseBytes, []byte("</body>"))
+		if endOfBodyIndex >= 0 {
+			w.Header().Set("Content-Length", strconv.Itoa(w.buf.Len()+w.htmlToInject.Len()))
+			w.ResponseWriter.WriteHeader(w.status)
+			w.ResponseWriter.Write(responseBytes[0:endOfBodyIndex])
+			w.ResponseWriter.Write(w.htmlToInject.Bytes())
+			w.ResponseWriter.Write(responseBytes[endOfBodyIndex:])
+			return nil
+		}
+
+		// If no end of body can be found, don't inject anything. It might be a
+		// partial, or not a valid HTML doc.
+	}
+
+	w.Header().Set("Content-Length", strconv.Itoa(w.buf.Len()))
 	w.ResponseWriter.WriteHeader(w.status)
-	_, _ = w.ResponseWriter.Write(w.prefixBuf.Bytes())
-	return w.ResponseWriter.Write(w.buf.Bytes())
+	_, err = w.ResponseWriter.Write(w.buf.Bytes())
+	return err
 }
 
 // WriteHeader - wrap the write header
@@ -132,15 +191,17 @@ func (live *LiveReload) GetMiddleware(next http.Handler) http.Handler {
 			strings.HasSuffix(r.RequestURI, ".html") {
 
 			if ww.Status() == 200 {
-				ww.PrefixWithLogs(live.logReader.Logs())
+				if len(live.logReader.Logs()) > 0 {
+					ww.AddHtmlInject(kibbleErrorMessage)
+				}
 
 				if live.reloadBrowserOnFileChange {
-					_, _ = ww.Write([]byte(embed))
+					ww.AddHtmlInject(liveReloadEmbed)
 				}
 			}
 		}
 
-		_, _ = ww.Done()
+		ww.Done() // TODO: error handling might be nice...
 	})
 }
 
