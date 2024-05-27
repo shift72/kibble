@@ -156,11 +156,26 @@ func (w *WrapperResponseWriter) Done() (err error) {
 		// bit flaky as it assumes "sensible" html style on the body closing tag
 		endOfBodyIndex := bytes.LastIndex(responseBytes, []byte("</body>"))
 		if endOfBodyIndex >= 0 {
-			w.Header().Set("Content-Length", strconv.Itoa(w.buf.Len()+w.htmlToInject.Len()))
+			chunks := [][]byte{
+				responseBytes[0:endOfBodyIndex],
+				w.htmlToInject.Bytes(),
+				responseBytes[endOfBodyIndex:],
+			}
+
+			length := 0
+			for _, chunk := range chunks {
+				length += len(chunk)
+			}
+
+			w.Header().Set("Content-Length", strconv.Itoa(length))
 			w.ResponseWriter.WriteHeader(w.status)
-			w.ResponseWriter.Write(responseBytes[0:endOfBodyIndex])
-			w.ResponseWriter.Write(w.htmlToInject.Bytes())
-			w.ResponseWriter.Write(responseBytes[endOfBodyIndex:])
+
+			for _, chunk := range chunks {
+				if _, err = w.ResponseWriter.Write(chunk); err != nil {
+					return err
+				}
+			}
+
 			return nil
 		}
 
@@ -201,7 +216,9 @@ func (live *LiveReload) GetMiddleware(next http.Handler) http.Handler {
 			}
 		}
 
-		ww.Done() // TODO: error handling might be nice...
+		if err := ww.Done(); err != nil {
+			panic(err)
+		}
 	})
 }
 
