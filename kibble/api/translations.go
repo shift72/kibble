@@ -44,7 +44,7 @@ func LoadAllTranslations(cfg *models.Config, site *models.Site) error {
 		site.Translations[formatPathLocale(code)] = wholeLanguage
 	}
 
-	log.Infof("Translations Recieved and Parsed")
+	log.Infof("Translations received and parsed")
 	return nil
 }
 
