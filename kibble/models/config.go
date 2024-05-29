@@ -38,7 +38,8 @@ type Config struct {
 
 // LiveReloadConfig - configuration options for the live_reloader
 type LiveReloadConfig struct {
-	IgnoredPaths []string `json:"ignoredPaths"`
+	IgnoredPaths  []string `json:"ignoredPaths"`
+	LaunchBrowser bool     `json:"launchBrowser"`
 }
 
 // PrivateConfig - config loaded from
