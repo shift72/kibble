@@ -47,6 +47,9 @@ func LoadConfig(runAsAdmin bool, apiKey string, disableCache bool) *models.Confi
 	cfg := models.Config{
 		RunAsAdmin:   runAsAdmin,
 		DisableCache: disableCache,
+		LiveReload: models.LiveReloadConfig{
+			LaunchBrowser: true,
+		},
 	}
 	err = json.Unmarshal(file, &cfg)
 	if err != nil {

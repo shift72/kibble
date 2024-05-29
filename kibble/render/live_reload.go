@@ -277,14 +277,16 @@ func (live *LiveReload) StartLiveReload(port int32, fn func()) {
 		}
 	}()
 
-	// launch the browser
-	go func() {
+	if live.config.LaunchBrowser {
+		// launch the browser
+		go func() {
 
-		// wait for the channel to be rendered
-		<-rendered
+			// wait for the channel to be rendered
+			<-rendered
 
-		utils.LaunchBrowser(url)
-	}()
+			utils.LaunchBrowser(url)
+		}()
+	}
 
 	// useful to trigger one new reload
 	changesChannel <- true
