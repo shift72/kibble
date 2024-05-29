@@ -1,6 +1,13 @@
 # Change log
 
 ## [Unreleased]
+ - Improved dev-server error feedback: it now injects an error notification into
+   the end of the HTML body rather than generating invalid HTML on every page.
+   This means you can still use the site even if there's a data error causing 
+   some pages to not render correctly (an issue that can be invisible in prod)
+ - Add option to disable launching browser in dev mode. Setting 
+   `liveReload.launchBrowser = false` in kibble.json will stop it popping open 
+   a new tab every time you restart the dev server.
 
 ## [0.17.5] - 2024-04-24
   - Stable release it deploys
