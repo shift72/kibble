@@ -1,6 +1,8 @@
 # Change log
 
 ## [Unreleased]
+
+## [0.17.6] - 2024-05-30
  - Improved dev-server error feedback: it now injects an error notification into
    the end of the HTML body rather than generating invalid HTML on every page.
    This means you can still use the site even if there's a data error causing 
