@@ -15,9 +15,12 @@
 package cmd
 
 import (
+	"fmt"
 	"kibble/config"
 	"kibble/render"
 	"kibble/utils"
+	"os"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -25,6 +28,9 @@ import (
 var port int32
 var watch bool
 var serve bool
+
+var configOverrides map[string]string = make(map[string]string)
+var toggleOverrides map[string]string = make(map[string]string)
 
 // renderCmd represents the render command
 var renderCmd = &cobra.Command{
@@ -34,15 +40,27 @@ var renderCmd = &cobra.Command{
 
 Kibble is used to build and develop custom sites to run on the SHIFT72 platform.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
+		for k, v := range configOverrides {
+			cfg.ConfigOverrides[k] = v
+		}
+
+		for k, v := range toggleOverrides {
+			value, err := strconv.ParseBool(v)
+			if err != nil {
+				fmt.Printf("--toggle %s: invalid boolean value %s\n", k, v)
+				os.Exit(-1)
+			}
+
+			cfg.ToggleOverrides[k] = value
+		}
 
 		if watch || serve {
 			log := utils.ConfigureWatchedLogging(utils.ConvertToLoggingLevel(verbose))
-			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 			_ = config.CheckVersion(cfg)
 			render.Watch(cfg.SourcePath(), cfg.BuildPath(), cfg, port, log, watch)
 		} else {
 			utils.ConfigureStandardLogging(utils.ConvertToLoggingLevel(verbose))
-			cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
 			_ = config.CheckVersion(cfg)
 			render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)
 		}
@@ -54,4 +72,6 @@ func init() {
 	renderCmd.Flags().Int32VarP(&port, "port", "p", 8080, "Port to listen on")
 	renderCmd.Flags().BoolVar(&watch, "watch", false, "Watch for changes")
 	renderCmd.Flags().BoolVar(&serve, "serve", false, "Serve the site, but dont watch for changes")
+	renderCmd.Flags().StringToStringVar(&configOverrides, "config", make(map[string]string), "Set site configuration values for this build")
+	renderCmd.Flags().StringToStringVar(&toggleOverrides, "toggle", make(map[string]string), "Set site feature toggles for this build")
 }

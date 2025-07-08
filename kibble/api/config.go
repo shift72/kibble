@@ -51,6 +51,11 @@ func LoadConfig(cfg *models.Config) (models.ServiceConfig, error) {
 			config[k] = v
 		}
 	}
+
+	for k, v := range cfg.ConfigOverrides {
+		config[k] = v
+	}
+
 	return config, nil
 }
 
@@ -58,7 +63,7 @@ func LoadConfig(cfg *models.Config) (models.ServiceConfig, error) {
 func LoadFeatureToggles(cfg *models.Config) (models.FeatureToggles, error) {
 
 	var loaded models.FeatureToggles
-	config := make(models.FeatureToggles)
+	toggles := make(models.FeatureToggles)
 
 	paths := []string{
 		fmt.Sprintf("%s/services/shopping/feature_toggles", cfg.SiteURL),
@@ -79,8 +84,13 @@ func LoadFeatureToggles(cfg *models.Config) (models.FeatureToggles, error) {
 		}
 
 		for k, v := range loaded {
-			config[k] = v
+			toggles[k] = v
 		}
 	}
-	return config, nil
+
+	for k, v := range cfg.ToggleOverrides {
+		toggles[k] = v
+	}
+
+	return toggles, nil
 }
