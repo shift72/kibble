@@ -34,6 +34,10 @@ type Config struct {
 	DefaultDateFormat         string                    `json:"defaultDateFormat"`
 	DefaultTimeFormat         string                    `json:"defaultTimeFormat"`
 	CoreTemplateVersion       string                    `json:"coreTemplateVersion"`
+
+	// allows overriding config variables
+	ConfigOverrides map[string]string `json:"configOverrides"`
+	ToggleOverrides map[string]bool   `json:"toggleOverrides"`
 }
 
 // LiveReloadConfig - configuration options for the live_reloader

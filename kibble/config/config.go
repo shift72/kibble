@@ -50,6 +50,8 @@ func LoadConfig(runAsAdmin bool, apiKey string, disableCache bool) *models.Confi
 		LiveReload: models.LiveReloadConfig{
 			LaunchBrowser: true,
 		},
+		ConfigOverrides: map[string]string{},
+		ToggleOverrides: map[string]bool{},
 	}
 	err = json.Unmarshal(file, &cfg)
 	if err != nil {
