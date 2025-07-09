@@ -1,6 +1,9 @@
 # Change log
 
 ## [Unreleased]
+ - Add `--config`/`--toggle` CLI options and `configOverrides`/`toggleOverrides`
+   kibble.json to override API config/feature toggle values. This is intended
+   to make it easier to test template features during local dev.
 
 ## [0.17.6] - 2024-05-30
  - Improved dev-server error feedback: it now injects an error notification into
