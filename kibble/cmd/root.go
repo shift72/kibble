@@ -15,9 +15,9 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
+	logging "github.com/op/go-logging"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +25,8 @@ var runAsAdmin bool
 var disableCache bool
 var verbose bool
 var apiKey string
+
+var log *logging.Logger
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -38,12 +40,13 @@ for the SHIFT72 Video Platform.`,
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		log.Errorf("%v", err)
 		os.Exit(-1)
 	}
 }
 
 func init() {
+	log = logging.MustGetLogger("kibble")
 	RootCmd.PersistentFlags().BoolVar(&runAsAdmin, "admin", false, "Render using admin credentials")
 	RootCmd.PersistentFlags().StringVar(&apiKey, "api-key", "", "Api key to authenicate with")
 	RootCmd.PersistentFlags().BoolVar(&disableCache, "disable-cache", false, "Prevent caching")

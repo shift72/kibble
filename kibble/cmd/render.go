@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"fmt"
 	"kibble/config"
 	"kibble/render"
 	"kibble/utils"
@@ -40,7 +39,11 @@ var renderCmd = &cobra.Command{
 
 Kibble is used to build and develop custom sites to run on the SHIFT72 platform.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		logLevel := utils.ConvertToLoggingLevel(verbose)
+		utils.ConfigureStandardLogging(logLevel)
+
 		cfg := config.LoadConfig(runAsAdmin, apiKey, disableCache)
+		_ = config.CheckVersion(cfg)
 		for k, v := range configOverrides {
 			cfg.ConfigOverrides[k] = v
 		}
@@ -48,20 +51,17 @@ Kibble is used to build and develop custom sites to run on the SHIFT72 platform.
 		for k, v := range toggleOverrides {
 			value, err := strconv.ParseBool(v)
 			if err != nil {
-				fmt.Printf("--toggle %s: invalid boolean value %s\n", k, v)
-				os.Exit(-1)
+				log.Errorf("--toggle %s: invalid boolean value %s\n", k, v)
+				os.Exit(1)
 			}
 
 			cfg.ToggleOverrides[k] = value
 		}
 
 		if watch || serve {
-			log := utils.ConfigureWatchedLogging(utils.ConvertToLoggingLevel(verbose))
-			_ = config.CheckVersion(cfg)
-			render.Watch(cfg.SourcePath(), cfg.BuildPath(), cfg, port, log, watch)
+			watchLogger := utils.ConfigureWatchedLogging(logLevel)
+			render.Watch(cfg.SourcePath(), cfg.BuildPath(), cfg, port, watchLogger, watch)
 		} else {
-			utils.ConfigureStandardLogging(utils.ConvertToLoggingLevel(verbose))
-			_ = config.CheckVersion(cfg)
 			render.Render(cfg.SourcePath(), cfg.BuildPath(), cfg)
 		}
 	},
