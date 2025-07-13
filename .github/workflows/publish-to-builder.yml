@@ -1,4 +1,4 @@
-name: Publish kibble version to API
+name: Publish site builder version
 run-name: Publish kibble version ${{inputs.version}} to ${{inputs.env}}
 
 on: 
@@ -33,6 +33,7 @@ jobs:
       - name: Publishing version to ${{inputs.env}}
         run: |
           curl '${{inputs.env == 'prod' && 'https://api.shift72.com' || 'https://staging-api.shift72.com'}}/services/users/v1/builder_versions' \
+            --fail-with-body \
             -X POST \
             -H 'X-Client-Id: 0' \
             -H 'X-Auth-Token: ${{inputs.env == 'prod' && secrets.S72_PUBLISH_KIBBLE_VERSION_API_KEY_PROD || secrets.S72_PUBLISH_KIBBLE_VERSION_API_KEY_STAGING}}' \
