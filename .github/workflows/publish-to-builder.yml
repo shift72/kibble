@@ -1,0 +1,41 @@
+name: Publish kibble version to API
+run-name: Build and deploy ${{github.ref_name}}
+
+on: 
+  workflow_call:
+      inputs:
+        env:
+          type: string
+          required: true
+        version:
+          type: string
+          required: true
+
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Environment'
+        type: choice
+        default: staging
+        required: true
+        options:
+          - staging
+          - prod
+      version:
+        description: Kibble semver version
+        type: string
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publishing version to ${{inputs.env}}
+        run: |
+          curl '${{inputs.env == 'prod' && 'https://api.shift72.com' || 'https://staging-api.shift72.com'}}/services/users/v1/builder_versions' \
+            -X POST \
+            -H 'X-Client-Id: 0' \
+            -H 'X-Auth-Token: ${{inputs.env == 'prod' && secrets.S72_PUBLISH_KIBBLE_VERSION_API_KEY_PROD || secrets.S72_PUBLISH_KIBBLE_VERSION_API_KEY_STAGING}}' \
+            -H 'Content-Type: application/json' \
+            -d '{"version": "${{inputs.version}}", "location_uri": "s3://shift72-sites/builder/${{inputs.version}}/kibble"}'
+          
