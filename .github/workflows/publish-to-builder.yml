@@ -1,5 +1,5 @@
 name: Publish kibble version to API
-run-name: Build and deploy ${{github.ref_name}}
+run-name: Publish kibble version ${{inputs.version}} to ${{inputs.env}}
 
 on: 
   workflow_call:
