@@ -39,7 +39,19 @@ to all these steps.
 npx release-it
 ```
 
-### c. Register new build in uber admin
+### c. Push new site builder version to db
+
+After a new kibble build has been released, it needs to be added to the versions
+available on the site builder for both staging and prod.
+
+The publish release action automatically pushes it to staging, but the prod
+release is still manual.
+
+The easy way is the Github action: "Publish Site Builder Version".
+
+Pick the env and enter the kibble semver version e.g. "0.17.7" (no v prefix!)
+
+OR, do it manually via uberadmin:
 
 Manual step, create rows for the staging and production versions
   * http://localhost:10001/admin/user~builder_version
