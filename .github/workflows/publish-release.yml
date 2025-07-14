@@ -102,3 +102,12 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  publish-staging-builder:
+    name: Publish staging builder
+    needs: publish-npm
+    uses: ./.github/workflows/publish-to-builder.yml
+    secrets: inherit
+    with:
+      env: staging
+      version: ${{github.ref_name}}
+
