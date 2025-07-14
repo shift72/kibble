@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.17.8] - 2025-07-14
+
 - No code changes since last release
 
 ## [0.17.7] - 2025-07-10
