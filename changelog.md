@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- No code changes since last release
+
 ## [0.17.7] - 2025-07-10
  - Add `--config`/`--toggle` CLI options and `configOverrides`/`toggleOverrides`
    kibble.json to override API config/feature toggle values. This is intended
