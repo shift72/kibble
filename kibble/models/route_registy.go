@@ -15,6 +15,7 @@
 package models
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -22,17 +23,18 @@ import (
 
 // Route - represents a route for rendering and
 type Route struct {
-	Name                string       `json:"name"`
-	URLPath             string       `json:"urlPath"`
-	TemplatePath        string       `json:"templatePath"`
-	PartialURLPath      string       `json:"partialUrlPath"`
-	PartialTemplatePath string       `json:"partialTemplatePath"`
-	DataSource          string       `json:"datasource"`
-	ResolvedDataSource  DataSource   `json:"-"`
-	ResolvedEntityType  reflect.Type `json:"-"`
-	PageSize            int          `json:"pageSize"`
-	Pagination          Pagination   `json:"-"`
-	DefaultLanguageOnly bool         `json:"defaultLanguageOnly"`
+	Name                string          `json:"name"`
+	URLPath             string          `json:"urlPath"`
+	TemplatePath        string          `json:"templatePath"`
+	PartialURLPath      string          `json:"partialUrlPath"`
+	PartialTemplatePath string          `json:"partialTemplatePath"`
+	DataSource          string          `json:"datasource"`
+	ResolvedDataSource  DataSource      `json:"-"`
+	ResolvedEntityType  reflect.Type    `json:"-"`
+	PageSize            int             `json:"pageSize"`
+	Pagination          Pagination      `json:"-"`
+	DefaultLanguageOnly bool            `json:"defaultLanguageOnly"`
+	Options             json.RawMessage `json:"options"` // extra options, used by the data source implementation.
 }
 
 // Pagination describes a single page of results
