@@ -70,6 +70,7 @@ func (p pageV1) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		},
 		PageCollections: make([]models.PageCollection, 0),
 		CustomFields:    p.CustomFields,
+		PublishedDate:   utils.ParseTimeFromString(p.PublishedDate),
 	}
 
 	page.Seo = models.Seo{
@@ -132,6 +133,7 @@ type pageV1 struct {
 	Title          string                 `json:"title"`
 	URL            string                 `json:"url"`
 	CustomFields   map[string]interface{} `json:"custom"`
+	PublishedDate  string                 `json:"published_date"`
 }
 
 type filmSummary struct {

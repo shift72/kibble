@@ -14,6 +14,8 @@
 
 package models
 
+import "time"
+
 // PageCollection - part of a page
 type PageCollection struct {
 	ID          int
@@ -42,6 +44,7 @@ type Page struct {
 	URL             string
 	CustomFields    CustomFields
 	Plans           []Plan
+	PublishedDate   time.Time
 }
 
 // Pages -
