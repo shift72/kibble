@@ -82,13 +82,21 @@ func (ds *PageDataSource) Iterator(ctx models.RenderContext, renderer models.Ren
 		// don't render external pages
 		if p.PageType != "external" {
 			templatePath := strings.Replace(ctx.Route.TemplatePath, ":type", p.PageType, 1)
-			errCount += renderer.Render(templatePath, ds.GetRouteForEntity(ctx, &p), data)
+			if renderer.HasTemplate(templatePath) || !strings.Contains(ctx.Route.TemplatePath, ":type") {
+				errCount += renderer.Render(templatePath, ds.GetRouteForEntity(ctx, &p), data)
+			} else {
+				log.Warning("Template not found for page type '%s': %s", p.PageType, templatePath)
+			}
 		}
 
 		// now partial end points
 		if ctx.Route.HasPartial() {
 			templatePath := strings.Replace(ctx.Route.PartialTemplatePath, ":type", p.PageType, 1)
-			errCount += renderer.Render(templatePath, ds.GetPartialRouteForEntity(ctx, &p), data)
+			if renderer.HasTemplate(templatePath) || !strings.Contains(ctx.Route.PartialTemplatePath, ":type") {
+				errCount += renderer.Render(templatePath, ds.GetPartialRouteForEntity(ctx, &p), data)
+			} else {
+				log.Warning("Partial Template not found for page type '%s': %s", p.PageType, templatePath)
+			}
 		}
 
 	}

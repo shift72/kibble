@@ -30,4 +30,5 @@ type RenderContext struct {
 type Renderer interface {
 	Initialise()
 	Render(templatePath string, filePath string, data jet.VarMap) (errorCount int)
+	HasTemplate(templatePath string) bool
 }

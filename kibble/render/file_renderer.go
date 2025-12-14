@@ -114,6 +114,11 @@ func (c FileRenderer) Render(templatePath string, filePath string, data jet.VarM
 	return errorCount
 }
 
+func (c FileRenderer) HasTemplate(templatePath string) bool {
+	_, err := c.view.GetTemplate(templatePath)
+	return err == nil
+}
+
 func writeFile(filename string, data []byte) error {
 	file, err := os.Create(filename)
 	if err != nil {
