@@ -93,6 +93,17 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 		sortPages(pages, ParseSortKeys(options.SortBy))
 	}
 
+	getPaginationUrl := func(pageIndex int) string {
+		var urlPath string
+		if len(ctx.Route.FirstPageURLPath) > 0 && pageIndex <= 1 {
+			urlPath = ctx.Route.FirstPageURLPath
+		} else {
+			urlPath = ctx.Route.URLPath
+		}
+
+		return strings.Replace(urlPath, ":index", strconv.Itoa(pageIndex), 1)
+	}
+
 	// rule for page 1
 	if ctx.Route.PageSize > 0 {
 
@@ -113,19 +124,14 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 			ctx.Route.Pagination.PreviousURL = ""
 			ctx.Route.Pagination.NextURL = ""
 
-			path := strings.Replace(ctx.Route.URLPath, ":index",
-				strconv.Itoa(ctx.Route.Pagination.Index), 1)
+			path := getPaginationUrl(ctx.Route.Pagination.Index)
 
 			if pi > 0 {
-				ctx.Route.Pagination.PreviousURL =
-					strings.Replace(ctx.Route.URLPath, ":index",
-						strconv.Itoa(ctx.Route.Pagination.Index-1), 1)
+				ctx.Route.Pagination.PreviousURL = getPaginationUrl(ctx.Route.Pagination.Index - 1)
 			}
 
 			if pi < ctx.Route.Pagination.Total-1 {
-				ctx.Route.Pagination.NextURL =
-					strings.Replace(ctx.Route.URLPath, ":index",
-						strconv.Itoa(ctx.Route.Pagination.Index+1), 1)
+				ctx.Route.Pagination.NextURL = getPaginationUrl(ctx.Route.Pagination.Index + 1)
 			}
 
 			startIndex := pi * ctx.Route.PageSize

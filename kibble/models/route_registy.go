@@ -25,6 +25,7 @@ import (
 type Route struct {
 	Name                string          `json:"name"`
 	URLPath             string          `json:"urlPath"`
+	FirstPageURLPath    string          `json:"firstPageUrlPath"`
 	TemplatePath        string          `json:"templatePath"`
 	PartialURLPath      string          `json:"partialUrlPath"`
 	PartialTemplatePath string          `json:"partialTemplatePath"`
