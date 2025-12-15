@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"reflect"
 	"sort"
-	"strconv"
 	"strings"
 
 	"kibble/models"
@@ -93,82 +92,21 @@ func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer model
 		sortPages(pages, ParseSortKeys(options.SortBy))
 	}
 
-	getPaginationUrl := func(pageIndex int) string {
-		var urlPath string
-		if len(ctx.Route.FirstPageURLPath) > 0 && pageIndex <= 1 {
-			urlPath = ctx.Route.FirstPageURLPath
-		} else {
-			urlPath = ctx.Route.URLPath
-		}
-
-		return strings.Replace(urlPath, ":index", strconv.Itoa(pageIndex), 1)
+	if ctx.Route.PageSize > 0 && !strings.Contains(ctx.Route.URLPath, ":index") {
+		panic(fmt.Errorf("page route is missing an :index. Either add and index placeholder or remove the pageSize"))
 	}
 
-	// rule for page 1
-	if ctx.Route.PageSize > 0 {
-
-		if !strings.Contains(ctx.Route.URLPath, ":index") {
-			panic(fmt.Errorf("Page route is missing an :index. Either add and index placeholder or remove the pageSize"))
-		}
-
-		ctx.Route.Pagination = models.Pagination{
-			Index: 1,
-			Total: (len(pages) / ctx.Route.PageSize) + 1,
-			Size:  ctx.Route.PageSize,
-		}
-
-		// page count
-		for pi := 0; pi < ctx.Route.Pagination.Total; pi++ {
-
-			ctx.Route.Pagination.Index = pi + 1
-			ctx.Route.Pagination.PreviousURL = ""
-			ctx.Route.Pagination.NextURL = ""
-
-			path := getPaginationUrl(ctx.Route.Pagination.Index)
-
-			if pi > 0 {
-				ctx.Route.Pagination.PreviousURL = getPaginationUrl(ctx.Route.Pagination.Index - 1)
-			}
-
-			if pi < ctx.Route.Pagination.Total-1 {
-				ctx.Route.Pagination.NextURL = getPaginationUrl(ctx.Route.Pagination.Index + 1)
-			}
-
-			startIndex := pi * ctx.Route.PageSize
-			endIndex := ((pi * ctx.Route.PageSize) + ctx.Route.PageSize) - 1
-			if endIndex >= len(pages) {
-				endIndex = len(pages) - 1
-			}
-
-			clonedPages := make([]*models.Page, endIndex-startIndex+1)
-			for i := startIndex; i <= endIndex; i++ {
-				clonedPages[i-startIndex] = transformPage(pages[i])
-			}
-
-			vars := make(jet.VarMap)
-			vars.Set("pages", clonedPages)
-			vars.Set("pagination", ctx.Route.Pagination)
-			vars.Set("site", ctx.Site)
-			errCount += renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+path, vars)
-		}
-	} else {
-
-		ctx.Route.Pagination = models.Pagination{
-			Index: 1,
-			Total: len(pages),
-			Size:  len(pages),
-		}
-
-		clonedPages := make([]*models.Page, len(pages))
-		for i, f := range pages {
-			clonedPages[i] = transformPage(f)
+	for _, pagination := range ctx.Paginate(len(pages)) {
+		clonedPages := make([]*models.Page, pagination.ItemCount)
+		for i := 0; i < pagination.ItemCount; i++ {
+			clonedPages[i] = transformPage(pages[pagination.ItemSliceStart+i])
 		}
 
 		vars := make(jet.VarMap)
 		vars.Set("pages", clonedPages)
-		vars.Set("pagination", ctx.Route.Pagination)
+		vars.Set("pagination", pagination)
 		vars.Set("site", ctx.Site)
-		errCount += renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+ctx.Route.URLPath, vars)
+		errCount += renderer.Render(ctx.Route.TemplatePath, pagination.CurrentURL, vars)
 	}
 
 	return
