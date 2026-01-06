@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+ - Add support for 'post' page type
+ - Don't error if template doesn't support a particular page type -- warn and skip.
+ - PageIndex datasource: support filtering by page type and sorting criteria. 
+   Improve pagination support for creating a blog post index route. 
+
 ## [0.17.8] - 2025-07-14
 
 - No code changes since last release
