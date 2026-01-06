@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.17.9] - 2026-01-06
+
  - Add support for 'post' page type
  - Don't error if template doesn't support a particular page type -- warn and skip.
  - PageIndex datasource: support filtering by page type and sorting criteria. 
