@@ -40,3 +40,7 @@ func (c *MockRenderer) Render(templatePath string, filePath string, data jet.Var
 	c.Data = data
 	return
 }
+
+func (c *MockRenderer) HasTemplate(templatePath string) bool {
+	return true
+}

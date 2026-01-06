@@ -15,6 +15,7 @@
 package models
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"reflect"
@@ -22,42 +23,24 @@ import (
 
 // Route - represents a route for rendering and
 type Route struct {
-	Name                string       `json:"name"`
-	URLPath             string       `json:"urlPath"`
-	TemplatePath        string       `json:"templatePath"`
-	PartialURLPath      string       `json:"partialUrlPath"`
-	PartialTemplatePath string       `json:"partialTemplatePath"`
-	DataSource          string       `json:"datasource"`
-	ResolvedDataSource  DataSource   `json:"-"`
-	ResolvedEntityType  reflect.Type `json:"-"`
-	PageSize            int          `json:"pageSize"`
-	Pagination          Pagination   `json:"-"`
-	DefaultLanguageOnly bool         `json:"defaultLanguageOnly"`
-}
-
-// Pagination describes a single page of results
-type Pagination struct {
-	Index       int
-	Size        int
-	Total       int
-	PreviousURL string
-	NextURL     string
+	Name                string          `json:"name"`
+	URLPath             string          `json:"urlPath"`
+	FirstPageURLPath    string          `json:"firstPageUrlPath"`
+	TemplatePath        string          `json:"templatePath"`
+	PartialURLPath      string          `json:"partialUrlPath"`
+	PartialTemplatePath string          `json:"partialTemplatePath"`
+	DataSource          string          `json:"datasource"`
+	ResolvedDataSource  DataSource      `json:"-"`
+	ResolvedEntityType  reflect.Type    `json:"-"`
+	PageSize            int             `json:"pageSize"`
+	DefaultLanguageOnly bool            `json:"defaultLanguageOnly"`
+	Options             json.RawMessage `json:"options"` // extra options, used by the data source implementation.
 }
 
 // Clone - create a copy of the route
 func (r *Route) Clone() *Route {
-	return &Route{
-		Name:                r.Name,
-		URLPath:             r.URLPath,
-		TemplatePath:        r.TemplatePath,
-		PartialURLPath:      r.PartialURLPath,
-		PartialTemplatePath: r.PartialTemplatePath,
-		DataSource:          r.DataSource,
-		ResolvedDataSource:  r.ResolvedDataSource,
-		ResolvedEntityType:  r.ResolvedEntityType,
-		PageSize:            r.PageSize,
-		Pagination:          r.Pagination,
-	}
+	clone := *r
+	return &clone
 }
 
 // HasPartial returns whether the route has partial path (url and template) definitions

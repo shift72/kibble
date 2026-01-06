@@ -104,3 +104,8 @@ func (c *InMemoryRenderer) Render(templatePath string, filePath string, data jet
 	c.Results = append(c.Results, result)
 	return
 }
+
+func (c *InMemoryRenderer) HasTemplate(templatePath string) bool {
+	_, err := c.View.GetTemplate(templatePath)
+	return err == nil
+}

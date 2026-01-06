@@ -15,9 +15,10 @@
 package datastore
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
-	"strconv"
+	"sort"
 	"strings"
 
 	"kibble/models"
@@ -38,6 +39,21 @@ var indexArgs = []models.RouteArgument{
 // PageIndexDataSource - a list of all Pages
 type PageIndexDataSource struct{}
 
+type pageIndexDataSourceOptions struct {
+	PageTypes []string `json:"pageTypes"`
+	SortBy    []string `json:"sortBy"`
+}
+
+func (opts pageIndexDataSourceOptions) IsAllowedPageType(pageType string) bool {
+	for _, pt := range opts.PageTypes {
+		if pt == pageType {
+			return true
+		}
+	}
+
+	return len(opts.PageTypes) == 0
+}
+
 // GetName - returns the name of the datasource
 func (ds *PageIndexDataSource) GetName() string {
 	return "PageIndex"
@@ -56,76 +72,41 @@ func (ds *PageIndexDataSource) GetEntityType() reflect.Type {
 // Iterator - return a list of all Pages, iteration of 1
 func (ds *PageIndexDataSource) Iterator(ctx models.RenderContext, renderer models.Renderer) (errCount int) {
 
-	// rule for page 1
-	if ctx.Route.PageSize > 0 {
-
-		if !strings.Contains(ctx.Route.URLPath, ":index") {
-			panic(fmt.Errorf("Page route is missing an :index. Either add and index placeholder or remove the pageSize"))
+	var options pageIndexDataSourceOptions
+	if len(ctx.Route.Options) > 0 {
+		err := json.Unmarshal(ctx.Route.Options, &options)
+		if err != nil {
+			panic(fmt.Errorf("unable to parse datasource options: %w", err))
 		}
+	}
 
-		ctx.Route.Pagination = models.Pagination{
-			Index: 1,
-			Total: (len(ctx.Site.Pages) / ctx.Route.PageSize) + 1,
-			Size:  ctx.Route.PageSize,
+	pages := make(models.Pages, 0, len(ctx.Site.Pages))
+	for _, page := range ctx.Site.Pages {
+		if !options.IsAllowedPageType(page.PageType) {
+			continue
 		}
+		pages = append(pages, page)
+	}
 
-		// page count
-		for pi := 0; pi < ctx.Route.Pagination.Total; pi++ {
+	if len(options.SortBy) > 0 {
+		sortPages(pages, ParseSortKeys(options.SortBy))
+	}
 
-			ctx.Route.Pagination.Index = pi + 1
-			ctx.Route.Pagination.PreviousURL = ""
-			ctx.Route.Pagination.NextURL = ""
+	if ctx.Route.PageSize > 0 && !strings.Contains(ctx.Route.URLPath, ":index") {
+		panic(fmt.Errorf("page route is missing an :index. Either add and index placeholder or remove the pageSize"))
+	}
 
-			path := strings.Replace(ctx.Route.URLPath, ":index",
-				strconv.Itoa(ctx.Route.Pagination.Index), 1)
-
-			if pi > 0 {
-				ctx.Route.Pagination.PreviousURL =
-					strings.Replace(ctx.Route.URLPath, ":index",
-						strconv.Itoa(ctx.Route.Pagination.Index-1), 1)
-			}
-
-			if pi < ctx.Route.Pagination.Total-1 {
-				ctx.Route.Pagination.NextURL =
-					strings.Replace(ctx.Route.URLPath, ":index",
-						strconv.Itoa(ctx.Route.Pagination.Index+1), 1)
-			}
-
-			startIndex := pi * ctx.Route.PageSize
-			endIndex := ((pi * ctx.Route.PageSize) + ctx.Route.PageSize) - 1
-			if endIndex >= len(ctx.Site.Pages) {
-				endIndex = len(ctx.Site.Pages) - 1
-			}
-
-			clonedPages := make([]*models.Page, endIndex-startIndex+1)
-			for i := startIndex; i <= endIndex; i++ {
-				clonedPages[i-startIndex] = transformPage(ctx.Site.Pages[i])
-			}
-
-			vars := make(jet.VarMap)
-			vars.Set("pages", clonedPages)
-			vars.Set("pagination", ctx.Route.Pagination)
-			vars.Set("site", ctx.Site)
-			errCount += renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+path, vars)
-		}
-	} else {
-
-		ctx.Route.Pagination = models.Pagination{
-			Index: 1,
-			Total: len(ctx.Site.Pages),
-			Size:  len(ctx.Site.Pages),
-		}
-
-		clonedPages := make([]*models.Page, len(ctx.Site.Pages))
-		for i, f := range ctx.Site.Pages {
-			clonedPages[i] = transformPage(f)
+	for _, pagination := range ctx.Paginate(len(pages)) {
+		clonedPages := make([]*models.Page, pagination.ItemCount)
+		for i := 0; i < pagination.ItemCount; i++ {
+			clonedPages[i] = transformPage(pages[pagination.ItemSliceStart+i])
 		}
 
 		vars := make(jet.VarMap)
 		vars.Set("pages", clonedPages)
-		vars.Set("pagination", ctx.Route.Pagination)
+		vars.Set("pagination", pagination)
 		vars.Set("site", ctx.Site)
-		errCount += renderer.Render(ctx.Route.TemplatePath, ctx.RoutePrefix+ctx.Route.URLPath, vars)
+		errCount += renderer.Render(ctx.Route.TemplatePath, pagination.CurrentURL, vars)
 	}
 
 	return
@@ -154,4 +135,58 @@ func transformPage(f models.Page) *models.Page {
 	}
 
 	return &f
+}
+
+type sortKey struct {
+	Field string
+	Desc  bool
+}
+
+func ParseSortKeys(raw []string) []sortKey {
+	keys := make([]sortKey, 0, len(raw))
+	for _, s := range raw {
+		parts := strings.SplitN(s, ":", 2)
+		key := sortKey{Field: parts[0]}
+		if len(parts) == 2 && strings.EqualFold(parts[1], "desc") {
+			key.Desc = true
+		}
+		keys = append(keys, key)
+	}
+	return keys
+}
+
+func sortPages(pages models.Pages, keys []sortKey) {
+	// Apply from last to first so earlier keys win (like SQL ORDER BY)
+	for i := len(keys) - 1; i >= 0; i-- {
+		key := keys[i]
+
+		sort.SliceStable(pages, func(i, j int) bool {
+			pi, pj := pages[i], pages[j]
+
+			switch key.Field {
+			case "published_date":
+				// handle equal first so we don't randomly flip
+				if pi.PublishedDate.Equal(pj.PublishedDate) {
+					return false
+				}
+				if key.Desc {
+					return pi.PublishedDate.After(pj.PublishedDate)
+				}
+				return pi.PublishedDate.Before(pj.PublishedDate)
+
+			case "title":
+				if pi.Title == pj.Title {
+					return false
+				}
+				if key.Desc {
+					return pi.Title > pj.Title
+				}
+				return pi.Title < pj.Title
+
+			default:
+				// unknown field → no-op for this pass
+				return false
+			}
+		})
+	}
 }

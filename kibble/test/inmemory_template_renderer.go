@@ -47,3 +47,7 @@ func (c *InMemoryTemplateRenderer) Render(templatePath string, filePath string, 
 
 	return
 }
+
+func (c *InMemoryTemplateRenderer) HasTemplate(templatePath string) bool {
+	return true
+}
