@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.17.10] - 2026-01-08
+
  - Convert CRLF line endings to LF because blackfriday (markdown lib) doesn't 
    handle them properly
 
