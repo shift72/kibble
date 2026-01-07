@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+ - Convert CRLF line endings to LF because blackfriday (markdown lib) doesn't 
+   handle them properly
+
 ## [0.17.9] - 2026-01-06
 
  - Add support for 'post' page type
