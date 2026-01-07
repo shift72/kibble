@@ -39,6 +39,14 @@ func TestMarkdownContent(t *testing.T) {
 	ConfigureShortcodeTemplatePath(cfg)
 	assert.Equal(t, "<h1>ONE</h1>\n", ApplyContentTransforms("# ONE"))
 }
+
+func TestMarkdownWithCRLFEndings(t *testing.T) {
+	// blackfriday doesn't automatically handle \r\n line endings so we convert
+	// to \n first.
+	ConfigureShortcodeTemplatePath(cfg)
+	assert.Equal(t, "<h1>ONE</h1>\n\n<p>Paragraph 1</p>\n\n<p>Paragraph 2</p>\n", ApplyContentTransforms("# ONE\r\n\r\nParagraph 1\r\n\r\nParagraph 2"))
+}
+
 func TestEchoEmbeddedTemplateContent(t *testing.T) {
 	ConfigureShortcodeTemplatePath(cfg)
 	assert.Equal(t,

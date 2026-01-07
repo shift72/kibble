@@ -205,8 +205,9 @@ func CreateTemplateView(routeRegistry *RouteRegistry, trans i18n.TranslateFunc, 
 // ApplyContentTransforms - add the markdown / sanitization / shortcodes
 func ApplyContentTransforms(data string) string {
 
-	// apply mark down
-	unsafe := blackfriday.Run([]byte(data))
+	// apply mark down.
+	// note: converting CRLF -> LF due to https://github.com/russross/blackfriday/issues/423
+	unsafe := blackfriday.Run([]byte(strings.ReplaceAll(data, "\r\n", "\n")))
 
 	// apply the templates
 	return insertTemplates(string(unsafe))
