@@ -171,8 +171,10 @@ func (f filmV2) mapToModel(serviceConfig models.ServiceConfig, itemIndex models.
 		Refs: models.FilmRefs{
 			LetterboxdID: f.Refs.LetterboxdID,
 		},
-		Subtitles:     f.Subtitles,
-		CarouselFocus: f.CarouselFocus,
+		Subtitles:         f.Subtitles,
+		CarouselFocus:     f.CarouselFocus,
+		SeriesTitle:       f.SeriesTitle,
+		EpisodeDescriptor: f.EpisodeDescriptor,
 	}
 
 	film.Images = models.ImageMapToImageSet(film.ImageMap)
@@ -266,29 +268,31 @@ type filmV2 struct {
 	Studio []struct {
 		Name string `json:"name"`
 	} `json:"studio"`
-	Overview        string                      `json:"overview"`
-	Tagline         string                      `json:"tagline"`
-	ReleaseDate     string                      `json:"release_date,omitempty"`
-	Runtime         float64                     `json:"runtime"`
-	Countries       []string                    `json:"countries"`
-	Languages       []string                    `json:"languages"`
-	Genres          []string                    `json:"genres"`
-	Tags            []string                    `json:"tags"`
-	Title           string                      `json:"title"`
-	CarouselFocus   string                      `json:"carousel_focus"`
-	Slug            string                      `json:"slug"`
-	FilmID          int                         `json:"film_id"`
-	ID              int                         `json:"id"`
-	ImageUrls       map[string]string           `json:"image_urls"`
-	Recommendations []string                    `json:"recommendations"`
-	Subtitles       []string                    `json:"subtitles"`
-	SubtitleTracks  []subtitleTrackV1           `json:"subtitle_tracks"`
-	Classifications map[string]classificationV1 `json:"classifications"`
-	SeoTitle        string                      `json:"seo_title"`
-	SeoKeywords     string                      `json:"seo_keywords"`
-	SeoDescription  string                      `json:"seo_description"`
-	CustomFields    map[string]interface{}      `json:"custom"`
-	Refs            struct {
+	Overview          string                      `json:"overview"`
+	Tagline           string                      `json:"tagline"`
+	ReleaseDate       string                      `json:"release_date,omitempty"`
+	Runtime           float64                     `json:"runtime"`
+	Countries         []string                    `json:"countries"`
+	Languages         []string                    `json:"languages"`
+	Genres            []string                    `json:"genres"`
+	Tags              []string                    `json:"tags"`
+	Title             string                      `json:"title"`
+	CarouselFocus     string                      `json:"carousel_focus"`
+	Slug              string                      `json:"slug"`
+	FilmID            int                         `json:"film_id"`
+	ID                int                         `json:"id"`
+	ImageUrls         map[string]string           `json:"image_urls"`
+	Recommendations   []string                    `json:"recommendations"`
+	Subtitles         []string                    `json:"subtitles"`
+	SubtitleTracks    []subtitleTrackV1           `json:"subtitle_tracks"`
+	Classifications   map[string]classificationV1 `json:"classifications"`
+	SeoTitle          string                      `json:"seo_title"`
+	SeoKeywords       string                      `json:"seo_keywords"`
+	SeoDescription    string                      `json:"seo_description"`
+	SeriesTitle       string                      `json:"series_title"`
+	EpisodeDescriptor string                      `json:"episode_descriptor"`
+	CustomFields      map[string]interface{}      `json:"custom"`
+	Refs              struct {
 		LetterboxdID string `json:"letterboxd_id"`
 	} `json:"refs"`
 	AwardCategories []struct {

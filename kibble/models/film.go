@@ -17,44 +17,46 @@ package models
 import (
 	"fmt"
 	"sort"
-	"time"
 	"strconv"
+	"time"
 
 	"kibble/utils"
 )
 
 // Film - all of the film bits
 type Film struct {
-	ID              int
-	Slug            string
-	Title           string
-	TitleSlug       string
-	Trailers        []Trailer
-	Bonuses         BonusContentCollection
-	Cast            []CastMember
-	Crew            CrewMembers
-	Studio          []string
-	Overview        string
-	Tagline         string
-	ReleaseDate     time.Time
-	Runtime         Runtime
-	Countries       StringCollection
-	Languages       StringCollection
-	Genres          StringCollection
-	AwardCategories []AwardCategory
-	Tags            StringCollection
-	Seo             Seo
-	Images          ImageSet
-	ImageMap        ImageMap
-	Prices          PriceInfo
-	Available       Period
-	Recommendations []GenericItem
-	Subtitles       []string
-	SubtitleTracks  []SubtitleTrack
-	CustomFields    CustomFields
-	Refs            FilmRefs
-	Classifications []Classification
-	CarouselFocus   string
+	ID                int
+	Slug              string
+	Title             string
+	TitleSlug         string
+	Trailers          []Trailer
+	Bonuses           BonusContentCollection
+	Cast              []CastMember
+	Crew              CrewMembers
+	Studio            []string
+	Overview          string
+	Tagline           string
+	ReleaseDate       time.Time
+	Runtime           Runtime
+	Countries         StringCollection
+	Languages         StringCollection
+	Genres            StringCollection
+	AwardCategories   []AwardCategory
+	Tags              StringCollection
+	Seo               Seo
+	Images            ImageSet
+	ImageMap          ImageMap
+	Prices            PriceInfo
+	Available         Period
+	Recommendations   []GenericItem
+	Subtitles         []string
+	SubtitleTracks    []SubtitleTrack
+	CustomFields      CustomFields
+	Refs              FilmRefs
+	Classifications   []Classification
+	CarouselFocus     string
+	SeriesTitle       string
+	EpisodeDescriptor string
 }
 
 // FilmCollection - all films
@@ -63,7 +65,7 @@ type FilmCollection map[string]*Film
 // FindFilmByID - find film by id
 func (films *FilmCollection) FindFilmByID(filmID int) (*Film, bool) {
 	coll := *films
-	if val, ok := coll["/film/" + strconv.Itoa(filmID)]; ok {
+	if val, ok := coll["/film/"+strconv.Itoa(filmID)]; ok {
 		return val, true
 	}
 	return nil, false
@@ -133,7 +135,7 @@ func (films *FilmCollection) MakeTitleSlugsUnique() {
 			}
 
 			// find the correct value to update, without making a copy
-			if val, ok := (*films)["/film/" + strconv.Itoa(group[j])]; ok {
+			if val, ok := (*films)["/film/"+strconv.Itoa(group[j])]; ok {
 				val.TitleSlug = fmt.Sprintf("%s-%d", val.TitleSlug, j+1)
 			}
 		}
