@@ -2,8 +2,6 @@
 
 ## [Unreleased]
 
-## [0.17.11] - 2026-03-16
-
  - Add support for `series_title` and `episode_descriptor` in film meta
 
 ## [0.17.10] - 2026-01-08
