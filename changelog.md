@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+ - Add support for `series_title` and `episode_descriptor` in film meta
+
 ## [0.17.10] - 2026-01-08
 
  - Convert CRLF line endings to LF because blackfriday (markdown lib) doesn't 
